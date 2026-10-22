@@ -1,0 +1,1677 @@
+=====FILE: pubspec.yaml=====
+name: happy_food_market
+description: Happy Food marketplace - customer, vendor and rider in one app.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  supabase_flutter: ^2.8.0
+  geolocator: ^13.0.1
+  shared_preferences: ^2.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.1
+
+flutter:
+  uses-material-design: true
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_background: "#0F0F15"
+  adaptive_icon_foreground: "assets/icon/icon_fg.png"
+=====FILE: lib/config.dart=====
+/// Public values only. The publishable key is designed to live inside the app.
+/// NEVER put the secret / service_role key here.
+class AppConfig {
+  static const supabaseUrl = 'https://pboelnbjgyllqqlkqaqm.supabase.co';
+  static const supabaseKey = 'sb_publishable_v7qyttkDD2DtFpSGSWAxrw__9K80eRz';
+}
+=====FILE: lib/main.dart=====
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'config.dart';
+import 'screens/login_screen.dart';
+import 'screens/role_screen.dart';
+import 'splash_screen.dart';
+
+SupabaseClient get supabase => Supabase.instance.client;
+
+const gold = Color(0xFFE2B04A);
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: AppConfig.supabaseUrl,
+    anonKey: AppConfig.supabaseKey,
+  );
+  runApp(const HappyFoodApp());
+}
+
+class HappyFoodApp extends StatelessWidget {
+  const HappyFoodApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Happy Food',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xFF0F0F15),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: gold,
+          brightness: Brightness.dark,
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            backgroundColor: gold,
+            foregroundColor: Colors.black,
+            minimumSize: const Size.fromHeight(52),
+            textStyle: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+          ),
+        ),
+      ),
+      home: const SplashScreen(next: AuthGate()),
+    );
+  }
+}
+
+/// Shows login when signed out, role picker when signed in.
+class AuthGate extends StatelessWidget {
+  const AuthGate({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<AuthState>(
+      stream: supabase.auth.onAuthStateChange,
+      builder: (context, _) {
+        return supabase.auth.currentSession == null
+            ? const LoginScreen()
+            : const RoleScreen(autoOpen: true);
+      },
+    );
+  }
+}
+=====FILE: lib/role_store.dart=====
+import 'package:shared_preferences/shared_preferences.dart';
+
+/// Remembers which role the person chose as default on this phone.
+class RoleStore {
+  static const _key = 'default_role';
+
+  static Future<String?> getDefault() async {
+    try {
+      return (await SharedPreferences.getInstance()).getString(_key);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Future<void> setDefault(String? role) async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      if (role == null) {
+        await p.remove(_key);
+      } else {
+        await p.setString(_key, role);
+      }
+    } catch (_) {}
+  }
+}
+=====FILE: lib/screens/admin/admin_home.dart=====
+import 'package:flutter/material.dart';
+
+/// Placeholder until the admin tools are built into the app.
+class AdminHome extends StatelessWidget {
+  const AdminHome({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('एडमिन')),
+      body: const Center(
+        child: Padding(
+          padding: EdgeInsets.all(28),
+          child: Text(
+            'एडमिन पैनल जल्द आ रहा है 🛠️\nवेंडर/राइडर अप्रूव, ऑर्डर और सेटिंग यहीं होंगे।',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16, height: 1.5),
+          ),
+        ),
+      ),
+    );
+  }
+}
+=====FILE: lib/screens/customer/customer_home.dart=====
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+
+import '../../main.dart';
+import 'order_track_screen.dart';
+
+/// Customer: pick dishes, place the order, then watch the radar.
+class CustomerHome extends StatefulWidget {
+  const CustomerHome({super.key});
+
+  @override
+  State<CustomerHome> createState() => _CustomerHomeState();
+}
+
+class _CustomerHomeState extends State<CustomerHome> {
+  List<Map<String, dynamic>> _products = [];
+  final Map<String, int> _cart = {};
+  bool _loading = true;
+  bool _placing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  void _msg(String m) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(m)));
+  }
+
+  Future<void> _load() async {
+    try {
+      final rows = await supabase
+          .from('products')
+          .select('id, name, price')
+          .eq('is_active', true)
+          .order('name');
+      if (!mounted) return;
+      setState(() => _products = List<Map<String, dynamic>>.from(rows));
+    } catch (e) {
+      _msg('लोड नहीं हुआ: $e');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  num get _total {
+    num t = 0;
+    for (final p in _products) {
+      t += (p['price'] as num) * (_cart[p['id']] ?? 0);
+    }
+    return t;
+  }
+
+  Future<Position?> _position() async {
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      _msg('फ़ोन की लोकेशन (GPS) चालू कीजिए');
+      return null;
+    }
+    var p = await Geolocator.checkPermission();
+    if (p == LocationPermission.denied) p = await Geolocator.requestPermission();
+    if (p == LocationPermission.denied || p == LocationPermission.deniedForever) {
+      _msg('लोकेशन की अनुमति दीजिए');
+      return null;
+    }
+    return Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high));
+  }
+
+  Future<void> _place() async {
+    final items = [
+      for (final e in _cart.entries)
+        if (e.value > 0) {'product_id': e.key, 'qty': e.value}
+    ];
+    if (items.isEmpty) return;
+
+    final addr = TextEditingController();
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('डिलीवरी का पता'),
+        content: TextField(
+            controller: addr,
+            decoration: const InputDecoration(labelText: 'फ़्लैट / लैंडमार्क')),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('रद्द')),
+          FilledButton(
+              style: FilledButton.styleFrom(minimumSize: const Size(120, 44)),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('ऑर्डर करें')),
+        ],
+      ),
+    );
+    if (ok != true) return;
+
+    setState(() => _placing = true);
+    try {
+      final pos = await _position();
+      if (pos == null) return;
+      final id = await supabase.rpc('place_order', params: {
+        'p_items': items,
+        'p_lat': pos.latitude,
+        'p_lng': pos.longitude,
+        'p_address': addr.text.trim().isEmpty ? 'GPS लोकेशन' : addr.text.trim(),
+      });
+      if (!mounted) return;
+      setState(_cart.clear);
+      await Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => OrderTrackScreen(orderId: id as String)));
+    } catch (e) {
+      _msg('ऑर्डर नहीं हुआ: $e');
+    } finally {
+      if (mounted) setState(() => _placing = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Happy Food')),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _products.isEmpty
+              ? const Center(child: Text('अभी कोई प्रोडक्ट नहीं है'))
+              : RefreshIndicator(
+                  onRefresh: _load,
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                    children: [
+                      for (final p in _products)
+                        Card(
+                          child: ListTile(
+                            title: Text(p['name'],
+                                style: const TextStyle(fontWeight: FontWeight.w700)),
+                            subtitle: Text('₹${p['price']}',
+                                style: const TextStyle(color: gold)),
+                            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                              IconButton(
+                                  icon: const Icon(Icons.remove_circle_outline),
+                                  onPressed: (_cart[p['id']] ?? 0) > 0
+                                      ? () => setState(
+                                          () => _cart[p['id']] = _cart[p['id']]! - 1)
+                                      : null),
+                              Text('${_cart[p['id']] ?? 0}',
+                                  style: const TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.w800)),
+                              IconButton(
+                                  icon: const Icon(Icons.add_circle_outline),
+                                  onPressed: () => setState(() =>
+                                      _cart[p['id']] = (_cart[p['id']] ?? 0) + 1)),
+                            ]),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+      bottomNavigationBar: _total > 0
+          ? SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: FilledButton(
+                  onPressed: _placing ? null : _place,
+                  child: _placing
+                      ? const SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2))
+                      : Text('ऑर्डर करें  •  ₹$_total'),
+                ),
+              ),
+            )
+          : null,
+    );
+  }
+}
+=====FILE: lib/screens/customer/order_track_screen.dart=====
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+
+import '../../main.dart';
+
+/// Customer watches the order: radar -> partner found -> OTP -> delivered.
+class OrderTrackScreen extends StatefulWidget {
+  final String orderId;
+  const OrderTrackScreen({super.key, required this.orderId});
+
+  @override
+  State<OrderTrackScreen> createState() => _OrderTrackScreenState();
+}
+
+class _OrderTrackScreenState extends State<OrderTrackScreen> {
+  StreamSubscription<List<Map<String, dynamic>>>? _sub;
+  Map<String, dynamic>? _order;
+  String? _otp;
+
+  @override
+  void initState() {
+    super.initState();
+    _sub = supabase
+        .from('orders')
+        .stream(primaryKey: ['id'])
+        .eq('id', widget.orderId)
+        .listen((rows) async {
+      if (rows.isEmpty) return;
+      final o = rows.first;
+      if ((o['status'] == 'accepted' || o['status'] == 'on_the_way') && _otp == null) {
+        try {
+          final r = await supabase.rpc('my_order_otp', params: {'p_order_id': widget.orderId});
+          _otp = r as String?;
+        } catch (_) {}
+      }
+      if (mounted) setState(() => _order = o);
+    });
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _cancel() async {
+    try {
+      await supabase.rpc('cancel_order', params: {'p_order_id': widget.orderId});
+    } catch (_) {}
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final status = _order?['status'] as String?;
+    return Scaffold(
+      appBar: AppBar(title: const Text('आपका ऑर्डर')),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: _body(status),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _body(String? status) {
+    switch (status) {
+      case null:
+      case 'searching':
+        return [
+          const SizedBox(
+              height: 120, width: 120, child: CircularProgressIndicator(strokeWidth: 6)),
+          const SizedBox(height: 28),
+          const Text('पास का डिलीवरी पार्टनर ढूँढ रहे हैं…',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 24),
+          OutlinedButton(onPressed: _cancel, child: const Text('ऑर्डर रद्द करें')),
+        ];
+      case 'accepted':
+      case 'on_the_way':
+        return [
+          const Text('🛵', style: TextStyle(fontSize: 70)),
+          Text(
+              status == 'accepted'
+                  ? 'पार्टनर ने ऑर्डर स्वीकार किया!'
+                  : 'पार्टनर आपके पास आ रहे हैं',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 24),
+          const Text('डिलीवरी बॉय को यह OTP बताइए:'),
+          Text(_otp ?? '····',
+              style: const TextStyle(
+                  fontSize: 44, fontWeight: FontWeight.w900, letterSpacing: 8, color: gold)),
+        ];
+      case 'delivered':
+        return [
+          const Icon(Icons.check_circle, color: Colors.green, size: 110),
+          const SizedBox(height: 16),
+          const Text('आपके हाथ में डिलीवर हो गया!',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 24),
+          FilledButton(
+              onPressed: () => Navigator.of(context).pop(), child: const Text('ठीक है')),
+        ];
+      case 'no_rider':
+        return [
+          const Text('😔', style: TextStyle(fontSize: 70)),
+          const Text('अभी आस-पास कोई डिलीवरी पार्टनर उपलब्ध नहीं',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 24),
+          FilledButton(
+              onPressed: () => Navigator.of(context).pop(), child: const Text('वापस जाएँ')),
+        ];
+      default:
+        return [
+          const Text('ऑर्डर रद्द हो गया', style: TextStyle(fontSize: 18)),
+          const SizedBox(height: 24),
+          FilledButton(
+              onPressed: () => Navigator.of(context).pop(), child: const Text('वापस जाएँ')),
+        ];
+    }
+  }
+}
+=====FILE: lib/screens/login_screen.dart=====
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../main.dart';
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  bool _busy = false;
+  bool _signUp = false;
+
+  Future<void> _submit() async {
+    final email = _email.text.trim();
+    final password = _password.text;
+    if (email.isEmpty || password.length < 6) {
+      _msg('ईमेल डालिए और कम से कम 6 अक्षर का पासवर्ड रखिए');
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      if (_signUp) {
+        final res = await supabase.auth.signUp(email: email, password: password);
+        if (res.session == null && mounted) {
+          _msg('अकाउंट बन गया। ईमेल की पुष्टि करनी हो तो मेल चेक करें, फिर लॉगिन करें।');
+          setState(() => _signUp = false);
+        }
+      } else {
+        await supabase.auth.signInWithPassword(email: email, password: password);
+      }
+    } on AuthException catch (e) {
+      _msg(e.message);
+    } catch (e) {
+      _msg('कुछ गड़बड़ हुई: $e');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  void _msg(String m) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(m)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 420),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Happy',
+                      style: TextStyle(fontSize: 40, fontWeight: FontWeight.w900)),
+                  const Text('Food',
+                      style: TextStyle(
+                          fontSize: 40, fontWeight: FontWeight.w900, color: gold)),
+                  const SizedBox(height: 32),
+                  TextField(
+                    controller: _email,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                        labelText: 'ईमेल', border: OutlineInputBorder()),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _password,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                        labelText: 'पासवर्ड', border: OutlineInputBorder()),
+                  ),
+                  const SizedBox(height: 20),
+                  FilledButton(
+                    onPressed: _busy ? null : _submit,
+                    child: _busy
+                        ? const SizedBox(
+                            height: 22,
+                            width: 22,
+                            child: CircularProgressIndicator(strokeWidth: 2))
+                        : Text(_signUp ? 'अकाउंट बनाएँ' : 'लॉगिन'),
+                  ),
+                  TextButton(
+                    onPressed: () => setState(() => _signUp = !_signUp),
+                    child: Text(_signUp
+                        ? 'पहले से अकाउंट है? लॉगिन करें'
+                        : 'नया अकाउंट बनाएँ'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+=====FILE: lib/screens/rider/rider_home.dart=====
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+
+import '../../main.dart';
+
+/// Rider: two tabs — requests (go online, accept, deliver) and "my stock".
+class RiderHome extends StatefulWidget {
+  const RiderHome({super.key});
+
+  @override
+  State<RiderHome> createState() => _RiderHomeState();
+}
+
+class _RiderHomeState extends State<RiderHome> {
+  int _tab = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('डिलीवरी बॉय')),
+      // IndexedStack keeps the online tab (GPS + requests) alive while on the stock tab.
+      body: IndexedStack(
+        index: _tab,
+        children: const [RiderOnlineTab(), RiderStockTab()],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _tab,
+        onDestinationSelected: (i) => setState(() => _tab = i),
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.radar), label: 'रिक्वेस्ट'),
+          NavigationDestination(icon: Icon(Icons.inventory_2), label: 'मेरा स्टॉक'),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+class RiderOnlineTab extends StatefulWidget {
+  const RiderOnlineTab({super.key});
+
+  @override
+  State<RiderOnlineTab> createState() => _RiderOnlineTabState();
+}
+
+class _RiderOnlineTabState extends State<RiderOnlineTab> {
+  bool _online = false;
+  bool _approved = false;
+  bool _loading = true;
+
+  Timer? _gps;
+  Timer? _tick;
+  StreamSubscription<List<Map<String, dynamic>>>? _offerSub;
+  StreamSubscription<List<Map<String, dynamic>>>? _orderSub;
+
+  List<Map<String, dynamic>> _offers = [];
+  final Map<String, Map<String, dynamic>> _details = {};
+  Map<String, dynamic>? _order;
+  List<Map<String, dynamic>> _orderItems = [];
+
+  String get _uid => supabase.auth.currentUser!.id;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+    _tick = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+
+    _offerSub = supabase
+        .from('order_offers')
+        .stream(primaryKey: ['id'])
+        .eq('rider_id', _uid)
+        .listen((rows) async {
+      final pending = rows.where((r) => r['status'] == 'pending').toList();
+      for (final r in pending) {
+        final id = r['id'] as String;
+        if (!_details.containsKey(id)) {
+          try {
+            final d = await supabase.rpc('offer_details', params: {'p_offer_id': id});
+            if (d is Map) _details[id] = Map<String, dynamic>.from(d);
+          } catch (_) {}
+        }
+      }
+      if (mounted) setState(() => _offers = pending);
+    });
+
+    _orderSub = supabase
+        .from('orders')
+        .stream(primaryKey: ['id'])
+        .eq('rider_id', _uid)
+        .listen((rows) async {
+      final active = rows
+          .where((r) => r['status'] == 'accepted' || r['status'] == 'on_the_way')
+          .toList();
+      final cur = active.isEmpty ? null : active.first;
+      if (cur != null && cur['id'] != _order?['id']) {
+        final items = await supabase
+            .from('order_items')
+            .select('qty, products(name)')
+            .eq('order_id', cur['id']);
+        _orderItems = List<Map<String, dynamic>>.from(items);
+      }
+      if (mounted) setState(() => _order = cur);
+    });
+  }
+
+  @override
+  void dispose() {
+    _gps?.cancel();
+    _tick?.cancel();
+    _offerSub?.cancel();
+    _orderSub?.cancel();
+    super.dispose();
+  }
+
+  void _msg(String m) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(m)));
+  }
+
+  Future<void> _load() async {
+    try {
+      final r = await supabase
+          .from('riders')
+          .select('is_online, approved')
+          .eq('id', _uid)
+          .maybeSingle();
+      if (!mounted) return;
+      setState(() {
+        _online = r?['is_online'] == true;
+        _approved = r?['approved'] == true;
+      });
+      if (_online) _startGps();
+    } catch (e) {
+      _msg('लोड नहीं हुआ: $e');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<bool> _ensureLocation() async {
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      _msg('फ़ोन की लोकेशन (GPS) चालू कीजिए');
+      return false;
+    }
+    var p = await Geolocator.checkPermission();
+    if (p == LocationPermission.denied) p = await Geolocator.requestPermission();
+    if (p == LocationPermission.denied || p == LocationPermission.deniedForever) {
+      _msg('लोकेशन की अनुमति दीजिए');
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _pushLocation() async {
+    try {
+      final pos = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(accuracy: LocationAccuracy.high));
+      await supabase.rpc('update_rider_location',
+          params: {'p_lat': pos.latitude, 'p_lng': pos.longitude});
+    } catch (_) {}
+  }
+
+  void _startGps() {
+    _gps?.cancel();
+    _pushLocation();
+    _gps = Timer.periodic(const Duration(seconds: 10), (_) => _pushLocation());
+  }
+
+  Future<void> _setOnline(bool v) async {
+    if (v && !await _ensureLocation()) return;
+    try {
+      await supabase.from('riders').update({'is_online': v}).eq('id', _uid);
+      setState(() => _online = v);
+      if (v) {
+        _startGps();
+      } else {
+        _gps?.cancel();
+      }
+    } catch (e) {
+      _msg('बदला नहीं जा सका: $e');
+    }
+  }
+
+  Future<void> _respond(String offerId, bool accept) async {
+    try {
+      final res = await supabase.rpc('respond_offer',
+          params: {'p_offer_id': offerId, 'p_accept': accept});
+      if (res == 'accepted') {
+        _msg('ऑर्डर आपका हो गया! 🎉');
+      } else if (res == 'stock_gone') {
+        _msg('आपके स्टॉक में अब यह नहीं है');
+      } else if (res == 'expired') {
+        _msg('समय निकल गया');
+      }
+    } catch (e) {
+      _msg('गड़बड़: $e');
+    }
+  }
+
+  Future<void> _startDelivery() async {
+    try {
+      await supabase.rpc('start_delivery', params: {'p_order_id': _order!['id']});
+    } catch (e) {
+      _msg('गड़बड़: $e');
+    }
+  }
+
+  Future<void> _deliver() async {
+    final c = TextEditingController();
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('कस्टमर से 4 अंक का OTP लें'),
+        content: TextField(
+            controller: c,
+            keyboardType: TextInputType.number,
+            maxLength: 4,
+            decoration: const InputDecoration(labelText: 'OTP')),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('रद्द')),
+          FilledButton(
+              style: FilledButton.styleFrom(minimumSize: const Size(110, 44)),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('डिलीवर करें')),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    try {
+      final res = await supabase.rpc('complete_delivery',
+          params: {'p_order_id': _order!['id'], 'p_otp': c.text.trim()});
+      _msg(res == true ? 'डिलीवरी पूरी ✅' : 'OTP गलत है');
+    } catch (e) {
+      _msg('गड़बड़: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loading) return const Center(child: CircularProgressIndicator());
+
+    final live = _offers.where((o) {
+      final exp = DateTime.tryParse('${o['expires_at']}');
+      return exp != null && exp.isAfter(DateTime.now());
+    }).toList();
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        if (!_approved)
+          const Card(
+            child: ListTile(
+              leading: Icon(Icons.hourglass_top),
+              title: Text('एडमिन की मंज़ूरी बाकी है'),
+              subtitle: Text('मंज़ूरी के बाद ही रिक्वेस्ट आएँगी'),
+            ),
+          ),
+        SwitchListTile(
+          value: _online,
+          onChanged: _setOnline,
+          title: Text(_online ? 'आप ऑनलाइन हैं' : 'आप ऑफ़लाइन हैं',
+              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
+          subtitle: const Text('ऑनलाइन रहते हुए ऐप खुला रखिए (GPS चालू)'),
+        ),
+        const Divider(),
+        if (_order != null) _activeOrderCard(),
+        if (_order == null && live.isEmpty && _online)
+          const Padding(
+            padding: EdgeInsets.all(32),
+            child: Center(child: Text('रिक्वेस्ट का इंतज़ार… 📡')),
+          ),
+        for (final o in live) _offerCard(o),
+      ],
+    );
+  }
+
+  Widget _offerCard(Map<String, dynamic> o) {
+    final d = _details[o['id']];
+    final exp = DateTime.parse('${o['expires_at']}');
+    final left = exp.difference(DateTime.now()).inSeconds.clamp(0, 999);
+    final km = ((d?['distance_m'] ?? o['distance_m'] ?? 0) as num) / 1000;
+    final items = (d?['items'] as List?) ?? const [];
+    return Card(
+      color: const Color(0xFF1B1B26),
+      shape: RoundedRectangleBorder(
+          side: const BorderSide(color: gold), borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              const Text('🔔 नई रिक्वेस्ट',
+                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
+              const Spacer(),
+              Text('$left s', style: const TextStyle(color: gold, fontSize: 18)),
+            ]),
+            const SizedBox(height: 8),
+            for (final i in items) Text('${i['qty']} × ${i['name']}'),
+            const SizedBox(height: 6),
+            Text('दूरी ${km.toStringAsFixed(1)} km   •   कुल ₹${d?['total'] ?? ''}',
+                style: const TextStyle(color: Colors.grey)),
+            const SizedBox(height: 12),
+            Row(children: [
+              Expanded(
+                  child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                      onPressed: () => _respond(o['id'], false),
+                      child: const Text('मना करें'))),
+              const SizedBox(width: 12),
+              Expanded(
+                  child: FilledButton(
+                      onPressed: () => _respond(o['id'], true),
+                      child: const Text('एक्सेप्ट'))),
+            ]),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _activeOrderCard() {
+    final o = _order!;
+    final onWay = o['status'] == 'on_the_way';
+    return Card(
+      color: const Color(0xFF16261B),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('🛵 चालू डिलीवरी',
+                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
+            const SizedBox(height: 8),
+            for (final i in _orderItems) Text('${i['qty']} × ${i['products']?['name'] ?? ''}'),
+            const SizedBox(height: 8),
+            Text('पता: ${o['delivery_address'] ?? 'GPS लोकेशन'}'),
+            Text('कुल ₹${o['total']}  (कैश-ऑन-डिलीवरी हो तो कस्टमर से लें)',
+                style: const TextStyle(color: Colors.grey)),
+            const SizedBox(height: 12),
+            if (!onWay)
+              FilledButton(onPressed: _startDelivery, child: const Text('मैं निकल पड़ा'))
+            else
+              FilledButton(onPressed: _deliver, child: const Text('OTP डालकर डिलीवर करें')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+class RiderStockTab extends StatefulWidget {
+  const RiderStockTab({super.key});
+
+  @override
+  State<RiderStockTab> createState() => _RiderStockTabState();
+}
+
+class _RiderStockTabState extends State<RiderStockTab> {
+  List<Map<String, dynamic>> _products = [];
+  final Map<String, Map<String, dynamic>> _stock = {};
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final uid = supabase.auth.currentUser!.id;
+      final p = await supabase
+          .from('products')
+          .select('id, name, price')
+          .eq('is_active', true)
+          .order('name');
+      final s = await supabase
+          .from('rider_stock')
+          .select('product_id, qty, reserved')
+          .eq('rider_id', uid);
+      if (!mounted) return;
+      setState(() {
+        _products = List<Map<String, dynamic>>.from(p);
+        _stock
+          ..clear()
+          ..addEntries(List<Map<String, dynamic>>.from(s)
+              .map((r) => MapEntry(r['product_id'] as String, r)));
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('लोड नहीं हुआ: $e')));
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _set(String productId, int qty) async {
+    try {
+      await supabase.rpc('set_stock', params: {'p_product_id': productId, 'p_qty': qty});
+      await _load();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('गड़बड़: $e')));
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loading) return const Center(child: CircularProgressIndicator());
+    if (_products.isEmpty) {
+      return const Center(
+          child: Padding(
+              padding: EdgeInsets.all(24),
+              child: Text('अभी कोई प्रोडक्ट उपलब्ध नहीं। पहले वेंडर प्रोडक्ट जोड़े।')));
+    }
+    return RefreshIndicator(
+      onRefresh: _load,
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          const Text('जो खाना आपके बैग में है, उतनी संख्या रखिए।',
+              style: TextStyle(color: Colors.grey)),
+          const SizedBox(height: 8),
+          for (final p in _products)
+            Builder(builder: (_) {
+              final st = _stock[p['id']];
+              final qty = (st?['qty'] ?? 0) as int;
+              final reserved = (st?['reserved'] ?? 0) as int;
+              return Card(
+                child: ListTile(
+                  title: Text(p['name']),
+                  subtitle: Text('₹${p['price']}'
+                      '${reserved > 0 ? '   •   बुक: $reserved' : ''}'),
+                  trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                    IconButton(
+                        icon: const Icon(Icons.remove_circle_outline),
+                        onPressed: qty > reserved ? () => _set(p['id'], qty - 1) : null),
+                    Text('$qty',
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+                    IconButton(
+                        icon: const Icon(Icons.add_circle_outline),
+                        onPressed: () => _set(p['id'], qty + 1)),
+                  ]),
+                ),
+              );
+            }),
+        ],
+      ),
+    );
+  }
+}
+=====FILE: lib/screens/role_screen.dart=====
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../main.dart';
+import '../role_store.dart';
+import 'admin/admin_home.dart';
+import 'customer/customer_home.dart';
+import 'rider/rider_home.dart';
+import 'vendor/vendor_home.dart';
+
+class _Role {
+  const _Role(this.id, this.emoji, this.title, this.sub);
+  final String id, emoji, title, sub;
+}
+
+const _roles = [
+  _Role('customer', '🍽️', 'कस्टमर', 'खाना ऑर्डर करें'),
+  _Role('vendor', '🏪', 'वेंडर / स्टाफ', 'दुकान, मेन्यू, ऑर्डर'),
+  _Role('rider', '🛵', 'डिलीवरी बॉय', 'खाना रखें और डिलीवर करें'),
+  _Role('admin', '🛡️', 'एडमिन', 'पार्टनर अप्रूव, ऑर्डर, सेटिंग'),
+];
+
+/// One app, one login. Pick how to use it; long-press to make it the default
+/// so the app opens straight there next time.
+class RoleScreen extends StatefulWidget {
+  const RoleScreen({super.key, this.autoOpen = false});
+
+  /// When true, jump straight into the saved default role on first show.
+  final bool autoOpen;
+
+  @override
+  State<RoleScreen> createState() => _RoleScreenState();
+}
+
+class _RoleScreenState extends State<RoleScreen> {
+  bool _busy = false;
+  bool _loaded = false;
+  String? _default;
+  bool _isAdmin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  Future<void> _init() async {
+    final def = await RoleStore.getDefault();
+    var admin = false;
+    try {
+      final row = await supabase
+          .from('profiles')
+          .select('roles')
+          .eq('id', supabase.auth.currentUser!.id)
+          .maybeSingle();
+      admin = ((row?['roles'] as List?) ?? const []).contains('admin');
+    } catch (_) {}
+    if (!mounted) return;
+    setState(() {
+      _default = def;
+      _isAdmin = admin;
+      _loaded = true;
+    });
+    if (widget.autoOpen && def != null && (def != 'admin' || admin)) {
+      _pick(def);
+    }
+  }
+
+  Widget _homeFor(String role) {
+    switch (role) {
+      case 'vendor':
+        return const VendorHome();
+      case 'rider':
+        return const RiderHome();
+      case 'admin':
+        return const AdminHome();
+      default:
+        return const CustomerHome();
+    }
+  }
+
+  Future<void> _pick(String role) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      if (role != 'admin') {
+        await supabase.rpc('choose_role', params: {'p_role': role});
+      }
+      if (!mounted) return;
+      await Navigator.of(context)
+          .push(MaterialPageRoute(builder: (_) => _homeFor(role)));
+    } catch (e) {
+      _snack('गड़बड़: $e');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _makeDefault(_Role r) async {
+    HapticFeedback.mediumImpact();
+    await RoleStore.setDefault(r.id);
+    if (!mounted) return;
+    setState(() => _default = r.id);
+    _snack('★ ${r.title} अब डिफ़ॉल्ट है — अगली बार ऐप सीधे यहीं खुलेगा');
+  }
+
+  Future<void> _clearDefault() async {
+    await RoleStore.setDefault(null);
+    if (!mounted) return;
+    setState(() => _default = null);
+    _snack('डिफ़ॉल्ट हटा दिया');
+  }
+
+  void _snack(String m) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(m)));
+  }
+
+  Widget _card(_Role r) {
+    final isDef = _default == r.id;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      decoration: BoxDecoration(
+        color: const Color(0xFF171822),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: isDef ? gold : const Color(0xFF2A2C3A)),
+        boxShadow: isDef
+            ? [BoxShadow(color: gold.withOpacity(0.18), blurRadius: 22)]
+            : null,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(22),
+          onTap: _busy ? null : () => _pick(r.id),
+          onLongPress: _busy ? null : () => _makeDefault(r),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 54,
+                  height: 54,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFF6D27A), Color(0xFFC8912A)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                  child: Text(r.emoji, style: const TextStyle(fontSize: 26)),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(r.title,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w800, fontSize: 17)),
+                      const SizedBox(height: 2),
+                      Text(r.sub,
+                          style: const TextStyle(
+                              color: Colors.white60, fontSize: 12.5)),
+                    ],
+                  ),
+                ),
+                if (isDef)
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                    decoration: BoxDecoration(
+                        color: gold, borderRadius: BorderRadius.circular(99)),
+                    child: const Text('★ डिफ़ॉल्ट',
+                        style: TextStyle(
+                            color: Color(0xFF1A1304),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800)),
+                  )
+                else
+                  const Icon(Icons.chevron_right, color: Colors.white38),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final visible = _roles.where((r) => r.id != 'admin' || _isAdmin).toList();
+    return Scaffold(
+      body: SafeArea(
+        child: !_loaded
+            ? const Center(child: CircularProgressIndicator(color: gold))
+            : ListView(
+                padding: const EdgeInsets.fromLTRB(20, 28, 20, 20),
+                children: [
+                  const Center(
+                    child: Text.rich(
+                      TextSpan(children: [
+                        TextSpan(text: 'Happy '),
+                        TextSpan(text: 'Food', style: TextStyle(color: gold)),
+                      ]),
+                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                  const SizedBox(height: 22),
+                  const Center(
+                    child: Text('आप कौन हैं?',
+                        style: TextStyle(fontSize: 21, fontWeight: FontWeight.w800)),
+                  ),
+                  const SizedBox(height: 4),
+                  Center(
+                    child: Text(supabase.auth.currentUser?.email ?? '',
+                        style: const TextStyle(color: Colors.white54, fontSize: 12)),
+                  ),
+                  const SizedBox(height: 22),
+                  for (final r in visible) _card(r),
+                  const SizedBox(height: 6),
+                  const Text(
+                    '💡 जिस रोल से रोज़ आना है, उस पर उँगली दबाकर रखें — वह डिफ़ॉल्ट बन जाएगा और ऐप सीधे वहीं खुलेगा। रोल बदलने के लिए उस स्क्रीन से पीछे (Back) आइए।',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white54, fontSize: 12, height: 1.5),
+                  ),
+                  if (_default != null)
+                    TextButton(
+                        onPressed: _clearDefault, child: const Text('डिफ़ॉल्ट हटाएँ')),
+                  const SizedBox(height: 8),
+                  TextButton.icon(
+                    onPressed: () => supabase.auth.signOut(),
+                    icon: const Icon(Icons.logout, size: 18),
+                    label: const Text('लॉगआउट'),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+}
+=====FILE: lib/screens/vendor/vendor_home.dart=====
+import 'package:flutter/material.dart';
+
+import '../../main.dart';
+
+/// Vendor: create a shop once, then add products.
+class VendorHome extends StatefulWidget {
+  const VendorHome({super.key});
+
+  @override
+  State<VendorHome> createState() => _VendorHomeState();
+}
+
+class _VendorHomeState extends State<VendorHome> {
+  Map<String, dynamic>? _shop;
+  List<Map<String, dynamic>> _products = [];
+  bool _loading = true;
+  final _shopName = TextEditingController();
+
+  String get _uid => supabase.auth.currentUser!.id;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() => _loading = true);
+    try {
+      final shop = await supabase
+          .from('vendors')
+          .select('id, shop_name, approved')
+          .eq('owner_id', _uid)
+          .maybeSingle();
+      List<Map<String, dynamic>> products = [];
+      if (shop != null) {
+        final rows = await supabase
+            .from('products')
+            .select('id, name, price')
+            .eq('vendor_id', shop['id'])
+            .order('created_at');
+        products = List<Map<String, dynamic>>.from(rows);
+      }
+      if (!mounted) return;
+      setState(() {
+        _shop = shop;
+        _products = products;
+      });
+    } catch (e) {
+      _msg('लोड नहीं हुआ: $e');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  void _msg(String m) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(m)));
+  }
+
+  Future<void> _createShop() async {
+    final name = _shopName.text.trim();
+    if (name.isEmpty) return;
+    try {
+      await supabase
+          .from('vendors')
+          .insert({'owner_id': _uid, 'shop_name': name});
+      await _load();
+    } catch (e) {
+      _msg('दुकान नहीं बनी: $e');
+    }
+  }
+
+  Future<void> _addProduct() async {
+    final name = TextEditingController();
+    final price = TextEditingController();
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('नया प्रोडक्ट'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+                controller: name,
+                decoration: const InputDecoration(labelText: 'नाम (जैसे VIP शाही थाली)')),
+            TextField(
+                controller: price,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'कीमत ₹')),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('रद्द')),
+          FilledButton(
+              style: FilledButton.styleFrom(minimumSize: const Size(90, 44)),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('जोड़ें')),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    final p = double.tryParse(price.text.trim());
+    if (name.text.trim().isEmpty || p == null) {
+      _msg('नाम और सही कीमत डालिए');
+      return;
+    }
+    try {
+      await supabase.from('products').insert({
+        'vendor_id': _shop!['id'],
+        'name': name.text.trim(),
+        'price': p,
+      });
+      await _load();
+    } catch (e) {
+      _msg('प्रोडक्ट नहीं जुड़ा: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(_shop?['shop_name'] ?? 'वेंडर')),
+      floatingActionButton: _shop == null
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: _addProduct,
+              icon: const Icon(Icons.add),
+              label: const Text('प्रोडक्ट')),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _shop == null
+              ? Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('अपनी दुकान का नाम डालिए',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                      const SizedBox(height: 16),
+                      TextField(
+                          controller: _shopName,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(), labelText: 'दुकान का नाम')),
+                      const SizedBox(height: 16),
+                      FilledButton(onPressed: _createShop, child: const Text('दुकान बनाएँ')),
+                    ],
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: _load,
+                  child: ListView(
+                    padding: const EdgeInsets.all(16),
+                    children: [
+                      if (_shop!['approved'] != true)
+                        const Card(
+                          child: ListTile(
+                            leading: Icon(Icons.hourglass_top),
+                            title: Text('एडमिन की मंज़ूरी बाकी है'),
+                          ),
+                        ),
+                      if (_products.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.all(24),
+                          child: Text('अभी कोई प्रोडक्ट नहीं। नीचे "+ प्रोडक्ट" दबाइए।'),
+                        ),
+                      for (final p in _products)
+                        Card(
+                          child: ListTile(
+                            title: Text(p['name']),
+                            trailing: Text('₹${p['price']}',
+                                style: const TextStyle(
+                                    color: gold, fontWeight: FontWeight.w800)),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+    );
+  }
+}
+=====FILE: lib/splash_screen.dart=====
+import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+
+import 'main.dart';
+
+/// Animated launch screen: glowing logo, orbiting food, rotating gold ring.
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key, required this.next});
+
+  /// Screen to show after the splash (login or role picker).
+  final Widget next;
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen>
+    with TickerProviderStateMixin {
+  late final AnimationController _intro =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 1600))
+        ..forward();
+  late final AnimationController _loop =
+      AnimationController(vsync: this, duration: const Duration(seconds: 6))
+        ..repeat();
+
+  static const _food = ['🥟', '🍛', '🍢', '🍕', '🥘', '🍔'];
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 3000), _go);
+  }
+
+  void _go() {
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(PageRouteBuilder(
+      transitionDuration: const Duration(milliseconds: 600),
+      pageBuilder: (_, __, ___) => widget.next,
+      transitionsBuilder: (_, a, __, child) =>
+          FadeTransition(opacity: a, child: child),
+    ));
+  }
+
+  @override
+  void dispose() {
+    _intro.dispose();
+    _loop.dispose();
+    super.dispose();
+  }
+
+  double _span(double a, double b) =>
+      Curves.easeOutCubic.transform(((_intro.value - a) / (b - a)).clamp(0.0, 1.0).toDouble());
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0F0F15),
+      body: AnimatedBuilder(
+        animation: Listenable.merge([_intro, _loop]),
+        builder: (context, _) {
+          final pop = Curves.elasticOut.transform(_span(0.0, 0.55));
+          final textIn = _span(0.45, 0.85);
+          final tagIn = _span(0.65, 1.0);
+          final t = _loop.value * 2 * math.pi;
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              // soft golden glow
+              Container(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    center: const Alignment(0, -0.25),
+                    radius: 0.95,
+                    colors: [
+                      gold.withOpacity(0.20 * _span(0, 0.6)),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 250,
+                    height: 250,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // rotating gold arc (radar feel)
+                        Transform.rotate(
+                          angle: t,
+                          child: CustomPaint(
+                            size: const Size(220, 220),
+                            painter: _RingPainter(_span(0, 0.7)),
+                          ),
+                        ),
+                        // orbiting food
+                        for (int i = 0; i < _food.length; i++)
+                          Builder(builder: (_) {
+                            final a = -t + i * 2 * math.pi / _food.length;
+                            return Transform.translate(
+                              offset: Offset(math.cos(a) * 110, math.sin(a) * 110),
+                              child: Opacity(
+                                opacity: _span(0.3, 0.9),
+                                child: Text(_food[i],
+                                    style: const TextStyle(fontSize: 26)),
+                              ),
+                            );
+                          }),
+                        // logo emblem
+                        Transform.scale(
+                          scale: pop,
+                          child: Container(
+                            width: 118,
+                            height: 118,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Color(0xFFF6D27A), Color(0xFFC8912A)],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: gold.withOpacity(0.55),
+                                    blurRadius: 36,
+                                    spreadRadius: 2),
+                              ],
+                            ),
+                            child: const Icon(Icons.restaurant_rounded,
+                                size: 56, color: Color(0xFF1A1304)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Opacity(
+                    opacity: textIn,
+                    child: Transform.translate(
+                      offset: Offset(0, 16 * (1 - textIn)),
+                      child: const Text.rich(
+                        TextSpan(children: [
+                          TextSpan(text: 'Happy '),
+                          TextSpan(text: 'Food', style: TextStyle(color: gold)),
+                        ]),
+                        style: TextStyle(
+                            fontSize: 38,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.5),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Opacity(
+                    opacity: tagIn,
+                    child: const Text('Freshly Cooked  •  Delivered Hot 🔥',
+                        style: TextStyle(color: Colors.white60, fontSize: 13.5)),
+                  ),
+                ],
+              ),
+              Positioned(
+                bottom: 46,
+                child: Opacity(
+                  opacity: tagIn,
+                  child: const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: gold),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _RingPainter extends CustomPainter {
+  _RingPainter(this.p);
+  final double p;
+
+  @override
+  void paint(Canvas canvas, Size s) {
+    final c = s.center(Offset.zero);
+    final r = s.width / 2;
+    canvas.drawCircle(
+        c,
+        r,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5
+          ..color = gold.withOpacity(0.18 * p));
+    final rect = Rect.fromCircle(center: c, radius: r);
+    canvas.drawArc(
+        rect,
+        0,
+        math.pi * 0.9 * p,
+        false,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round
+          ..strokeWidth = 4
+          ..shader = SweepGradient(
+            colors: [gold.withOpacity(0), gold],
+            stops: const [0, 1],
+            transform: const GradientRotation(0),
+          ).createShader(rect));
+  }
+
+  @override
+  bool shouldRepaint(_RingPainter o) => o.p != p;
+}
