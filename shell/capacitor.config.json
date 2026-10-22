@@ -1,0 +1,7 @@
+{
+  "appId": "com.happyfood.market",
+  "appName": "Happy Food",
+  "webDir": "www",
+  "backgroundColor": "#0b0d14",
+  "android": { "allowMixedContent": false }
+}
