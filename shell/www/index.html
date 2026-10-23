@@ -5279,8 +5279,8 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             if (!LIVE || AUTH.step !== 'otp') return _authRender();
             const b = document.getElementById('auBody'); document.getElementById('auBack').style.display = 'flex'; clearInterval(AUTH.t);
             b.innerHTML = `<h2 class="text-2xl font-extrabold">${tr('OTP डालिए', 'Enter OTP')}</h2>
-                <p class="text-sm mt-1" style="color:rgba(255,255,255,.6)">+91 ${AUTH.phone} ${tr('पर SMS से 6 अंकों का कोड भेजा गया', 'received a 6-digit code by SMS')}</p>
-                <input id="otpBox" class="au-in mt-6" type="tel" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" oninput="this.value=this.value.replace(/\\D/g,''); if(this.value.length===6) authVerify()">
+                <p class="text-sm mt-1" style="color:rgba(255,255,255,.6)">+91 ${AUTH.phone} ${tr('पर SMS से 4 अंकों का कोड भेजा गया', 'received a 4-digit code by SMS')}</p>
+                <input id="otpBox" class="au-in mt-6" type="tel" inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="••••" oninput="this.value=this.value.replace(/\\D/g,''); if(this.value.length===4) authVerify()">
                 <div class="au-err" id="auErr"></div>
                 <button class="gold-btn mt-2" onclick="authVerify()">${tr('वेरिफ़ाई करें', 'Verify')}</button>
                 <button id="auResend" class="block mx-auto mt-4 text-sm font-bold" style="color:rgba(255,255,255,.5)" disabled></button>`;
@@ -5290,8 +5290,23 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             setTimeout(() => { const o = document.getElementById('otpBox'); o && o.focus(); }, 250);
         };
         async function authResend() {
-            try { const { error } = await sb.auth.signInWithOtp({ phone: '+91' + AUTH.phone }); if (error) throw error; authOpen('otp'); showToast(tr('OTP दोबारा भेजा', 'OTP sent again')); }
+            try { const d = await otpCall({ action: 'send', phone: AUTH.phone }); if (!d.ok) { authErr(otpCodeErr(d)); return; } authOpen('otp'); showToast(tr('OTP दोबारा भेजा', 'OTP sent again')); }
             catch (e) { authErr(otpSendErr(e)); }
+        }
+        async function otpCall(body) {
+            const { data, error } = await sb.functions.invoke('otp', { body: body });
+            if (error) throw error;
+            return data || {};
+        }
+        function otpCodeErr(d) {
+            const c = d && d.code;
+            if (c === 'rate_limited') return tr('बहुत बार OTP माँगा गया — 10 मिनट बाद कोशिश कीजिए', 'Too many OTP requests — try again in 10 minutes');
+            if (c === 'bad_phone') return tr('सही 10 अंकों का मोबाइल नंबर डालिए', 'Enter a valid 10-digit mobile number');
+            if (c === 'wrong_code') return tr('OTP गलत है', 'Wrong OTP') + (d.left != null ? ' — ' + tr(d.left + ' कोशिश बाकी', d.left + ' tries left') : '');
+            if (c === 'expired') return tr('OTP पुराना हो गया — दोबारा भेजें', 'OTP expired — resend it');
+            if (c === 'too_many_tries') return tr('बहुत गलत कोशिशें — नया OTP मँगाइए', 'Too many wrong tries — request a new OTP');
+            if (c === 'no_otp') return tr('पहले OTP मँगाइए', 'Request an OTP first');
+            return tr('SMS नहीं जा पाया — थोड़ी देर बाद कोशिश कीजिए', 'SMS could not be sent — try again shortly') + (d && d.detail ? ' (' + String(d.detail).slice(0, 90) + ')' : (c ? ' (' + c + ')' : ''));
         }
         function otpSendErr(e) {
             const m = rmMsg(e);
@@ -5306,7 +5321,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             if (!/^[6-9]\d{9}$/.test(v)) { authErr(tr('सही 10 अंकों का मोबाइल नंबर डालिए', 'Enter a valid 10-digit mobile number')); return; }
             if (AUTH.busy) return; AUTH.busy = true;
             const btn = document.querySelector('#auBody .gold-btn'); const old = btn ? btn.textContent : ''; if (btn) btn.textContent = tr('भेज रहे हैं…', 'Sending…');
-            try { const { error } = await sb.auth.signInWithOtp({ phone: '+91' + v }); if (error) throw error; AUTH.phone = v; authOpen('otp'); }
+            try { const d = await otpCall({ action: 'send', phone: v }); if (!d.ok) { authErr(otpCodeErr(d)); if (btn) btn.textContent = old; return; } AUTH.phone = v; authOpen('otp'); }
             catch (e) { authErr(otpSendErr(e)); if (btn) btn.textContent = old; }
             finally { AUTH.busy = false; }
         };
@@ -5314,11 +5329,13 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         authVerify = async function () {
             if (!LIVE) return _authVerify();
             const o = document.getElementById('otpBox'); if (!o) return;
-            if (o.value.length < 6) { authErr(tr('6 अंकों का OTP डालिए', 'Enter the 6-digit OTP')); return; }
+            if (o.value.length < 4) { authErr(tr('4 अंकों का OTP डालिए', 'Enter the 4-digit OTP')); return; }
             if (AUTH.busy) return; AUTH.busy = true;
             try {
-                const { error } = await sb.auth.verifyOtp({ phone: '+91' + AUTH.phone, token: o.value, type: 'sms' });
-                if (error) { authErr(rmNet(rmMsg(error)) ? tr('इंटरनेट चेक कीजिए', 'Check your internet') : tr('OTP गलत है या पुराना हो गया', 'Wrong or expired OTP')); o.value = ''; return; }
+                const d = await otpCall({ action: 'verify', phone: AUTH.phone, code: o.value });
+                if (!d.ok) { authErr(otpCodeErr(d)); o.value = ''; return; }
+                const { error } = await sb.auth.verifyOtp({ token_hash: d.token_hash, type: 'magiclink' });
+                if (error) throw error;
                 const { data: prof, error: e2 } = await sb.rpc('my_profile'); if (e2) throw e2;
                 if (prof && prof.name) { cacheUser(AUTH.phone, { name: prof.name, city: '', email: '' }); authLogin(AUTH.phone); } else authOpen('signup');
             } catch (e) { authErr(tr('कुछ गड़बड़ हुई — दोबारा कोशिश कीजिए', 'Something went wrong — try again') + ' (' + rmMsg(e).slice(0, 80) + ')'); }
@@ -5526,7 +5543,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 if (session) {
                     if (!currentUser()) {
                         const { data: prof } = await sb.rpc('my_profile');
-                        const ph = String((session.user && session.user.phone) || '').replace(/\D/g, '').slice(-10);
+                        const ph = String((session.user && (session.user.phone || session.user.email)) || '').replace(/\D/g, '').slice(-10);
                         if (prof && prof.name && ph) { cacheUser(ph, { name: prof.name, city: '', email: '' }); lsSet('hf_session', ph); }
                         else { await sb.auth.signOut(); lsSet('hf_session', null); }
                     }
