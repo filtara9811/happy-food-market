@@ -251,6 +251,67 @@
         #hdrTheme { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); color:#e2b04a; transition:transform .25s; }
         #hdrTheme:active { transform:scale(.88) rotate(-20deg); }
         body.light-mode #hdrTheme { background:#fff; border-color:rgba(0,0,0,.1); color:#9a6a10; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+        /* ===== partner home (rider + vendor) ===== */
+        #panelRoot .ph-hero { margin:-16px -16px 0; padding:34px 16px 18px; border-radius:0 0 32px 32px; color:#fff; background:radial-gradient(120% 90% at 80% 0%,rgba(226,176,74,.28),transparent 60%),linear-gradient(165deg,#2a2112 0%,#16120b 55%,#0b0d14 100%); box-shadow:0 14px 30px rgba(0,0,0,.18); }
+        #panelRoot .ph-av { width:56px; height:56px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font:900 20px 'Outfit',sans-serif; color:#1a1305; background:linear-gradient(135deg,#fce49d,#b88222); border:3px solid rgba(255,255,255,.85); overflow:hidden; }
+        #panelRoot .ph-av img { width:100%; height:100%; object-fit:cover; }
+        #panelRoot .ph-duty { display:flex; align-items:center; gap:8px; padding:6px 12px 6px 6px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); flex-shrink:0; }
+        #panelRoot .ph-duty .tg { width:42px; height:24px; border-radius:999px; background:rgba(255,255,255,.25); position:relative; transition:.25s; }
+        #panelRoot .ph-duty .tg::after { content:''; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition:.25s; }
+        #panelRoot .ph-duty.on .tg { background:#22c55e; } #panelRoot .ph-duty.on .tg::after { left:21px; }
+        #panelRoot .ph-x { width:42px; height:42px; border-radius:14px; border:1px solid rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#fff; }
+        #panelRoot .ph-earn { margin-top:16px; border-radius:24px; padding:16px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); }
+        #panelRoot .ph-seg { display:flex; gap:4px; padding:4px; border-radius:999px; background:rgba(255,255,255,.08); margin-top:12px; overflow-x:auto; scrollbar-width:none; }
+        #panelRoot .ph-seg::-webkit-scrollbar { display:none; }
+        #panelRoot .ph-seg button { flex:1; white-space:nowrap; padding:8px 12px; border-radius:999px; font-size:12.5px; font-weight:800; color:rgba(255,255,255,.75); }
+        #panelRoot .ph-seg button.on { background:#fff; color:#111; }
+        #panelRoot .ph-amt { font:900 44px/1 'Outfit',sans-serif; letter-spacing:-1px; }
+        #panelRoot .ph-wd { padding:12px 18px; border-radius:18px; font-weight:900; font-size:15px; color:#1a1305; background:linear-gradient(180deg,#fde68a,#f2b632); box-shadow:0 8px 20px rgba(242,182,50,.35); white-space:nowrap; }
+        #panelRoot .ph-tile { border-radius:16px; padding:10px 12px; background:rgba(0,0,0,.28); }
+        #panelRoot .ph-tile p:first-child { font-size:11.5px; color:rgba(255,255,255,.7); font-weight:700; }
+        #panelRoot .ph-tile p:last-child { font:900 17px 'Outfit',sans-serif; margin-top:2px; }
+        #panelRoot .ph-note { margin-top:10px; border-radius:16px; padding:10px 12px; background:rgba(255,255,255,.06); font-size:12.5px; font-weight:700; display:flex; justify-content:space-between; gap:10px; }
+        #panelRoot .ph-sec { font-size:12.5px; font-weight:900; letter-spacing:1px; text-transform:uppercase; color:var(--p-mut); }
+        #panelRoot .ph-chip { flex:1; min-width:72px; border-radius:16px; padding:10px 4px; text-align:center; background:var(--p-card2); border:1px solid var(--p-line); }
+        #panelRoot .ph-chip b { display:block; font:900 22px 'Outfit',sans-serif; margin-top:2px; }
+        #panelRoot .ph-chip span { font-size:11px; color:var(--p-mut); font-weight:700; }
+        #panelRoot .ph-ring { border-radius:22px; padding:14px 6px; text-align:center; background:var(--p-card); border:1px solid var(--p-line); }
+        #panelRoot .ph-badge { display:inline-block; margin-top:6px; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:900; }
+        #panelRoot .ph-tabs { display:flex; gap:4px; padding:5px; border-radius:20px; background:color-mix(in srgb,var(--p-gold) 12%,var(--p-card2)); }
+        #panelRoot .ph-tabs button { flex:1; padding:11px 6px; border-radius:16px; font-weight:900; font-size:14px; color:var(--p-mut); display:flex; align-items:center; justify-content:center; gap:6px; }
+        #panelRoot .ph-tabs button.on { background:var(--p-card); color:var(--p-tx); box-shadow:0 4px 12px rgba(0,0,0,.08); }
+        #panelRoot .ph-tabs .n { min-width:22px; height:22px; padding:0 6px; border-radius:999px; background:#16a34a; color:#fff; font-size:11.5px; display:inline-flex; align-items:center; justify-content:center; }
+        #panelRoot .ph-days { display:flex; gap:8px; overflow-x:auto; padding:2px 2px 6px; scrollbar-width:none; }
+        #panelRoot .ph-days::-webkit-scrollbar { display:none; }
+        #panelRoot .ph-day { flex:0 0 auto; width:76px; border-radius:18px; padding:9px 4px 8px; text-align:center; background:var(--p-card); border:1px solid var(--p-line); position:relative; overflow:hidden; }
+        #panelRoot .ph-day .w { font-size:11.5px; color:var(--p-mut); font-weight:700; }
+        #panelRoot .ph-day .d { font:900 24px/1.1 'Outfit',sans-serif; }
+        #panelRoot .ph-day .m { font-size:12px; font-weight:900; color:var(--p-ok); }
+        #panelRoot .ph-day .c { font-size:10.5px; color:var(--p-mut); font-weight:700; }
+        #panelRoot .ph-day .bar { position:absolute; left:10px; right:10px; bottom:4px; height:3px; border-radius:3px; background:var(--p-line); }
+        #panelRoot .ph-day .bar i { display:block; height:100%; border-radius:3px; background:var(--p-ok); }
+        #panelRoot .ph-day.on { background:linear-gradient(165deg,#2a2112,#0b0d14); border-color:transparent; color:#fff; }
+        #panelRoot .ph-day.on .w, #panelRoot .ph-day.on .c { color:rgba(255,255,255,.7); } #panelRoot .ph-day.on .m { color:#fde68a; }
+        #panelRoot .ph-pill { padding:8px 16px; border-radius:999px; font-weight:800; font-size:13px; border:1.5px solid var(--p-line); color:var(--p-mut); background:var(--p-card); }
+        #panelRoot .ph-pill.on { background:#111; color:#fff; border-color:#111; }
+        body.light-mode #panelRoot .ph-pill.on { background:#1a1305; }
+        #panelRoot .ph-card { border-radius:24px; padding:14px; background:var(--p-card); border:1px solid var(--p-line); }
+        #panelRoot .ph-img { width:56px; height:56px; border-radius:50%; object-fit:cover; flex-shrink:0; border:3px solid color-mix(in srgb,var(--p-gold) 35%,transparent); }
+        #panelRoot .ph-st { display:flex; align-items:flex-start; margin-top:12px; }
+        #panelRoot .ph-st .s { flex:1; display:flex; flex-direction:column; align-items:center; position:relative; font-size:10.5px; font-weight:800; color:var(--p-mut); text-align:center; }
+        #panelRoot .ph-st .s::before { content:''; position:absolute; top:13px; right:50%; width:100%; height:3px; background:var(--p-line); z-index:0; }
+        #panelRoot .ph-st .s:first-child::before { display:none; }
+        #panelRoot .ph-st .s.done::before, #panelRoot .ph-st .s.cur::before { background:linear-gradient(90deg,#22c55e,#e2b04a); }
+        #panelRoot .ph-st .dot { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--p-card2); border:2px solid var(--p-line); z-index:1; font-size:11px; margin-bottom:4px; }
+        #panelRoot .ph-st .s.done .dot { background:color-mix(in srgb,#22c55e 15%,var(--p-card)); border-color:#22c55e; color:#16a34a; }
+        #panelRoot .ph-st .s.cur .dot { background:#fde68a; border-color:#e2b04a; color:#1a1305; box-shadow:0 0 0 5px color-mix(in srgb,#e2b04a 25%,transparent); }
+        #panelRoot .ph-st .s.cur { color:var(--p-gold); }
+        #panelRoot .ph-st .s.done { color:var(--p-ok); }
+        #phMini { position:absolute; left:0; right:0; top:0; z-index:15; padding:30px 14px 12px; border-radius:0 0 26px 26px; color:#fff; background:linear-gradient(165deg,#2a2112,#0b0d14); transform:translateY(-110%); transition:transform .28s; box-shadow:0 10px 24px rgba(0,0,0,.25); }
+        #phMini.on { transform:none; }
+        #phFab { position:absolute; right:16px; bottom:22px; z-index:16; display:flex; flex-direction:column; align-items:center; gap:6px; }
+        #phFab button.b { width:64px; height:64px; border-radius:50%; font-size:28px; color:#1a1305; background:linear-gradient(180deg,#fde68a,#f2b632); box-shadow:0 10px 24px rgba(242,182,50,.45); }
+        #phFab span { font-size:12px; font-weight:900; padding:4px 12px; border-radius:999px; background:var(--p-card); color:var(--p-tx); border:1px solid var(--p-line); }
         #panelRoot .pok { color:var(--p-ok); } #panelRoot .pbad { color:var(--p-bad); }
         #panelRoot .a-ib { position:relative; width:40px; height:40px; border-radius:12px; background:var(--p-card2); border:1px solid var(--p-line); display:flex; align-items:center; justify-content:center; color:var(--p-tx); flex-shrink:0; }
         #panelRoot .a-ib .pdot { top:-5px; right:-5px; }
@@ -6196,5 +6257,207 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             }
             return h;
         }; }
+
+        /* ================= PARTNER HOME (rider + vendor): hero card, earnings, targets, day strip — patch22 ================= */
+        const PH = { rider: { period: 'today', day: 'today', filter: 'all', tab: 'orders' }, vendor: { period: 'today', day: 'today', filter: 'all', tab: 'orders' } };
+        const phDay = ts => { const d = new Date(ts); d.setHours(0, 0, 0, 0); return d.getTime(); };
+        const DAY = 86400000;
+        function phSet(role, k, v) { PH[role][k] = v; if (role === 'rider') { RL.key = ''; rlPaint(); } else renderPanel(true); }
+        function phPeriodList(list, p) {
+            const t0 = phDay(Date.now());
+            if (p === 'today') return list.filter(x => x.ts >= t0);
+            if (p === 'yday') return list.filter(x => x.ts >= t0 - DAY && x.ts < t0);
+            if (p === 'week') return list.filter(x => x.ts >= t0 - 6 * DAY);
+            const m = new Date(); m.setDate(1); m.setHours(0, 0, 0, 0); return list.filter(x => x.ts >= m.getTime());
+        }
+        function phRing(cur, max, color) {
+            const r = 34, c = 2 * Math.PI * r, k = Math.max(0, Math.min(1, max ? cur / max : 0));
+            return `<svg viewBox="0 0 84 84" style="width:84px;height:84px;display:block;margin:0 auto"><circle cx="42" cy="42" r="${r}" fill="none" stroke="var(--p-card2)" stroke-width="8"/><circle cx="42" cy="42" r="${r}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c * (1 - k)).toFixed(1)}" transform="rotate(-90 42 42)"/><text x="42" y="48" text-anchor="middle" font-family="Outfit" font-weight="900" font-size="19" fill="var(--p-tx)">${cur}<tspan font-size="12" fill="var(--p-mut)">/${max}</tspan></text></svg>`;
+        }
+        function phView(role, c) {
+            const st = PH[role], money = c.money, per = phPeriodList(money, st.period);
+            const amt = per.reduce((s, x) => s + (x.done ? x.amt : 0), 0);
+            const periods = [['today', tr('आज', 'Today')], ['yday', tr('कल', 'Yesterday')], ['week', tr('7 दिन', '7 days')], ['month', tr('इस महीने', 'This month')]];
+            // day strip: last 6 days + month
+            const t0 = phDay(Date.now()), days = [];
+            for (let i = 0; i < 6; i++) { const d0 = t0 - i * DAY, L = money.filter(x => x.ts >= d0 && x.ts < d0 + DAY); days.push({ d0, amt: L.reduce((s, x) => s + (x.done ? x.amt : 0), 0), n: L.length, k: i ? String(d0) : 'today' }); }
+            const dmax = Math.max(1, ...days.map(d => d.amt));
+            const wk = currentLang === 'hi' ? ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि'] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const kfmt = n => n >= 1000 ? '₹' + (n / 1000).toFixed(1).replace('.0', '') + 'k' : '₹' + Math.round(n);
+            let items = c.items;
+            if (st.day === 'month') { const m = new Date(); m.setDate(1); m.setHours(0, 0, 0, 0); items = items.filter(x => x.ts >= m.getTime()); }
+            else { const d0 = st.day === 'today' ? t0 : +st.day; items = items.filter(x => x.ts >= d0 && x.ts < d0 + DAY); }
+            const totalN = items.length;
+            if (st.filter === 'pending') items = items.filter(x => x.state === 'pending'); else if (st.filter === 'done') items = items.filter(x => x.state === 'done');
+            const card = it => `<div class="ph-card" ${it.onclick ? `onclick="${it.onclick}"` : ''}><div class="flex items-start gap-3"><div class="relative"><img class="ph-img" src="${esc(it.img)}" alt="">${it.badge ? `<span style="position:absolute;right:-4px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:#e2b04a;display:flex;align-items:center;justify-content:center;font-size:11px">${it.badge}</span>` : ''}</div>
+                <div class="min-w-0 flex-1"><p class="font-outfit font-black text-[17px] leading-tight truncate">${esc(it.title)}</p><span class="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[11.5px] font-bold" style="background:${it.chipBg};color:${it.chipFg}">${it.chip}</span><p class="text-[11px] pmut mt-1 truncate">${esc(it.sub || '')}</p></div>
+                <div class="text-right flex-shrink-0"><p class="font-outfit font-black text-[20px]" style="color:${it.amtColor || 'var(--p-gold)'}">${money ? '₹' + Math.round(it.amt) : ''}</p><p class="text-[10px] font-black uppercase pmut" style="letter-spacing:.6px">${it.amtSub || ''}</p></div></div>
+                <div class="ph-st">${it.steps.map(s => `<div class="s ${s[1] ? 'done' : (s[2] ? 'cur' : '')}"><span class="dot">${s[1] ? '<i class="fa-solid fa-check"></i>' : (s[3] || '')}</span>${s[0]}</div>`).join('')}</div></div>`;
+            return `
+            <div class="ph-hero">
+                <div class="flex items-center gap-3">
+                    ${c.avatarClick ? `<button onclick="${c.avatarClick}" class="relative flex-shrink-0">` : '<div class="flex-shrink-0">'}<div class="ph-av">${c.avatar}</div>${c.avatarClick ? `<span style="position:absolute;right:-2px;bottom:-2px;width:20px;height:20px;border-radius:50%;background:#e2b04a;color:#1a1305;display:flex;align-items:center;justify-content:center;font-size:9px"><i class="fa-solid fa-camera"></i></span></button>` : '</div>'}
+                    <div class="min-w-0 flex-1"><p class="font-outfit font-black text-[20px] leading-tight truncate">${esc(c.name)}</p><p class="text-[12px] truncate" style="color:rgba(255,255,255,.65)">${esc(c.sub)}</p></div>
+                    <button class="ph-duty ${c.duty.on ? 'on' : ''}" onclick="${c.duty.click}"><span class="tg"></span><span class="text-left leading-tight"><b class="text-[13px] block">${c.duty.on ? c.duty.onTxt : c.duty.offTxt}</b><span class="text-[10.5px]" style="color:rgba(255,255,255,.7)">${c.duty.on ? c.duty.onSub : c.duty.offSub}</span></span></button>
+                    <button class="ph-x" onclick="exitPanel()" aria-label="close"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="ph-earn">
+                    <div class="flex items-center justify-between"><p class="text-[13px] font-black" style="letter-spacing:1px;color:rgba(255,255,255,.85)">💰 ${c.earnTitle}</p>${c.detailsClick ? `<button onclick="${c.detailsClick}" class="text-[13px] font-black" style="color:#86efac">${tr('हिसाब', 'Details')} ›</button>` : ''}</div>
+                    <div class="ph-seg">${periods.map(p => `<button class="${st.period === p[0] ? 'on' : ''}" onclick="phSet('${role}','period','${p[0]}')">${p[1]}</button>`).join('')}</div>
+                    <div class="flex items-end justify-between gap-3 mt-4"><div class="min-w-0"><p class="ph-amt">${money_(amt)}</p><p class="text-[12.5px] mt-1" style="color:rgba(255,255,255,.7)">${c.earnSub(per)}</p></div><button class="ph-wd" onclick="${c.withdraw}">⬇ ${tr('निकालें', 'Withdraw')}</button></div>
+                    <div class="grid grid-cols-3 gap-2 mt-4">${c.tiles(per).map(t => `<div class="ph-tile"><p>${t[0]}</p><p>${t[1]}</p></div>`).join('')}</div>
+                    ${c.note ? `<div class="ph-note"><span>${c.note}</span>${c.noteClick ? `<button onclick="${c.noteClick}" style="color:#86efac" class="whitespace-nowrap">${tr('देखें', 'View')} ›</button>` : ''}</div>` : ''}
+                </div>
+            </div>
+            ${c.top || ''}
+            <div class="ph-card mt-4"><p class="ph-sec">${c.chipsTitle}</p><div class="flex gap-2 mt-3">${c.chips.map(x => `<div class="ph-chip"><div class="text-xl">${x[0]}</div><b>${x[1]}</b><span>${x[2]}</span></div>`).join('')}</div></div>
+            <div class="flex items-center justify-between mt-6"><p class="ph-sec">${tr('आज के टारगेट', "Today's targets")}</p>${!c.duty.on ? `<button onclick="${c.duty.click}" class="text-[13px] font-black" style="color:var(--p-ok)">${c.duty.offSub}</button>` : ''}</div>
+            <div class="grid grid-cols-3 gap-2.5 mt-3">${c.targets.map(t => `<div class="ph-ring">${phRing(t[0], t[1], t[3])}<p class="text-[12.5px] font-extrabold mt-2 leading-tight">${t[2]}</p><span class="ph-badge" style="background:color-mix(in srgb,${t[3]} 14%,transparent);color:${t[3]}">${t[4]}</span></div>`).join('')}</div>
+            <div class="ph-tabs mt-6">${c.tabs.map(t => `<button class="${st.tab === t[0] ? 'on' : ''}" onclick="phSet('${role}','tab','${t[0]}')">${t[1]} <span class="n">${t[2]}</span></button>`).join('')}</div>
+            ${st.tab !== 'orders' ? `<div class="mt-4">${c.tabBody(st.tab)}</div>` : `
+            <div class="ph-days mt-4">${days.map(d => { const dt = new Date(d.d0); return `<button class="ph-day ${st.day === d.k ? 'on' : ''}" onclick="phSet('${role}','day','${d.k}')"><div class="w">${d.k === 'today' ? tr('आज', 'Today') : wk[dt.getDay()]}</div><div class="d">${dt.getDate()}</div><div class="m">${kfmt(d.amt)}</div><div class="c">${d.n ? d.n + ' ' + c.unit : '—'}</div><div class="bar"><i style="width:${Math.round(d.amt / dmax * 100)}%"></i></div></button>`; }).join('')}
+                <button class="ph-day ${st.day === 'month' ? 'on' : ''}" onclick="phSet('${role}','day','month')"><div class="text-2xl mt-1">🗓️</div><div class="text-[11px] font-black mt-1">${tr('महीना', 'MONTH')}</div></button></div>
+            <div class="flex items-center gap-2 mt-3">${[['all', tr('सब', 'All')], ['pending', tr('चालू', 'Pending')], ['done', tr('पूरे', 'Done')]].map(f => `<button class="ph-pill ${st.filter === f[0] ? 'on' : ''}" onclick="phSet('${role}','filter','${f[0]}')">${f[1]}</button>`).join('')}<span class="ml-auto text-[12.5px] font-bold pmut">${items.length} / ${totalN}</span></div>
+            <div class="space-y-3 mt-3">${items.length ? items.map(card).join('') : `<div class="ph-card text-center py-8"><div class="text-4xl">${c.emptyEmoji}</div><p class="text-[13px] font-bold mt-2">${c.emptyTxt}</p></div>`}</div>`}
+            <div class="h-24"></div>`;
+        }
+        function money_(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
+        // compact header + floating button, shown only on partner-home screens
+        (function () {
+            const root = document.getElementById('panelRoot'); if (!root) return;
+            const mini = document.createElement('div'); mini.id = 'phMini'; root.appendChild(mini);
+            const fab = document.createElement('div'); fab.id = 'phFab'; fab.style.display = 'none'; root.appendChild(fab);
+            const body = document.getElementById('pnlBody');
+            body.addEventListener('scroll', () => { const hero = body.querySelector('.ph-hero'); mini.classList.toggle('on', !!hero && body.scrollTop > hero.offsetHeight - 70); }, { passive: true });
+        })();
+        function phChrome(cfg) {
+            const has = !!document.querySelector('#pnlBody .ph-hero');
+            if (has) document.getElementById('pnlHead').style.display = 'none'; else if (PNL.role === 'vendor' || PNL.role === 'rider') document.getElementById('pnlHead').style.display = '';
+            const mini = document.getElementById('phMini'), fab = document.getElementById('phFab');
+            if (!has) { mini.classList.remove('on'); mini.innerHTML = ''; fab.style.display = 'none'; return; }
+            mini.innerHTML = cfg.mini; fab.innerHTML = cfg.fab; fab.style.display = cfg.fab ? 'flex' : 'none';
+            fab.style.bottom = document.getElementById('pnlNav').style.display === 'none' ? '22px' : '86px';
+        }
+
+        /* ---------- rider data ---------- */
+        RL.hist = null;
+        async function rlLoadHist() {
+            if (!LIVE || RL.histLoading) return; RL.histLoading = true;
+            try { const { data, error } = await sb.rpc('rider_history', { p_days: 31 }); if (error) throw error; RL.hist = data; RL.key = ''; rlPaint(); } catch (e) { }
+            finally { RL.histLoading = false; }
+        }
+        setInterval(() => { if (LIVE && PNL.role === 'rider' && RL.me && RL.me.approved) rlLoadHist(); }, 20000);
+        { const f = rlRespond; rlRespond = async function () { const r = await f.apply(this, arguments); rlLoadHist(); return r; }; }
+        { const f = rlStartTrip; rlStartTrip = async function () { const r = await f.apply(this, arguments); rlLoadHist(); return r; }; }
+        { const f = rlDeliver; rlDeliver = async function () { const r = await f.apply(this, arguments); rlLoadHist(); return r; }; }
+        function rlStockBody() {
+            const rows = allProductsMaster.filter(m => m.p.dbId).map(m => { const s = rlStockOf(m.p.dbId), q = RL.edit[m.p.dbId] != null ? RL.edit[m.p.dbId] : s.qty; return `<div class="flex items-center gap-3"><img class="pthumb" style="width:46px;height:46px" src="${esc(m.p.image)}" alt=""><div class="min-w-0 flex-1"><p class="text-[13.5px] font-extrabold truncate">${esc(saN(m.p.title))}</p><p class="text-[10.5px] pmut">${money(m.p.price)}${s.reserved ? ' • ' + s.reserved + ' ' + tr('ऑर्डर में', 'in orders') : ''}</p></div><div class="flex items-center gap-2"><button class="pbtn-g" style="width:36px;height:36px;padding:0" onclick="rlStep('${m.p.dbId}',-1)">−</button><b class="pnum w-7 text-center" id="rlQ_${m.p.dbId}">${q}</b><button class="pbtn-g" style="width:36px;height:36px;padding:0" onclick="rlStep('${m.p.dbId}',1)">+</button></div></div>`; }).join('');
+            return `<div class="ph-card"><div class="flex items-center justify-between"><p class="font-outfit font-black text-[16px]">📦 ${tr('मेरा स्टॉक', 'My stock')}</p><button id="rlSave" class="pbtn ${Object.keys(RL.edit).length ? '' : 'hidden'}" style="padding:8px 14px" onclick="rlSaveStock()"><i class="fa-solid fa-floppy-disk"></i> ${tr('सेव', 'Save')}</button></div>
+                <p class="text-[11.5px] pmut mt-1 leading-snug">${tr('जो खाना आपके पास है उसकी गिनती भरें — ऑर्डर उसी को आता है जिसके पास सामान हो और जो 3 km के अंदर हो।', 'Enter the food you carry — orders go to nearby riders (3 km) who have the items.')}</p>
+                <div class="space-y-3 mt-4">${rows || `<p class="text-[12px] pmut">${tr('मेन्यू लोड हो रहा है…', 'Loading menu…')}</p>`}</div></div>`;
+        }
+        function rlActiveCard() {
+            const a = RL.me && RL.me.active; if (!a) return '';
+            return `<div class="ph-card mt-4" style="border:2px solid var(--p-gold)"><div class="flex items-center justify-between"><p class="font-outfit font-black text-[16px]">🛵 ${tr('चालू डिलीवरी', 'Current delivery')}</p>${statusPill(a.status)}</div>
+                <div class="space-y-1.5 mt-3">${(a.items || []).map(i => `<div class="flex justify-between text-[13px]"><span class="font-bold">${i.qty}× ${esc(currentLang === 'hi' ? (i.name_hi || i.name) : i.name)}</span><span class="pnum">${money(i.qty * i.price)}</span></div>`).join('')}</div>
+                <div class="flex justify-between mt-2 pt-2 border-t pline"><span class="text-[12px] pmut">${tr('ग्राहक से लेना (COD)', 'Collect (COD)')}</span><b class="pnum pgold text-[18px]">${money(a.total)}</b></div>
+                <div class="pcard2 p-3 mt-3 text-[12.5px] space-y-1.5"><p><i class="fa-solid fa-user pgold w-5"></i> ${esc(a.customer || tr('ग्राहक', 'Customer'))}</p><p><i class="fa-solid fa-location-dot pgold w-5"></i> ${esc(a.address || '')}</p></div>
+                <div class="grid grid-cols-2 gap-2.5 mt-3">${a.customer_phone ? `<a class="pbtn-g text-center" href="tel:+${esc(a.customer_phone)}"><i class="fa-solid fa-phone"></i> ${tr('कॉल करें', 'Call')}</a>` : '<span></span>'}<a class="pbtn-g text-center" href="https://www.google.com/maps/dir/?api=1&destination=${a.lat},${a.lng}" target="_blank" rel="noopener"><i class="fa-solid fa-diamond-turn-right"></i> ${tr('रास्ता', 'Directions')}</a></div>
+                ${a.status === 'accepted' ? `<button class="pbtn w-full mt-3" onclick="rlStartTrip('${a.id}')"><i class="fa-solid fa-motorcycle"></i> ${tr('निकल गया — रास्ते में', 'Start — on the way')}</button>`
+                    : `<label class="plabel mt-4">${tr('ग्राहक से 4 अंक का OTP लीजिए', 'Ask the customer for the 4-digit OTP')}</label><div class="flex gap-2.5"><input id="rlOtp" maxlength="4" inputmode="numeric" placeholder="••••" style="text-align:center;font-weight:900;font-size:20px;letter-spacing:8px"><button class="pbtn" style="flex:0 0 46%" onclick="rlDeliver('${a.id}')"><i class="fa-solid fa-check"></i> ${tr('डिलीवर', 'Deliver')}</button></div>`}</div>`;
+        }
+        function phRiderView() {
+            const me = RL.me, u = currentUser() || {}, nm = me.name || u.name || 'R';
+            if (!RL.hist && !RL.histLoading) rlLoadHist();
+            const H = RL.hist || { orders: [], offers: [] };
+            const orders = (H.orders || []).map(o => ({ ...o, ts: new Date(o.created_at).getTime() }));
+            const money = orders.map(o => ({ ts: o.ts, amt: Number(o.total) || 0, done: o.status === 'delivered' }));
+            const t0 = phDay(Date.now()), offT = (H.offers || []).filter(f => new Date(f.at).getTime() >= t0);
+            const delT = orders.filter(o => o.status === 'delivered' && o.ts >= t0), collT = delT.reduce((s, o) => s + Number(o.total), 0);
+            const units = ((me.stock) || []).reduce((s, x) => s + x.qty, 0);
+            const stLbl = { accepted: [tr('स्वीकार किया', 'Accepted'), '#fef3c7', '#92400e'], on_the_way: [tr('🛵 रास्ते में', '🛵 On the way'), '#dbeafe', '#1e40af'], delivered: [tr('✅ डिलीवर', '✅ Delivered'), '#dcfce7', '#166534'], cancelled: [tr('रद्द', 'Cancelled'), '#fee2e2', '#991b1b'], no_rider: [tr('रद्द', 'Cancelled'), '#fee2e2', '#991b1b'], searching: [tr('खोज', 'Searching'), '#f3f4f6', '#374151'] };
+            const items = orders.map(o => { const s = stLbl[o.status] || [o.status, '#f3f4f6', '#374151'], cur = !o.picked_at ? 1 : (!o.delivered_at ? 2 : 4);
+                return { ts: o.ts, state: o.status === 'delivered' ? 'done' : 'pending', img: rmImg(o.image_url), badge: o.status === 'delivered' ? '✓' : '🛵', title: o.customer || tr('ग्राहक', 'Customer'), sub: (o.items || '') + ' • ' + fmtT(o.ts), chip: s[0], chipBg: s[1], chipFg: s[2], amt: Number(o.total), amtSub: o.status === 'delivered' ? tr('कलेक्शन', 'Collected') : 'COD',
+                    steps: [[tr('स्वीकार', 'Accepted'), !!o.accepted_at, false], [tr('रास्ते में', 'On the way'), !!o.picked_at, cur === 1, '🛵'], [tr('डिलीवर', 'Delivered'), !!o.delivered_at, cur === 2, '🏠'], [tr('₹ कलेक्शन', '₹ Collected'), !!o.delivered_at, false, '₹']] }; });
+            const av = RL.avatar ? `<img src="${esc(RL.avatar)}" alt="">` : initials(nm);
+            return phView('rider', {
+                avatar: av, avatarClick: 'rlPickAvatar()', name: nm, sub: tr('डिलीवरी पार्टनर', 'Delivery partner') + (me.vehicle ? ' · ' + me.vehicle : ''),
+                duty: { on: me.online, click: 'rlToggleOnline()', onTxt: tr('ऑनलाइन', 'On duty'), offTxt: tr('ऑफ़लाइन', 'Off duty'), onSub: rlLocTxt().replace('📍 ', ''), offSub: tr('शुरू करें', 'Start duty') },
+                earnTitle: tr('मेरी कमाई', 'MY EARNINGS'), unit: tr('डिलीवरी', 'orders'),
+                money: money, earnSub: per => { const d = per.filter(x => x.done).length; return d + ' ' + tr('डिलीवरी', 'deliveries') + ' · ' + per.length + ' ' + tr('ऑर्डर', 'orders'); },
+                tiles: per => [[tr('डिलीवरी', 'Delivered'), per.filter(x => x.done).length], [tr('कलेक्शन', 'Collected'), money_(per.reduce((s, x) => s + (x.done ? x.amt : 0), 0))], [tr('स्टॉक बचा', 'Stock left'), units + ' ' + tr('नग', 'pcs')]],
+                note: collT ? `💵 ${money_(collT)} ${tr('कैश आपके पास · जमा करना है', 'cash with you · to deposit')}` : '', withdraw: "pToast(tr('पेमेंट निकालना जल्द आएगा','Withdrawals coming soon'))",
+                top: rlActiveCard(),
+                chipsTitle: '🛵 ' + tr('आज की डिलीवरी', "Today's deliveries"),
+                chips: [['🔔', offT.length, tr('रिक्वेस्ट', 'Requests')], ['✅', offT.filter(f => f.status === 'accepted').length, tr('स्वीकार', 'Accepted')], ['🏠', delT.length, tr('डिलीवर', 'Delivered')], ['⏭️', offT.filter(f => f.status === 'rejected' || f.status === 'expired').length, tr('छोड़ी', 'Missed')]],
+                targets: [[delT.length, 10, tr('डिलीवरी पूरी', 'Deliveries'), '#16a34a', tr('लक्ष्य 10', 'Goal 10')], [Math.round(collT / 100), 20, tr('कलेक्शन (₹100)', 'Collection (₹100)'), '#ea580c', money_(collT)], [Math.min(units, 20), 20, tr('स्टॉक भरा', 'Stock loaded'), '#2563eb', units + ' ' + tr('नग', 'pcs')]],
+                tabs: [['orders', '🛵 ' + tr('डिलीवरी', 'Deliveries'), orders.length], ['stock', '📦 ' + tr('स्टॉक', 'Stock'), units]],
+                items: items, tabBody: () => rlStockBody(), emptyEmoji: '🛵', emptyTxt: tr('इस दिन कोई डिलीवरी नहीं', 'No deliveries on this day')
+            });
+        }
+        { const f = rlView; rlView = function () { const me = RL.me; if (!me || !me.registered || !me.approved) return f.apply(this, arguments); return phRiderView(); }; }
+        { const f = rlPaint; rlPaint = function () {
+            const r = f.apply(this, arguments);
+            if (LIVE && PNL.role === 'rider') { const me = RL.me || {}, nm = me.name || (currentUser() || {}).name || 'R';
+                phChrome({ mini: `<div class="flex items-center gap-3"><div class="ph-av" style="width:40px;height:40px;font-size:14px;border-width:2px">${RL.avatar ? `<img src="${esc(RL.avatar)}">` : initials(nm)}</div><div class="flex-1 min-w-0"><p class="font-outfit font-black text-[18px]">💰 ${money_((RL.hist && RL.hist.orders || []).filter(o => o.status === 'delivered' && new Date(o.created_at).getTime() >= phDay(Date.now())).reduce((s, o) => s + Number(o.total), 0))} <span class="text-[12px] font-bold" style="color:rgba(255,255,255,.7)">${tr('आज', 'today')}</span></p></div><button class="ph-duty ${me.online ? 'on' : ''}" onclick="rlToggleOnline()"><span class="tg"></span><b class="text-[12px]">${me.online ? tr('ऑनलाइन', 'On') : tr('ऑफ़', 'Off')}</b></button></div>`,
+                    fab: me.approved ? `<button class="b" onclick="phSet('rider','tab','stock');document.getElementById('pnlBody').scrollTop=9999">+</button><span>${tr('स्टॉक भरें', 'Add stock')}</span>` : '' }); }
+            return r;
+        }; }
+        // the view key must also change when history / tabs change
+        { const f = rlPaint; rlPaint = function () { if (RL._hk !== JSON.stringify([RL.hist && RL.hist.orders && RL.hist.orders.length, RL.hist && RL.hist.orders && RL.hist.orders[0] && RL.hist.orders[0].status, PH.rider])) { RL._hk = JSON.stringify([RL.hist && RL.hist.orders && RL.hist.orders.length, RL.hist && RL.hist.orders && RL.hist.orders[0] && RL.hist.orders[0].status, PH.rider]); RL.key = ''; } return f.apply(this, arguments); }; }
+
+        /* ---------- vendor (shop) home in the same style ---------- */
+        (function seedVendorHistory() {
+            if (DB._vh) return; DB._vh = 1;
+            const pids = ['p1', 'p5', 'p2', 'rec1', 'rec2', 'rec4'], pr = { p1: 149, p5: 99, p2: 179, rec1: 189, rec2: 139, rec4: 69 }, nm = { p1: 'VIP Thali', p5: 'Steam Momos', p2: 'Mutton Rogan Josh', rec1: 'BBQ Chicken Skewers', rec2: 'Pani Puri Platter', rec4: 'Gulab Jamun Platter' };
+            const names = ['Anita Verma', 'Karan Mehta', 'Priya Nair', 'Sanjay Gupta', 'Neha Kapoor', 'Arjun Rao', 'Meera Joshi', 'Imran Khan'];
+            let seed = 11; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+            for (let d = 1; d <= 6; d++) { const n = 1 + Math.floor(rnd() * 4); for (let i = 0; i < n; i++) {
+                const t = new Date(); t.setDate(t.getDate() - d); t.setHours(11 + Math.floor(rnd() * 10), Math.floor(rnd() * 60), 0, 0);
+                const pid = pids[Math.floor(rnd() * pids.length)], q = 1 + Math.floor(rnd() * 2);
+                DB.orders.push({ id: '#HF-' + (7000 + d * 10 + i), ts: t.getTime(), customer: names[Math.floor(rnd() * names.length)], phone: '+91 9' + (800000000 + Math.floor(rnd() * 99999999)), address: 'Connaught Place, New Delhi', items: [{ pid, name: nm[pid], qty: q, price: pr[pid] }], total: q * pr[pid], pay: 'COD', status: rnd() < 0.12 ? 'cancelled' : 'delivered', riderId: 'r1', vendorId: ['v1', 'v1', 'v3'][Math.floor(rnd() * 3)], mode: 'vendor_first', route: 'vendor', packed: true, live: false });
+            } }
+        })();
+        function phVendorView() {
+            const v = curV(), s = DB.settings, comm = s.commission / 100;
+            const mine = DB.orders.filter(o => o.vendorId === v.id);
+            const money = mine.map(o => ({ ts: o.ts, amt: (Number(o.total) || 0) * (1 - comm), done: o.status === 'delivered' }));
+            const t0 = phDay(Date.now()), today = mine.filter(o => o.ts >= t0);
+            const pend = mine.filter(o => ['vwait', 'cooking', 'accepted', 'searching', 'on_the_way'].indexOf(o.status) > -1);
+            const sales = today.filter(o => o.status === 'delivered').reduce((a, o) => a + o.total, 0);
+            const avail = allProductsMaster.filter(m => m.available && saVs(m.p).indexOf(v.id) > -1 && !vOut(v.id, m.p.id)).length, total = allProductsMaster.filter(m => saVs(m.p).indexOf(v.id) > -1).length;
+            const lbl = { vwait: [tr('🔔 नया', '🔔 New'), '#fef3c7', '#92400e'], cooking: [tr('👨‍🍳 बन रहा', '👨‍🍳 Cooking'), '#ffedd5', '#9a3412'], searching: [tr('🛵 राइडर खोज', '🛵 Finding rider'), '#e0e7ff', '#3730a3'], accepted: [tr('🛵 राइडर आ रहा', '🛵 Rider coming'), '#dbeafe', '#1e40af'], on_the_way: [tr('🛵 रास्ते में', '🛵 On the way'), '#dbeafe', '#1e40af'], delivered: [tr('✅ डिलीवर', '✅ Delivered'), '#dcfce7', '#166534'], cancelled: [tr('रद्द', 'Cancelled'), '#fee2e2', '#991b1b'], no_rider: [tr('राइडर नहीं मिला', 'No rider'), '#fee2e2', '#991b1b'] };
+            const items = mine.map(o => { const st = o.status, L = lbl[st] || [st, '#f3f4f6', '#374151'], p = prodInfo(o.items[0].pid);
+                const acc = st !== 'vwait' && st !== 'new', packed = !!o.packed || ['searching', 'accepted', 'on_the_way', 'delivered'].indexOf(st) > -1, rider = ['accepted', 'on_the_way', 'delivered'].indexOf(st) > -1 && !!o.riderId, del = st === 'delivered';
+                const cur = !acc ? 0 : (!packed ? 1 : (!rider ? 2 : 3));
+                return { ts: o.ts, state: del ? 'done' : (st === 'cancelled' || st === 'no_rider' ? 'fail' : 'pending'), img: p ? p.image : FOODIMG.thali, badge: del ? '✓' : '🍳', title: o.customer, sub: o.items.map(i => i.qty + '× ' + i.name).join(', ') + ' • ' + fmtT(o.ts), chip: L[0], chipBg: L[1], chipFg: L[2], amt: o.total, amtSub: del ? tr('बिक्री', 'Sale') : (st === 'cancelled' ? '—' : tr('आने वाला', 'Upcoming')), amtColor: st === 'cancelled' ? 'var(--p-mut)' : '', onclick: `orderSheet('${o.id}', true)`,
+                    steps: [[tr('स्वीकार', 'Accept'), acc, cur === 0, '🔔'], [tr('पैक', 'Pack'), packed, cur === 1, '📦'], [tr('राइडर', 'Rider'), rider, cur === 2, '🛵'], [tr('डिलीवर', 'Delivered'), del, cur === 3 && !del, '🏠']] }; });
+            return phView('vendor', { top: '<div class="mt-4">' + vShopPicker() + '</div>',
+                avatar: v.photo ? `<img src="${esc(v.photo)}" alt="">` : initials(v.name), name: v.name, sub: tr('दुकान पार्टनर', 'Shop partner') + ' · ' + v.owner,
+                duty: { on: v.open, click: 'toggleShop()', onTxt: tr('दुकान खुली', 'Open'), offTxt: tr('दुकान बंद', 'Closed'), onSub: tr('ऑर्डर आ रहे हैं', 'taking orders'), offSub: tr('खोलें', 'Open shop') },
+                earnTitle: tr('मेरी कमाई', 'MY EARNINGS'), unit: tr('ऑर्डर', 'orders'), money: money, detailsClick: "setTab('earn')",
+                earnSub: per => per.filter(x => x.done).length + ' ' + tr('ऑर्डर डिलीवर', 'orders delivered') + ' · ' + tr('कमीशन कटकर', 'after commission'),
+                tiles: per => { const g = per.reduce((a, x) => a + (x.done ? x.amt / (1 - comm) : 0), 0); return [[tr('ऑर्डर', 'Orders'), per.filter(x => x.done).length], [tr('बिक्री', 'Sales'), money_(g)], [tr('कमीशन', 'Commission'), '−' + money_(g * comm)]]; },
+                note: `⏳ ${tr('पेमेंट हर सोमवार आपके खाते में', 'Payout every Monday to your account')}`, noteClick: "setTab('earn')", withdraw: "setTab('earn')",
+                chipsTitle: '🏪 ' + tr('आज के ऑर्डर', "Today's orders"),
+                chips: [['🔔', today.filter(o => o.status === 'vwait').length, tr('नए', 'New')], ['👨‍🍳', today.filter(o => o.status === 'cooking').length, tr('बन रहे', 'Cooking')], ['🛵', today.filter(o => ['searching', 'accepted', 'on_the_way'].indexOf(o.status) > -1).length, tr('रास्ते में', 'Out')], ['✅', today.filter(o => o.status === 'delivered').length, tr('डिलीवर', 'Delivered')]],
+                targets: [[today.filter(o => o.status === 'delivered').length, 15, tr('ऑर्डर पूरे', 'Orders done'), '#16a34a', tr('लक्ष्य 15', 'Goal 15')], [Math.round(sales / 500), 10, tr('बिक्री (₹500)', 'Sales (₹500)'), '#ea580c', money_(sales)], [avail, total || 1, tr('मेन्यू चालू', 'Menu live'), '#2563eb', avail + '/' + total]],
+                tabs: [['orders', '🧾 ' + tr('ऑर्डर', 'Orders'), mine.length], ['pending', '⏳ ' + tr('चालू', 'Active'), pend.length]],
+                tabBody: () => pend.length ? `<div class="space-y-3">${pend.map(o => orderCard(o, true)).join('')}</div>` : `<div class="ph-card text-center py-8"><div class="text-4xl">🍽️</div><p class="text-[13px] font-bold mt-2">${tr('अभी कोई चालू ऑर्डर नहीं', 'No active orders')}</p></div>`,
+                items: items, emptyEmoji: '🍽️', emptyTxt: tr('इस दिन कोई ऑर्डर नहीं', 'No orders on this day')
+            });
+        }
+        vendorOrders = function () { return phVendorView(); };
+        { const f = renderPanel; renderPanel = function () {
+            const r = f.apply(this, arguments);
+            try {
+                if (PNL.role === 'vendor') { const v = curV();
+                    phChrome({ mini: `<div class="flex items-center gap-3"><div class="ph-av" style="width:40px;height:40px;font-size:14px;border-width:2px">${v.photo ? `<img src="${esc(v.photo)}">` : initials(v.name)}</div><div class="flex-1 min-w-0"><p class="font-outfit font-black text-[18px]">💰 ${money_(DB.orders.filter(o => o.vendorId === v.id && o.status === 'delivered' && o.ts >= phDay(Date.now())).reduce((a, o) => a + o.total, 0) * (1 - DB.settings.commission / 100))} <span class="text-[12px] font-bold" style="color:rgba(255,255,255,.7)">${tr('आज की कमाई', "today's earnings")}</span></p></div><button class="ph-duty ${v.open ? 'on' : ''}" onclick="toggleShop()"><span class="tg"></span><b class="text-[12px]">${v.open ? tr('खुली', 'Open') : tr('बंद', 'Closed')}</b></button></div>`,
+                        fab: `<button class="b" onclick="setTab('menu')">+</button><span>${tr('मेन्यू', 'Menu')}</span>` });
+                } else if (PNL.role !== 'rider') phChrome({});
+            } catch (e) { }
+            return r;
+        }; }
+        { const f = closePanel; closePanel = function () { const r = f.apply(this, arguments); try { phChrome({}); document.getElementById('pnlHead').style.display = ''; } catch (e) { } return r; }; }
 
     </script></body></html>
