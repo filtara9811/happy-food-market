@@ -32,10 +32,17 @@ jobs:
           npm install --no-audit --no-fund
           U=node_modules/@supabase/supabase-js/dist/umd/supabase.js; [ -f $U ] || U=$(find node_modules/@supabase/supabase-js/dist -path "*umd*" -name "*.js" | head -1); cp "$U" www/supabase.js
           test -s www/supabase.js
+          # push notifications are switched on only when the Firebase file is saved as a GitHub secret
+          if [ -n "$GOOGLE_SERVICES_JSON" ]; then echo 'window.HF_PUSH=true;' > www/push-config.js; else echo 'window.HF_PUSH=false;' > www/push-config.js; fi
           npx cap add android
+          if [ -n "$GOOGLE_SERVICES_JSON" ]; then printf '%s' "$GOOGLE_SERVICES_JSON" > android/app/google-services.json; echo "push: ON"; else echo "push: OFF (no GOOGLE_SERVICES_JSON secret)"; fi
           M=android/app/src/main/AndroidManifest.xml
-          sed -i 's#<application#<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n    <application#' $M
+          sed -i 's#<application#<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <application#' $M
+          # own icon, launch splash and the ring sound
+          cp -r res/. android/app/src/main/res/
           npx cap sync android
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
 
       - name: Dark launch colour
         working-directory: shell
@@ -44,7 +51,6 @@ jobs:
           RES=android/app/src/main/res
           mkdir -p $RES/values
           printf '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <color name="hf_bg">#0B0D14</color>\n</resources>\n' > $RES/values/hf_colors.xml
-          sed -i 's#<item name="android:background">@drawable/splash</item>#<item name="android:background">@color/hf_bg</item>#' $RES/values/styles.xml
           sed -i 's#<style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">#<style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">\n        <item name="android:statusBarColor">\#0B0D14</item>\n        <item name="android:navigationBarColor">\#0B0D14</item>#' $RES/values/styles.xml
 
       # Same signing key every build, so a new APK installs over the old one.
