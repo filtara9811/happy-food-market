@@ -534,6 +534,122 @@
         @keyframes auShake{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
         .shake{animation:auShake .35s}
         #otpBox{letter-spacing:18px;text-align:center;font-size:28px;font-weight:800;padding-left:30px}
+        /* ===== patch23: radar 2.0, rating sheet, home discovery ===== */
+        .rz-box { position:relative; width:250px; height:250px; margin:4px auto 0; }
+        .rz-box .radar-bg, .rz-box .radar-sweep { inset:0; }
+        .rz-box.shop .radar-bg { background:radial-gradient(circle, rgba(226,176,74,.14), rgba(226,176,74,.02) 70%); border-color:rgba(226,176,74,.55); }
+        .rz-box.shop .radar-sweep { background:conic-gradient(from 0deg, rgba(226,176,74,0) 0deg, rgba(226,176,74,0) 240deg, rgba(226,176,74,.65) 358deg, rgba(226,176,74,0) 360deg); }
+        .rz-pin { position:absolute; width:40px; height:40px; margin:-20px 0 0 -20px; animation:rzIn .5s cubic-bezier(.2,1.4,.4,1) both; }
+        .rz-pin .b { width:40px; height:40px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 6px 16px rgba(0,0,0,.25); animation:rzFloat 2.6s ease-in-out infinite; }
+        .rz-pin.on .b { box-shadow:0 0 0 3px #22c55e, 0 0 18px rgba(34,197,94,.7); }
+        .rz-pin.on::after { content:''; position:absolute; right:-1px; top:-1px; width:12px; height:12px; border-radius:50%; background:#22c55e; border:2px solid #fff; animation:rzPing 1.4s ease-out infinite; }
+        .rz-pin.ghost { opacity:.45; }
+        .rz-pin.ghost .b { filter:grayscale(.6); }
+        .rz-core { position:absolute; left:50%; top:50%; width:92px; height:92px; margin:-46px 0 0 -46px; border-radius:50%; padding:4px; background:conic-gradient(#fce49d,#b88222,#fce49d,#b88222,#fce49d); box-shadow:0 0 0 6px rgba(226,176,74,.18), 0 10px 30px rgba(226,176,74,.45); animation:rzBreath 2.2s ease-in-out infinite; }
+        .rz-core .in { width:100%; height:100%; border-radius:50%; overflow:hidden; position:relative; background:#111; }
+        .rz-core .in img { width:100%; height:100%; object-fit:cover; display:block; }
+        .rz-core .in.two img { position:absolute; width:50%; }
+        .rz-core .in.two img:first-child { left:0; } .rz-core .in.two img:last-child { right:0; border-left:2px solid #fce49d; }
+        .rz-qty { position:absolute; right:-4px; bottom:2px; min-width:28px; height:28px; padding:0 7px; border-radius:14px; background:#111; color:#fce49d; font:800 12px Outfit,sans-serif; display:flex; align-items:center; justify-content:center; border:2px solid #fce49d; }
+        .rz-items { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:12px; }
+        .rz-items span { display:inline-flex; align-items:center; gap:6px; padding:4px 10px 4px 4px; border-radius:20px; background:var(--sh-card); border:1px solid var(--sh-line); font-size:11.5px; font-weight:700; color:var(--sh-tx); }
+        .rz-items img { width:22px; height:22px; border-radius:50%; object-fit:cover; }
+        @keyframes rzFloat { 0%,100% { transform:translateY(0) rotate(-4deg); } 50% { transform:translateY(-7px) rotate(4deg); } }
+        @keyframes rzIn { from { transform:scale(0); opacity:0; } to { transform:scale(1); opacity:1; } }
+        @keyframes rzPing { 0% { box-shadow:0 0 0 0 rgba(34,197,94,.7); } 100% { box-shadow:0 0 0 10px rgba(34,197,94,0); } }
+        @keyframes rzBreath { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } }
+
+        /* rating */
+        #rateSheet { position:fixed; inset:0; z-index:85; display:flex; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.55); backdrop-filter:blur(3px); }
+        #rateSheet.hidden { display:none; }
+        .rt-card { width:100%; max-width:480px; max-height:92vh; overflow-y:auto; background:var(--sh-bg); color:var(--sh-tx); border-radius:28px 28px 0 0; padding:22px 18px 26px; animation:rtUp .35s cubic-bezier(.2,1,.3,1); }
+        @keyframes rtUp { from { transform:translateY(100%); } to { transform:none; } }
+        .rt-top { display:flex; align-items:center; gap:12px; }
+        .rt-av { width:52px; height:52px; border-radius:16px; background:linear-gradient(180deg,#fce49d,#b88222); color:#111; font:900 22px Outfit,sans-serif; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0; }
+        .rt-av img { width:100%; height:100%; object-fit:cover; }
+        .rt-thumbs { display:flex; margin-left:auto; }
+        .rt-thumbs img { width:34px; height:34px; border-radius:50%; object-fit:cover; border:2px solid var(--sh-bg); margin-left:-10px; }
+        .rt-q { font:900 20px Outfit,sans-serif; text-align:center; margin:20px 0 4px; }
+        .rt-moods { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
+        .rt-mood { border-radius:22px; padding:18px 10px 14px; text-align:center; border:2px solid transparent; transition:transform .15s; }
+        .rt-mood:active { transform:scale(.96); }
+        .rt-mood .e { font-size:54px; line-height:1; display:block; animation:rzFloat 3s ease-in-out infinite; }
+        .rt-mood b { display:block; font:900 15px Outfit,sans-serif; margin-top:8px; }
+        .rt-mood small { display:block; font-size:11px; opacity:.8; margin-top:2px; }
+        .rt-mood.h { background:linear-gradient(160deg,rgba(34,197,94,.18),rgba(34,197,94,.05)); border-color:rgba(34,197,94,.45); color:#16a34a; }
+        .rt-mood.s { background:linear-gradient(160deg,rgba(239,68,68,.16),rgba(239,68,68,.04)); border-color:rgba(239,68,68,.4); color:#dc2626; }
+        .rt-mood .e2 { animation-delay:.6s; }
+        .rt-banner { display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:18px; font-weight:800; font-size:14px; }
+        .rt-banner.h { background:rgba(34,197,94,.12); color:#16a34a; } .rt-banner.s { background:rgba(239,68,68,.1); color:#dc2626; }
+        .rt-banner .e { font-size:30px; }
+        .rt-banner button { margin-left:auto; font-size:11px; font-weight:800; text-decoration:underline; opacity:.8; }
+        .rt-sec { margin-top:16px; }
+        .rt-sec h4 { font:800 13px Outfit,sans-serif; display:flex; align-items:center; gap:7px; margin-bottom:9px; }
+        .rt-chips { display:flex; flex-wrap:wrap; gap:8px; }
+        .rt-chip { display:inline-flex; align-items:center; gap:6px; padding:9px 13px; border-radius:16px; border:1.5px solid var(--sh-line); background:var(--sh-card); font-size:12.5px; font-weight:700; color:var(--sh-tx); transition:all .15s; }
+        .rt-chip i { font-style:normal; font-size:16px; }
+        .rt-chip.on.h { border-color:#22c55e; background:rgba(34,197,94,.14); color:#15803d; transform:scale(1.04); }
+        .rt-chip.on.s { border-color:#ef4444; background:rgba(239,68,68,.12); color:#b91c1c; transform:scale(1.04); }
+        .rt-ta { width:100%; margin-top:14px; min-height:64px; padding:12px 14px; border-radius:16px; border:1.5px solid var(--sh-line); background:var(--sh-card); color:var(--sh-tx); font-size:13px; outline:none; resize:none; }
+        .rt-ta:focus { border-color:#e2b04a; }
+        .rt-cb { display:flex; align-items:center; gap:10px; margin-top:12px; padding:12px 14px; border-radius:16px; background:var(--sh-card); border:1.5px solid var(--sh-line); font-size:12.5px; font-weight:700; width:100%; text-align:left; }
+        .rt-cb .t { width:40px; height:22px; border-radius:11px; background:var(--sh-line); position:relative; margin-left:auto; flex-shrink:0; transition:background .2s; }
+        .rt-cb .t::after { content:''; position:absolute; left:3px; top:3px; width:16px; height:16px; border-radius:50%; background:#fff; transition:left .2s; }
+        .rt-cb.on .t { background:#22c55e; } .rt-cb.on .t::after { left:21px; }
+        .rt-skip { display:block; margin:12px auto 0; font-size:12px; font-weight:700; color:var(--sh-mut); }
+        .rt-done { text-align:center; padding:26px 6px 10px; }
+        .rt-done .e { font-size:72px; display:inline-block; animation:rtPop .6s cubic-bezier(.2,1.6,.4,1); }
+        @keyframes rtPop { from { transform:scale(0) rotate(-30deg); } to { transform:none; } }
+        .rt-conf { position:absolute; font-size:20px; animation:rtFall 1.6s ease-in forwards; pointer-events:none; }
+        @keyframes rtFall { from { transform:translateY(-20px) rotate(0); opacity:1; } to { transform:translateY(260px) rotate(320deg); opacity:0; } }
+        .rt-badge { display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:800; padding:3px 8px; border-radius:10px; }
+        .rt-badge.h { background:rgba(34,197,94,.14); color:#16a34a; } .rt-badge.s { background:rgba(239,68,68,.12); color:#dc2626; }
+
+        /* home discovery: search + round categories */
+        #hfDisc { padding:22px 16px 4px; }
+        .hd-search { position:relative; display:flex; align-items:center; gap:10px; height:54px; padding:0 8px 0 18px; border-radius:20px; background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03)); border:1px solid rgba(226,176,74,.35); box-shadow:0 8px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06); transition:all .2s; }
+        .hd-search.f { border-color:#e2b04a; box-shadow:0 0 0 4px rgba(226,176,74,.16), 0 8px 24px rgba(0,0,0,.25); }
+        .hd-search > i { color:#e2b04a; font-size:16px; }
+        .hd-search input::-webkit-search-cancel-button, .hd-search input::-webkit-search-decoration { -webkit-appearance:none; display:none; }
+        .hd-search input { flex:1; min-width:0; background:transparent; border:0; outline:none; color:#fff; font-size:14.5px; font-weight:600; }
+        .hd-search input::placeholder { color:rgba(255,255,255,.45); }
+        .hd-ph { position:absolute; left:46px; right:100px; pointer-events:none; color:rgba(255,255,255,.45); font-size:14.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .hd-ph b { color:#e2b04a; display:inline-block; animation:hdRoll .45s ease; }
+        @keyframes hdRoll { from { transform:translateY(12px); opacity:0; } to { transform:none; opacity:1; } }
+        .hd-x { width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.1); color:#fff; font-size:12px; display:flex; align-items:center; justify-content:center; }
+        .hd-go { height:40px; padding:0 14px; border-radius:14px; background:linear-gradient(180deg,#fce49d,#b88222); color:#111; font:900 12px Outfit,sans-serif; display:flex; align-items:center; gap:6px; flex-shrink:0; }
+        .hd-head { display:flex; align-items:baseline; justify-content:space-between; margin:20px 2px 10px; }
+        .hd-head b { font:900 15px Outfit,sans-serif; color:#e2b04a; }
+        .hd-head span { font-size:11px; color:rgba(255,255,255,.5); font-weight:600; }
+        .hd-cats { display:flex; gap:14px; overflow-x:auto; padding:4px 2px 8px; scroll-snap-type:x mandatory; }
+        .hd-cats::-webkit-scrollbar { display:none; }
+        .hd-cat { flex-shrink:0; width:70px; display:flex; flex-direction:column; align-items:center; gap:7px; scroll-snap-align:start; }
+        .hd-cat .r { width:66px; height:66px; border-radius:50%; padding:3px; background:linear-gradient(140deg,rgba(255,255,255,.18),rgba(255,255,255,.04)); transition:all .2s; position:relative; }
+        .hd-cat .r .in { width:100%; height:100%; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:30px; background:radial-gradient(circle at 35% 30%,#2b2b38,#121219); }
+        .hd-cat .r .in img { width:100%; height:100%; object-fit:cover; }
+        .hd-cat .n { position:absolute; right:-2px; top:-2px; min-width:20px; height:20px; padding:0 5px; border-radius:10px; background:#111; color:#fce49d; border:1.5px solid #e2b04a; font:800 10px Outfit,sans-serif; display:flex; align-items:center; justify-content:center; }
+        .hd-cat p { font-size:11px; font-weight:700; text-align:center; line-height:1.15; color:rgba(255,255,255,.75); max-width:70px; }
+        .hd-cat.on .r { background:conic-gradient(#fce49d,#b88222,#fce49d,#b88222,#fce49d); transform:translateY(-3px) scale(1.06); box-shadow:0 10px 22px rgba(226,176,74,.4); }
+        .hd-cat.on p { color:#e2b04a; font-weight:900; }
+        .hd-subs { display:flex; gap:8px; overflow-x:auto; padding:6px 2px 2px; }
+        .hd-subs::-webkit-scrollbar { display:none; }
+        .hd-subs button { flex-shrink:0; padding:7px 14px; border-radius:14px; font-size:12px; font-weight:800; color:rgba(255,255,255,.8); background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); }
+        .hd-subs button.on { background:#e2b04a; color:#111; border-color:#e2b04a; }
+        .hd-empty { grid-column:1/-1; text-align:center; padding:30px 10px; color:rgba(255,255,255,.7); font-weight:700; font-size:13px; }
+        .hd-empty .e { font-size:44px; display:block; margin-bottom:6px; }
+        .hd-empty button { margin-top:12px; padding:9px 18px; border-radius:14px; background:#e2b04a; color:#111; font-weight:900; font-size:12px; }
+        body.light-mode .hd-search { background:#fff; box-shadow:0 8px 22px rgba(0,0,0,.08); }
+        body.light-mode .hd-search input { color:#1a1a24; }
+        body.light-mode .hd-search input::placeholder, body.light-mode .hd-ph { color:#8a8a99; }
+        body.light-mode .hd-x { background:rgba(0,0,0,.07); color:#333; }
+        body.light-mode .hd-head span { color:#77778a; }
+        body.light-mode .hd-cat .r { background:linear-gradient(140deg,#efe6cf,#fff); box-shadow:0 4px 12px rgba(0,0,0,.06); }
+        body.light-mode .hd-cat .r .in { background:radial-gradient(circle at 35% 30%,#fffaf0,#f3ead6); }
+        body.light-mode .hd-cat p { color:#3b3b48; }
+        body.light-mode .hd-cat.on p { color:#a8741b; }
+        body.light-mode .hd-subs button { color:#3b3b48; background:#fff; border-color:rgba(0,0,0,.1); }
+        body.light-mode .hd-subs button.on { background:#e2b04a; color:#111; }
+        body.light-mode .hd-empty { color:#55556a; }
     </style>
 <style>
 html,body{height:100%}
@@ -2119,7 +2235,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                                 <p class="text-xs font-black text-brand-gold mt-0.5">₹${item.price}</p>
                             </div>
                             <div class="relative w-24 h-24 rounded-2xl overflow-hidden bg-black flex-shrink-0 shadow border border-white/10">
-                                <img src="${item.image}" class="w-full h-full object-cover cursor-pointer" onclick="openProductDetailModal('${item.id}')" onerror="this.onerror=null;this.src='https://placehold.co/300x300/16161e/e2b04a?text=Food'">
+                                <img src="${item.image}" class="w-full h-full object-cover cursor-pointer" onclick="openProductDetailModal('${item.id}')" onerror="this.onerror=null;this.src=&quot;data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cdefs%3E%3CradialGradient id=%22g%22%3E%3Cstop offset=%220%22 stop-color=%22%23fce49d%22/%3E%3Cstop offset=%221%22 stop-color=%22%23b88222%22/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width=%22100%22 height=%22100%22 fill=%22url(%23g)%22/%3E%3Ctext x=%2250%22 y=%2262%22 font-size=%2238%22 text-anchor=%22middle%22%3E%F0%9F%8D%BD%EF%B8%8F%3C/text%3E%3C/svg%3E&quot;">
                                 <div class="absolute bottom-1.5 left-1.5 right-1.5 flex justify-center">
                                     ${cartItem && cartItem.quantity > 0 ? `
                                         <div class="w-full flex items-center justify-between bg-brand-gold text-black rounded-lg px-2 py-1 font-black text-[11px]">
@@ -2143,7 +2259,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 return `
                     <div class="bg-[#14141c] border border-gray-800 rounded-2xl p-2.5 flex flex-col justify-between hover:border-brand-gold/40 transition shadow-md ${hz ? 'flex-shrink-0 snap-start' : ''}" ${hz ? 'style="width:164px;min-width:164px"' : ''}>
                         <div class="relative w-full ${recommendedViewMode === 'grid3' ? 'h-20' : (hz ? 'h-32' : 'h-28')} rounded-xl overflow-hidden mb-2 bg-black/60 shadow">
-                            <img src="${item.image}" alt="${title}" class="w-full h-full object-cover cursor-pointer" onclick="openProductDetailModal('${item.id}')" onerror="this.onerror=null;this.src='https://placehold.co/300x300/16161e/e2b04a?text=Food'">
+                            <img src="${item.image}" alt="${title}" class="w-full h-full object-cover cursor-pointer" onclick="openProductDetailModal('${item.id}')" onerror="this.onerror=null;this.src=&quot;data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cdefs%3E%3CradialGradient id=%22g%22%3E%3Cstop offset=%220%22 stop-color=%22%23fce49d%22/%3E%3Cstop offset=%221%22 stop-color=%22%23b88222%22/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width=%22100%22 height=%22100%22 fill=%22url(%23g)%22/%3E%3Ctext x=%2250%22 y=%2262%22 font-size=%2238%22 text-anchor=%22middle%22%3E%F0%9F%8D%BD%EF%B8%8F%3C/text%3E%3C/svg%3E&quot;">
                             <span class="absolute top-1.5 right-1.5 bg-black/70 text-yellow-400 text-[9px] font-bold px-1.5 py-0.5 rounded-full backdrop-blur-sm border border-yellow-400/30">${item.rating}</span>
                             
                             <div class="absolute bottom-1.5 left-1.5 right-1.5 flex justify-center">
@@ -6459,5 +6575,192 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             return r;
         }; }
         { const f = closePanel; closePanel = function () { const r = f.apply(this, arguments); try { phChrome({}); document.getElementById('pnlHead').style.display = ''; } catch (e) { } return r; }; }
+
+        /* ================= patch23: radar 2.0 + rating after delivery + home search & round categories ================= */
+        /* ---------- radar: floating partner / shop icons, booked food in the centre ---------- */
+        const RZ_POS = [[18, 26], [80, 22], [88, 62], [62, 90], [16, 74], [50, 8]];
+        function rzItems(d, fbImg) {
+            return ((d && d.items) || []).map(it => {
+                const p = prodInfo(it.pid) || {};
+                return { name: p.title ? (p.title[currentLang] || p.title.en) : (it.name || ''), img: p.image || fbImg || '', qty: Number(it.qty) || 1 };
+            });
+        }
+        const rzImg = (src, cls) => `<img src="${esc(src)}" ${cls ? `class="${cls}"` : ''} onerror="this.onerror=null;this.style.visibility='hidden'">`;
+        function rzRadar(shop) {
+            const its = rzItems(live.dbo, live.ord && live.ord.image), n = its.reduce((s, x) => s + x.qty, 0);
+            const real = shop ? 1 : Math.min(6, (live.eligible || []).length || 0);
+            const total = Math.max(real, 5);
+            const pins = RZ_POS.slice(0, total).map((p, i) => `<div class="rz-pin ${i < real ? 'on' : 'ghost'}" style="left:${p[0]}%;top:${p[1]}%;animation-delay:${i * 0.22}s"><div class="b" style="animation-delay:${i * 0.45}s">${shop ? '🏪' : '🛵'}</div></div>`).join('');
+            return `<div class="rz-box ${shop ? 'shop' : ''}"><div class="radar-bg"></div><div class="radar-ring" style="inset:18%"></div><div class="radar-ring" style="inset:36%"></div><div class="radar-sweep"></div>${pins}
+                    <div class="rz-core"><div class="in ${its.length > 1 ? 'two' : ''}">${its.slice(0, 2).map(x => rzImg(x.img)).join('')}</div>${n > 1 ? `<span class="rz-qty">×${n}</span>` : ''}</div></div>
+                    <div class="rz-items">${its.map(x => `<span>${rzImg(x.img)}${esc(x.name)} ×${x.qty}</span>`).join('')}</div>`;
+        }
+        { const f = renderLive; renderLive = function () {
+            const r = f.apply(this, arguments);
+            try {
+                if (live && (live.phase === 'search' || live.phase === 'vwait')) {
+                    const body = document.getElementById('liveBody');
+                    if (live.phase === 'search') { const box = body.querySelector('.radar-box'); if (box) box.outerHTML = rzRadar(false); }
+                    else { const c = body.querySelector('.hf-card'); if (c) c.outerHTML = rzRadar(true) + `<p class="text-center text-xs hf-mut mt-3"><b style="color:var(--sh-tx)">${live.dbo.status === 'new' ? tr('एडमिन आपका ऑर्डर देख रहा है…', 'The admin is reviewing your order…') : esc((liveV() || {}).name || '') + ' ' + tr('को रिक्वेस्ट भेजी… मंज़ूरी का इंतज़ार', 'got your request… waiting')}</b></p>`; }
+                }
+            } catch (e) { }
+            return r;
+        }; }
+
+        /* ---------- rating after delivery: happy / bad service + smart reasons ---------- */
+        const RT = { o: null, mood: '', food: [], rider: [], cb: false, txt: '', done: false };
+        const RT_TAGS = {
+            h: { food: [['😋', 'लाजवाब स्वाद', 'Tasty'], ['🔥', 'गरमा-गरम', 'Piping hot'], ['📦', 'बढ़िया पैकिंग', 'Neat packing'], ['🍽️', 'भरपूर मात्रा', 'Good portion'], ['💰', 'पैसा वसूल', 'Value for money']],
+                 rider: [['⚡', 'तेज़ डिलीवरी', 'Fast delivery'], ['😊', 'विनम्र व्यवहार', 'Polite'], ['📍', 'आसानी से पहुँचे', 'Found me easily'], ['🧼', 'साफ़-सुथरे', 'Hygienic']] },
+            s: { food: [['🥶', 'खाना ठंडा था', 'Food was cold'], ['😖', 'स्वाद ठीक नहीं', 'Taste not good'], ['💧', 'पैकिंग लीक / ख़राब', 'Leaky packing'], ['❌', 'आइटम कम / ग़लत', 'Missing / wrong item'], ['🤏', 'मात्रा कम', 'Small portion']],
+                 rider: [['⏰', 'देर से पहुँचे', 'Late'], ['😠', 'बुरा व्यवहार', 'Rude'], ['🗺️', 'रास्ता भटके', 'Got lost'], ['💸', 'ज़्यादा पैसे माँगे', 'Asked extra money']] }
+        };
+        function rtStore() { try { return JSON.parse(localStorage.getItem('hf_ratings_v1') || '{}') || {}; } catch (e) { return {}; } }
+        function rtSave(id, v) { const s = rtStore(); s[id] = v; try { localStorage.setItem('hf_ratings_v1', JSON.stringify(s)); } catch (e) { } }
+        function openRate(o) {
+            Object.assign(RT, { o: o, mood: '', food: [], rider: [], cb: false, txt: '', done: false });
+            let el = document.getElementById('rateSheet');
+            if (!el) { el = document.createElement('div'); el.id = 'rateSheet'; el.addEventListener('click', e => { if (e.target === el && !RT.done) rtClose(); }); document.body.appendChild(el); }
+            el.classList.remove('hidden'); rtPaint();
+        }
+        function rtClose() { const el = document.getElementById('rateSheet'); if (el) el.classList.add('hidden'); if (typeof currentTab !== 'undefined' && currentTab === 'orders') renderOrdersList(); }
+        function rtMood(m) { RT.mood = m; RT.food = []; RT.rider = []; vib(25); rtPaint(); }
+        function rtTag(k, v) { const a = RT[k], i = a.indexOf(v); if (i < 0) a.push(v); else a.splice(i, 1); vib(12); rtPaint(); }
+        function rtPaint() {
+            const el = document.getElementById('rateSheet'); if (!el) return;
+            const o = RT.o, rn = (o.rider && o.rider.name) || tr('पार्टनर', 'Partner');
+            const av = o.rider && o.rider.photo ? `<img src="${esc(o.rider.photo)}">` : esc(rn.trim().charAt(0).toUpperCase() || 'H');
+            const head = `<div class="rt-top"><div class="rt-av">${av}</div><div class="min-w-0"><p class="font-outfit font-black text-[15px] leading-tight">${esc(rn)} ${tr('ने आपका ऑर्डर पहुँचाया', 'delivered your order')}</p><p class="text-[11.5px] mt-0.5" style="color:var(--sh-mut)">${tr('ऑर्डर', 'Order')} ${esc(o.id)}</p></div>
+                <div class="rt-thumbs">${(o.items || []).slice(0, 3).map(x => rzImg(x.img)).join('')}</div></div>`;
+            let b = '';
+            if (RT.done) {
+                const h = RT.mood === 'h';
+                b = `<div class="rt-done relative"><span class="e">${h ? '🥳' : '🙏'}</span><p class="font-outfit font-black text-xl mt-3">${h ? tr('शुक्रिया! आपकी रेटिंग पहुँच गई', 'Thank you! Rating sent') : tr('माफ़ी चाहते हैं — हम इसे ठीक करेंगे', 'Sorry — we will fix this')}</p>
+                    <p class="text-[12.5px] mt-1.5" style="color:var(--sh-mut)">${h ? tr(esc(rn) + ' को आपकी तारीफ़ भेज दी गई 💛', 'Your praise reached ' + esc(rn) + ' 💛') : (RT.cb ? tr('हमारी टीम जल्द आपको कॉल करेगी 📞', 'Our team will call you soon 📞') : tr('आपकी शिकायत टीम तक पहुँच गई', 'Your complaint reached our team'))}</p></div>`;
+            } else if (!RT.mood) {
+                b = `<p class="rt-q">${tr('आज का अनुभव कैसा रहा?', 'How was your experience?')}</p><p class="text-center text-[12px]" style="color:var(--sh-mut)">${tr('बस एक टैप — इससे हमारी सर्विस और बेहतर होगी', 'Just one tap — it helps us serve you better')}</p>
+                    <div class="rt-moods"><button class="rt-mood h" onclick="rtMood('h')"><span class="e">😍</span><b>${tr('हैप्पी सर्विस', 'Happy service')}</b><small>${tr('सब बढ़िया रहा', 'All went great')}</small></button>
+                    <button class="rt-mood s" onclick="rtMood('s')"><span class="e e2">😞</span><b>${tr('बैड सर्विस', 'Bad service')}</b><small>${tr('कुछ गड़बड़ हुई', 'Something went wrong')}</small></button></div>
+                    <button class="rt-skip" onclick="rtClose()">${tr('बाद में', 'Later')}</button>`;
+            } else {
+                const h = RT.mood === 'h', t = RT_TAGS[RT.mood], cls = h ? 'h' : 's';
+                const chips = (k, list) => `<div class="rt-chips">${list.map(x => `<button class="rt-chip ${cls} ${RT[k].includes(x[2]) ? 'on' : ''}" onclick="rtTag('${k}','${x[2]}')"><i>${x[0]}</i>${tr(x[1], x[2])}</button>`).join('')}</div>`;
+                b = `<div class="rt-banner ${cls} mt-4"><span class="e">${h ? '😍' : '😞'}</span><span>${h ? tr('वाह! क्या अच्छा लगा?', 'Great! What did you like?') : tr('माफ़ कीजिए 🙏 क्या गड़बड़ हुई?', 'Sorry 🙏 what went wrong?')}</span><button onclick="rtMood('')">${tr('बदलें', 'Change')}</button></div>
+                    <div class="rt-sec"><h4>🍲 ${h ? tr('खाना', 'Food') : tr('खाने में दिक़्क़त', 'Food issue')}</h4>${chips('food', t.food)}</div>
+                    <div class="rt-sec"><h4>🛵 ${esc(rn)} ${tr('की सर्विस', '— delivery')}</h4>${chips('rider', t.rider)}</div>
+                    <textarea class="rt-ta" placeholder="${h ? tr('कुछ और कहना चाहें… (ज़रूरी नहीं)', 'Anything else… (optional)') : tr('थोड़ा बताइए क्या हुआ… (ज़रूरी नहीं)', 'Tell us what happened… (optional)')}" oninput="RT.txt=this.value">${esc(RT.txt)}</textarea>
+                    ${h ? '' : `<button class="rt-cb ${RT.cb ? 'on' : ''}" onclick="RT.cb=!RT.cb;rtPaint()">📞 <span>${tr('मुझे कॉल करके बात करें', 'Call me back')}</span><span class="t"></span></button>`}
+                    <button onclick="rtSubmit()" class="w-full mt-4 py-3.5 rounded-2xl btn-gold-3d font-outfit font-black text-black text-sm uppercase tracking-wider">${tr('रेटिंग भेजें', 'Send rating')} ${h ? '💛' : ''}</button>
+                    <button class="rt-skip" onclick="rtClose()">${tr('बाद में', 'Later')}</button>`;
+            }
+            el.innerHTML = `<div class="rt-card">${head}${b}</div>`;
+        }
+        async function rtSubmit() {
+            const o = RT.o, v = { mood: RT.mood === 'h' ? 'happy' : 'bad', food: RT.food.slice(), rider: RT.rider.slice(), txt: (RT.txt || '').trim(), cb: RT.cb, ts: Date.now(), riderName: o.rider && o.rider.name, total: o.total || 0 };
+            rtSave(o.id, v);
+            DB.ratings = DB.ratings || []; DB.ratings.unshift(Object.assign({ id: o.id }, v)); DB.rev++;
+            RT.done = true; rtPaint();
+            sfx(v.mood === 'happy' ? 'success' : 'remove'); vib(v.mood === 'happy' ? [30, 40, 30, 40, 90] : 60);
+            if (v.mood === 'happy') { const box = document.querySelector('#rateSheet .rt-done'); if (box) for (let i = 0; i < 18; i++) { const s = document.createElement('span'); s.className = 'rt-conf'; s.textContent = ['🎉', '✨', '💛', '⭐', '🎊'][i % 5]; s.style.left = (Math.random() * 92) + '%'; s.style.top = '0'; s.style.animationDelay = (Math.random() * 0.5) + 's'; box.appendChild(s); } }
+            if (LIVE && o.serverId) { try { await sb.rpc('rate_order', { p_order_id: o.serverId, p_mood: v.mood, p_food_tags: v.food, p_rider_tags: v.rider, p_comment: v.txt, p_callback: v.cb }); } catch (e) { } }
+            setTimeout(rtClose, 2800);
+        }
+        function rtFromLive(L) { return { id: L.ord.id, serverId: L.ord.serverId || (L.dbo && L.dbo.serverId), total: (L.dbo && L.dbo.total) || L.ord.total, rider: { name: RIDER.name, photo: RIDER.photo }, items: rzItems(L.dbo, L.ord.image) }; }
+        { const f = finishLive; finishLive = function () {
+            const L = live, r = f.apply(this, arguments);
+            try { if (L && L.phase === 'done' && !rtStore()[L.ord.id]) { const o = rtFromLive(L); setTimeout(() => openRate(o), 250); } } catch (e) { }
+            return r;
+        }; }
+
+        /* ---------- home: premium search + round categories + sub-categories ---------- */
+        const HD = { cat: 'all', sub: '', q: '', ph: 0, saved: null };
+        const HD_GUESS = [[/momo|मोमो/i, 'snacks', 'momos'], [/pani ?puri|golgapp|पानी पूरी|गोलगप्प/i, 'snacks', 'golgappe'], [/chaat|papdi|चाट/i, 'snacks', 'chaat'], [/thali|थाली/i, 'meals', 'vthali'],
+            [/tikka|टिक्का/i, 'tandoor', 'tikka'], [/seekh|skewer|kebab|सीख|कबाब/i, 'tandoor', 'kebab'], [/mutton|rogan|मटन/i, 'nonveg', 'mutton'], [/fish|मछली|फ़िश/i, 'nonveg', 'fish'], [/chicken|चिकन/i, 'nonveg', 'chicken'],
+            [/jamun|जामुन/i, 'sweets', 'jamun'], [/kulfi|कुल्फ़ी|कुल्फी/i, 'sweets', 'kulfi'], [/lassi|लस्सी/i, 'drinks', 'lassi'], [/shake|शेक/i, 'drinks', 'shake'], [/dal|naan|दाल|नान|combo/i, 'meals', 'combo']];
+        const HD_WORDS = [['मोमोज़', 'Momos'], ['शाही थाली', 'Thali'], ['पानी पूरी', 'Pani puri'], ['चिकन सीख', 'Chicken seekh'], ['कुल्हड़ लस्सी', 'Lassi'], ['गुलाब जामुन', 'Gulab jamun']];
+        function hdMeta(p) {
+            if (SA_META[p.id] || SA_PDEF[p.id]) return saMeta(p);
+            const s = (p.title.en || '') + ' ' + (p.title.hi || ''), g = HD_GUESS.find(x => x[0].test(s));
+            return g ? { cat: g[1], sub: g[2] } : saMeta(p);
+        }
+        const hdAll = () => allProductsMaster.filter(m => m.available).map(m => m.p);
+        function hdList() {
+            const q = HD.q.trim().toLowerCase();
+            return hdAll().filter(p => {
+                const x = hdMeta(p);
+                if (HD.cat !== 'all' && x.cat !== HD.cat) return false;
+                if (HD.sub && x.sub !== HD.sub) return false;
+                if (q) {
+                    const c = saCat(x.cat), sc = saSub(c, x.sub);
+                    const hay = [p.title.hi, p.title.en, p.subtitle && p.subtitle.hi, p.subtitle && p.subtitle.en, c && c.name.hi, c && c.name.en, sc && sc.name.hi, sc && sc.name.en].join(' ').toLowerCase();
+                    if (!q.split(/\s+/).every(w => hay.includes(w))) return false;
+                }
+                return true;
+            });
+        }
+        const hdOn = () => HD.cat !== 'all' || !!HD.q.trim();
+        function hdTitle() {
+            const t = document.getElementById('txtRecommendedTitle'), s = document.getElementById('txtRecommendedSub'); if (!t || !s) return;
+            if (!hdOn()) { if (HD.saved) { t.innerText = HD.saved[0]; s.innerText = HD.saved[1]; HD.saved = null; } return; }
+            if (!HD.saved) HD.saved = [t.innerText, s.innerText];
+            const n = hdList().length, c = saCat(HD.cat), sc = saSub(c, HD.sub);
+            t.innerText = HD.q.trim() ? `🔍 “${HD.q.trim()}”` : `${c ? c.icon : ''} ${c ? saN(c.name) : ''}${sc ? ' • ' + saN(sc.name) : ''}`;
+            s.innerText = tr(n + ' आइटम मिले', n + ' items found');
+        }
+        { const f = renderRecommendedProducts; renderRecommendedProducts = function () {
+            if (!hdOn()) { const r = f.apply(this, arguments); hdTitle(); hdPaint(); return r; }
+            const saved = recommendedProducts.slice(), list = hdList();
+            recommendedProducts.length = 0; list.forEach(p => recommendedProducts.push(p));
+            try { f.apply(this, arguments); } finally { recommendedProducts.length = 0; saved.forEach(p => recommendedProducts.push(p)); }
+            if (!list.length) { const g = document.getElementById('recommendedGrid'); if (g) g.innerHTML = `<div class="hd-empty"><span class="e">🍽️</span>${HD.q.trim() ? tr('“' + esc(HD.q.trim()) + '” से जुड़ा कुछ नहीं मिला', 'Nothing found for “' + esc(HD.q.trim()) + '”') : tr('इस कैटेगरी में जल्द नए आइटम आएँगे', 'New items coming soon here')}<br><button onclick="hdReset()">${tr('सब दिखाएँ', 'Show all')}</button></div>`; }
+            hdTitle(); hdPaint();
+        }; }
+        function hdReset() { HD.cat = 'all'; HD.sub = ''; HD.q = ''; const i = document.getElementById('hdQ'); if (i) i.value = ''; hdSearchUi(); renderRecommendedProducts(); }
+        function hdPick(id) { HD.cat = HD.cat === id ? 'all' : id; HD.sub = ''; vib(15); renderRecommendedProducts(); }
+        function hdPickSub(id) { HD.sub = HD.sub === id ? '' : id; vib(12); renderRecommendedProducts(); }
+        function hdSearchUi() {
+            const q = HD.q, x = document.getElementById('hdX'), ph = document.getElementById('hdPh');
+            if (x) x.style.display = q ? 'flex' : 'none';
+            if (ph) ph.style.display = q ? 'none' : 'block';
+        }
+        function hdRollPh() {
+            const ph = document.getElementById('hdPh'); if (!ph || HD.q) return;
+            const w = HD_WORDS[HD.ph++ % HD_WORDS.length];
+            ph.innerHTML = `${tr('खोजें', 'Search')} ‘<b>${tr(w[0], w[1])}</b>’`;
+        }
+        function hdPaint() {
+            let el = document.getElementById('hfDisc');
+            if (!el) {
+                const g = document.getElementById('recommendedGrid'); if (!g) return;
+                const sec = g.closest('.border-t') || g.parentElement;
+                el = document.createElement('div'); el.id = 'hfDisc';
+                el.innerHTML = `<div class="hd-search" id="hdBox"><i class="fa-solid fa-magnifying-glass"></i><input id="hdQ" type="search" enterkeyhint="search" autocomplete="off"><span class="hd-ph" id="hdPh"></span><button class="hd-x" id="hdX" style="display:none"><i class="fa-solid fa-xmark"></i></button><button class="hd-go" id="hdGo"><i class="fa-solid fa-sliders"></i></button></div><div id="hdBody"></div>`;
+                sec.parentElement.insertBefore(el, sec);
+                const i = el.querySelector('#hdQ'), box = el.querySelector('#hdBox');
+                let t = null;
+                i.addEventListener('input', () => { HD.q = i.value; if (HD.q.trim()) { HD.cat = 'all'; HD.sub = ''; } hdSearchUi(); clearTimeout(t); t = setTimeout(renderRecommendedProducts, 160); });
+                i.addEventListener('focus', () => box.classList.add('f'));
+                i.addEventListener('blur', () => box.classList.remove('f'));
+                i.addEventListener('keydown', e => { if (e.key === 'Enter') { i.blur(); const tt = document.getElementById('txtRecommendedTitle'); if (tt) tt.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } });
+                el.querySelector('#hdX').addEventListener('click', () => { i.value = ''; HD.q = ''; hdSearchUi(); renderRecommendedProducts(); i.focus(); });
+                el.querySelector('#hdGo').addEventListener('click', () => { if (HD.q || HD.cat !== 'all') hdReset(); else i.focus(); });
+                hdRollPh(); setInterval(hdRollPh, 2400);
+            }
+            const body = document.getElementById('hdBody'); if (!body) return;
+            const all = hdAll(), cnt = id => all.filter(p => hdMeta(p).cat === id).length;
+            const cats = DB.cats.filter(c => c.active);
+            const ring = (inner, n) => `<div class="r"><div class="in">${inner}</div>${n ? `<span class="n">${n}</span>` : ''}</div>`;
+            const row = document.querySelector('#hdBody .hd-cats'), sl = row ? row.scrollLeft : 0;
+            const cur = saCat(HD.cat), subs = cur ? cur.subs.filter(s => s.active) : [];
+            body.innerHTML = `<div class="hd-head"><b>${tr('क्या खाना है आज? 😋', 'What are you craving? 😋')}</b><span>${tr('कैटेगरी चुनें', 'Pick a category')}</span></div>
+                <div class="hd-cats"><button class="hd-cat ${HD.cat === 'all' ? 'on' : ''}" onclick="hdPick('all')">${ring('✨', all.length)}<p>${tr('सभी', 'All')}</p></button>
+                ${cats.map(c => `<button class="hd-cat ${HD.cat === c.id ? 'on' : ''}" onclick="hdPick('${c.id}')">${ring(c.photo ? `<img src="${esc(c.photo)}">` : c.icon, cnt(c.id))}<p>${esc(saN(c.name))}</p></button>`).join('')}</div>
+                ${subs.length ? `<div class="hd-subs"><button class="${HD.sub ? '' : 'on'}" onclick="hdPickSub('')">${tr('सब', 'All')} ${esc(saN(cur.name))}</button>${subs.map(s => `<button class="${HD.sub === s.id ? 'on' : ''}" onclick="hdPickSub('${s.id}')">${esc(saN(s.name))}</button>`).join('')}</div>` : ''}`;
+            const row2 = body.querySelector('.hd-cats'); if (row2 && sl) row2.scrollLeft = sl;
+            hdSearchUi();
+        }
+        { const f = toggleLanguage; toggleLanguage = function () { HD.saved = null; const r = f.apply(this, arguments); try { hdRollPh(); renderRecommendedProducts(); } catch (e) { } return r; }; }
+        { const f = closePanel; closePanel = function () { const r = f.apply(this, arguments); try { renderRecommendedProducts(); } catch (e) { } return r; }; }
+        try { hdPaint(); } catch (e) { }
 
     </script></body></html>
