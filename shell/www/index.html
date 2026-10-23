@@ -248,6 +248,9 @@
         #panelRoot .sa-st.ok { color:var(--p-ok); } #panelRoot .sa-st.gold { color:var(--p-gold); } #panelRoot .sa-st.warn { color:var(--p-warn); } #panelRoot .sa-st.mut { color:var(--p-mut); }
         #panelRoot .sa-vph { width:92px; height:92px; border-radius:28px; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:900; color:#1a1305; background:linear-gradient(180deg,#fce49d,#e2b04a 55%,#b88222); border:3px solid var(--p-gold); }
         #panelRoot .sa-vph img { width:100%; height:100%; object-fit:cover; }
+        #hdrTheme { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); color:#e2b04a; transition:transform .25s; }
+        #hdrTheme:active { transform:scale(.88) rotate(-20deg); }
+        body.light-mode #hdrTheme { background:#fff; border-color:rgba(0,0,0,.1); color:#9a6a10; box-shadow:0 2px 8px rgba(0,0,0,.08); }
         #panelRoot .pok { color:var(--p-ok); } #panelRoot .pbad { color:var(--p-bad); }
         #panelRoot .a-ib { position:relative; width:40px; height:40px; border-radius:12px; background:var(--p-card2); border:1px solid var(--p-line); display:flex; align-items:center; justify-content:center; color:var(--p-tx); flex-shrink:0; }
         #panelRoot .a-ib .pdot { top:-5px; right:-5px; }
@@ -651,7 +654,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
 
         <!-- HEADER -->
         <header id="appHeader" class="pt-8 sm:pt-9 px-5 pb-2 flex items-center justify-between absolute top-0 left-0 right-0 z-20 pointer-events-none">
-            <div class="w-9 h-9"></div>
+            <button id="hdrTheme" onclick="toggleTheme()" class="w-9 h-9 rounded-full flex items-center justify-center pointer-events-auto" aria-label="Light / dark mode"><i id="hdrThemeIc" class="fa-solid fa-moon text-[15px]"></i></button>
 
             <div id="logoWrap" class="flex flex-col items-center justify-center cursor-pointer pointer-events-auto" style="transform-origin:left top;will-change:transform" onclick="showTab('home')">
                 <div class="flex items-center gap-1">
@@ -6017,5 +6020,19 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 <div class="grid grid-cols-3 gap-2 mt-3 text-center"><div class="pcard2 p-2"><p class="pnum text-sm ${r.online && r.loc_fresh ? 'pok' : ''}">${r.online ? (r.loc_fresh ? tr('ऑनलाइन', 'Online') : tr('GPS नहीं', 'No GPS')) : tr('ऑफ़', 'Off')}</p><p class="text-[10px] pmut">${tr('हालत', 'Status')}</p></div><div class="pcard2 p-2"><p class="pnum text-sm">${r.stock_units}</p><p class="text-[10px] pmut">${tr('स्टॉक नग', 'Stock units')}</p></div><div class="pcard2 p-2"><p class="pnum text-sm">${r.delivered}</p><p class="text-[10px] pmut">${tr('डिलीवरी', 'Deliveries')}</p></div></div>
                 <div class="flex gap-2 mt-3.5">${r.approved ? `<button class="pbtn-bad flex-1" onclick="admSetRider('${r.id}', false)">${tr('रोकें', 'Block')}</button>` : `<button class="pbtn flex-1" onclick="admSetRider('${r.id}', true)"><i class="fa-solid fa-check"></i> ${tr('मंज़ूरी दें', 'Approve')}</button>`}</div></div>`).join('')}</div>`;
         }; }
+
+        /* ================= LIGHT MODE BY DEFAULT + REMEMBER CHOICE — patch19 ================= */
+        { const f = toggleTheme; toggleTheme = function () {
+            const r = f.apply(this, arguments);
+            lsSet('hf_theme', isDarkMode ? 'dark' : 'light');
+            const ic = document.getElementById('hdrThemeIc'); if (ic) ic.className = 'fa-solid ' + (isDarkMode ? 'fa-sun' : 'fa-moon') + ' text-[15px]';
+            try { sfx('tap'); } catch (e) { }
+            return r;
+        }; }
+        (function () {
+            const want = lsGet('hf_theme') || 'light';
+            if ((want === 'light') === isDarkMode) { const s = lsGet('hf_theme'); toggleTheme(); if (!s) lsSet('hf_theme', null); }
+            const ic = document.getElementById('hdrThemeIc'); if (ic) ic.className = 'fa-solid ' + (isDarkMode ? 'fa-sun' : 'fa-moon') + ' text-[15px]';
+        })();
 
     </script></body></html>
