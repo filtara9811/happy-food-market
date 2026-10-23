@@ -4161,7 +4161,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             if (!PNL.role) return;
             const sheetOpen = !document.getElementById('pSheet').classList.contains('hidden');
             const t = PNL.tab[PNL.role];
-            const liveTab = (PNL.role === 'admin' && (t === 'dash' || t === 'orders')) || (PNL.role === 'vendor' && (t === 'orders' || t === 'stock')) || (PNL.role === 'rider' && t === 'home');
+            const liveTab = (PNL.role === 'admin' && (t === 'dash' || t === 'orders')) || (PNL.role === 'vendor' && (t === 'orders' || t === 'stock')) || (PNL.role === 'rider' && t === 'home' && !LIVE);
             if (liveTab && !sheetOpen && DB.rev !== PNL.seenRev) renderPanel(true);
             const c = document.getElementById('oCount');
             if (c) c.textContent = Math.max(0, +c.dataset.sec - Math.floor((Date.now() - +c.dataset.t0) / 1000)) + 's';
@@ -5841,12 +5841,23 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         setInterval(() => { if (LIVE && PNL.role === 'rider') rlRefresh(); }, 3000);
 
         /* ---------- rider: actions ---------- */
-        async function rlRegister() {
-            const n = (document.getElementById('rlName').value || '').trim(), v = (document.getElementById('rlVeh').value || '').trim();
+        async function rlRegister(skipVeh) {
+            const n = (document.getElementById('rlName').value || '').trim(), v = skipVeh ? '' : (document.getElementById('rlVeh').value || '').trim();
             if (n.length < 2) { pToast(tr('अपना नाम लिखिए', 'Enter your name')); return; }
-            if (v.length < 4) { pToast(tr('गाड़ी का नंबर लिखिए', 'Enter your vehicle number')); return; }
+            if (v && v.length < 4) { pToast(tr('गाड़ी नंबर पूरा लिखिए या छोड़ दीजिए', 'Enter the full vehicle number or skip it')); return; }
+            if (document.activeElement) document.activeElement.blur();
             try { const { data, error } = await sb.rpc('rider_register', { p_name: n, p_vehicle: v }); if (error) throw error; RL.me = data; sfx('success'); pToast(tr('रजिस्ट्रेशन हो गया ✅ — एडमिन की मंज़ूरी का इंतज़ार', 'Registered ✅ — waiting for admin approval')); RL.key = ''; rlPaint(); }
             catch (e) { pToast(tr('रजिस्ट्रेशन नहीं हुआ: ', 'Registration failed: ') + rmMsg(e).slice(0, 60)); }
+        }
+        function rlVehSheet() {
+            const me = RL.me || {};
+            openPSheet(tr('गाड़ी का नंबर', 'Vehicle number'), `<input id="rlVeh2" value="${esc(me.vehicle || '')}" placeholder="UP 32 AB 1234" style="text-transform:uppercase" autocomplete="off"><button class="pbtn w-full mt-4" onclick="rlSaveVeh()"><i class="fa-solid fa-check"></i> ${tr('सेव करें', 'Save')}</button>`);
+            setTimeout(() => { const i = document.getElementById('rlVeh2'); i && i.focus(); }, 300);
+        }
+        async function rlSaveVeh() {
+            const v = (document.getElementById('rlVeh2').value || '').trim(); if (v.length < 4) { pToast(tr('पूरा नंबर लिखिए', 'Enter the full number')); return; }
+            try { const { data, error } = await sb.rpc('rider_register', { p_name: (RL.me && RL.me.name) || '', p_vehicle: v }); if (error) throw error; RL.me = data; RL.key = ''; closePSheet(); rlPaint(); pToast(tr('गाड़ी नंबर सेव ✅', 'Vehicle saved ✅')); }
+            catch (e) { pToast(rmMsg(e).slice(0, 80)); }
         }
         async function rlToggleOnline() {
             if (RL.busy) return; RL.busy = true;
@@ -5899,7 +5910,9 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const me = RL.me || {}, view = JSON.stringify([me.registered, me.approved, me.online, me.vehicle, me.name, me.active, me.today, me.stock, RL.err, !!RL.me]);
             rlOffer();
             const locEl = document.getElementById('rlLoc'); if (locEl) locEl.textContent = rlLocTxt();
-            if (view === RL.key) return; RL.key = view;
+            if (view === RL.key) return;
+            const ae = document.activeElement; if (ae && ae.closest && ae.closest('#pnlBody') && /INPUT|TEXTAREA/.test(ae.tagName) && ae.id !== 'rlOtp') return;
+            RL.key = view;
             const otp = document.getElementById('rlOtp'), keep = otp ? otp.value : '';
             document.getElementById('pnlBody').innerHTML = `<div class="pIn">${rlView()}</div>`;
             const o2 = document.getElementById('rlOtp'); if (o2 && keep) o2.value = keep;
@@ -5913,10 +5926,12 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const me = RL.me, u = currentUser() || {};
             if (!me) return `<div class="pcard p-6 text-center"><div class="text-4xl mb-2">⏳</div><p class="text-[13px] pmut">${RL.err ? tr('जुड़ नहीं पाया: ', 'Could not connect: ') + esc(RL.err.slice(0, 80)) : tr('लोड हो रहा है…', 'Loading…')}</p></div>`;
             if (!me.registered) return `<div class="pcard p-5"><div class="text-4xl">🛵</div><p class="pttl text-[18px] mt-2">${tr('डिलीवरी पार्टनर बनें', 'Become a delivery partner')}</p><p class="text-[12px] pmut mt-1 leading-relaxed">${tr('अपने समय पर काम, हर डिलीवरी पर कमाई। जानकारी भरिए — एडमिन जाँचकर मंज़ूरी देगा।', 'Work on your time, earn on every delivery. Fill in the details — the admin will approve you.')}</p>
-                <label class="plabel mt-4">${tr('आपका नाम', 'Your name')}</label><input id="rlName" value="${esc(me.name || u.name || '')}" class="mb-3">
-                <label class="plabel">${tr('गाड़ी का नंबर', 'Vehicle number')}</label><input id="rlVeh" placeholder="UP 32 AB 1234" style="text-transform:uppercase">
-                <button class="pbtn w-full mt-4" onclick="rlRegister()"><i class="fa-solid fa-check"></i> ${tr('पार्टनर बनें', 'Join as partner')}</button></div>`;
-            const head = `<div class="pcard p-4 flex items-center gap-3"><div class="pav">${initials(me.name || u.name || 'R')}</div><div class="min-w-0 flex-1"><p class="pttl text-[16px] truncate">${esc(me.name || u.name || '')}</p><p class="text-[11.5px] pmut">${esc(me.vehicle || '')} • ${esc(me.phone ? '+' + me.phone : '')}</p></div><span class="pill ${me.approved ? (me.online ? 'ok' : 'mut') : 'warn'}">${me.approved ? (me.online ? tr('ऑनलाइन', 'Online') : tr('ऑफ़लाइन', 'Offline')) : tr('मंज़ूरी बाकी', 'Pending')}</span></div>`;
+                <label class="plabel mt-4">${tr('आपका नाम', 'Your name')}</label><input id="rlName" value="${esc(RL.fName != null ? RL.fName : (me.name || u.name || ''))}" oninput="RL.fName=this.value" class="mb-3">
+                <label class="plabel">${tr('गाड़ी का नंबर (वैकल्पिक)', 'Vehicle number (optional)')}</label><input id="rlVeh" value="${esc(RL.fVeh || '')}" oninput="RL.fVeh=this.value" placeholder="UP 32 AB 1234" style="text-transform:uppercase" autocomplete="off">
+                <p class="text-[10.5px] pmut mt-1.5">${tr('अभी नहीं पता तो छोड़ दीजिए — बाद में भी जोड़ सकते हैं', 'Not handy? Skip it — you can add it later')}</p>
+                <button class="pbtn w-full mt-4" onclick="rlRegister()"><i class="fa-solid fa-check"></i> ${tr('पार्टनर बनें', 'Join as partner')}</button>
+                <button class="w-full mt-3 text-[13px] font-bold pmut py-2" onclick="rlRegister(true)">${tr('गाड़ी नंबर छोड़ें — बाद में डालूँगा →', 'Skip vehicle number — add later →')}</button></div>`;
+            const head = `<div class="pcard p-4 flex items-center gap-3"><div class="pav">${initials(me.name || u.name || 'R')}</div><div class="min-w-0 flex-1"><p class="pttl text-[16px] truncate">${esc(me.name || u.name || '')}</p><button class="text-[11.5px] pmut text-left" onclick="rlVehSheet()">${me.vehicle ? esc(me.vehicle) : `<span class="pgold font-bold">+ ${tr('गाड़ी नंबर जोड़ें', 'Add vehicle no.')}</span>`} • ${esc(me.phone ? '+' + me.phone : '')} <i class="fa-solid fa-pen text-[9px]"></i></button></div><span class="pill ${me.approved ? (me.online ? 'ok' : 'mut') : 'warn'}">${me.approved ? (me.online ? tr('ऑनलाइन', 'Online') : tr('ऑफ़लाइन', 'Offline')) : tr('मंज़ूरी बाकी', 'Pending')}</span></div>`;
             if (!me.approved) return head + `<div class="pcard p-5 mt-3 text-center"><div class="text-5xl">⏳</div><p class="pttl text-[16px] mt-2">${tr('एडमिन की मंज़ूरी का इंतज़ार', 'Waiting for admin approval')}</p><p class="text-[12px] pmut mt-1 leading-relaxed">${tr('मंज़ूरी मिलते ही यहाँ "ऑनलाइन जाएँ" बटन आ जाएगा। यह पेज अपने-आप अपडेट होता है।', 'As soon as you are approved, the "Go online" button appears here. This page updates itself.')}</p></div>`;
             const a = me.active, t = me.today || { count: 0, total: 0 };
             const stockRows = allProductsMaster.filter(m => m.p.dbId).map(m => { const s = rlStockOf(m.p.dbId), q = RL.edit[m.p.dbId] != null ? RL.edit[m.p.dbId] : s.qty; return `<div class="flex items-center gap-3"><img class="pthumb" style="width:44px;height:44px" src="${esc(m.p.image)}" alt=""><div class="min-w-0 flex-1"><p class="text-[13px] font-extrabold truncate">${esc(saN(m.p.title))}</p><p class="text-[10.5px] pmut">${money(m.p.price)}${s.reserved ? ' • ' + s.reserved + ' ' + tr('ऑर्डर में', 'in orders') : ''}</p></div><div class="flex items-center gap-2"><button class="pbtn-g" style="width:34px;height:34px;padding:0" onclick="rlStep('${m.p.dbId}',-1)">−</button><b class="pnum w-6 text-center" id="rlQ_${m.p.dbId}">${q}</b><button class="pbtn-g" style="width:34px;height:34px;padding:0" onclick="rlStep('${m.p.dbId}',1)">+</button></div></div>`; }).join('');
@@ -5972,7 +5987,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 document.getElementById('pnlNav').style.display = 'none';
                 const top = document.getElementById('aTop'); if (top) { top.classList.add('hidden'); top.classList.remove('flex'); }
                 document.getElementById('pnlHead').style.display = '';
-                RL.key = ''; rlPaint(); if (!RL.me) rlRefresh(true);
+                if (!arguments[0]) RL.key = ''; rlPaint(); if (!RL.me) rlRefresh(true);
                 if (!allProductsMaster.some(m => m.p.dbId)) liveLoadMenu().then(() => { RL.key = ''; rlPaint(); });
                 return;
             }
