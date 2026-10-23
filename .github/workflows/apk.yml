@@ -56,6 +56,7 @@ jobs:
           npm install --no-audit --no-fund
           U=node_modules/@supabase/supabase-js/dist/umd/supabase.js; [ -f $U ] || U=$(find node_modules/@supabase/supabase-js/dist -path "*umd*" -name "*.js" | head -1); cp "$U" www/supabase.js
           test -s www/supabase.js
+          cp node_modules/maplibre-gl/dist/maplibre-gl.js node_modules/maplibre-gl/dist/maplibre-gl.css www/
           node -e "const fs=require('fs'),f='capacitor.config.json',c=JSON.parse(fs.readFileSync(f));c.appId=process.env.APP_ID;c.appName=process.env.APP_NAME;fs.writeFileSync(f,JSON.stringify(c,null,2))"
           printf 'window.HF_APP={role:"%s",name:"%s"};\n' "$FLAVOR" "$APP_NAME" > www/app-config.js
           # push is switched on only when the Firebase file contains this app's package name
