@@ -758,6 +758,43 @@
         body.light-mode .rf-stats div { background:#f4efe2; }
         .rf-stats b { display:block; font:800 18px 'Outfit',sans-serif; } .rf-stats span { font-size:10.5px; opacity:.65; font-weight:600; }
         .rf-new { margin-left:auto; font-size:9.5px; font-weight:800; padding:2px 7px; border-radius:8px; background:#e2b04a; color:#111; }
+        /* ===== patch25: plain compact earnings card, smaller centre +, earnings & withdraw popups ===== */
+        #panelRoot .ph-cc { margin-top:14px; border-radius:20px; padding:14px 16px 12px; color:#fff; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.14); box-shadow:none; }
+        #panelRoot .ph-cc::after { display:none; }
+        #panelRoot .ph-cc .cc-lbl { margin:0; font-size:12.5px; font-weight:600; letter-spacing:.2px; text-transform:none; opacity:.85; }
+        #panelRoot .ph-cc .cc-link { background:rgba(255,255,255,.1); color:#86efac; font-weight:600; }
+        #panelRoot .cc-amtb { display:flex; align-items:center; gap:8px; color:#fff; min-width:0; }
+        #panelRoot .cc-amtb i { width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,.12); display:flex; align-items:center; justify-content:center; font-size:10px; opacity:.8; flex-shrink:0; }
+        #panelRoot .ph-cc .cc-amt { font:700 32px/1.1 'Outfit',sans-serif; letter-spacing:.2px; text-shadow:none; }
+        #panelRoot .ph-cc .cc-sub { color:rgba(255,255,255,.62); opacity:1; margin-top:1px; font-weight:500; }
+        #panelRoot .ph-cc .cc-wd { color:#1a1305; background:linear-gradient(180deg,#fde68a,#f2b632); box-shadow:0 6px 14px rgba(242,182,50,.3); font-weight:700; padding:8px 13px; }
+        #panelRoot .ph-cc .cc-stats { margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,.12); }
+        #panelRoot .ph-cc .cc-stats > div { border-left-color:rgba(255,255,255,.12); }
+        #panelRoot .ph-cc .cc-stats p { color:rgba(255,255,255,.6); opacity:1; font-weight:500; }
+        #panelRoot .ph-cc .cc-stats b { font-size:14.5px; color:#fff; font-weight:600; }
+        #phNav .mid { bottom:12px; }
+        #phNav .mid b { width:54px; height:54px; font-size:26px; border-width:4px; box-shadow:0 8px 18px rgba(226,169,44,.45); }
+        /* popups */
+        .ep-amt { font:700 34px 'Outfit',sans-serif; }
+        .ep-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
+        .ep-grid div { border-radius:14px; padding:9px 10px; background:var(--p-card2); }
+        .ep-grid p { font-size:10.5px; color:var(--p-mut); font-weight:600; } .ep-grid b { font:700 15px 'Outfit',sans-serif; }
+        .ep-bars { display:flex; align-items:flex-end; gap:8px; height:110px; margin-top:10px; padding:10px 10px 0; border-radius:16px; background:var(--p-card2); }
+        .ep-bars div { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:4px; font-size:10px; font-weight:600; color:var(--p-mut); }
+        .ep-bars i { display:block; width:100%; max-width:26px; border-radius:7px 7px 3px 3px; background:color-mix(in srgb,var(--p-gold) 45%,var(--p-card)); min-height:4px; }
+        .ep-bars div.on i { background:var(--p-gold); } .ep-bars div.on { color:var(--p-tx); }
+        .ep-row { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--p-line); }
+        .ep-row:last-child { border-bottom:0; }
+        .ep-row img { width:38px; height:38px; border-radius:50%; object-fit:cover; flex-shrink:0; }
+        .wd-bal { border-radius:18px; padding:14px 16px; color:#fff; background:linear-gradient(165deg,#2a2112,#0b0d14); }
+        .wd-chips { display:flex; gap:8px; margin-top:10px; }
+        .wd-chips button { flex:1; padding:9px 4px; border-radius:12px; font-size:12.5px; font-weight:700; border:1.5px solid var(--p-line); background:var(--p-card); }
+        .wd-m { display:flex; align-items:center; gap:10px; width:100%; padding:12px 14px; border-radius:16px; border:1.5px solid var(--p-line); background:var(--p-card); margin-top:8px; text-align:left; }
+        .wd-m.on { border-color:var(--p-gold); background:color-mix(in srgb,var(--p-gold) 10%,var(--p-card)); }
+        .wd-m .r { width:20px; height:20px; border-radius:50%; border:2px solid var(--p-line); margin-left:auto; flex-shrink:0; }
+        .wd-m.on .r { border:6px solid var(--p-gold); }
+        .wd-ok { text-align:center; padding:18px 4px 6px; }
+        .wd-ok .e { width:84px; height:84px; border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:40px; color:#fff; background:#22c55e; box-shadow:0 0 0 10px rgba(34,197,94,.15); animation:rtPop .5s cubic-bezier(.2,1.6,.4,1); }
     </style>
 <style>
 html,body{height:100%}
@@ -6517,6 +6554,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 <div class="min-w-0 flex-1"><p class="font-outfit font-black text-[17px] leading-tight truncate">${esc(it.title)}</p><span class="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[11.5px] font-bold" style="background:${it.chipBg};color:${it.chipFg}">${it.chip}</span><p class="text-[11px] pmut mt-1 truncate">${esc(it.sub || '')}</p></div>
                 <div class="text-right flex-shrink-0"><p class="font-outfit font-black text-[20px]" style="color:${it.amtColor || 'var(--p-gold)'}">${money ? '₹' + Math.round(it.amt) : ''}</p><p class="text-[10px] font-black uppercase pmut" style="letter-spacing:.6px">${it.amtSub || ''}</p></div></div>
                 <div class="ph-st">${it.steps.map(s => `<div class="s ${s[1] ? 'done' : (s[2] ? 'cur' : '')}"><span class="dot">${s[1] ? '<i class="fa-solid fa-check"></i>' : (s[3] || '')}</span>${s[0]}</div>`).join('')}</div></div>`;
+            (window.PH_LAST = window.PH_LAST || {})[role] = { c: c, per: per, amt: amt, items: c.items };
             return `
             <div class="ph-hero">
                 <div class="flex items-center gap-3">
@@ -6525,13 +6563,11 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                     <button class="ph-duty ${c.duty.on ? 'on' : ''}" onclick="${c.duty.click}"><span class="tg"></span><span class="text-left leading-tight"><b class="text-[13px] block">${c.duty.on ? c.duty.onTxt : c.duty.offTxt}</b><span class="text-[10.5px]" style="color:rgba(255,255,255,.7)">${c.duty.on ? c.duty.onSub : c.duty.offSub}</span></span></button>
                     <button class="ph-x" onclick="exitPanel()" aria-label="close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                <div class="ph-cc"><div class="cc-shine"></div>
-                    <div class="flex items-center justify-between relative"><span class="cc-brand">Happy Food<small>${c.ccTag || 'PARTNER'}</small></span>${c.detailsClick ? `<button onclick="${c.detailsClick}" class="cc-link">${tr('हिसाब', 'Details')} ›</button>` : ''}</div>
-                    <div class="flex items-center gap-3 mt-3 relative"><span class="cc-chip"></span><i class="fa-solid fa-wifi cc-nfc"></i></div>
-                    <p class="cc-lbl">${c.earnTitle} · ${tr('आज', 'Today')}</p>
-                    <div class="flex items-end justify-between gap-3 relative"><div class="min-w-0"><p class="cc-amt">${money_(amt)}</p><p class="cc-sub">${c.earnSub(per)}</p></div><button class="cc-wd" onclick="${c.withdraw}"><i class="fa-solid fa-arrow-down"></i> ${tr('निकालें', 'Withdraw')}</button></div>
+                <div class="ph-cc">
+                    <div class="flex items-center justify-between"><p class="cc-lbl">💰 ${c.earnTitle} · ${tr('आज', 'Today')}</p>${c.detailsClick ? `<button onclick="${c.detailsClick}" class="cc-link">${tr('हिसाब', 'Details')} ›</button>` : ''}</div>
+                    <div class="flex items-center justify-between gap-3 mt-1"><button class="cc-amtb" onclick="phEarnPop('${role}')"><span class="cc-amt">${money_(amt)}</span><i class="fa-solid fa-chevron-right"></i></button><button class="cc-wd" onclick="${c.withdraw}"><i class="fa-solid fa-arrow-down"></i> ${tr('निकालें', 'Withdraw')}</button></div>
+                    <p class="cc-sub">${c.earnSub(per)}</p>
                     <div class="cc-stats">${c.tiles(per).map(t => `<div><p>${t[0]}</p><b>${t[1]}</b></div>`).join('')}</div>
-                    <div class="cc-foot"><span>${esc(String(c.name || '').toUpperCase()).slice(0, 22)}</span><span>•••• ${esc(c.ccNo || '2026')}</span></div>
                 </div>
                 ${c.note ? `<div class="ph-note"><span>${c.note}</span>${c.noteClick ? `<button onclick="${c.noteClick}" style="color:#86efac" class="whitespace-nowrap">${tr('देखें', 'View')} ›</button>` : ''}</div>` : ''}
             </div>
@@ -6663,7 +6699,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 earnTitle: tr('मेरी कमाई', 'MY EARNINGS'), unit: tr('ऑर्डर', 'orders'), ccTag: 'SHOP PARTNER', ccNo: String(v.phone || v.id || '').replace(/\D/g, '').slice(-4) || '0001', money: money, detailsClick: "setTab('earn')",
                 earnSub: per => per.filter(x => x.done).length + ' ' + tr('ऑर्डर डिलीवर', 'orders delivered') + ' · ' + tr('कमीशन कटकर', 'after commission'),
                 tiles: per => { const g = per.reduce((a, x) => a + (x.done ? x.amt / (1 - comm) : 0), 0); return [[tr('ऑर्डर', 'Orders'), per.filter(x => x.done).length], [tr('बिक्री', 'Sales'), money_(g)], [tr('कमीशन', 'Commission'), '−' + money_(g * comm)]]; },
-                withdraw: "setTab('earn')",
+                withdraw: "phWithdraw('vendor')",
                 chipsTitle: '🏪 ' + tr('आज के ऑर्डर', "Today's orders"),
                 chips: [['🔔', today.filter(o => o.status === 'vwait').length, tr('नए', 'New')], ['👨‍🍳', today.filter(o => o.status === 'cooking').length, tr('बन रहे', 'Cooking')], ['🛵', today.filter(o => ['searching', 'accepted', 'on_the_way'].indexOf(o.status) > -1).length, tr('रास्ते में', 'Out')], ['✅', today.filter(o => o.status === 'delivered').length, tr('डिलीवर', 'Delivered')]],
                 targets: [[today.filter(o => o.status === 'delivered').length, 15, tr('ऑर्डर पूरे', 'Orders done'), '#16a34a', tr('लक्ष्य 15', 'Goal 15')], [Math.round(sales / 500), 10, tr('बिक्री (₹500)', 'Sales (₹500)'), '#ea580c', money_(sales)], [avail, total || 1, tr('मेन्यू चालू', 'Menu live'), '#2563eb', avail + '/' + total]],
@@ -7064,5 +7100,52 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             a.parentNode.insertBefore(r, a.nextSibling);
         })();
         { const f = toggleLanguage; toggleLanguage = function () { const r = f.apply(this, arguments); const s = document.getElementById('drawerRefer'); if (s) s.textContent = tr('दोस्त बुलाओ, ₹' + REF_AMT + ' पाओ', 'Refer & earn ₹' + REF_AMT); return r; }; }
+
+        /* ================= patch25: earnings popup (tap the amount) + withdraw popup ================= */
+        function phEarnPop(role) {
+            const L = (window.PH_LAST || {})[role]; if (!L) return; vib(15);
+            const c = L.c, t0 = phDay(Date.now()), today = (L.items || []).filter(x => x.ts >= t0);
+            const wk = currentLang === 'hi' ? ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि'] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const days = []; for (let i = 6; i >= 0; i--) { const d0 = t0 - i * DAY; days.push({ d0, amt: c.money.filter(x => x.ts >= d0 && x.ts < d0 + DAY && x.done).reduce((s, x) => s + x.amt, 0) }); }
+            const mx = Math.max(1, ...days.map(d => d.amt)), week = days.reduce((s, d) => s + d.amt, 0);
+            openPSheet(tr('आज की कमाई', "Today's earnings"), `<p class="text-[12px] pmut">${c.earnSub(L.per)}</p><p class="ep-amt">${money_(L.amt)}</p>
+                <div class="ep-grid">${c.tiles(L.per).map(t => `<div><p>${t[0]}</p><b>${t[1]}</b></div>`).join('')}</div>
+                <div class="flex items-center justify-between mt-5"><p class="text-[13px] font-bold">${tr('पिछले 7 दिन', 'Last 7 days')}</p><p class="text-[12.5px] font-bold pgold">${money_(week)}</p></div>
+                <div class="ep-bars">${days.map((d, i) => `<div class="${i === 6 ? 'on' : ''}"><span>${d.amt >= 1000 ? (d.amt / 1000).toFixed(1) + 'k' : Math.round(d.amt)}</span><i style="height:${Math.round(d.amt / mx * 70)}%"></i><span>${i === 6 ? tr('आज', 'Today') : wk[new Date(d.d0).getDay()]}</span></div>`).join('')}</div>
+                <p class="text-[13px] font-bold mt-5">${tr('आज के ऑर्डर', "Today's orders")} (${today.length})</p>
+                <div class="mt-1">${today.length ? today.map(x => `<div class="ep-row"><img src="${esc(x.img)}" alt=""><div class="flex-1 min-w-0"><p class="text-[13px] font-bold truncate">${esc(x.title)}</p><p class="text-[11px] pmut truncate">${esc(x.sub || '')}</p></div><b class="text-[14px]" style="color:${x.state === 'done' ? 'var(--p-ok)' : 'var(--p-mut)'}">${x.state === 'done' ? '+' : ''}${money_(x.amt)}</b></div>`).join('') : `<p class="text-[12.5px] pmut py-4 text-center">${tr('आज अभी कोई ऑर्डर नहीं', 'No orders yet today')}</p>`}</div>`);
+        }
+        const WD = { amt: '', m: 'upi', done: null };
+        function wdBalance(role) {
+            const L = (window.PH_LAST || {})[role]; if (!L) return 0;
+            const t0 = phDay(Date.now()) - 6 * DAY, paid = saGet('hf_wd_v1', []).filter(w => w.role === role).reduce((s, w) => s + w.amt, 0);
+            return Math.max(0, Math.round(L.c.money.filter(x => x.done && x.ts >= t0).reduce((s, x) => s + x.amt, 0) - paid));
+        }
+        function phWithdraw(role) { WD.amt = ''; WD.done = null; WD.role = role; vib(15); openPSheet(tr('पैसे निकालें', 'Withdraw'), '<div id="wdRoot"></div>'); wdPaint(); }
+        function wdPaint() {
+            const el = document.getElementById('wdRoot'); if (!el) return;
+            const bal = wdBalance(WD.role), upi = saGet('hf_upi_v1', ''), bank = saGet('hf_bank_v1', '');
+            if (WD.done) { el.innerHTML = `<div class="wd-ok"><div class="e"><i class="fa-solid fa-check"></i></div><p class="font-outfit font-extrabold text-[20px] mt-4">${money_(WD.done.amt)} ${tr('की रिक्वेस्ट भेज दी', 'requested')}</p><p class="text-[12.5px] pmut mt-1">${tr('24 घंटे के अंदर आपके', 'Within 24 hours to your')} ${WD.done.m === 'upi' ? 'UPI' : tr('बैंक खाते', 'bank account')} ${tr('में आ जाएगा', '')}</p><p class="text-[11px] pmut mt-2">Ref: ${WD.done.id}</p><button class="pbtn w-full mt-5" onclick="closePSheet()">${tr('ठीक है', 'Done')}</button></div>`; return; }
+            const hist = saGet('hf_wd_v1', []).filter(w => w.role === WD.role).slice(0, 4);
+            el.innerHTML = `<div class="wd-bal"><p class="text-[12px]" style="color:rgba(255,255,255,.7)">${tr('निकालने लायक बैलेंस', 'Available balance')}</p><p class="font-outfit font-bold text-[30px]">${money_(bal)}</p><p class="text-[11px]" style="color:rgba(255,255,255,.55)">${tr('पिछले 7 दिन की कमाई, कमीशन कटकर', 'Last 7 days, after commission')}</p></div>
+                <label class="plabel mt-4">${tr('कितने निकालने हैं (₹)', 'Amount (₹)')}</label><input id="wdAmt" inputmode="numeric" placeholder="0" value="${esc(WD.amt)}" oninput="WD.amt=this.value.replace(/\\D/g,'');this.value=WD.amt" style="font-size:20px;font-weight:700">
+                <div class="wd-chips">${[500, 1000, 2000].map(v => `<button onclick="WD.amt='${Math.min(v, bal)}';wdPaint()">₹${v}</button>`).join('')}<button onclick="WD.amt='${bal}';wdPaint()">${tr('पूरा', 'All')}</button></div>
+                <p class="plabel mt-4">${tr('कहाँ भेजें', 'Send to')}</p>
+                <button class="wd-m ${WD.m === 'upi' ? 'on' : ''}" onclick="WD.m='upi';wdPaint()"><span class="text-xl">⚡</span><span><b class="text-[13px] block">UPI</b><span class="text-[11px] pmut">${upi ? esc(upi) : tr('तुरंत — UPI ID डालें', 'Instant — add UPI ID')}</span></span><span class="r"></span></button>
+                <button class="wd-m ${WD.m === 'bank' ? 'on' : ''}" onclick="WD.m='bank';wdPaint()"><span class="text-xl">🏦</span><span><b class="text-[13px] block">${tr('बैंक खाता', 'Bank account')}</b><span class="text-[11px] pmut">${bank ? 'XXXX ' + esc(bank.slice(-4)) : tr('खाता नंबर डालें', 'Add account number')}</span></span><span class="r"></span></button>
+                ${WD.m === 'upi' && !upi ? `<input id="wdUpi" class="mt-2" placeholder="naam@upi">` : ''}${WD.m === 'bank' && !bank ? `<input id="wdBank" class="mt-2" inputmode="numeric" placeholder="${tr('खाता नंबर', 'Account number')}">` : ''}
+                <button class="pbtn w-full mt-4" onclick="wdGo()"><i class="fa-solid fa-arrow-down"></i> ${WD.amt ? money_(+WD.amt) + ' ' : ''}${tr('निकालें', 'Withdraw')}</button>
+                ${hist.length ? `<p class="text-[13px] font-bold mt-5">${tr('पिछली निकासी', 'Recent withdrawals')}</p>${hist.map(w => `<div class="ep-row"><span class="text-xl">${w.m === 'upi' ? '⚡' : '🏦'}</span><div class="flex-1"><p class="text-[13px] font-bold">${money_(w.amt)}</p><p class="text-[11px] pmut">${new Date(w.ts).toLocaleString(currentLang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}</p></div><span class="pill warn">${tr('प्रोसेस में', 'Processing')}</span></div>`).join('')}` : ''}`;
+        }
+        function wdGo() {
+            const bal = wdBalance(WD.role), a = parseInt(WD.amt, 10) || 0;
+            if (!a) { pToast(tr('रकम लिखिए', 'Enter an amount')); return; }
+            if (a > bal) { pToast(tr('बैलेंस से ज़्यादा नहीं निकाल सकते', 'More than your balance')); return; }
+            if (WD.m === 'upi' && !saGet('hf_upi_v1', '')) { const u = ((document.getElementById('wdUpi') || {}).value || '').trim(); if (!/^[\w.\-]{2,}@[a-z]{2,}$/i.test(u)) { pToast(tr('सही UPI ID लिखिए, जैसे naam@upi', 'Enter a valid UPI ID')); return; } saPut('hf_upi_v1', u); }
+            if (WD.m === 'bank' && !saGet('hf_bank_v1', '')) { const b = ((document.getElementById('wdBank') || {}).value || '').replace(/\D/g, ''); if (b.length < 9) { pToast(tr('सही खाता नंबर लिखिए', 'Enter a valid account number')); return; } saPut('hf_bank_v1', b); }
+            const w = { id: 'WD' + Date.now().toString(36).toUpperCase(), role: WD.role, amt: a, m: WD.m, ts: Date.now() };
+            const L = saGet('hf_wd_v1', []); L.unshift(w); saPut('hf_wd_v1', L);
+            WD.done = w; sfx('success'); vib([30, 40, 60]); wdPaint();
+        }
 
     </script></body></html>
