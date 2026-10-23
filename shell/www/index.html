@@ -6035,4 +6035,17 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const ic = document.getElementById('hdrThemeIc'); if (ic) ic.className = 'fa-solid ' + (isDarkMode ? 'fa-sun' : 'fa-moon') + ' text-[15px]';
         })();
 
+        /* ================= TAP SOUND + LIGHT VIBRATION ON EVERY BUTTON — patch20 ================= */
+        (function () {
+            let last = 0;
+            const SEL = 'button, a, [onclick], [role=switch], .rg-card, label[for], input[type=checkbox], select';
+            document.addEventListener('pointerdown', e => {
+                const el = e.target && e.target.closest ? e.target.closest(SEL) : null;
+                if (!el || el.disabled || !SND.on) return;
+                const now = Date.now(); if (now - last < 60) return; last = now;
+                try { tone(1500, 0, 0.035, 'sine', 0.09); tone(900, 0.012, 0.03, 'triangle', 0.05); } catch (x) { }
+                try { navigator.vibrate && navigator.vibrate(10); } catch (x) { }
+            }, { capture: true, passive: true });
+        })();
+
     </script></body></html>
