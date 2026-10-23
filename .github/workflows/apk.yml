@@ -14,6 +14,25 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - flavor: customer
+            app_id: com.happyfood.market
+            app_name: Happy Food
+            res: res
+            file: HappyFood.apk
+          - flavor: rider
+            app_id: com.happyfood.partner
+            app_name: Happy Food Partner
+            res: res-partner
+            file: HappyFood-Partner.apk
+          - flavor: vendor
+            app_id: com.happyfood.shop
+            app_name: Happy Food Shop
+            res: res-shop
+            file: HappyFood-Shop.apk
     steps:
       - uses: actions/checkout@v4
 
@@ -26,31 +45,37 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Install and create the Android project
+      - name: Install and create the Android project (${{ matrix.flavor }})
         working-directory: shell
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          APP_ID: ${{ matrix.app_id }}
+          APP_NAME: ${{ matrix.app_name }}
+          FLAVOR: ${{ matrix.flavor }}
         run: |
           npm install --no-audit --no-fund
           U=node_modules/@supabase/supabase-js/dist/umd/supabase.js; [ -f $U ] || U=$(find node_modules/@supabase/supabase-js/dist -path "*umd*" -name "*.js" | head -1); cp "$U" www/supabase.js
           test -s www/supabase.js
-          # push notifications are switched on only when the Firebase file is saved as a GitHub secret
-          if [ -n "$GOOGLE_SERVICES_JSON" ]; then echo 'window.HF_PUSH=true;' > www/push-config.js; else echo 'window.HF_PUSH=false;' > www/push-config.js; fi
+          node -e "const fs=require('fs'),f='capacitor.config.json',c=JSON.parse(fs.readFileSync(f));c.appId=process.env.APP_ID;c.appName=process.env.APP_NAME;fs.writeFileSync(f,JSON.stringify(c,null,2))"
+          printf 'window.HF_APP={role:"%s",name:"%s"};\n' "$FLAVOR" "$APP_NAME" > www/app-config.js
+          # push is switched on only when the Firebase file contains this app's package name
+          PUSH=false
+          if [ -n "$GOOGLE_SERVICES_JSON" ] && printf '%s' "$GOOGLE_SERVICES_JSON" | grep -q "\"$APP_ID\""; then PUSH=true; fi
+          echo "window.HF_PUSH=$PUSH;" > www/push-config.js
           npx cap add android
-          if [ -n "$GOOGLE_SERVICES_JSON" ]; then printf '%s' "$GOOGLE_SERVICES_JSON" > android/app/google-services.json; echo "push: ON"; else echo "push: OFF (no GOOGLE_SERVICES_JSON secret)"; fi
+          if [ "$PUSH" = true ]; then printf '%s' "$GOOGLE_SERVICES_JSON" > android/app/google-services.json; fi
+          echo "flavor=$FLAVOR appId=$APP_ID push=$PUSH"
           M=android/app/src/main/AndroidManifest.xml
           sed -i 's#<application#<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <application#' $M
-          # own icon, launch splash and the ring sound
-          cp -r res/. android/app/src/main/res/
+          # own icon, launch splash and the ring sound for this app
+          cp -r ${{ matrix.res }}/. android/app/src/main/res/
           npx cap sync android
-        env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
 
-      - name: Dark launch colour
+      - name: Dark status bar
         working-directory: shell
         continue-on-error: true
         run: |
           RES=android/app/src/main/res
-          mkdir -p $RES/values
-          printf '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <color name="hf_bg">#0B0D14</color>\n</resources>\n' > $RES/values/hf_colors.xml
           sed -i 's#<style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">#<style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">\n        <item name="android:statusBarColor">\#0B0D14</item>\n        <item name="android:navigationBarColor">\#0B0D14</item>#' $RES/values/styles.xml
 
       # Same signing key every build, so a new APK installs over the old one.
@@ -63,8 +88,27 @@ jobs:
         working-directory: shell/android
         run: ./gradlew assembleDebug --no-daemon
 
+      - name: Name the APK
+        run: |
+          mkdir -p out
+          cp shell/android/app/build/outputs/apk/debug/app-debug.apk "out/${{ matrix.file }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.flavor }}
+          path: out/${{ matrix.file }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: apks
+          merge-multiple: true
+      - run: ls -l apks
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: app-${{ github.run_number }}
-          name: Happy Food app ${{ github.run_number }}
-          files: shell/android/app/build/outputs/apk/debug/app-debug.apk
+          name: Happy Food apps ${{ github.run_number }}
+          files: apks/*.apk
