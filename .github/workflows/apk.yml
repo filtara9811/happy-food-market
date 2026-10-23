@@ -30,6 +30,8 @@ jobs:
         working-directory: shell
         run: |
           npm install --no-audit --no-fund
+          U=node_modules/@supabase/supabase-js/dist/umd/supabase.js; [ -f $U ] || U=$(find node_modules/@supabase/supabase-js/dist -path "*umd*" -name "*.js" | head -1); cp "$U" www/supabase.js
+          test -s www/supabase.js
           npx cap add android
           M=android/app/src/main/AndroidManifest.xml
           sed -i 's#<application#<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n    <application#' $M
