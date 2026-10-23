@@ -50,7 +50,9 @@ Deno.serve(async (req) => {
     const dayReset = now - dayStart > 24 * 3600_000;
     if (dayReset) day = 0;
     if (inWin >= MAX_PER_WIN || day >= MAX_PER_DAY) return json({ ok: false, code: "rate_limited" });
-    const test = testCode(phone);
+    // DEMO mode: until the Fast2SMS key is saved as a secret, every number uses OTP 1234 (no SMS is sent).
+    const demo = !Deno.env.get("FAST2SMS_API_KEY");
+    const test = demo ? "1234" : testCode(phone);
     const code = test ?? String(crypto.getRandomValues(new Uint32Array(1))[0] % 10000).padStart(4, "0");
     if (!test) { try { await sendSms(phone, code); } catch (e) { return json({ ok: false, code: "sms_failed", detail: String(e).slice(0, 180) }); } }
     await SB.from("phone_otps").upsert({
@@ -58,7 +60,7 @@ Deno.serve(async (req) => {
       window_start: new Date(win).toISOString(), win_count: inWin + 1,
       day_start: new Date(dayReset || !row ? now : dayStart).toISOString(), day_count: day + 1,
     });
-    return json({ ok: true, length: 4 });
+    return json({ ok: true, length: 4, demo });
   }
 
   if (b.action === "verify") {
