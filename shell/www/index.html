@@ -6036,7 +6036,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             }
             const left = Math.max(0, Math.ceil(RL.offerLeft - (Date.now() - RL.offerT0) / 1000)), lt = document.getElementById('vrLeft'), arc = document.getElementById('vrArc');
             if (lt && +lt.textContent !== left) { lt.textContent = left; if (left <= 5 && left > 0) sfx('tick'); }
-            if (arc) { arc.style.strokeDashoffset = 119.4 * (1 - left / 30); arc.style.stroke = left <= 5 ? 'var(--p-bad)' : 'var(--p-gold)'; }
+            if (arc) { arc.style.strokeDashoffset = 119.4 * (1 - left / Math.max(RL.offerLeft || 60, 1)); arc.style.stroke = left <= 5 ? 'var(--p-bad)' : 'var(--p-gold)'; }
             if (left <= 0) { RL.offerSeen[f.id] = 1; rlCloseOffer(); }
         }
         function rlCloseOffer() { const el = document.getElementById('vRing'); if (el) { el.classList.add('hidden'); el.dataset.k = ''; el.innerHTML = ''; } if (RING.key && RING.key.indexOf('rl:') === 0) ringStop(); }
