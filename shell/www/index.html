@@ -1131,6 +1131,30 @@
         .vn-no { margin-left:auto; height:38px; padding:0 14px; border-radius:12px; font-weight:800; font-size:13px; color:#dc2626; background:rgba(239,68,68,.1); }
         .vn-ok { height:38px; padding:0 16px; border-radius:12px; font-weight:900; font-size:13px; color:#fff; background:#16a34a; box-shadow:0 6px 14px rgba(22,163,74,.3); }
         .vn-none { margin-top:10px; padding:10px 12px; border-radius:14px; background:var(--p-card2); font-size:11.5px; font-weight:600; color:var(--p-mut); }
+        /* ===== patch33 ===== */
+        .ds-ib { width:40px; height:40px; border-radius:50%; background:#fff; border:1.5px solid #ece6d6; color:#1a1305; font-size:15px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+        .ds-ua { width:42px; height:42px; border-radius:50%; flex-shrink:0; background:linear-gradient(135deg,#fce49d,#b88222); color:#1a1305; font:800 17px 'Outfit',sans-serif; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 3px #fff,0 0 0 4.5px #e2b04a; }
+        .ds-ua.big { width:52px; height:52px; font-size:22px; }
+        .ds-hd .ds-nm { font-size:18px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .ds-hd { gap:10px; }
+        .ds-sr { display:flex; gap:8px; align-items:center; padding:14px 16px 0; }
+        .ds-sb2 { flex:1; min-width:0; height:44px; display:flex; align-items:center; gap:8px; padding:0 14px; border-radius:14px; background:#fff; border:1.5px solid #ece6d6; color:#a8741b; }
+        .ds-sb2 input { flex:1; min-width:0; border:0; outline:none; background:transparent; font-size:14px; color:#111; }
+        .ds-vw { display:flex; gap:2px; padding:3px; border-radius:14px; background:#fff; border:1.5px solid #ece6d6; flex-shrink:0; }
+        .ds-vw button { width:30px; height:36px; border-radius:10px; color:#999; font-size:13px; } .ds-vw button.on { background:#fdf3dc; color:#a8741b; }
+        .ds-grid.ds-grid3 { grid-template-columns:repeat(3,1fr); gap:12px 8px; } .ds-grid3 .ds-in { font-size:12px; } .ds-grid3 .ds-ip { font-size:12.5px; }
+        .ds-grid3 .ds-add, .ds-grid3 .ds-st { height:30px; font-size:11px; right:4px; padding:0 10px; } .ds-grid3 .ds-st button { width:24px; height:30px; }
+        .ds-grid.ds-list { grid-template-columns:1fr; } .ds-row { display:flex; align-items:center; gap:12px; padding:12px; border-radius:18px; background:#fff; border:1px solid #f0e8d6; }
+        .ds-row .ds-im { width:116px; flex-shrink:0; margin-bottom:16px; } .ds-row .ds-lw { position:static; display:inline-block; margin-bottom:4px; }
+        .ds-grid.ds-hz { display:flex; overflow-x:auto; gap:12px; } .ds-grid.ds-hz .ds-it { flex:0 0 150px; } .ds-grid.ds-hz::-webkit-scrollbar { display:none; }
+        .ds-hh { display:flex; align-items:center; gap:12px; padding:16px; }
+        .ds-me { display:flex; align-items:center; gap:12px; margin:0 16px; padding:12px; border-radius:18px; background:#fff; border:1px solid #f0e8d6; }
+        .ds-me b { display:block; font-size:15px; } .ds-me span { font-size:12px; color:#777; } .ds-me button { font-size:12px; font-weight:800; color:#a8741b; }
+        .ds-hs { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:10px 16px 0; } .ds-hs div { border-radius:14px; padding:10px; background:#1a1305; color:#fff; text-align:center; } .ds-hs b { display:block; font:800 16px 'Outfit',sans-serif; color:#fde68a; } .ds-hs span { font-size:10.5px; opacity:.7; }
+        .ds-hl { padding:12px 16px; display:flex; flex-direction:column; gap:10px; }
+        .ds-hc { padding:12px 14px; border-radius:18px; background:#fff; border:1px solid #f0e8d6; } .ds-hc > div b { font-size:13.5px; } .ds-ok2 { font-size:11px; font-weight:800; color:#15803d; background:#dcfce7; padding:3px 8px; border-radius:8px; }
+        .ds-hd2 { font-size:11.5px; color:#888; margin-top:3px; } .ds-hi { font-size:12.5px; color:#333; margin-top:6px; line-height:1.4; } .ds-ht { font:800 18px 'Outfit',sans-serif; }
+        .ds-ag { height:34px; padding:0 14px; border-radius:11px; background:#1a1305; color:#fde68a; font-size:12.5px; font-weight:800; }
+        .ds-login { margin:20px 16px; padding:20px; border-radius:20px; background:#fff; border:1px solid #f0e8d6; text-align:center; } .ds-login .e { font-size:44px; } .ds-login p { font-size:13px; color:#555; margin:6px 0 14px; }
     </style>
 <style>
 html,body{height:100%}
@@ -8551,7 +8575,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 DS.done = bill; DS.cart = {}; DS.step = '';
             } finally { PNL.vid = keep; }
             sfx('placed'); vib([40, 60, 40]); dsPaint();
-            setTimeout(() => { pToast('🔔 ' + tr('QR से नया ऑर्डर: ₹' + DS.done.tot + ' — ' + (DS.done.pay === 'upi' ? 'UPI' : 'कैश'), 'New QR order: ₹' + DS.done.tot)); }, 900);
+            const bd = DS.done; setTimeout(() => { if (bd) pToast('🔔 ' + tr('QR से नया ऑर्डर: ₹' + bd.tot + ' — ' + (bd.pay === 'upi' ? 'UPI' : 'कैश'), 'New QR order: ₹' + bd.tot)); }, 900);
         }
 
         /* ================= patch32: new shop orders live inside the centre + (accept / reject, 3-hour counts) ================= */
@@ -8587,6 +8611,73 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         }; }
         { const f = phNavPaint; phNavPaint = function () { const r = f.apply(this, arguments); try { vNewRefresh(); } catch (e) { } return r; }; }
         setInterval(() => { if (PNL.role === 'vendor') try { vNewRefresh(); } catch (e) { } }, 1500);
+
+        /* ================= patch33: digital shop — customer profile + order history, share, search, grid views ================= */
+        const dsPaint_old = dsPaint;
+        DS.q = ''; DS.view = saGet('hf_dsview', 'grid2'); DS.hist = false;
+        const dsMe = () => saGet('hf_ds_me', { name: '', phone: '' });
+        function dsShare() {
+            const v = DB.vendors.find(x => x.id === DS.vid) || curV(), url = shopLink(DS.vid), msg = tr(`🏪 ${v.name} — Happy Food पर सीधे ऑर्डर करें 👉 ${url}`, `🏪 ${v.name} — order directly on Happy Food 👉 ${url}`);
+            vib(12);
+            try { if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.Share) { Capacitor.Plugins.Share.share({ title: v.name, text: msg }); return; } } catch (e) { }
+            try { if (navigator.share) { navigator.share({ title: v.name, text: msg }).catch(() => { }); return; } } catch (e) { }
+            refCopyOld(msg); showToast(tr('दुकान का लिंक कॉपी हो गया 📋', 'Shop link copied 📋'));
+        }
+        function dsHistHtml(v) {
+            const me = dsMe(), L = me.phone ? saGet('hf_bills_v1', []).filter(b => b.vid === DS.vid && b.src === 'qr' && b.phone === me.phone) : [];
+            const tot = L.reduce((s, b) => s + b.tot, 0);
+            return `<div class="ds-wrap">${DS.preview ? `<div class="ds-pv">👁️ ${tr('प्रीव्यू', 'Preview')}<button onclick="closeDShop()">${tr('बंद', 'Close')} ✕</button></div>` : ''}
+                <div class="ds-hh"><button class="ds-ib" onclick="DS.hist=false;dsPaint()"><i class="fa-solid fa-arrow-left"></i></button><div class="flex-1 min-w-0"><p class="ds-nm" style="font-size:17px">${tr('मेरे ऑर्डर', 'My orders')}</p><p class="ds-sb">${esc(v.name)}</p></div></div>
+                ${me.phone ? `<div class="ds-me"><div class="ds-ua big">${esc((me.name || 'G').charAt(0).toUpperCase())}</div><div class="flex-1 min-w-0"><b>${esc(me.name || tr('ग्राहक', 'Customer'))}</b><span>+91 ${esc(me.phone)}</span></div><button onclick="saPut('hf_ds_me',{name:'',phone:''});dsPaint()">${tr('बदलें', 'Change')}</button></div>
+                    <div class="ds-hs"><div><b>${L.length}</b><span>${tr('ऑर्डर', 'Orders')}</span></div><div><b>₹${tot.toLocaleString('en-IN')}</b><span>${tr('कुल ख़र्च', 'Total spent')}</span></div><div><b>${L.length ? new Date(L[0].ts).toLocaleDateString(currentLang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short' }) : '—'}</b><span>${tr('पिछला ऑर्डर', 'Last order')}</span></div></div>
+                    <div class="ds-hl">${L.length ? L.map(b => `<div class="ds-hc"><div class="flex justify-between items-center"><b>${b.no}</b><span class="ds-ok2">✅ ${tr('मिल गया', 'Received')}</span></div>
+                        <p class="ds-hd2">${new Date(b.ts).toLocaleString(currentLang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })} • ${b.pay === 'upi' ? '📱 UPI' : '💵 ' + tr('कैश', 'Cash')}</p>
+                        <p class="ds-hi">${b.items.map(i => esc(i.name) + ' ×' + i.qty).join(', ')}</p>
+                        <div class="flex items-center justify-between mt-2"><b class="ds-ht">₹${b.tot.toLocaleString('en-IN')}</b><button class="ds-ag" onclick="dsAgain('${b.no}')">↻ ${tr('फिर से मँगाएँ', 'Order again')}</button></div></div>`).join('')
+                        : `<p class="ds-empty">${tr('इस दुकान से अभी कोई ऑर्डर नहीं', 'No orders from this shop yet')}</p>`}</div>`
+                : `<div class="ds-login"><div class="e">🧾</div><p>${tr('अपना मोबाइल नंबर डालें — इस दुकान से आपके सारे ऑर्डर दिखेंगे', 'Enter your mobile — see all your orders from this shop')}</p>
+                    <input class="bl-in w-full" id="dsMeN" placeholder="${tr('आपका नाम', 'Your name')}"><input class="bl-in w-full mt-2" id="dsMeP" inputmode="numeric" maxlength="10" placeholder="${tr('मोबाइल नंबर', 'Mobile number')}">
+                    <button class="bl-go" onclick="dsSaveMe()">${tr('ऑर्डर देखें', 'See my orders')}</button></div>`}<div style="height:40px"></div></div>`;
+        }
+        function dsSaveMe() { const n = document.getElementById('dsMeN').value.trim(), p = document.getElementById('dsMeP').value.replace(/\D/g, ''); if (p.length !== 10) { showToast(tr('मोबाइल 10 अंक का लिखिए', 'Mobile must be 10 digits')); return; } saPut('hf_ds_me', { name: n, phone: p }); dsPaint(); }
+        function dsAgain(no) {
+            const b = saGet('hf_bills_v1', []).find(x => x.no === no); if (!b) return; const keep = PNL.vid; PNL.vid = DS.vid; let miss = 0;
+            try { b.items.forEach(i => { const inv = billInvId(i.pid), q = vOut(DS.vid, inv) ? 0 : viGet(inv).qty; const n = Math.min(q, i.qty); if (n > 0) DS.cart[i.pid] = (DS.cart[i.pid] || 0) + n; if (n < i.qty) miss++; }); } finally { PNL.vid = keep; }
+            DS.hist = false; dsPaint(); showToast(miss ? tr('कुछ आइटम अभी स्टॉक में नहीं — बाक़ी कार्ट में डाल दिए', 'Some items are out — the rest are in your cart') : tr('पिछला ऑर्डर कार्ट में ✅', 'Previous order is in your cart ✅'));
+        }
+        dsPaint = function () {
+            const el = document.getElementById('dShop'); if (!el) return;
+            const v = DB.vendors.find(x => x.id === DS.vid) || curV();
+            if (DS.done) return (function () { const f = dsPaint_old; return f(); })();
+            if (DS.hist) { el.innerHTML = dsHistHtml(v); return; }
+            const items = dsItems(DS.vid), keep = PNL.vid, me = dsMe();
+            const stores = STORES.filter(s => items.some(p => (p.store || 'food') === s.id));
+            const q = DS.q.trim().toLowerCase();
+            const L = items.filter(p => (DS.store === 'all' || (p.store || 'food') === DS.store) && (!q || ((p.title.hi || '') + ' ' + (p.title.en || '')).toLowerCase().includes(q)));
+            const V = [['grid2', 'fa-table-cells-large'], ['list', 'fa-list'], ['hz', 'fa-arrows-left-right'], ['grid3', 'fa-grip']];
+            const card = p => { PNL.vid = DS.vid; const sq = viGet(p.id).qty; PNL.vid = keep; const n = DS.cart[p.id] || 0;
+                const btn = n ? `<div class="ds-st"><button onclick="dsAdd('${p.id}',-1)">−</button><b>${n}</b><button onclick="dsAdd('${p.id}',1)">+</button></div>` : `<button class="ds-add" onclick="dsAdd('${p.id}',1)">ADD +</button>`;
+                const lw = sq <= VLOW ? `<span class="ds-lw">${tr('बस ' + sq + ' बचे', 'Only ' + sq + ' left')}</span>` : '';
+                const nm = esc(saN(p.name0 || p.title)), pr = `₹${p.price}${p.packLbl ? ` <small>/ ${esc(saN(p.packLbl))}</small>` : ''}`;
+                if (DS.view === 'list') return `<div class="ds-it ds-row"><div class="flex-1 min-w-0">${lw}<p class="ds-in">${nm}</p><p class="ds-ip">${pr}</p></div><div class="ds-im">${'<img src="' + esc(p.image) + '" alt="">'}${btn}</div></div>`;
+                return `<div class="ds-it"><div class="ds-im"><img src="${esc(p.image)}" alt="">${lw}${btn}</div><p class="ds-in">${nm}</p><p class="ds-ip">${pr}</p></div>`; };
+            el.innerHTML = `<div class="ds-wrap">${DS.preview ? `<div class="ds-pv">👁️ ${tr('प्रीव्यू — QR स्कैन करने वाले ग्राहक को ऐसा दिखेगा', 'Preview — this is what a customer sees after scanning')}<button onclick="closeDShop()">${tr('बंद', 'Close')} ✕</button></div>` : ''}
+                <div class="ds-hd"><div class="ds-av">${v.photo ? `<img src="${esc(v.photo)}" alt="">` : esc(initials(v.name))}</div><div class="flex-1 min-w-0"><p class="ds-nm">${esc(v.name)}</p><p class="ds-sb"><span class="ds-vf">✅ ${tr('वेरिफ़ाइड', 'Verified')}</span> ⭐ ${v.rating || '4.6'} • ${v.open ? '🟢 ' + tr('खुली', 'Open') : '🔴 ' + tr('बंद', 'Closed')}</p></div>
+                    <button class="ds-ib" onclick="dsShare()" aria-label="share"><i class="fa-solid fa-share-nodes"></i></button>
+                    <button class="ds-ua" onclick="DS.hist=true;dsPaint()" aria-label="my orders">${me.phone ? esc((me.name || 'G').charAt(0).toUpperCase()) : '<i class="fa-solid fa-user"></i>'}</button></div>
+                <div class="px-4">${vbnSlides(DS.vid)}</div>
+                <div class="ds-sr"><div class="ds-sb2"><i class="fa-solid fa-magnifying-glass"></i><input id="dsQ" placeholder="${tr('इस दुकान में खोजें…', 'Search this shop…')}" value="${esc(DS.q)}" oninput="DS.q=this.value;dsGrid()"></div>
+                    <div class="ds-vw">${V.map(x => `<button class="${DS.view === x[0] ? 'on' : ''}" onclick="DS.view='${x[0]}';saPut('hf_dsview','${x[0]}');dsPaint()"><i class="fa-solid ${x[1]}"></i></button>`).join('')}</div></div>
+                <div class="ds-chips">${[['all', tr('सभी', 'All')]].concat(stores.map(s => [s.id, saN(s.name)])).map(x => `<button class="${DS.store === x[0] ? 'on' : ''}" onclick="DS.store='${x[0]}';dsPaint()">${esc(x[1])}</button>`).join('')}</div>
+                <div id="dsGrid" class="ds-grid ds-${DS.view}">${L.length ? L.map(card).join('') : `<p class="ds-empty">${q ? tr('“' + esc(DS.q) + '” नहीं मिला', 'Nothing for “' + esc(DS.q) + '”') : tr('अभी कोई सामान स्टॉक में नहीं', 'Nothing in stock right now')}</p>`}</div><div style="height:110px"></div></div>
+                ${dsQty() ? (DS.step === 'pay' ? dsPayHtml() : `<button class="ds-cart" onclick="DS.step='pay';dsPaint()"><span>🧺 ${dsQty()} ${tr('आइटम', 'items')} • <b>₹${dsTot().toLocaleString('en-IN')}</b></span><span>${tr('ऑर्डर करें', 'Order')} ›</span></button>`) : ''}`;
+            const bn = el.querySelector('.bn'); if (bn) bnWire(el);
+            if (DS.step === 'pay') { const me2 = dsMe(); if (!DS.name && me2.name) DS.name = me2.name; if (!DS.phone && me2.phone) DS.phone = me2.phone; }
+        };
+        function dsGrid() { const s = DS.q; dsPaint(); const i = document.getElementById('dsQ'); if (i) { i.focus(); i.setSelectionRange(s.length, s.length); } }
+        // remember the customer after an order so "my orders" works
+        { const f = dsPlace; dsPlace = function () { if (DS.phone && DS.phone.length === 10) saPut('hf_ds_me', { name: (DS.name || '').trim(), phone: DS.phone }); return f.apply(this, arguments); }; }
+        { const f = openDShop; openDShop = function () { const r = f.apply(this, arguments); DS.q = ''; DS.hist = false; const me = dsMe(); DS.name = me.name; DS.phone = me.phone; dsPaint(); return r; }; }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
