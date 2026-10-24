@@ -1,0 +1,97 @@
+name: Fetch 3D icons (no APK)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/assets.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  icons:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download Fluent 3D emoji (MIT) and shrink to webp
+        run: |
+          pip install pillow >/dev/null
+          mkdir -p assets/emoji
+          while IFS= read -r name; do
+            [ -z "$name" ] && continue
+            file=$(echo "$name" | tr 'A-Z' 'a-z' | tr ' ' '_' | tr -d "'")
+            url="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/$(echo "$name" | sed 's/ /%20/g')/3D/${file}_3d.png"
+            curl -sfL "$url" -o "/tmp/$file.png" && python3 -c "
+          from PIL import Image; im=Image.open('/tmp/$file.png').convert('RGBA'); im.thumbnail((180,180)); im.save('assets/emoji/$file.webp','WEBP',quality=82)" && echo "ok $file" || echo "MISSING $name"
+          done <<'LIST'
+          Red apple
+          Green apple
+          Banana
+          Mango
+          Grapes
+          Watermelon
+          Pineapple
+          Tangerine
+          Kiwi fruit
+          Pear
+          Strawberry
+          Cherries
+          Peach
+          Lemon
+          Melon
+          Coconut
+          Blueberries
+          Peanuts
+          Chestnut
+          Beans
+          Carrot
+          Broccoli
+          Tomato
+          Potato
+          Onion
+          Garlic
+          Cucumber
+          Hot pepper
+          Leafy green
+          Ear of corn
+          Eggplant
+          Bell pepper
+          Mushroom
+          Ginger root
+          Pea pod
+          Glass of milk
+          Cheese wedge
+          Butter
+          Egg
+          Bread
+          Soft ice cream
+          Honey pot
+          Salt
+          Cooked rice
+          Rice ball
+          Jar
+          Basket
+          Shopping cart
+          Package
+          Fork and knife with plate
+          Pot of food
+          Takeout box
+          Sweet potato
+          Avocado
+          Olive
+          Cut of meat
+          Poultry leg
+          Bacon
+          Fish
+          Shrimp
+          LIST
+          ls assets/emoji | wc -l
+      - name: Commit icons
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add assets/emoji
+          git commit -m "Add Fluent 3D icons (MIT, Microsoft)" || echo "nothing to commit"
+          git push
