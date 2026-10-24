@@ -923,6 +923,40 @@
         .ps-ref { width:100%; display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:18px; margin-top:4px; background:linear-gradient(90deg,rgba(226,176,74,.22),rgba(226,176,74,.06)); border:1px solid rgba(226,176,74,.6); color:var(--sh-tx); }
         .ps-ref .e { font-size:26px; } .ps-ref b { display:block; font-size:14px; font-weight:800; color:#b8862a; } body:not(.light-mode) .ps-ref b { color:#fde68a; }
         .ps-ref small { font-size:11px; opacity:.7; } .ps-ref > i { color:#b8862a; font-size:12px; }
+        /* ===== patch28: smart flow, store catalogue admin, shop mapping ===== */
+        .sm-flow { display:flex; align-items:stretch; gap:6px; margin-bottom:10px; }
+        .sm-flow .s { flex:1; border-radius:16px; padding:9px 10px; background:var(--sh-card); border:1.5px solid var(--sh-line); display:flex; flex-direction:column; align-items:center; text-align:center; transition:all .3s; }
+        .sm-flow .s i { font-style:normal; font-size:20px; } .sm-flow .s b { font-size:12px; font-weight:800; color:var(--sh-tx); margin-top:2px; } .sm-flow .s small { font-size:10.5px; color:var(--sh-mut); font-weight:600; }
+        .sm-flow .s.on { border-color:#e2b04a; background:color-mix(in srgb,#e2b04a 14%,var(--sh-card)); box-shadow:0 0 0 4px rgba(226,176,74,.15); animation:smGlow 1.4s ease-in-out infinite; }
+        .sm-flow .s.done { border-color:#22c55e; background:color-mix(in srgb,#22c55e 10%,var(--sh-card)); } .sm-flow .s.done small { color:#16a34a; }
+        .sm-flow .s.skip { opacity:.55; } .sm-flow .s.skip b { text-decoration:line-through; }
+        .sm-flow .ar { display:flex; align-items:center; color:var(--sh-mut); font-size:12px; }
+        @keyframes smGlow { 50% { box-shadow:0 0 0 7px rgba(226,176,74,.06); } }
+        .ss-tile { position:relative; } .ss-soon { position:absolute; top:4px; right:6px; font-style:normal; font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:8px; background:#111; color:#fde68a; }
+        .ss-sc { display:flex; gap:6px; overflow-x:auto; margin-top:8px; } .ss-sc::-webkit-scrollbar { display:none; }
+        .ss-sc button { flex:0 0 auto; padding:6px 12px; border-radius:12px; font-size:12px; font-weight:700; background:transparent; border:1px dashed color-mix(in srgb,var(--ac) 50%,transparent); color:var(--tx); }
+        .ss-sc button.on { background:var(--ac); color:#fff; border-style:solid; }
+        #panelRoot .ac-stores { display:flex; gap:8px; overflow-x:auto; padding:2px 2px 6px; } #panelRoot .ac-stores::-webkit-scrollbar { display:none; }
+        #panelRoot .ac-stores button { flex:0 0 auto; width:78px; padding:8px 4px; border-radius:16px; background:var(--p-card); border:1.5px solid var(--p-line); display:flex; flex-direction:column; align-items:center; gap:3px; position:relative; }
+        #panelRoot .ac-stores button img { width:40px; height:40px; object-fit:contain; } #panelRoot .ac-stores button span { font-size:11.5px; font-weight:700; }
+        #panelRoot .ac-stores button b { position:absolute; top:4px; right:5px; font-size:9.5px; min-width:18px; height:18px; padding:0 4px; border-radius:9px; background:var(--p-card2); display:flex; align-items:center; justify-content:center; }
+        #panelRoot .ac-stores button.on { border-color:var(--p-gold); background:color-mix(in srgb,var(--p-gold) 12%,var(--p-card)); }
+        #panelRoot .ac-stores button.off { opacity:.6; } #panelRoot .ac-stores button.add { border-style:dashed; color:var(--p-gold); justify-content:center; } #panelRoot .ac-stores button.add i { font-size:20px; margin:8px 0 4px; }
+        #panelRoot .ac-help { margin-top:10px; padding:10px 12px; border-radius:14px; background:var(--p-card2); font-size:12px; font-weight:700; }
+        .ac-big { width:62px; height:62px; border-radius:18px; background:var(--p-card2); display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; overflow:hidden; }
+        .ac-big img { width:84%; height:84%; object-fit:contain; }
+        .ac-th { width:50px; height:50px; border-radius:14px; background:var(--p-card2); display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden; } .ac-th img { width:86%; height:86%; object-fit:contain; }
+        .ac-imgs { display:grid; grid-template-columns:repeat(8,1fr); gap:5px; max-height:140px; overflow-y:auto; padding:6px; border-radius:14px; background:var(--p-card2); }
+        .ac-imgs button { aspect-ratio:1; border-radius:10px; display:flex; align-items:center; justify-content:center; border:2px solid transparent; } .ac-imgs button.on { border-color:var(--p-gold); background:var(--p-card); }
+        .ac-imgs img { width:80%; height:80%; object-fit:contain; }
+        .ac-ths { display:flex; gap:8px; flex-wrap:wrap; } .ac-ths button { width:34px; height:34px; border-radius:50%; border:3px solid transparent; box-shadow:0 0 0 1px var(--p-line); } .ac-ths button.on { border-color:var(--p-card); box-shadow:0 0 0 3px var(--p-gold); }
+        .ac-pk { display:grid; grid-template-columns:1.3fr 1fr 1fr 36px; gap:6px; } .ac-pk input { padding:10px 10px !important; font-size:13px !important; }
+        .ac-pk button { border-radius:12px; background:color-mix(in srgb,#ef4444 12%,var(--p-card)); color:#dc2626; }
+        .vi-stores { display:flex; gap:6px; overflow-x:auto; } .vi-stores::-webkit-scrollbar { display:none; }
+        .vi-stores button { flex:0 0 auto; display:flex; align-items:center; gap:6px; padding:6px 10px 6px 6px; border-radius:14px; border:1.5px solid var(--p-line); background:var(--p-card); font-size:12px; font-weight:700; }
+        .vi-stores img { width:26px; height:26px; object-fit:contain; } .vi-stores b { font-size:10px; min-width:18px; height:18px; border-radius:9px; background:#16a34a; color:#fff; display:flex; align-items:center; justify-content:center; padding:0 4px; }
+        .vi-stores button.on { border-color:var(--p-gold); background:color-mix(in srgb,var(--p-gold) 12%,var(--p-card)); }
+        .vi-note { margin-top:12px; padding:10px 12px; border-radius:14px; background:color-mix(in srgb,var(--p-gold) 10%,var(--p-card)); font-size:11.5px; font-weight:600; line-height:1.45; }
     </style>
 <style>
 html,body{height:100%}
@@ -7649,5 +7683,318 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             } catch (e) { }
             return r;
         }; }
+
+        /* ================= patch28: smart dispatch, meat store, admin store catalogue, vendor mapping for every store ================= */
+        /* ---------- A. smart mode: rider holding everything first, otherwise the shop ---------- */
+        (function () {
+            const old = Object.assign({}, DMODE); Object.keys(DMODE).forEach(k => delete DMODE[k]);
+            DMODE.smart = ['fa-wand-magic-sparkles', 'स्मार्ट (पहले राइडर-स्टॉक, फिर दुकान)', 'Smart (rider stock, then shop)', 'पास के जिस राइडर के पास पूरा सामान है, पहले उसे — न मिले तो अपने-आप दुकान को', 'A nearby rider holding everything first — otherwise the shop, automatically', ['ग्राहक', 'स्टॉक वाला राइडर', 'नहीं तो दुकान', 'ग्राहक'], ['Customer', 'Rider with stock', 'else shop', 'Customer']];
+            Object.assign(DMODE, old);
+        })();
+        { const f = beginFlow; beginFlow = function (o) {
+            if (DB.settings.mode !== 'smart') return f.apply(this, arguments);
+            o.smart = true;
+            if (eligibleRiders(o.items, true).length) { o.smartStep = 1; routeOrder(o, 'stock'); }
+            else { o.smartStep = 2; o.smartSkip = true; routeOrder(o, 'vendor'); }
+        }; }
+        { const f = setSt; setSt = function (o, st) {
+            if (st === 'no_rider' && o && o.smart && orderRoute(o) === 'stock' && !o.fellBack) { o.fellBack = true; o.smartStep = 2; routeOrder(o, 'vendor'); return; }
+            return f.apply(this, arguments);
+        }; }
+        { const f = renderLive; renderLive = function () {
+            const r = f.apply(this, arguments);
+            try {
+                const d = live && live.dbo, p = live && live.phase; if (!d || !d.smart || ['search', 'vwait', 'cook', 'accepted'].indexOf(p) < 0) return r;
+                const stock = orderRoute(d) === 'stock';
+                let s1 = 'on', t1 = tr('पास में ढूँढ रहे…', 'searching nearby…'), s2 = '', t2 = tr('ज़रूरत पड़ी तो', 'if needed');
+                if (!stock) { s1 = 'skip'; t1 = d.smartSkip ? tr('पास में स्टॉक नहीं', 'no stock nearby') : tr('किसी ने नहीं माना', 'nobody accepted');
+                    if (p === 'vwait') { s2 = 'on'; t2 = tr('दुकान की मंज़ूरी…', 'awaiting shop…'); } else { s2 = 'done'; t2 = tr('दुकान ने माना ✓', 'shop accepted ✓'); } }
+                else if (p !== 'search') { s1 = 'done'; t1 = tr('राइडर मिल गया ✓', 'rider found ✓'); t2 = tr('ज़रूरत नहीं पड़ी', 'not needed'); s2 = 'skip'; }
+                const body = document.getElementById('liveBody');
+                body.insertAdjacentHTML('afterbegin', `<div class="sm-flow"><div class="s ${s1}"><i>🛵</i><b>${tr('स्टॉक वाला राइडर', 'Rider with stock')}</b><small>${t1}</small></div><span class="ar"><i class="fa-solid fa-arrow-right"></i></span><div class="s ${s2}"><i>🏪</i><b>${tr('दुकान', 'Shop')}</b><small>${t2}</small></div></div>`);
+                if (stock && p === 'search') document.getElementById('liveSub').textContent = tr('⚡ स्मार्ट: पहले स्टॉक वाला राइडर — 10–15 मिनट में', '⚡ Smart: rider with stock first — 10–15 min');
+                if (!stock && p === 'vwait') document.getElementById('liveSub').textContent = tr('राइडर के पास नहीं मिला — अब दुकान से मँगा रहे हैं', 'No rider stock — ordering from the shop now');
+            } catch (e) { }
+            return r;
+        }; }
+
+        /* ---------- B. store catalogue (editable by admin, saved on the phone) ---------- */
+        const TH = {
+            gold: { bg: '#f8eed9', body: '#fffaf0', soft: '#f4e3bd', ac: '#a8741b', tx: '#3b2a08' }, red: { bg: '#fdeee8', body: '#fff8f5', soft: '#fde1d6', ac: '#d9472b', tx: '#6e1d0e' },
+            brown: { bg: '#f6ece1', body: '#fffaf4', soft: '#efdcc6', ac: '#8b5a2b', tx: '#46280f' }, green: { bg: '#f3efe2', body: '#fbf9f2', soft: '#e7e1cb', ac: '#2f6b2f', tx: '#1d431d' },
+            leaf: { bg: '#eaf6e6', body: '#f7fcf5', soft: '#d8efd0', ac: '#2e8b3a', tx: '#134d1d' }, blue: { bg: '#eaf2fb', body: '#f7fafe', soft: '#d7e6f7', ac: '#2b6cb0', tx: '#163e6b' },
+            meat: { bg: '#fbe9e7', body: '#fff7f6', soft: '#f7d4cf', ac: '#b3261e', tx: '#5c120d' }, purple: { bg: '#f1ecfb', body: '#faf8fe', soft: '#e2d8f6', ac: '#6b46c1', tx: '#33215e' },
+            pink: { bg: '#fcebf3', body: '#fff7fb', soft: '#f6d3e4', ac: '#c2185b', tx: '#5e0b2c' }
+        };
+        const REVEMO = {}; Object.keys(window.EMO || {}).forEach(k => { REVEMO[EMO[k]] = 'emo:' + k; });
+        const imgKey = u => REVEMO[u] || (u === FOODIMG.thali ? 'food:thali' : u);
+        const imgR = k => !k ? '' : (k.indexOf('emo:') === 0 ? E(k.slice(4)) : (k.indexOf('food:') === 0 ? FOODIMG[k.slice(5)] : k));
+        function scatDefault() {
+            const thOf = { food: 'gold', fruits: 'red', dry: 'brown', kirana: 'green', veg: 'leaf', dairy: 'blue' };
+            const S = { v: 1, stores: STORES.map(s => ({ id: s.id, name: s.name, img: imgKey(s.img), th: thOf[s.id] || 'gold', slot: s.slot, active: true })), cats: {}, items: {} };
+            S.stores.push({ id: 'meat', name: { hi: 'मीट', en: 'Meat' }, img: 'emo:cut_of_meat', th: 'meat', slot: { hi: '🧊 25–30 मिनट • ठंडे बॉक्स में • हलाल/झटका', en: '🧊 25–30 min • cold box • halal/jhatka' }, active: true });
+            Object.keys(STORE_SUBS).forEach(sid => {
+                S.cats[sid] = STORE_SUBS[sid].map(x => { const first = STORE_ITEMS[sid].find(r => r[4] === x[0]); return { id: x[0], name: { hi: x[1], en: x[2] }, img: x[3] ? 'emo:' + x[3] : (first ? imgKey(first[3]) : ''), subs: [], active: true }; });
+                S.items[sid] = STORE_ITEMS[sid].map((r, ri) => ({ id: r[0], name: { hi: r[1], en: r[2] }, img: imgKey(r[3]), cat: r[4], sub: '', packs: r[5].map(k => ({ hi: k[0], en: k[1], price: k[2], mrp: k[3] })), vendors: ri % 2 ? ['v2'] : ['v1', 'v2'], active: true }));
+            });
+            S.cats.meat = [['chicken', 'चिकन', 'Chicken', 'poultry_leg'], ['mutton', 'मटन', 'Mutton', 'cut_of_meat'], ['fish', 'मछली व सी-फ़ूड', 'Fish & Seafood', 'fish'], ['eggs', 'अंडे', 'Eggs', 'egg']].map(x => ({ id: x[0], name: { hi: x[1], en: x[2] }, img: 'emo:' + x[3], subs: [], active: true }));
+            S.cats.meat[0].subs = [{ id: 'curry', name: { hi: 'करी कट', en: 'Curry cut' } }, { id: 'boneless', name: { hi: 'बोनलेस', en: 'Boneless' } }];
+            const M = (id, hi, en, img, cat, sub, packs) => ({ id, name: { hi, en }, img: 'emo:' + img, cat, sub, packs: packs.map(k => ({ hi: k[0], en: k[1], price: k[2], mrp: k[3] })), vendors: ['v3'], active: true });
+            S.items.meat = [
+                M('mt1', 'चिकन करी कट', 'Chicken Curry Cut', 'poultry_leg', 'chicken', 'curry', [['500 g', '500 g', 149, 179], ['1 kg', '1 kg', 289, 349]]),
+                M('mt2', 'बोनलेस चिकन', 'Boneless Chicken', 'poultry_leg', 'chicken', 'boneless', [['500 g', '500 g', 219, 259]]),
+                M('mt3', 'चिकन लेग पीस', 'Chicken Leg Pieces', 'poultry_leg', 'chicken', 'curry', [['4 पीस', '4 pcs', 199, 239]]),
+                M('mt4', 'मटन करी कट', 'Mutton Curry Cut', 'cut_of_meat', 'mutton', '', [['500 g', '500 g', 399, 449], ['1 kg', '1 kg', 789, 880]]),
+                M('mt5', 'मटन कीमा', 'Mutton Keema', 'cut_of_meat', 'mutton', '', [['500 g', '500 g', 429, 480]]),
+                M('mt6', 'रोहू मछली', 'Rohu Fish', 'fish', 'fish', '', [['500 g', '500 g', 179, 210]]),
+                M('mt7', 'झींगा (प्रॉन्स)', 'Prawns', 'shrimp', 'fish', '', [['250 g', '250 g', 299, 349]]),
+                M('mt8', 'देसी अंडे ट्रे', 'Farm Eggs Tray', 'egg', 'eggs', '', [['30 पीस', '30 pcs', 210, 240]])
+            ];
+            return S;
+        }
+        let SCAT = saGet('hf_scat_v1', null); if (!SCAT || !SCAT.stores) SCAT = scatDefault();
+        function stRebuild() {
+            STORES.length = 0; SCAT.stores.forEach(s => STORES.push({ id: s.id, name: s.name, img: imgR(s.img), th: TH[s.th] || TH.gold, slot: s.slot, active: s.active !== false }));
+            [SVAR, SBASE, STORE_CATS].forEach(o => Object.keys(o).forEach(k => delete o[k]));
+            SCAT.stores.forEach(s => {
+                if (s.id === 'food') return;
+                STORE_CATS[s.id] = (SCAT.cats[s.id] || []).filter(c => c.active !== false).map(c => ({ id: c.id, icon: '', photo: imgR(c.img), name: c.name, active: true, subs: (c.subs || []).map(x => ({ id: x.id, name: x.name, active: true })) }));
+                SBASE[s.id] = (SCAT.items[s.id] || []).filter(it => it.active !== false && it.packs && it.packs.length).map(it => {
+                    const pid = 'st_' + it.id, img = imgR(it.img);
+                    const vars = it.packs.map((k, i) => { const mrp = Math.max(+k.mrp || 0, +k.price), off = mrp > k.price ? Math.round((1 - k.price / mrp) * 100) : 0;
+                        const v = { id: pid + (i ? '_' + i : ''), store: s.id, sub: it.cat, sc: it.sub || '', base: pid, packIdx: i, packLbl: { hi: k.hi, en: k.en || k.hi }, title: { hi: it.name.hi + ' · ' + k.hi, en: (it.name.en || it.name.hi) + ' · ' + (k.en || k.hi) }, name0: it.name,
+                            subtitle: { hi: k.hi + ' • ताज़ा और साफ़', en: (k.en || k.hi) + ' • fresh & clean' }, price: +k.price, originalPrice: mrp, badge: { hi: off ? off + '% छूट' : 'नया', en: off ? off + '% OFF' : 'NEW' }, rating: '4.' + (6 + (it.id.length % 4)) + ' ★', image: img, addons: [] };
+                        SVAR[v.id] = v; return v; });
+                    return { id: pid, store: s.id, sub: it.cat, sc: it.sub || '', name: it.name, img: img, vars: vars, vendors: it.vendors || [] };
+                });
+            });
+            ALL_SVARS.length = 0; Object.keys(SVAR).forEach(k => ALL_SVARS.push(SVAR[k]));
+            for (let i = recommendedProducts.length - 1; i >= 0; i--) if (recommendedProducts[i].store) recommendedProducts.splice(i, 1);
+            stEnsureExtras();
+        }
+        function stRefresh() {
+            const c = ST.cur;
+            if (c !== 'food') { if (!SBASE[c]) storeApply('food'); else { ST.cur = '_'; storeApply(c); } }
+            else { renderRecommendedProducts(); }
+            const h = document.getElementById('hfBanner'); if (h) h.dataset.k = '';
+            stFabPaint();
+        }
+        function scatSave() { saPut('hf_scat_v1', SCAT); stRebuild(); stRefresh(); DB.rev++; }
+        stRebuild();
+        { const f = hdMeta; hdMeta = function (p) { if (p && p.store) return { cat: p.sub, sub: p.sc || '' }; return f.apply(this, arguments); }; }
+        const scStore = id => SCAT.stores.find(s => s.id === id);
+        const scItem = (sid, iid) => (SCAT.items[sid] || []).find(x => x.id === iid);
+
+        /* ---------- C. store screen: sub-category row, "coming soon" stores ---------- */
+        { const f = ssItems; ssItems = function (id) { let L = f(id); if (SS.sc) L = L.filter(b => b.sc === SS.sc); return L; }; }
+        { const f = ssPaint; ssPaint = function () {
+            if (SS.sub !== SS._ls) { SS.sc = ''; SS._ls = SS.sub; }
+            const r = f.apply(this, arguments);
+            try {
+                const el = document.getElementById('storeScr');
+                el.querySelectorAll('.ss-tile').forEach((t, i) => { const s = STORES[i]; if (s && !s.active) t.insertAdjacentHTML('beforeend', `<em class="ss-soon">${tr('जल्द', 'Soon')}</em>`); });
+                const c = (STORE_CATS[SS.id] || []).find(x => x.id === SS.sub);
+                if (c && c.subs.length) el.querySelector('.ss-subs').insertAdjacentHTML('afterend', `<div class="ss-sc">${[['', tr('सब', 'All')]].concat(c.subs.map(s => [s.id, saN(s.name)])).map(x => `<button class="${SS.sc === x[0] ? 'on' : ''}" onclick="SS.sc='${x[0]}';ssPaint()">${esc(x[1])}</button>`).join('')}</div>`);
+            } catch (e) { }
+            return r;
+        }; }
+        { const f = ssPick; ssPick = function (id) { const s = stObj(id); if (s && !s.active) { vib(20); showToast('🔜 ' + saN(s.name) + ' ' + tr('जल्द शुरू होगा', 'is coming soon')); return; } return f.apply(this, arguments); }; }
+
+        /* ---------- banners for meat + any new store ---------- */
+        { const f = bnData; bnData = function (sid) {
+            if (sid === 'meat') return [['ताज़ा चिकन करी कट 🍗', 'Fresh chicken curry cut 🍗', 'रोज़ सुबह कटा • ₹149 से', 'Cut every morning • from ₹149', () => E('poultry_leg'), 'chicken', '#5c120d', '#b3261e'],
+                ['मटन व कीमा', 'Mutton & keema', 'लाइसेंस वाली दुकानें • ठंडे बॉक्स में', 'Licensed shops • cold-box delivery', () => E('cut_of_meat'), 'mutton', '#4a1410', '#8f2a1e'],
+                ['मछली व झींगा 🐟', 'Fish & prawns 🐟', 'रोहू, प्रॉन्स — साफ़ और कटे', 'Rohu, prawns — cleaned & cut', () => E('fish'), 'fish', '#0f3550', '#1e6aa0']];
+            if (['food', 'fruits', 'dry', 'kirana', 'veg', 'dairy'].indexOf(sid) > -1) return f(sid);
+            const S = stObj(sid), c0 = (STORE_CATS[sid] || [])[0];
+            return [[saN(S.name) + ' — अब Happy Food पर', saN(S.name) + ' — now on Happy Food', S.slot.hi || '', S.slot.en || S.slot.hi || '', () => S.img, c0 ? c0.id : 'all', S.th.tx, S.th.ac]];
+        }; }
+
+        /* ---------- D. admin: store → category → sub-category → product ---------- */
+        const ACAT = { store: 'food', seg: 'cats', cat: 'all', img: '', th: 'gold' };
+        { const f = adminCatalog; adminCatalog = function () {
+            const chips = `<div class="ac-stores">${SCAT.stores.map(s => { const n = s.id === 'food' ? allProductsMaster.length : (SCAT.items[s.id] || []).length;
+                return `<button class="${ACAT.store === s.id ? 'on' : ''} ${s.active === false ? 'off' : ''}" onclick="ACAT.store='${s.id}';ACAT.cat='all';renderPanel()"><img src="${esc(imgR(s.img))}" alt=""><span>${esc(saN(s.name))}</span><b>${n}</b></button>`; }).join('')}
+                <button class="add" onclick="acStoreSheet()"><i class="fa-solid fa-plus"></i><span>${tr('नई दुकान', 'New store')}</span></button></div>`;
+            if (ACAT.store === 'food') return chips + `<div class="ac-help">🍱 ${tr('फ़ूड की कैटेगरी और प्रोडक्ट (पहले जैसे)', 'Food categories & products (as before)')}</div>` + f.apply(this, arguments);
+            return chips + acStoreView();
+        }; }
+        function acStoreView() {
+            const s = scStore(ACAT.store); if (!s) { ACAT.store = 'food'; return ''; }
+            const cats = SCAT.cats[s.id] = SCAT.cats[s.id] || [], items = SCAT.items[s.id] = SCAT.items[s.id] || [];
+            const cnt = (cid, sid) => items.filter(i => i.cat === cid && (!sid || i.sub === sid)).length;
+            const head = `<div class="pcard p-3.5 mt-3 flex items-center gap-3" style="border-color:${(TH[s.th] || TH.gold).ac}"><div class="ac-big" style="background:${(TH[s.th] || TH.gold).soft}"><img src="${esc(imgR(s.img))}" alt=""></div>
+                <div class="min-w-0 flex-1"><p class="text-[15px] font-extrabold">${esc(saN(s.name))}</p><p class="text-[11px] pmut truncate">${esc(saN(s.slot))}</p><p class="text-[11px] font-bold mt-0.5" style="color:${s.active === false ? '#d97706' : '#16a34a'}">${s.active === false ? tr('🔜 ग्राहक को "जल्द" दिखेगा', '🔜 Shown as "coming soon"') : tr('✅ ग्राहक को दिख रही है', '✅ Live for customers')}</p></div>
+                <div class="flex flex-col items-end gap-2">${sw(s.active !== false, `acToggleStore('${s.id}')`)}<button class="pbtn-g" style="padding:6px 10px" onclick="acStoreSheet('${s.id}')"><i class="fa-solid fa-pen"></i></button></div></div>`;
+            const seg = `<div class="pseg mt-3"><button class="${ACAT.seg === 'cats' ? 'on' : ''}" onclick="ACAT.seg='cats';renderPanel()">${tr('कैटेगरी', 'Categories')} (${cats.length})</button><button class="${ACAT.seg === 'prods' ? 'on' : ''}" onclick="ACAT.seg='prods';renderPanel()">${tr('प्रोडक्ट', 'Products')} (${items.length})</button></div>`;
+            if (ACAT.seg === 'cats') return head + seg + `<div class="flex items-center justify-between mt-4"><p class="pttl text-[15px]">${tr('कैटेगरी व सब-कैटेगरी', 'Categories & sub-categories')}</p><button class="pbtn" style="padding:8px 14px" onclick="acCatSheet()"><i class="fa-solid fa-plus"></i> ${tr('कैटेगरी', 'Category')}</button></div>
+                <div class="space-y-3 mt-3">${cats.length ? cats.map((c, i) => `<div class="pcard p-3.5 ${c.active === false ? 'opacity-60' : ''}"><div class="flex items-center gap-3"><div class="sa-ic">${c.img ? `<img src="${esc(imgR(c.img))}" alt="">` : '🗂️'}</div>
+                    <div class="min-w-0 flex-1"><p class="text-[14.5px] font-extrabold truncate">${esc(saN(c.name))}</p><p class="text-[11px] pmut">${(c.subs || []).length} ${tr('सब-कैटेगरी', 'sub-categories')} • ${cnt(c.id)} ${tr('प्रोडक्ट', 'products')}</p></div>
+                    <div class="flex flex-col gap-1"><button class="sa-mv" onclick="acMoveCat(${i},-1)" ${i ? '' : 'disabled'}><i class="fa-solid fa-chevron-up"></i></button><button class="sa-mv" onclick="acMoveCat(${i},1)" ${i < cats.length - 1 ? '' : 'disabled'}><i class="fa-solid fa-chevron-down"></i></button></div>${sw(c.active !== false, `acToggleCat('${c.id}')`)}</div>
+                    <div class="flex flex-wrap gap-1.5 mt-3">${(c.subs || []).map(x => `<button class="sa-chip" onclick="acSubSheet('${c.id}','${x.id}')">${esc(saN(x.name))} <b>${cnt(c.id, x.id)}</b></button>`).join('')}<button class="sa-chip add" onclick="acSubSheet('${c.id}')"><i class="fa-solid fa-plus"></i> ${tr('सब-कैटेगरी', 'Sub-category')}</button></div>
+                    <div class="flex gap-2 mt-3"><button class="pbtn-g flex-1" onclick="acCatSheet('${c.id}')"><i class="fa-solid fa-pen"></i> ${tr('एडिट', 'Edit')}</button><button class="pbtn-g flex-1" onclick="ACAT.seg='prods';ACAT.cat='${c.id}';renderPanel()"><i class="fa-solid fa-box"></i> ${tr('प्रोडक्ट देखें', 'Products')}</button></div></div>`).join('')
+                    : `<div class="pcard2 p-5 text-center text-[12.5px] pmut">${tr('अभी कोई कैटेगरी नहीं — ऊपर “+ कैटेगरी” दबाइए', 'No categories yet — tap “+ Category”')}</div>`}</div>`;
+            const list = items.filter(i => ACAT.cat === 'all' || i.cat === ACAT.cat);
+            return head + seg + `<div class="flex items-center justify-between mt-4"><p class="pttl text-[15px]">${tr('प्रोडक्ट', 'Products')}</p><button class="pbtn" style="padding:8px 14px" onclick="acItemSheet()"><i class="fa-solid fa-plus"></i> ${tr('प्रोडक्ट', 'Product')}</button></div>
+                <div class="sa-fil mt-3">${[['all', tr('सभी', 'All')]].concat(cats.map(c => [c.id, saN(c.name)])).map(x => `<button class="${ACAT.cat === x[0] ? 'on' : ''}" onclick="ACAT.cat='${x[0]}';renderPanel(true)">${esc(x[1])}</button>`).join('')}</div>
+                <div class="space-y-2.5 mt-3">${list.length ? list.map(it => { const c = cats.find(x => x.id === it.cat);
+                    return `<div class="pcard p-3 flex items-center gap-3 ${it.active === false ? 'opacity-60' : ''}" onclick="acItemSheet('${it.id}')"><div class="ac-th"><img src="${esc(imgR(it.img))}" alt=""></div>
+                        <div class="min-w-0 flex-1"><p class="text-[13.5px] font-extrabold truncate">${esc(saN(it.name))}</p><p class="text-[11px] pmut truncate">${c ? esc(saN(c.name)) : '—'} • ${it.packs.map(k => esc(k.hi) + ' ₹' + k.price).join(' / ')}</p><p class="text-[11px] font-bold mt-0.5" style="color:var(--p-gold)"><i class="fa-solid fa-store"></i> ${(it.vendors || []).length} ${tr('दुकानें बेच रहीं', 'shops selling')}</p></div>
+                        <span onclick="event.stopPropagation()">${sw(it.active !== false, `acToggleItem('${it.id}')`)}</span></div>`; }).join('')
+                    : `<div class="pcard2 p-5 text-center text-[12.5px] pmut">${tr('अभी कोई प्रोडक्ट नहीं — “+ प्रोडक्ट” दबाइए', 'No products — tap “+ Product”')}</div>`}</div>`;
+        }
+        function acToggleStore(id) { const s = scStore(id); s.active = s.active === false; scatSave(); renderPanel(true); pToast(s.active ? tr('दुकान ग्राहकों के लिए चालू ✅', 'Store is live ✅') : tr('दुकान “जल्द आ रहा” पर', 'Store set to coming soon')); }
+        function acToggleCat(id) { const c = SCAT.cats[ACAT.store].find(x => x.id === id); c.active = c.active === false; scatSave(); renderPanel(true); }
+        function acToggleItem(id) { const it = scItem(ACAT.store, id); it.active = it.active === false; scatSave(); renderPanel(true); pToast(it.active ? tr('प्रोडक्ट चालू ✅', 'Product live ✅') : tr('प्रोडक्ट छिपाया', 'Product hidden')); }
+        function acMoveCat(i, d) { const a = SCAT.cats[ACAT.store], j = i + d; if (j < 0 || j >= a.length) return; const t = a[i]; a[i] = a[j]; a[j] = t; scatSave(); renderPanel(true); }
+        // image picker: 3D icons or a phone photo
+        function acImgPicker(cur) {
+            ACAT.img = cur || '';
+            return `<label class="plabel">${tr('फ़ोटो / आइकन', 'Photo / icon')}</label><div class="flex items-center gap-3 mb-2"><div class="ac-big" id="acImgBox">${cur ? `<img src="${esc(imgR(cur))}" alt="">` : '📷'}</div>
+                <label class="pbtn-g cursor-pointer"><i class="fa-solid fa-camera"></i> ${tr('फ़ोन से फ़ोटो', 'Phone photo')}<input type="file" accept="image/*" class="hidden" onchange="acPickFile(this)"></label></div>
+                <div class="ac-imgs">${Object.keys(window.EMO || {}).map(k => `<button class="${cur === 'emo:' + k ? 'on' : ''}" onclick="acPickEmo('${k}',this)"><img src="${EMO[k]}" alt=""></button>`).join('')}</div>`;
+        }
+        function acPickEmo(k, btn) { ACAT.img = 'emo:' + k; btn.parentNode.querySelectorAll('button').forEach(b => b.classList.remove('on')); btn.classList.add('on'); document.getElementById('acImgBox').innerHTML = `<img src="${EMO[k]}" alt="">`; }
+        function acPickFile(inp) { const f = inp.files && inp.files[0]; if (!f) return; fileToJpeg(f, d => { ACAT.img = d; document.getElementById('acImgBox').innerHTML = `<img src="${d}" alt="">`; }); }
+        const acName = (hiId, enId) => { let hi = document.getElementById(hiId).value.trim(), en = document.getElementById(enId).value.trim(); if (!hi && !en) return null; return { hi: hi || en, en: en || hi }; };
+        // store
+        function acStoreSheet(id) {
+            const s = id ? scStore(id) : { name: { hi: '', en: '' }, img: '', th: 'purple', slot: { hi: '⚡ 20–30 मिनट', en: '⚡ 20–30 min' }, active: false }; ACAT.th = s.th;
+            openPSheet(id ? tr('दुकान एडिट करें', 'Edit store') : tr('नई दुकान', 'New store'), acImgPicker(s.img) + `
+                <label class="plabel mt-3">${tr('नाम (हिंदी)', 'Name (Hindi)')}</label><input id="acSHi" value="${esc(s.name.hi)}" class="mb-3" placeholder="जैसे: बेकरी">
+                <label class="plabel">${tr('नाम (English)', 'Name (English)')}</label><input id="acSEn" value="${esc(s.name.en)}" class="mb-3" placeholder="e.g. Bakery">
+                <label class="plabel">${tr('डिलीवरी लाइन (ग्राहक को दिखेगी)', 'Delivery line (shown to customers)')}</label><input id="acSSl" value="${esc(s.slot.hi)}" class="mb-3">
+                <label class="plabel">${tr('रंग', 'Colour')}</label><div class="ac-ths mb-3">${Object.keys(TH).map(k => `<button class="${k === s.th ? 'on' : ''}" style="background:${TH[k].ac}" onclick="ACAT.th='${k}';this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on'));this.classList.add('on')"></button>`).join('')}</div>
+                <button class="pbtn w-full mt-2" onclick="acSaveStore('${id || ''}')"><i class="fa-solid fa-check"></i> ${tr('सेव करें', 'Save')}</button>
+                ${id && id !== 'food' ? `<button class="pbtn-bad w-full mt-2.5" onclick="acDelStore('${id}')"><i class="fa-solid fa-trash"></i> ${tr('दुकान हटाएँ', 'Delete store')}</button>` : ''}`);
+        }
+        function acSaveStore(id) {
+            const nm = acName('acSHi', 'acSEn'); if (!nm) { pToast(tr('नाम लिखें', 'Enter a name')); return; }
+            if (!ACAT.img) { pToast(tr('एक आइकन या फ़ोटो चुनें', 'Pick an icon or photo')); return; }
+            const sl = document.getElementById('acSSl').value.trim();
+            if (id) { const s = scStore(id); Object.assign(s, { name: nm, img: ACAT.img, th: ACAT.th, slot: { hi: sl, en: sl } }); }
+            else { const nid = 's' + Date.now().toString(36); SCAT.stores.push({ id: nid, name: nm, img: ACAT.img, th: ACAT.th, slot: { hi: sl, en: sl }, active: false }); SCAT.cats[nid] = []; SCAT.items[nid] = []; ACAT.store = nid; ACAT.seg = 'cats'; }
+            scatSave(); closePSheet(); renderPanel(true); pToast(id ? tr('दुकान सेव ✅', 'Store saved ✅') : tr('नई दुकान बनी ✅ — अब कैटेगरी और प्रोडक्ट डालिए, फिर चालू करें', 'Store created ✅ — add categories & products, then switch it on'));
+        }
+        function acDelStore(id) { if ((SCAT.items[id] || []).length) { pToast(tr('पहले इसके सारे प्रोडक्ट हटाइए', 'Delete its products first')); return; } SCAT.stores = SCAT.stores.filter(s => s.id !== id); delete SCAT.cats[id]; delete SCAT.items[id]; ACAT.store = 'food'; scatSave(); closePSheet(); renderPanel(true); }
+        // category + sub-category
+        function acCatSheet(id) {
+            const c = id ? SCAT.cats[ACAT.store].find(x => x.id === id) : { name: { hi: '', en: '' }, img: '' };
+            openPSheet(id ? tr('कैटेगरी एडिट', 'Edit category') : tr('नई कैटेगरी', 'New category'), acImgPicker(c.img) + `
+                <label class="plabel mt-3">${tr('नाम (हिंदी)', 'Name (Hindi)')}</label><input id="acCHi" value="${esc(c.name.hi)}" class="mb-3" placeholder="जैसे: मौसमी फल">
+                <label class="plabel">${tr('नाम (English)', 'Name (English)')}</label><input id="acCEn" value="${esc(c.name.en)}" class="mb-3" placeholder="e.g. Seasonal">
+                <button class="pbtn w-full mt-2" onclick="acSaveCat('${id || ''}')"><i class="fa-solid fa-check"></i> ${tr('सेव करें', 'Save')}</button>
+                ${id ? `<button class="pbtn-bad w-full mt-2.5" onclick="acDelCat('${id}')"><i class="fa-solid fa-trash"></i> ${tr('कैटेगरी हटाएँ', 'Delete category')}</button>` : ''}`);
+        }
+        function acSaveCat(id) {
+            const nm = acName('acCHi', 'acCEn'); if (!nm) { pToast(tr('नाम लिखें', 'Enter a name')); return; }
+            const a = SCAT.cats[ACAT.store];
+            if (id) Object.assign(a.find(x => x.id === id), { name: nm, img: ACAT.img }); else a.push({ id: 'c' + Date.now().toString(36), name: nm, img: ACAT.img, subs: [], active: true });
+            scatSave(); closePSheet(); renderPanel(true); pToast(tr('कैटेगरी सेव ✅', 'Category saved ✅'));
+        }
+        function acDelCat(id) { const n = (SCAT.items[ACAT.store] || []).filter(i => i.cat === id).length; if (n) { pToast(tr('पहले इसके ' + n + ' प्रोडक्ट दूसरी कैटेगरी में डालें', 'Move its ' + n + ' products first')); return; } SCAT.cats[ACAT.store] = SCAT.cats[ACAT.store].filter(c => c.id !== id); scatSave(); closePSheet(); renderPanel(true); }
+        function acSubSheet(cid, sid) {
+            const c = SCAT.cats[ACAT.store].find(x => x.id === cid), s = sid ? c.subs.find(x => x.id === sid) : { name: { hi: '', en: '' } };
+            openPSheet((sid ? tr('सब-कैटेगरी एडिट', 'Edit sub-category') : tr('नई सब-कैटेगरी', 'New sub-category')) + ' • ' + saN(c.name), `
+                <label class="plabel">${tr('नाम (हिंदी)', 'Name (Hindi)')}</label><input id="acBHi" value="${esc(s.name.hi)}" class="mb-3" placeholder="जैसे: करी कट">
+                <label class="plabel">${tr('नाम (English)', 'Name (English)')}</label><input id="acBEn" value="${esc(s.name.en)}" class="mb-3" placeholder="e.g. Curry cut">
+                <button class="pbtn w-full mt-2" onclick="acSaveSub('${cid}','${sid || ''}')"><i class="fa-solid fa-check"></i> ${tr('सेव करें', 'Save')}</button>
+                ${sid ? `<button class="pbtn-bad w-full mt-2.5" onclick="acDelSub('${cid}','${sid}')"><i class="fa-solid fa-trash"></i> ${tr('हटाएँ', 'Delete')}</button>` : ''}`);
+        }
+        function acSaveSub(cid, sid) {
+            const nm = acName('acBHi', 'acBEn'); if (!nm) { pToast(tr('नाम लिखें', 'Enter a name')); return; }
+            const c = SCAT.cats[ACAT.store].find(x => x.id === cid); c.subs = c.subs || [];
+            if (sid) c.subs.find(x => x.id === sid).name = nm; else c.subs.push({ id: 'b' + Date.now().toString(36), name: nm });
+            scatSave(); closePSheet(); renderPanel(true); pToast(tr('सब-कैटेगरी सेव ✅', 'Sub-category saved ✅'));
+        }
+        function acDelSub(cid, sid) { const c = SCAT.cats[ACAT.store].find(x => x.id === cid); c.subs = c.subs.filter(x => x.id !== sid); (SCAT.items[ACAT.store] || []).forEach(i => { if (i.cat === cid && i.sub === sid) i.sub = ''; }); scatSave(); closePSheet(); renderPanel(true); }
+        // product
+        function acItemSheet(id) {
+            const cats = SCAT.cats[ACAT.store] || [];
+            if (!cats.length) { pToast(tr('पहले एक कैटेगरी बनाइए', 'Create a category first')); ACAT.seg = 'cats'; renderPanel(); return; }
+            const it = id ? scItem(ACAT.store, id) : { name: { hi: '', en: '' }, img: '', cat: ACAT.cat !== 'all' ? ACAT.cat : cats[0].id, sub: '', packs: [{ hi: '1 kg', en: '1 kg', price: '', mrp: '' }], vendors: [], active: true };
+            const subsOf = cid => (cats.find(c => c.id === cid) || {}).subs || [];
+            openPSheet(id ? tr('प्रोडक्ट एडिट', 'Edit product') : tr('नया प्रोडक्ट', 'New product'), acImgPicker(it.img) + `
+                <label class="plabel mt-3">${tr('नाम (हिंदी)', 'Name (Hindi)')}</label><input id="acIHi" value="${esc(it.name.hi)}" class="mb-3" placeholder="जैसे: भिंडी">
+                <label class="plabel">${tr('नाम (English)', 'Name (English)')}</label><input id="acIEn" value="${esc(it.name.en)}" class="mb-3" placeholder="e.g. Lady finger">
+                <div class="grid grid-cols-2 gap-3"><div><label class="plabel">${tr('कैटेगरी', 'Category')}</label><select id="acICat" onchange="acFillSubs(this.value)">${cats.map(c => `<option value="${c.id}" ${c.id === it.cat ? 'selected' : ''}>${esc(saN(c.name))}</option>`).join('')}</select></div>
+                <div><label class="plabel">${tr('सब-कैटेगरी', 'Sub-category')}</label><select id="acISub"><option value="">—</option>${subsOf(it.cat).map(s => `<option value="${s.id}" ${s.id === it.sub ? 'selected' : ''}>${esc(saN(s.name))}</option>`).join('')}</select></div></div>
+                <label class="plabel mt-4">${tr('पैक व दाम — ग्राहक को यही दाम दिखेगा', 'Packs & price — customers see this price')}</label>
+                <div id="acPacks" class="space-y-2">${it.packs.map(acPackRow).join('')}</div>
+                <button class="pbtn-g w-full mt-2" onclick="document.getElementById('acPacks').insertAdjacentHTML('beforeend',acPackRow({hi:'',price:'',mrp:''}))"><i class="fa-solid fa-plus"></i> ${tr('एक और पैक', 'Add a pack')}</button>
+                <label class="plabel mt-4">${tr('कौन-सी दुकानें बेचती हैं (दुकानदार ख़ुद भी जोड़ सकते हैं)', 'Shops selling it (shops can also add themselves)')}</label>
+                <div class="space-y-2" id="acVend">${DB.vendors.filter(v => v.status === 'approved').map(v => saVPick(v, (it.vendors || []).indexOf(v.id) > -1)).join('')}</div>
+                <button class="pbtn w-full mt-4" onclick="acSaveItem('${id || ''}')"><i class="fa-solid fa-check"></i> ${tr('सेव करें', 'Save')}</button>
+                ${id ? `<button class="pbtn-bad w-full mt-2.5" onclick="acDelItem('${id}')"><i class="fa-solid fa-trash"></i> ${tr('प्रोडक्ट हटाएँ', 'Delete product')}</button>` : ''}`);
+        }
+        function acPackRow(k) { return `<div class="ac-pk"><input placeholder="${tr('पैक (500 g)', 'Pack (500 g)')}" value="${esc(k.hi || '')}"><input inputmode="numeric" placeholder="${tr('दाम ₹', 'Price ₹')}" value="${esc(k.price)}"><input inputmode="numeric" placeholder="MRP ₹" value="${esc(k.mrp)}"><button onclick="this.parentNode.remove()"><i class="fa-solid fa-xmark"></i></button></div>`; }
+        function acFillSubs(cid) { const c = SCAT.cats[ACAT.store].find(x => x.id === cid) || {}; document.getElementById('acISub').innerHTML = '<option value="">—</option>' + (c.subs || []).map(s => `<option value="${s.id}">${esc(saN(s.name))}</option>`).join(''); }
+        function acSaveItem(id) {
+            const nm = acName('acIHi', 'acIEn'); if (!nm) { pToast(tr('प्रोडक्ट का नाम लिखें', 'Enter the product name')); return; }
+            if (!ACAT.img) { pToast(tr('एक आइकन या फ़ोटो चुनें', 'Pick an icon or photo')); return; }
+            const packs = [...document.querySelectorAll('#acPacks .ac-pk')].map(r => { const i = r.querySelectorAll('input'); return { hi: i[0].value.trim(), en: i[0].value.trim(), price: parseInt(i[1].value, 10) || 0, mrp: parseInt(i[2].value, 10) || 0 }; }).filter(k => k.hi && k.price > 0);
+            if (!packs.length) { pToast(tr('कम से कम एक पैक और दाम भरें', 'Add at least one pack with a price')); return; }
+            const vendors = [...document.querySelectorAll('#acVend input[data-v]')].filter(x => x.checked).map(x => x.dataset.v);
+            const data = { name: nm, img: ACAT.img, cat: document.getElementById('acICat').value, sub: document.getElementById('acISub').value, packs: packs, vendors: vendors };
+            const a = SCAT.items[ACAT.store] = SCAT.items[ACAT.store] || [];
+            if (id) Object.assign(scItem(ACAT.store, id), data); else a.push(Object.assign({ id: 'i' + Date.now().toString(36), active: true }, data));
+            scatSave(); closePSheet(); renderPanel(true); pToast(tr('प्रोडक्ट सेव ✅ — ग्राहक ऐप में दिख रहा है', 'Product saved ✅ — live in the customer app'));
+        }
+        function acDelItem(id) { SCAT.items[ACAT.store] = SCAT.items[ACAT.store].filter(i => i.id !== id); scatSave(); closePSheet(); renderPanel(true); pToast(tr('प्रोडक्ट हटाया', 'Product deleted')); }
+
+        /* ---------- E. shop app: map yourself to products of every store ---------- */
+        VI.store = 'food';
+        const viStoreMine = sid => sid === 'food' ? viMine() : (SBASE[sid] || []).filter(b => (b.vendors || []).indexOf(curV().id) > -1).map(b => ({ p: b.vars[0], available: true }));
+        const viStoreAll = sid => sid === 'food' ? allProductsMaster : (SBASE[sid] || []).map(b => ({ p: b.vars[0], available: true }));
+        const viVendorsOf = p => p.store ? ((scItem(p.store, p.base.slice(3)) || {}).vendors || []) : saVs(p);
+        vInvPaint = function () {
+            const root = document.getElementById('viRoot'); if (!root) return;
+            if (VI.edit) { root.innerHTML = vInvEditHtml(VI.edit); return; }
+            const v = curV(), mine = viStoreMine(VI.store), on = mine.filter(m => m.available && !vOut(v.id, m.p.id));
+            const units = mine.reduce((s, m) => s + (vOut(v.id, m.p.id) ? 0 : viGet(m.p.id).qty), 0);
+            const cats = VI.store === 'food' ? DB.cats.filter(c => c.active) : (STORE_CATS[VI.store] || []);
+            root.innerHTML = `<div class="vi-stores">${STORES.map(s => `<button class="${VI.store === s.id ? 'on' : ''}" onclick="VI.store='${s.id}';VI.cat='all';vInvPaint()"><img src="${esc(s.img)}" alt=""><span>${esc(saN(s.name))}</span>${viStoreMine(s.id).length ? `<b>${viStoreMine(s.id).length}</b>` : ''}</button>`).join('')}</div>
+                <div class="vi-top mt-3"><div class="vi-seg"><button class="${VI.tab === 'mine' ? 'on' : ''}" onclick="VI.tab='mine';VI.cat='all';vInvPaint()">📦 ${tr('मैं बेचता हूँ', 'I sell')} (${mine.length})</button><button class="${VI.tab === 'map' ? 'on' : ''}" onclick="VI.tab='map';VI.cat='all';vInvPaint()">🔗 ${tr('और जोड़ें', 'Add more')}</button></div></div>
+                ${VI.tab === 'mine' ? `<div class="vi-sum"><div><p>${tr('चालू', 'Live')}</p><b>${on.length}</b></div><div><p>${tr('ख़त्म', 'Sold out')}</p><b>${mine.length - on.length}</b></div><div><p>${tr('कुल नग', 'Units')}</p><b>${units}</b></div></div>`
+                    : `<div class="vi-note">💡 ${tr('दाम Happy Food तय करता है। आप सिर्फ़ “+ जोड़ें” दबाइए — जिस आइटम को जोड़ेंगे, उसके ऑर्डर आपके पास भी आएँगे।', 'Happy Food sets the price. Just tap “+ Add” — you will get orders for the items you add.')}</div>`}
+                <div class="vi-search"><i class="fa-solid fa-magnifying-glass pmut"></i><input id="viQ" placeholder="${tr('आइटम खोजें…', 'Search items…')}" value="${esc(VI.q)}" oninput="VI.q=this.value;vInvList()"></div>
+                <div class="vi-cats">${[['all', '✨', { hi: 'सभी', en: 'All' }]].concat(cats.map(c => [c.id, c.icon || '', c.name])).map(x => `<button class="${VI.cat === x[0] ? 'on' : ''}" onclick="VI.cat='${x[0]}';vInvPaint()">${x[1]} ${esc(saN(x[2]))}</button>`).join('')}</div>
+                <div id="viList" class="space-y-2.5 mt-3"></div>
+                ${VI.tab === 'mine' && VI.store === 'food' ? `<button class="vi-link" onclick="closePSheet();setTab('stock')">🛵 <span>${tr('राइडर को स्टॉक दें', 'Give stock to riders')}</span><i class="fa-solid fa-chevron-right ml-auto pmut text-xs"></i></button>` : ''}
+                ${VI.tab === 'map' ? `<button class="vi-link" onclick="pToast(tr('एडमिन को नए आइटम की रिक्वेस्ट भेजी ✅','Request sent to admin ✅'))">➕ <span>${tr('लिस्ट में नहीं है? एडमिन से नया आइटम माँगें', 'Not listed? Ask admin to add it')}</span></button>` : ''}`;
+            vInvList();
+        };
+        vInvList = function () {
+            const el = document.getElementById('viList'); if (!el) return;
+            const v = curV();
+            if (VI.tab === 'map') {
+                const rest = vInvFilter(viStoreAll(VI.store).filter(m => viVendorsOf(m.p).indexOf(v.id) < 0));
+                el.innerHTML = rest.length ? rest.map(m => { const p = m.p, nm = p.name0 || p.title, n = viVendorsOf(p).length;
+                    return `<div class="vi-row items-center"><img src="${esc(p.image)}" alt=""><div class="flex-1 min-w-0"><p class="nm">${esc(saN(nm))}</p><p class="pr">${money(p.price)}${p.packLbl ? ` <span class="text-[11px] pmut">/ ${esc(saN(p.packLbl))}</span>` : ''}</p><p class="text-[10.5px] pmut mt-0.5">${n ? n + ' ' + tr('और दुकानें बेच रहीं', 'other shops sell this') : tr('अभी कोई दुकान नहीं — पहला मौक़ा!', 'No shop yet — be the first!')}</p></div><button class="vi-add" onclick="vInvMap('${p.id}')">+ ${tr('जोड़ें', 'Add')}</button></div>`; }).join('')
+                    : `<div class="pcard2 p-5 text-center text-[12.5px] pmut">✅ ${tr('यहाँ का हर आइटम आपकी दुकान में जुड़ा है', 'Every item here is already in your shop')}</div>`;
+                return;
+            }
+            const mine = vInvFilter(viStoreMine(VI.store));
+            el.innerHTML = mine.length ? mine.map(m => {
+                const p = m.p, out = vOut(v.id, p.id), x = viGet(p.id), live = m.available && !out, nm = p.name0 || p.title;
+                return `<div class="vi-row ${live ? '' : 'off'}"><img src="${esc(p.image)}" alt="">
+                    <div class="flex-1 min-w-0"><p class="nm">${esc(saN(nm))}</p><p class="pr">${money(p.price)}${p.packLbl ? ` <span class="text-[11px] pmut">/ ${esc(saN(p.packLbl))}</span>` : ''}</p>
+                        ${VI.del === p.id ? `<div class="vi-conf mt-2">${tr('दुकान से हटाएँ?', 'Remove from shop?')}<button style="background:#dc2626;color:#fff" onclick="vInvDel('${p.id}',1)">${tr('हाँ', 'Yes')}</button><button style="background:var(--p-card2);color:var(--p-tx)" onclick="VI.del='';vInvList()">${tr('नहीं', 'No')}</button></div>`
+                        : `<div class="flex items-center"><div class="vi-qty"><button onclick="vInvQty('${p.id}',-1)">−</button><input inputmode="numeric" value="${out ? 0 : x.qty}" onchange="vInvSetQty('${p.id}',this.value)"><button onclick="vInvQty('${p.id}',1)">+</button></div><span>${tr('नग', 'pcs')}</span></div>`}</div>
+                    <div class="flex flex-col items-end justify-between gap-2"><button class="vi-sw ${live ? 'on' : ''}" onclick="vInvToggle('${p.id}')" aria-label="on/off"></button>
+                        <div class="flex gap-1.5">${p.store ? '' : `<button class="vi-ic" onclick="VI.edit='${p.id}';vInvPaint()" aria-label="edit"><i class="fa-solid fa-pen"></i></button>`}<button class="vi-ic del" onclick="VI.del='${p.id}';vInvList()" aria-label="delete"><i class="fa-solid fa-trash"></i></button></div></div></div>`;
+            }).join('') : `<div class="pcard2 p-5 text-center text-[12.5px] pmut">${tr('यहाँ अभी आप कुछ नहीं बेचते — “🔗 और जोड़ें” से आइटम चुनिए', 'Nothing here yet — use “🔗 Add more”')}</div>`;
+        };
+        { const f = vInvMap; vInvMap = function (pid) {
+            const p = prodInfo(pid); if (!p || !p.store) return f.apply(this, arguments);
+            const it = scItem(p.store, p.base.slice(3)); if (!it) return; it.vendors = it.vendors || []; if (it.vendors.indexOf(curV().id) < 0) it.vendors.push(curV().id);
+            viPut(pid, { qty: 20 }); vInvSetOut(pid, false); scatSave(); sfx('success'); pToast(tr('जुड़ गया ✅ — अब इसके ऑर्डर आपको भी आएँगे', 'Added ✅ — you will get its orders too')); vInvPaint(); renderPanel(true);
+        }; }
+        { const f = vInvDel; vInvDel = function (pid) {
+            const p = prodInfo(pid); if (!p || !p.store) return f.apply(this, arguments);
+            const it = scItem(p.store, p.base.slice(3)); if (it) it.vendors = (it.vendors || []).filter(x => x !== curV().id);
+            VI.del = ''; scatSave(); sfx('remove'); pToast(tr('दुकान से हटा दिया', 'Removed from shop')); vInvPaint(); renderPanel(true);
+        }; }
+        { const f = vInvOpen; vInvOpen = function () { VI.store = VI.store || 'food'; return f.apply(this, arguments); }; }
 
     </script></body></html>
