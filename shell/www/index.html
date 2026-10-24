@@ -957,6 +957,33 @@
         .vi-stores img { width:26px; height:26px; object-fit:contain; } .vi-stores b { font-size:10px; min-width:18px; height:18px; border-radius:9px; background:#16a34a; color:#fff; display:flex; align-items:center; justify-content:center; padding:0 4px; }
         .vi-stores button.on { border-color:var(--p-gold); background:color-mix(in srgb,var(--p-gold) 12%,var(--p-card)); }
         .vi-note { margin-top:12px; padding:10px 12px; border-radius:14px; background:color-mix(in srgb,var(--p-gold) 10%,var(--p-card)); font-size:11.5px; font-weight:600; line-height:1.45; }
+        /* ===== patch29: pack picker ===== */
+        #pkSheet { position:fixed; inset:0; z-index:88; display:flex; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.5); backdrop-filter:blur(2px); }
+        #pkSheet.hidden { display:none; }
+        .pk-card { width:100%; max-width:480px; max-height:90vh; overflow-y:auto; border-radius:26px 26px 0 0; background:#fff; color:#1f1f1f; padding:18px 16px calc(16px + env(safe-area-inset-bottom)); animation:rtUp .3s cubic-bezier(.2,1,.3,1); }
+        .pk-hd { display:flex; align-items:center; gap:12px; }
+        .pk-img { width:64px; height:64px; border-radius:18px; background:radial-gradient(circle at 50% 40%,#fff,var(--soft) 80%); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .pk-img img { width:78%; height:78%; object-fit:contain; }
+        .pk-nm { font:800 18px/1.2 'Outfit',sans-serif; } .pk-sub { font-size:12px; color:#666; margin-top:2px; } .pk-sub b { color:var(--ac); }
+        .pk-x { width:36px; height:36px; border-radius:50%; background:#f2f2f2; flex-shrink:0; }
+        .pk-rows { margin-top:14px; display:flex; flex-direction:column; gap:8px; }
+        .pk-row { display:flex; align-items:center; gap:10px; padding:12px 12px 12px 14px; border-radius:16px; border:1.5px solid #ececec; transition:all .2s; }
+        .pk-row.on { border-color:var(--ac); background:color-mix(in srgb,var(--ac) 6%,#fff); }
+        .pk-row b { display:block; font-size:15px; font-weight:800; } .pk-row b em { font-style:normal; font-size:10px; font-weight:800; padding:2px 6px; border-radius:6px; background:var(--soft); color:var(--ac); margin-left:4px; vertical-align:middle; }
+        .pk-row span { font-size:13px; font-weight:700; color:#333; } .pk-row s { color:#999; font-weight:500; font-size:11.5px; } .pk-row span i { font-style:normal; color:#16a34a; font-size:11px; font-weight:800; }
+        .pk-add { min-width:76px; height:36px; padding:0 12px; border-radius:12px; border:1.5px solid var(--ac); color:var(--ac); background:#fff; font-weight:800; font-size:13px; flex-shrink:0; }
+        .pk-step { display:flex; align-items:center; height:36px; border-radius:12px; background:var(--ac); color:#fff; overflow:hidden; flex-shrink:0; }
+        .pk-step button { width:32px; height:36px; font-size:18px; font-weight:700; } .pk-step b { min-width:22px; text-align:center; font-size:14px; color:#fff; }
+        .pk-own { margin-top:14px; padding:12px; border-radius:16px; background:color-mix(in srgb,var(--soft) 55%,#fff); border:1.5px dashed color-mix(in srgb,var(--ac) 45%,transparent); }
+        .pk-own > p { font-size:13px; font-weight:800; color:var(--tx); }
+        .pk-in { display:flex; gap:8px; margin-top:8px; }
+        .pk-in input { flex:1; min-width:0; height:46px; border-radius:14px; border:1.5px solid #e2e2e2; padding:0 14px; font-size:20px; font-weight:800; outline:none; background:#fff; color:#111; }
+        .pk-in input:focus { border-color:var(--ac); }
+        .pk-u { display:flex; border-radius:14px; overflow:hidden; border:1.5px solid #e2e2e2; background:#fff; }
+        .pk-u button { min-width:48px; font-size:13px; font-weight:800; color:#555; } .pk-u button.on { background:var(--ac); color:#fff; }
+        .pk-calc { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; font-size:13px; color:#444; } .pk-calc b { font-size:17px; color:var(--ac); }
+        .pk-done { width:100%; margin-top:14px; height:52px; border-radius:16px; background:var(--ac); color:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 18px; font-size:14px; }
+        .pk-done b { font-weight:800; margin-left:auto; } .pk-done span { font-weight:700; }
     </style>
 <style>
 html,body{height:100%}
@@ -7741,10 +7768,10 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             S.cats.meat[0].subs = [{ id: 'curry', name: { hi: 'करी कट', en: 'Curry cut' } }, { id: 'boneless', name: { hi: 'बोनलेस', en: 'Boneless' } }];
             const M = (id, hi, en, img, cat, sub, packs) => ({ id, name: { hi, en }, img: 'emo:' + img, cat, sub, packs: packs.map(k => ({ hi: k[0], en: k[1], price: k[2], mrp: k[3] })), vendors: ['v3'], active: true });
             S.items.meat = [
-                M('mt1', 'चिकन करी कट', 'Chicken Curry Cut', 'poultry_leg', 'chicken', 'curry', [['500 g', '500 g', 149, 179], ['1 kg', '1 kg', 289, 349]]),
-                M('mt2', 'बोनलेस चिकन', 'Boneless Chicken', 'poultry_leg', 'chicken', 'boneless', [['500 g', '500 g', 219, 259]]),
+                M('mt1', 'चिकन करी कट', 'Chicken Curry Cut', 'poultry_leg', 'chicken', 'curry', [['250 g', '250 g', 79, 95], ['500 g', '500 g', 149, 179], ['1 kg', '1 kg', 289, 349]]),
+                M('mt2', 'बोनलेस चिकन', 'Boneless Chicken', 'poultry_leg', 'chicken', 'boneless', [['250 g', '250 g', 115, 135], ['500 g', '500 g', 219, 259], ['1 kg', '1 kg', 425, 499]]),
                 M('mt3', 'चिकन लेग पीस', 'Chicken Leg Pieces', 'poultry_leg', 'chicken', 'curry', [['4 पीस', '4 pcs', 199, 239]]),
-                M('mt4', 'मटन करी कट', 'Mutton Curry Cut', 'cut_of_meat', 'mutton', '', [['500 g', '500 g', 399, 449], ['1 kg', '1 kg', 789, 880]]),
+                M('mt4', 'मटन करी कट', 'Mutton Curry Cut', 'cut_of_meat', 'mutton', '', [['250 g', '250 g', 205, 230], ['500 g', '500 g', 399, 449], ['1 kg', '1 kg', 789, 880]]),
                 M('mt5', 'मटन कीमा', 'Mutton Keema', 'cut_of_meat', 'mutton', '', [['500 g', '500 g', 429, 480]]),
                 M('mt6', 'रोहू मछली', 'Rohu Fish', 'fish', 'fish', '', [['500 g', '500 g', 179, 210]]),
                 M('mt7', 'झींगा (प्रॉन्स)', 'Prawns', 'shrimp', 'fish', '', [['250 g', '250 g', 299, 349]]),
@@ -7996,5 +8023,69 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             VI.del = ''; scatSave(); sfx('remove'); pToast(tr('दुकान से हटा दिया', 'Removed from shop')); vInvPaint(); renderPanel(true);
         }; }
         { const f = vInvOpen; vInvOpen = function () { VI.store = VI.store || 'food'; return f.apply(this, arguments); }; }
+
+        /* ================= patch29: pack picker on ADD (250 g / 500 g / 1 kg … or type your own, e.g. 10 kg) ================= */
+        function pkParse(lbl) {
+            const m = String(lbl || '').replace(',', '.').match(/([\d.]+)\s*(kg|g|ml|l|pcs|pc|पीस|slices|स्लाइस|bunch|गड्डी)\b/i) || String(lbl || '').match(/([\d.]+)\s*(पीस|स्लाइस|गड्डी)/);
+            if (!m) return null; const n = +m[1], u = m[2].toLowerCase();
+            if (u === 'kg') return { k: 'w', q: n * 1000 }; if (u === 'g') return { k: 'w', q: n };
+            if (u === 'l') return { k: 'v', q: n * 1000 }; if (u === 'ml') return { k: 'v', q: n };
+            return { k: 'c', q: n };
+        }
+        const pkFmt = (k, q) => k === 'w' ? (q >= 1000 ? +(q / 1000).toFixed(2) + ' kg' : q + ' g') : (k === 'v' ? (q >= 1000 ? +(q / 1000).toFixed(2) + ' L' : q + ' ml') : q + ' ' + tr('पीस', 'pcs'));
+        const pkBase = id => { const v = prodInfo(id); if (!v || !v.store) return null; const bid = v.base || id; return (SBASE[v.store] || []).find(b => b.id === bid) || null; };
+        const PK = { b: null, unit: '', q: '', direct: false };
+        function pkRate(b) {
+            let best = null; b.vars.forEach(v => { const p = pkParse(v.packLbl.en || v.packLbl.hi); if (p && (!best || p.q > best.q)) best = { k: p.k, q: p.q, price: v.price, mrp: v.originalPrice || v.price }; });
+            return best ? { k: best.k, per: best.price / best.q, mper: best.mrp / best.q } : null;
+        }
+        function openPack(id) {
+            const b = pkBase(id); if (!b) return false;
+            PK.b = b; const r = pkRate(b); PK.unit = r ? (r.k === 'w' ? 'kg' : r.k === 'v' ? 'L' : 'pc') : ''; PK.q = '';
+            let el = document.getElementById('pkSheet'); if (!el) { el = document.createElement('div'); el.id = 'pkSheet'; el.addEventListener('click', e => { if (e.target === el) closePack(); }); document.body.appendChild(el); }
+            el.classList.remove('hidden'); vib(15); pkPaint(); return true;
+        }
+        function closePack() { const el = document.getElementById('pkSheet'); if (el) el.classList.add('hidden'); try { if (document.getElementById('storeScr')) ssGrid(); renderRecommendedProducts(); updateCartUI(); } catch (e) { } }
+        function pkAdd(id, d) {
+            PK.direct = true;
+            try { const c = cart.find(x => x.productId === id); if (d > 0 && !c) addRecommendedToCart(id); else changeQuantity(id, d); } finally { PK.direct = false; }
+            vib(10); pkPaint();
+        }
+        function pkCustomVar(q) {
+            const b = PK.b, r = pkRate(b); if (!r) return null;
+            const id = b.id + '_c' + r.k + q; if (SVAR[id]) return SVAR[id];
+            const v0 = b.vars[0], lblHi = pkFmt(r.k, q), lblEn = lblHi.replace('पीस', 'pcs');
+            const v = Object.assign({}, v0, { id: id, packIdx: 99, custom: true, packLbl: { hi: lblHi, en: lblEn }, title: { hi: b.name.hi + ' · ' + lblHi, en: (b.name.en || b.name.hi) + ' · ' + lblEn }, price: Math.max(1, Math.round(r.per * q)), originalPrice: Math.max(1, Math.round(r.mper * q)) });
+            SVAR[id] = v; ALL_SVARS.push(v); recommendedProducts.push(v); return v;
+        }
+        function pkQty() { const r = pkRate(PK.b); const n = parseFloat(String(PK.q).replace(',', '.')) || 0; if (!r || n <= 0) return 0; return Math.round(r.k === 'c' ? n : (PK.unit === 'kg' || PK.unit === 'L' ? n * 1000 : n)); }
+        function pkAddCustom() {
+            const q = pkQty(); if (!q) { pToast ? showToast(tr('मात्रा लिखिए', 'Enter a quantity')) : 0; return; }
+            const v = pkCustomVar(q); if (!v) return; pkAdd(v.id, 1); PK.q = ''; pkPaint(); showToast(tr(saN(v.packLbl) + ' कार्ट में जुड़ा ✅', saN(v.packLbl) + ' added ✅'));
+        }
+        function pkPaint() {
+            const el = document.getElementById('pkSheet'), b = PK.b; if (!el || !b) return;
+            const S = stObj(b.store), th = S.th, r = pkRate(b);
+            const rows = b.vars.concat(ALL_SVARS.filter(v => v.custom && v.base === b.id && cart.some(c => c.productId === v.id)));
+            const inCart = rows.map(v => ({ v, n: (cart.find(c => c.productId === v.id) || {}).quantity || 0 }));
+            const tot = inCart.reduce((s, x) => s + x.n * x.v.price, 0), cnt = inCart.reduce((s, x) => s + x.n, 0);
+            const per = r ? (r.k === 'w' ? tr('₹' + Math.round(r.per * 1000) + '/kg', '₹' + Math.round(r.per * 1000) + '/kg') : r.k === 'v' ? '₹' + Math.round(r.per * 1000) + '/L' : '₹' + (+r.per.toFixed(1)) + '/' + tr('पीस', 'pc')) : '';
+            const q = pkQty(), cp = q && r ? Math.round(r.per * q) : 0;
+            const units = r ? (r.k === 'w' ? [['kg', 'kg'], ['g', 'g']] : r.k === 'v' ? [['L', 'L'], ['ml', 'ml']] : [['pc', tr('पीस', 'pcs')]]) : [];
+            el.style.cssText = `--ac:${th.ac};--soft:${th.soft};--tx:${th.tx}`;
+            el.innerHTML = `<div class="pk-card"><div class="pk-hd"><div class="pk-img"><img src="${esc(b.img)}" alt=""></div><div class="flex-1 min-w-0"><p class="pk-nm">${esc(saN(b.name))}</p><p class="pk-sub">${tr('पैक चुनें या अपनी मात्रा लिखें', 'Pick a pack or type your own quantity')}${per ? ' • <b>' + per + '</b>' : ''}</p></div><button class="pk-x" onclick="closePack()"><i class="fa-solid fa-xmark"></i></button></div>
+                <div class="pk-rows">${inCart.map(x => { const v = x.v, off = v.originalPrice > v.price ? Math.round((1 - v.price / v.originalPrice) * 100) : 0;
+                    return `<div class="pk-row ${x.n ? 'on' : ''}"><div class="flex-1 min-w-0"><b>${esc(saN(v.packLbl))}${v.custom ? ` <em>${tr('आपकी मात्रा', 'custom')}</em>` : ''}</b><span>₹${v.price}${off ? ` <s>₹${v.originalPrice}</s> <i>${off}% ${tr('छूट', 'off')}</i>` : ''}</span></div>
+                        ${x.n ? `<div class="pk-step"><button onclick="pkAdd('${v.id}',-1)">−</button><b>${x.n}</b><button onclick="pkAdd('${v.id}',1)">+</button></div>` : `<button class="pk-add" onclick="pkAdd('${v.id}',1)">ADD</button>`}</div>`; }).join('')}</div>
+                ${r ? `<div class="pk-own"><p>📝 ${tr('ज़्यादा चाहिए? अपनी मात्रा लिखें', 'Need more? Type your quantity')}</p>
+                    <div class="pk-in"><input id="pkQ" inputmode="decimal" placeholder="${r.k === 'w' ? '10' : r.k === 'v' ? '5' : '24'}" value="${esc(PK.q)}" oninput="PK.q=this.value;pkLive()"><div class="pk-u">${units.map(u => `<button class="${PK.unit === u[0] ? 'on' : ''}" onclick="PK.unit='${u[0]}';pkPaint();setTimeout(()=>{const i=document.getElementById('pkQ');i&&i.focus()},30)">${u[1]}</button>`).join('')}</div></div>
+                    <div class="pk-calc"><span id="pkCalc">${q ? pkFmt(r.k, q) + ' = <b>₹' + cp.toLocaleString('en-IN') + '</b>' : tr('जैसे 10 kg लिखें — दाम अपने-आप बनेगा', 'e.g. 10 kg — price is worked out for you')}</span><button class="pk-add" onclick="pkAddCustom()">+ ${tr('जोड़ें', 'Add')}</button></div></div>` : ''}
+                <button class="pk-done" onclick="closePack()">${cnt ? `<span>${cnt} ${tr('आइटम', 'items')} • ₹${tot.toLocaleString('en-IN')}</span><b>${tr('हो गया', 'Done')} ✓</b>` : `<b>${tr('बंद करें', 'Close')}</b>`}</button></div>`;
+        }
+        function pkLive() { const r = pkRate(PK.b), q = pkQty(), c = document.getElementById('pkCalc'); if (!c || !r) return; c.innerHTML = q ? pkFmt(r.k, q) + ' = <b>₹' + Math.round(r.per * q).toLocaleString('en-IN') + '</b>' : tr('जैसे 10 kg लिखें — दाम अपने-आप बनेगा', 'e.g. 10 kg — price is worked out for you'); }
+        // every ADD on a store item opens the pack picker
+        { const f = addRecommendedToCart; addRecommendedToCart = function (id) { if (!PK.direct && pkBase(id) && openPack(id)) return; return f.apply(this, arguments); }; }
+        ssAdd = function (id) { if (!openPack(id)) { addRecommendedToCart(id); ssGrid(); } };
+        { const f = addCurrentProductToCart; addCurrentProductToCart = function () { const p = products[currentSlideIndex]; if (p && p.store && openPack(p.id)) return; return f.apply(this, arguments); }; }
 
     </script></body></html>
