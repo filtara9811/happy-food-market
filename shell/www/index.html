@@ -1023,6 +1023,88 @@
         .rc-ty { text-align:center; font-size:11px; color:#888; margin-top:12px; }
         .bl-wa, .bl-sh { height:46px; border-radius:14px; font-weight:800; font-size:14px; display:flex; align-items:center; justify-content:center; gap:8px; }
         .bl-wa { background:#22c55e; color:#04230f; } .bl-sh { background:#f2f2f2; color:#333; }
+        /* ===== patch31: shop inventory 2.0, basket, long-press, banners, QR, digital shop ===== */
+        .vs-top { border-radius:22px; padding:14px; color:#fff; background:radial-gradient(120% 90% at 85% 0%,rgba(226,176,74,.35),transparent 60%),linear-gradient(165deg,#2a2112,#0b0d14); }
+        .vs-tt { display:flex; justify-content:space-between; align-items:baseline; } .vs-tt span { font:800 15px 'Outfit',sans-serif; } .vs-tt small { font-size:11px; opacity:.6; }
+        .vs-st { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:10px; }
+        .vs-st > * { border-radius:14px; padding:8px 6px; background:rgba(255,255,255,.08); text-align:center; color:#fff; }
+        .vs-st b { display:block; font:800 16px 'Outfit',sans-serif; white-space:nowrap; } .vs-st span { font-size:10px; opacity:.7; font-weight:600; }
+        .vs-st button { border:1.5px solid rgba(253,230,138,.5); } .vs-st button b { color:#fde68a; } .vs-st button.on { background:#fde68a; } .vs-st button.on b, .vs-st button.on span { color:#1a1305; opacity:1; }
+        .vs-act { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px; }
+        .vs-act button { height:38px; border-radius:12px; background:rgba(255,255,255,.12); color:#fff; font-size:12px; font-weight:800; }
+        .vs-sr { display:flex; gap:8px; align-items:center; margin-top:12px; }
+        .vs-vw { display:flex; gap:2px; padding:3px; border-radius:14px; border:1.5px solid var(--p-line); background:var(--p-card); flex-shrink:0; }
+        .vs-vw button { width:30px; height:34px; border-radius:10px; color:var(--p-mut); font-size:13px; } .vs-vw button.on { background:color-mix(in srgb,var(--p-gold) 18%,var(--p-card)); color:var(--p-gold); }
+        .vs-hint { font-size:10.5px; color:var(--p-mut); margin-top:8px; font-weight:600; }
+        .vs-g2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; } .vs-g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+        .vs-hz { display:flex; gap:10px; overflow-x:auto; padding-bottom:6px; } .vs-hz .vs-it { flex:0 0 150px; } .vs-hz::-webkit-scrollbar { display:none; }
+        .vs-ls { display:flex; flex-direction:column; gap:10px; }
+        .vs-it { border-radius:20px; padding:8px; background:var(--p-card); border:1px solid var(--p-line); box-shadow:0 4px 12px rgba(0,0,0,.04); transition:transform .15s; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
+        .vs-it.press { transform:scale(.96); box-shadow:0 0 0 3px color-mix(in srgb,var(--p-gold) 40%,transparent); }
+        .vs-it.off { opacity:.6; }
+        .vs-im { position:relative; aspect-ratio:1/1; border-radius:16px; background:radial-gradient(circle at 50% 40%,#fff,color-mix(in srgb,var(--p-gold) 14%,#f4ecd9) 85%); display:flex; align-items:center; justify-content:center; margin-bottom:8px; overflow:hidden; }
+        .vs-im img { width:82%; height:82%; object-fit:contain; pointer-events:none; filter:drop-shadow(0 8px 10px rgba(0,0,0,.15)); }
+        .vs-qty { position:absolute; left:6px; top:6px; font-size:10px; font-weight:800; padding:3px 7px; border-radius:9px; background:rgba(22,163,74,.9); color:#fff; }
+        .vs-qty.low { background:#f59e0b; } .vs-qty.out { background:#6b7280; }
+        .vs-ls .vs-qty { position:static; display:inline-block; }
+        .vs-add { position:absolute; left:8px; right:8px; bottom:8px; height:32px; border-radius:11px; background:#fff; color:#111; font-weight:900; font-size:12.5px; box-shadow:0 4px 12px rgba(0,0,0,.15); display:flex; align-items:center; justify-content:center; gap:5px; }
+        .vs-add i { font-size:10px; }
+        .vs-step { position:absolute; left:8px; right:8px; bottom:8px; height:32px; border-radius:11px; background:#e2b04a; color:#111; display:flex; align-items:center; justify-content:space-between; font-weight:900; overflow:hidden; }
+        .vs-step button { width:34px; height:32px; font-size:17px; } .vs-step b { font-size:13px; }
+        .vs-nm { font-size:13.5px; font-weight:800; line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; padding:0 2px; }
+        .vs-pr { font-size:13px; font-weight:800; color:var(--p-gold); margin-top:2px; padding:0 2px; } .vs-pk { font-size:10.5px; color:var(--p-mut); font-weight:600; }
+        .vs-g3 .vs-nm { font-size:11.5px; } .vs-g3 .vs-add, .vs-g3 .vs-step { height:26px; font-size:11px; left:5px; right:5px; bottom:5px; } .vs-g3 .vs-add i { display:none; }
+        .vs-ls .vs-it { display:flex; align-items:center; gap:12px; padding:12px; } .vs-ls .vs-im { width:108px; flex-shrink:0; margin:0; }
+        .vs-fly { position:fixed; z-index:120; object-fit:contain; pointer-events:none; transition:transform .62s cubic-bezier(.5,-.3,.7,1), opacity .62s; border-radius:50%; }
+        #billFab { position:fixed; right:16px; bottom:calc(20px + env(safe-area-inset-bottom)); z-index:86; display:none; align-items:center; gap:10px; padding:8px 16px 8px 8px; border-radius:999px; background:#16a34a; color:#fff; box-shadow:0 12px 26px rgba(22,163,74,.45); }
+        #billFab.on { display:flex; }
+        #billFab .bk { position:relative; width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:24px; }
+        #billFab .bk b { position:absolute; top:-4px; right:-4px; min-width:22px; height:22px; border-radius:11px; background:#fde68a; color:#1a1305; font-size:12px; display:flex; align-items:center; justify-content:center; padding:0 5px; }
+        #billFab .am { font:800 16px 'Outfit',sans-serif; text-align:left; line-height:1.1; } #billFab .am small { display:block; font-size:11px; font-weight:700; opacity:.9; } #billFab .am.e { font-size:13px; }
+        #billFab.bump .bk { animation:bfBump .45s cubic-bezier(.2,1.8,.4,1); } @keyframes bfBump { 40% { transform:scale(1.3) rotate(-10deg); } }
+        #viAct { position:fixed; inset:0; z-index:90; display:flex; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.5); } #viAct.hidden { display:none; }
+        .va-card { width:100%; max-width:480px; border-radius:26px 26px 0 0; background:var(--p-bg,#fff); color:var(--p-tx,#111); padding:18px 16px calc(18px + env(safe-area-inset-bottom)); animation:rtUp .3s cubic-bezier(.2,1,.3,1); }
+        body:not(.light-mode) .va-card { background:#16161f; color:#f3f4f6; }
+        .va-hd { display:flex; align-items:center; gap:12px; } .va-im { width:64px; height:64px; border-radius:18px; background:#f4ecd9; display:flex; align-items:center; justify-content:center; } .va-im img { width:80%; height:80%; object-fit:contain; }
+        .va-nm { font:800 17px 'Outfit',sans-serif; } .va-pr { font-size:12px; opacity:.75; margin-top:2px; }
+        .va-lb { font-size:12px; font-weight:800; margin-top:16px; opacity:.8; }
+        .va-q { display:flex; margin-top:8px; border-radius:16px; overflow:hidden; border:2px solid #e2b04a; }
+        .va-q button { width:64px; height:56px; font-size:26px; font-weight:700; background:rgba(226,176,74,.15); color:inherit; } .va-q input { flex:1; min-width:0; text-align:center; font:800 26px 'Outfit',sans-serif; border:0 !important; background:transparent !important; color:inherit; }
+        .va-chips { display:flex; gap:6px; margin-top:8px; } .va-chips button { flex:1; height:36px; border-radius:11px; font-weight:800; font-size:13px; background:rgba(226,176,74,.15); color:inherit; } .va-chips .z { flex:1.6; background:rgba(239,68,68,.12); color:#dc2626; }
+        .va-row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:14px; padding:12px 14px; border-radius:14px; background:rgba(127,127,127,.1); font-size:13px; font-weight:700; }
+        .va-btn { width:100%; height:46px; margin-top:8px; border-radius:14px; background:rgba(127,127,127,.12); font-weight:800; font-size:13.5px; color:inherit; display:flex; align-items:center; justify-content:center; gap:8px; } .va-btn.bad { color:#dc2626; background:rgba(239,68,68,.1); }
+        .va-del { display:flex; align-items:center; gap:8px; margin-top:8px; padding:10px 12px; border-radius:14px; background:rgba(239,68,68,.1); font-size:12.5px; font-weight:700; color:#dc2626; }
+        .va-del button { padding:8px 12px; border-radius:10px; font-weight:800; } .va-del button:nth-child(2) { background:#dc2626; color:#fff; margin-left:auto; } .va-del button:nth-child(3) { background:rgba(127,127,127,.15); color:inherit; }
+        .va-done { width:100%; height:50px; margin-top:12px; border-radius:16px; background:linear-gradient(180deg,#fde68a,#e2a92c); color:#1a1305; font-weight:900; font-size:15px; }
+        .vs-back { font-size:12.5px; font-weight:800; color:var(--p-gold); }
+        .vb-mini { width:64px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:flex-end; padding-right:4px; flex-shrink:0; } .vb-mini img { width:36px; height:36px; object-fit:contain; }
+        #myQR { position:fixed; inset:0; z-index:91; display:flex; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.55); } #myQR.hidden { display:none; }
+        .qr-card { width:100%; max-width:480px; max-height:94vh; overflow-y:auto; border-radius:26px 26px 0 0; background:#fff; color:#1f1f1f; padding:18px 16px calc(18px + env(safe-area-inset-bottom)); animation:rtUp .3s cubic-bezier(.2,1,.3,1); }
+        .qr-stk { margin:0 auto; width:260px; border-radius:26px; padding:18px 18px 16px; text-align:center; color:#fff; background:radial-gradient(120% 70% at 50% 0%,rgba(226,176,74,.45),transparent 60%),linear-gradient(170deg,#2a2112,#0b0d14); border:2px solid #e2b04a; box-shadow:0 16px 34px rgba(0,0,0,.3); }
+        .qr-b { font:800 18px 'Outfit',sans-serif; } .qr-b b { color:#e2b04a; } .qr-h { font-size:13px; font-weight:800; color:#fde68a; margin-top:4px; }
+        .qr-box { width:196px; height:196px; margin:12px auto 10px; border-radius:16px; background:#fff; padding:8px; display:flex; align-items:center; justify-content:center; } .qr-box svg { width:100%; height:100%; }
+        .qr-fb { font:900 36px 'Outfit',sans-serif; color:#111; line-height:1.1; } .qr-fb small { font-size:13px; color:#666; }
+        .qr-n { font:800 16px 'Outfit',sans-serif; } .qr-c { font-size:11px; opacity:.75; margin-top:2px; }
+        .qr-tip { font-size:12.5px; color:#555; text-align:center; margin:14px 4px 4px; line-height:1.45; } .qr-note { font-size:10.5px; color:#999; text-align:center; margin-top:10px; }
+        #dShop { position:fixed; inset:0; z-index:92; background:#faf8f3; color:#1f1f1f; overflow-y:auto; } #dShop.hidden { display:none; }
+        .ds-wrap { max-width:480px; margin:0 auto; min-height:100%; }
+        .ds-pv { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:calc(10px + env(safe-area-inset-top)) 14px 10px; background:#111; color:#fde68a; font-size:11.5px; font-weight:700; } .ds-pv button { color:#fff; font-weight:800; flex-shrink:0; }
+        .ds-hd { display:flex; align-items:center; gap:12px; padding:16px; } .ds-av { width:58px; height:58px; border-radius:18px; background:linear-gradient(135deg,#fce49d,#b88222); display:flex; align-items:center; justify-content:center; font:800 20px 'Outfit',sans-serif; color:#1a1305; overflow:hidden; } .ds-av img { width:100%; height:100%; object-fit:cover; }
+        .ds-nm { font:800 19px 'Outfit',sans-serif; } .ds-vf { font-size:10px; font-weight:800; padding:2px 7px; border-radius:8px; background:#dcfce7; color:#15803d; vertical-align:middle; } .ds-sb { font-size:12px; color:#666; margin-top:2px; }
+        .ds-chips { display:flex; gap:8px; overflow-x:auto; padding:14px 16px 4px; } .ds-chips::-webkit-scrollbar { display:none; }
+        .ds-chips button { flex:0 0 auto; padding:8px 16px; border-radius:14px; background:#fff; border:1.5px solid #ece6d6; font-size:13px; font-weight:700; } .ds-chips button.on { background:#1a1305; color:#fde68a; border-color:#1a1305; }
+        .ds-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 12px; padding:12px 16px; }
+        .ds-im { position:relative; aspect-ratio:1/1; border-radius:20px; background:radial-gradient(circle at 50% 40%,#fff,#f1e6cc 85%); display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
+        .ds-im img { width:78%; height:78%; object-fit:contain; filter:drop-shadow(0 8px 10px rgba(0,0,0,.15)); }
+        .ds-lw { position:absolute; left:8px; top:8px; font-size:10px; font-weight:800; padding:3px 7px; border-radius:8px; background:#fef3c7; color:#92400e; }
+        .ds-add { position:absolute; right:8px; bottom:-14px; height:36px; padding:0 16px; border-radius:12px; background:#fff; border:1.5px solid #1a1305; font-weight:900; font-size:13px; box-shadow:0 6px 14px rgba(0,0,0,.1); }
+        .ds-st { position:absolute; right:8px; bottom:-14px; height:36px; display:flex; align-items:center; border-radius:12px; background:#1a1305; color:#fde68a; overflow:hidden; } .ds-st button { width:32px; height:36px; font-size:18px; } .ds-st b { min-width:20px; text-align:center; }
+        .ds-in { font-size:14px; font-weight:800; line-height:1.25; } .ds-ip { font-size:14px; font-weight:800; color:#a8741b; margin-top:2px; } .ds-ip small { color:#888; font-weight:600; font-size:11px; }
+        .ds-empty { grid-column:1/-1; text-align:center; padding:40px 0; color:#888; font-weight:700; }
+        .ds-cart { position:fixed; left:50%; transform:translateX(-50%); bottom:calc(16px + env(safe-area-inset-bottom)); width:calc(100% - 28px); max-width:452px; height:56px; border-radius:18px; background:#1a1305; color:#fde68a; display:flex; align-items:center; justify-content:space-between; padding:0 18px; font-size:14px; font-weight:700; box-shadow:0 12px 28px rgba(0,0,0,.3); }
+        .ds-pay { position:fixed; left:0; right:0; bottom:0; margin:0 auto; max-width:480px; border-radius:24px 24px 0 0; background:#fff; padding:16px 16px calc(16px + env(safe-area-inset-bottom)); box-shadow:0 -12px 30px rgba(0,0,0,.2); animation:rtUp .3s; --ac:#16a34a; }
+        .ds-ok { padding:60px 24px; text-align:center; } .ds-ok .e { font-size:64px; animation:rtPop .5s cubic-bezier(.2,1.6,.4,1); } .ds-ok .t { font:800 22px 'Outfit',sans-serif; margin-top:10px; } .ds-ok .s { font-size:13px; color:#666; margin-top:6px; }
+        .ds-bill { margin:18px auto; max-width:300px; padding:14px; border-radius:16px; border:1.5px dashed #d9c9a3; background:#fffdf7; display:flex; flex-direction:column; gap:4px; } .ds-bill b { font:800 26px 'Outfit',sans-serif; }
     </style>
 <style>
 html,body{height:100%}
@@ -8243,6 +8325,208 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             try { if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.Share) { await Capacitor.Plugins.Share.share({ title: b.no, text: msg }); return; } } catch (e) { }
             try { if (navigator.share) { await navigator.share({ title: b.no, text: msg }); return; } } catch (e) { return; }
             refCopyOld(msg); pToast(tr('बिल कॉपी हो गया 📋', 'Bill copied 📋'));
+        }
+
+        /* ================= patch31: shop inventory like the customer app, floating bill basket, long-press actions, shop banners, my QR + digital shop ================= */
+        VI.view = saGet('hf_viview', 'grid2'); VI.mode = ''; VI.low = false;
+        const VLOW = 5;
+        const viTodaySold = pid => { const t0 = phDay(Date.now()); return saGet('hf_bills_v1', []).filter(b => b.vid === curV().id && b.ts >= t0).reduce((s, b) => s + b.items.filter(i => billInvId(i.pid) === pid || i.pid === pid).reduce((a, i) => a + i.qty, 0), 0); };
+        const viInBill = pid => BILL.items.filter(i => billInvId(i.pid) === pid || i.pid === pid).reduce((s, i) => s + i.qty, 0);
+        function viAllMine() { return STORES.reduce((a, s) => a.concat(viStoreMine(s.id)), []); }
+        { const f = vInvPaint; vInvPaint = function () {
+            if (VI.mode === 'bn' || VI.mode === 'bnedit') { const root = document.getElementById('viRoot'); if (root) root.innerHTML = VI.mode === 'bn' ? vbnListHtml() : vbnEditHtml(); billBar(); return; }
+            if (VI.tab !== 'mine' || VI.edit) return f.apply(this, arguments);
+            const root = document.getElementById('viRoot'); if (!root) return;
+            const v = curV(), all = viAllMine(), mine = viStoreMine(VI.store);
+            const live = all.filter(m => !vOut(v.id, m.p.id)), units = live.reduce((s, m) => s + viGet(m.p.id).qty, 0);
+            const t0 = phDay(Date.now()), bills = saGet('hf_bills_v1', []).filter(b => b.vid === v.id && b.ts >= t0);
+            const sold = bills.reduce((s, b) => s + b.items.reduce((a, i) => a + i.qty, 0), 0), sale = bills.reduce((s, b) => s + b.tot, 0);
+            const low = all.filter(m => vOut(v.id, m.p.id) || viGet(m.p.id).qty <= VLOW).length;
+            const cats = VI.store === 'food' ? DB.cats.filter(c => c.active) : (STORE_CATS[VI.store] || []);
+            const V = [['grid2', 'fa-table-cells-large'], ['hz', 'fa-arrows-left-right'], ['list', 'fa-list'], ['grid3', 'fa-grip']];
+            root.innerHTML = `<div class="vs-top"><div class="vs-tt"><span>📦 ${tr('मेरा स्टॉक', 'My stock')}</span><small>${tr('आज', 'Today')}</small></div>
+                    <div class="vs-st"><div><b>${units}</b><span>${tr('बचे नग', 'Units left')}</span></div><div><b>${sold}</b><span>${tr('आज बिके', 'Sold today')}</span></div><div><b>₹${sale.toLocaleString('en-IN')}</b><span>${tr('काउंटर बिक्री', 'Counter sales')}</span></div>
+                    <button class="${VI.low ? 'on' : ''}" onclick="VI.low=!VI.low;vInvPaint()"><b>${low}</b><span>${tr('भरना है', 'To refill')}</span></button></div>
+                    <div class="vs-act"><button onclick="openMyQR()">📱 ${tr('मेरा QR', 'My QR')}</button><button onclick="VI.mode='bn';vInvPaint()">🖼️ ${tr('बैनर', 'Banners')}</button><button onclick="openDShop(curV().id,true)">🏪 ${tr('डिजिटल दुकान', 'Digital shop')}</button></div></div>
+                <div class="vi-stores mt-3">${STORES.map(s => { const n = viStoreMine(s.id).length; return `<button class="${VI.store === s.id ? 'on' : ''}" onclick="VI.store='${s.id}';VI.cat='all';vInvPaint()"><img src="${esc(s.img)}" alt=""><span>${esc(saN(s.name))}</span>${n ? `<b>${n}</b>` : ''}</button>`; }).join('')}</div>
+                <div class="vi-top mt-3"><div class="vi-seg"><button class="on">📦 ${tr('मैं बेचता हूँ', 'I sell')} (${mine.length})</button><button onclick="VI.tab='map';VI.cat='all';vInvPaint()">🔗 ${tr('और जोड़ें', 'Add more')}</button></div></div>
+                <div class="vs-sr"><div class="vi-search flex-1" style="margin-top:0"><i class="fa-solid fa-magnifying-glass pmut"></i><input id="viQ" placeholder="${tr('आइटम खोजें…', 'Search items…')}" value="${esc(VI.q || '')}" oninput="VI.q=this.value;vInvList()"></div>
+                    <div class="vs-vw">${V.map(x => `<button class="${VI.view === x[0] ? 'on' : ''}" onclick="VI.view='${x[0]}';saPut('hf_viview','${x[0]}');vInvList();this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on'));this.classList.add('on')"><i class="fa-solid ${x[1]}"></i></button>`).join('')}</div></div>
+                <div class="vi-cats">${[['all', '✨', { hi: 'सभी', en: 'All' }]].concat(cats.map(c => [c.id, c.icon || '', c.name])).map(x => `<button class="${VI.cat === x[0] ? 'on' : ''}" onclick="VI.cat='${x[0]}';vInvPaint()">${x[1]} ${esc(saN(x[2]))}</button>`).join('')}</div>
+                <p class="vs-hint">👆 ${tr('ADD = बिल में जोड़ें • आइटम को देर तक दबाएँ = स्टॉक / एडिट / डिलीट', 'ADD = add to bill • long-press an item = stock / edit / delete')}</p>
+                <div id="viList" class="mt-2"></div>`;
+            vInvList(); billBar();
+        }; }
+        { const f = vInvList; vInvList = function () {
+            if (VI.tab !== 'mine' || VI.mode) return f.apply(this, arguments);
+            const el = document.getElementById('viList'); if (!el) return;
+            const v = curV(); let L = vInvFilter(viStoreMine(VI.store));
+            if (VI.low) L = L.filter(m => vOut(v.id, m.p.id) || viGet(m.p.id).qty <= VLOW);
+            const cls = { grid2: 'vs-g2', hz: 'vs-hz', list: 'vs-ls', grid3: 'vs-g3' }[VI.view] || 'vs-g2';
+            el.className = 'mt-2 ' + cls;
+            el.innerHTML = L.length ? L.map(m => {
+                const p = m.p, out = vOut(v.id, p.id), q = out ? 0 : viGet(p.id).qty, n = viInBill(p.id), nm = saN(p.name0 || p.title);
+                const stock = `<span class="vs-qty ${out || !q ? 'out' : (q <= VLOW ? 'low' : '')}">${out || !q ? tr('ख़त्म', 'Out') : q + ' ' + tr('नग', 'pcs')}</span>`;
+                const add = n ? `<div class="vs-step" onclick="event.stopPropagation()"><button onclick="vsMinus('${p.id}')">−</button><b>${n}</b><button onclick="vsAdd('${p.id}',this)">+</button></div>` : `<button class="vs-add" onclick="event.stopPropagation();vsAdd('${p.id}',this)">ADD <i class="fa-solid fa-plus"></i></button>`;
+                const pack = p.packLbl ? `<span class="vs-pk">/ ${esc(saN(p.packLbl))}</span>` : '';
+                if (VI.view === 'list') return `<div class="vs-it ${out ? 'off' : ''}" data-lp="${p.id}"><div class="flex-1 min-w-0">${stock}<p class="vs-nm">${esc(nm)}</p><p class="vs-pr">${money(p.price)} ${pack}</p></div><div class="vs-im"><img src="${esc(p.image)}" alt="">${add}</div></div>`;
+                return `<div class="vs-it ${out ? 'off' : ''}" data-lp="${p.id}"><div class="vs-im"><img src="${esc(p.image)}" alt="">${stock}${add}</div><p class="vs-nm">${esc(nm)}</p><p class="vs-pr">${money(p.price)} ${pack}</p></div>`;
+            }).join('') : `<div class="pcard2 p-5 text-center text-[12.5px] pmut" style="grid-column:1/-1">${VI.low ? tr('✅ सब आइटम में अच्छा स्टॉक है', '✅ Everything is well stocked') : tr('यहाँ अभी आप कुछ नहीं बेचते — “🔗 और जोड़ें” से आइटम चुनिए', 'Nothing here yet — use “🔗 Add more”')}</div>`;
+            vsWireLP(el);
+        }; }
+        // long press → actions
+        function vsWireLP(el) {
+            if (el.dataset.lpw) return; el.dataset.lpw = 1; let t = null, sx = 0, sy = 0, tgt = null;
+            el.addEventListener('pointerdown', e => { const c = e.target.closest('[data-lp]'); if (!c || e.target.closest('button')) return; tgt = c; sx = e.clientX; sy = e.clientY; c.classList.add('press'); t = setTimeout(() => { t = null; c.classList.remove('press'); vib(35); openViAct(c.dataset.lp); }, 480); });
+            const stop = () => { if (t) clearTimeout(t); t = null; if (tgt) tgt.classList.remove('press'); };
+            el.addEventListener('pointermove', e => { if (t && Math.hypot(e.clientX - sx, e.clientY - sy) > 9) stop(); });
+            ['pointerup', 'pointercancel', 'pointerleave'].forEach(x => el.addEventListener(x, stop));
+            el.addEventListener('contextmenu', e => e.preventDefault());
+        }
+        function openViAct(pid) {
+            const p = prodInfo(pid); if (!p) return; const v = curV();
+            let el = document.getElementById('viAct'); if (!el) { el = document.createElement('div'); el.id = 'viAct'; el.addEventListener('click', e => { if (e.target === el) closeViAct(); }); document.body.appendChild(el); }
+            el.dataset.pid = pid; el.dataset.del = ''; el.classList.remove('hidden'); viActPaint();
+        }
+        function viActPaint() {
+            const el = document.getElementById('viAct'), pid = el.dataset.pid, p = prodInfo(pid), v = curV(), out = vOut(v.id, pid), q = out ? 0 : viGet(pid).qty, sold = viTodaySold(pid);
+            el.innerHTML = `<div class="va-card"><div class="va-hd"><div class="va-im"><img src="${esc(p.image)}" alt=""></div><div class="flex-1 min-w-0"><p class="va-nm">${esc(saN(p.name0 || p.title))}</p><p class="va-pr">${money(p.price)}${p.packLbl ? ' / ' + esc(saN(p.packLbl)) : ''} • ${tr('आज बिके', 'sold today')}: <b>${sold}</b></p></div><button class="pk-x" onclick="closeViAct()"><i class="fa-solid fa-xmark"></i></button></div>
+                <p class="va-lb">${tr('स्टॉक (कितने नग हैं)', 'Stock (pieces in hand)')}</p>
+                <div class="va-q"><button onclick="vaSet(${Math.max(0, q - 1)})">−</button><input inputmode="numeric" value="${q}" onchange="vaSet(parseInt(this.value,10)||0)"><button onclick="vaSet(${q + 1})">+</button></div>
+                <div class="va-chips">${[5, 10, 25, 50].map(n => `<button onclick="vaSet(${q + n})">+${n}</button>`).join('')}<button class="z" onclick="vaSet(0)">${tr('ख़त्म करें', 'Mark out')}</button></div>
+                <div class="va-row"><span>${out ? tr('🔴 अभी ख़त्म — ऑर्डर नहीं आएँगे', '🔴 Out — no orders') : tr('🟢 चालू — ऑर्डर आ रहे हैं', '🟢 Live — taking orders')}</span>${sw(!out, `vInvToggle('${pid}');viActPaint()`)}</div>
+                ${p.store ? '' : `<button class="va-btn" onclick="closeViAct();VI.edit='${pid}';vInvPaint()"><i class="fa-solid fa-pen"></i> ${tr('रेट / बनने का समय बदलें', 'Edit price / prep time')}</button>`}
+                ${el.dataset.del ? `<div class="va-del"><span>${tr('पक्का दुकान से हटाएँ?', 'Remove from shop?')}</span><button onclick="closeViAct();vInvDel('${pid}')">${tr('हाँ, हटाएँ', 'Yes, remove')}</button><button onclick="document.getElementById('viAct').dataset.del='';viActPaint()">${tr('नहीं', 'No')}</button></div>`
+                    : `<button class="va-btn bad" onclick="document.getElementById('viAct').dataset.del=1;viActPaint()"><i class="fa-solid fa-trash"></i> ${tr('दुकान से हटाएँ', 'Remove from shop')}</button>`}
+                <button class="va-done" onclick="closeViAct()">${tr('हो गया', 'Done')} ✓</button></div>`;
+        }
+        function vaSet(n) { const pid = document.getElementById('viAct').dataset.pid; n = Math.max(0, Math.min(9999, n)); viPut(pid, { qty: n }); vInvSetOut(pid, n === 0); vib(10); viActPaint(); }
+        function closeViAct() { const el = document.getElementById('viAct'); if (el) el.classList.add('hidden'); vInvPaint(); }
+        // ADD with a flying image into the floating basket
+        function vsFly(btn) {
+            try {
+                const card = btn.closest('.vs-it'), img = card && card.querySelector('img'), fab = document.getElementById('billFab'); if (!img) return;
+                const a = img.getBoundingClientRect(), b = fab && fab.classList.contains('on') ? fab.getBoundingClientRect() : { left: window.innerWidth - 70, top: window.innerHeight - 90, width: 56, height: 56 };
+                const c = img.cloneNode(); c.className = 'vs-fly'; Object.assign(c.style, { left: a.left + 'px', top: a.top + 'px', width: a.width + 'px', height: a.height + 'px' }); document.body.appendChild(c);
+                requestAnimationFrame(() => { c.style.transform = `translate(${b.left + b.width / 2 - a.left - a.width / 2}px,${b.top + b.height / 2 - a.top - a.height / 2}px) scale(.12) rotate(25deg)`; c.style.opacity = '.6'; });
+                setTimeout(() => { c.remove(); const f = document.getElementById('billFab'); if (f) { f.classList.remove('bump'); void f.offsetWidth; f.classList.add('bump'); } }, 650);
+            } catch (e) { }
+        }
+        function vsAdd(pid, btn) { if (vOut(curV().id, pid)) { pToast(tr('यह आइटम ख़त्म है — देर तक दबाकर स्टॉक भरें', 'Out of stock — long-press to add stock')); return; } if (btn) vsFly(btn); billPick(pid); setTimeout(vInvList, 40); }
+        function vsMinus(pid) { const x = BILL.items.filter(i => billInvId(i.pid) === pid || i.pid === pid).pop(); if (x) billAdd(x.pid, -1); vInvList(); }
+        // floating basket instead of the bar
+        billBar = function () {
+            let f = document.getElementById('billFab'); if (!f) { f = document.createElement('button'); f.id = 'billFab'; f.onclick = () => openBill(); document.body.appendChild(f); }
+            const open = !!document.getElementById('viRoot') && !document.getElementById('pSheet').classList.contains('hidden') && !VI.mode && !VI.edit;
+            const n = BILL.items.reduce((s, i) => s + i.qty, 0);
+            f.classList.toggle('on', open);
+            f.innerHTML = `<span class="bk">🧺${n ? `<b>${n}</b>` : ''}</span>${n ? `<span class="am">₹${billSub().toLocaleString('en-IN')}<small>${tr('बिल बनाएँ', 'Make bill')} ›</small></span>` : `<span class="am e">${tr('बिल', 'Bill')}</span>`}`;
+        };
+        { const f = closePSheet; closePSheet = function () { const r = f.apply(this, arguments); const b = document.getElementById('billFab'); if (b) b.classList.remove('on'); return r; }; }
+
+        /* ---------- shop banners (shown on the shop's digital shop) ---------- */
+        const vbnKey = () => 'hf_vbn_' + curV().id;
+        function vbnAll(vid) { return saGet('hf_vbn_' + (vid || curV().id), null) || [{ id: 'b1', t: 'आज की स्पेशल थाली 🍱', s: 'घर जैसा स्वाद • ₹149 से', img: 'food:thali', th: 'gold', on: true }]; }
+        function vbnSlides(vid) {
+            const L = vbnAll(vid).filter(b => b.on);
+            return `<div class="bn"><div class="bn-track">${L.map(b => { const t = TH[b.th] || TH.gold; return `<div class="bn-s" style="--c1:${t.tx};--c2:${t.ac}"><div class="bn-tx"><b>${esc(b.t)}</b><span>${esc(b.s || '')}</span><i>${tr('अभी देखें', 'Shop now')} ›</i></div><img src="${esc(imgR(b.img))}" alt=""></div>`; }).join('')}</div><div class="bn-dots">${L.map((b, i) => `<span class="${i ? '' : 'on'}"></span>`).join('')}</div></div>`;
+        }
+        function vbnListHtml() {
+            const L = vbnAll();
+            return `<button class="vs-back" onclick="VI.mode='';vInvPaint()"><i class="fa-solid fa-arrow-left"></i> ${tr('इन्वेंट्री', 'Inventory')}</button>
+                <p class="pttl text-[16px] mt-2">🖼️ ${tr('मेरी डिजिटल दुकान के बैनर', 'Banners on my digital shop')}</p><p class="text-[11.5px] pmut">${tr('जो बैनर चालू होंगे, वही आपका QR स्कैन करने वाले ग्राहक को दिखेंगे', 'Live banners show to customers who scan your QR')}</p>
+                <div class="mt-3">${L.some(b => b.on) ? vbnSlides() : `<div class="pcard2 p-4 text-center text-[12px] pmut">${tr('कोई बैनर चालू नहीं', 'No live banner')}</div>`}</div>
+                <div class="space-y-2.5 mt-4">${L.map(b => { const t = TH[b.th] || TH.gold; return `<div class="pcard p-3 flex items-center gap-3"><div class="vb-mini" style="background:linear-gradient(135deg,${t.tx},${t.ac})"><img src="${esc(imgR(b.img))}" alt=""></div><div class="flex-1 min-w-0"><p class="text-[13.5px] font-extrabold truncate">${esc(b.t)}</p><p class="text-[11px] pmut truncate">${esc(b.s || '')}</p></div>${sw(b.on, `vbnToggle('${b.id}')`)}<button class="vi-ic" onclick="VI.bn='${b.id}';VI.mode='bnedit';vInvPaint()"><i class="fa-solid fa-pen"></i></button></div>`; }).join('')}</div>
+                <button class="pbtn w-full mt-4" onclick="VI.bn='';VI.mode='bnedit';vInvPaint()"><i class="fa-solid fa-plus"></i> ${tr('नया बैनर', 'New banner')}</button>`;
+        }
+        function vbnToggle(id) { const L = vbnAll(), b = L.find(x => x.id === id); b.on = !b.on; saPut(vbnKey(), L); vInvPaint(); pToast(b.on ? tr('बैनर लाइव ✅', 'Banner live ✅') : tr('बैनर बंद', 'Banner off')); }
+        function vbnEditHtml() {
+            const b = VI.bn ? vbnAll().find(x => x.id === VI.bn) : { t: '', s: '', img: '', th: 'gold', on: true }; ACAT.th = b.th;
+            return `<button class="vs-back" onclick="VI.mode='bn';vInvPaint()"><i class="fa-solid fa-arrow-left"></i> ${tr('बैनर', 'Banners')}</button>
+                <p class="pttl text-[16px] mt-2">${VI.bn ? tr('बैनर एडिट', 'Edit banner') : tr('नया बैनर', 'New banner')}</p>
+                <div class="mt-3">${acImgPicker(b.img)}</div>
+                <label class="plabel mt-3">${tr('बड़ी लाइन', 'Headline')}</label><input id="vbT" value="${esc(b.t)}" placeholder="जैसे: आज मोमोज़ पर 20% छूट" class="mb-3">
+                <label class="plabel">${tr('छोटी लाइन', 'Sub line')}</label><input id="vbS" value="${esc(b.s)}" placeholder="जैसे: शाम 5 से 8 बजे तक" class="mb-3">
+                <label class="plabel">${tr('रंग', 'Colour')}</label><div class="ac-ths mb-3">${Object.keys(TH).map(k => `<button class="${k === b.th ? 'on' : ''}" style="background:${TH[k].ac}" onclick="ACAT.th='${k}';this.parentNode.querySelectorAll('button').forEach(x=>x.classList.remove('on'));this.classList.add('on')"></button>`).join('')}</div>
+                <button class="pbtn w-full" onclick="vbnSave()"><i class="fa-solid fa-check"></i> ${tr('सेव करके लाइव करें', 'Save & go live')}</button>
+                ${VI.bn ? `<button class="pbtn-bad w-full mt-2.5" onclick="vbnDel()"><i class="fa-solid fa-trash"></i> ${tr('बैनर हटाएँ', 'Delete banner')}</button>` : ''}`;
+        }
+        function vbnSave() {
+            const t = document.getElementById('vbT').value.trim(), s = document.getElementById('vbS').value.trim();
+            if (!t) { pToast(tr('बड़ी लाइन लिखिए', 'Enter a headline')); return; } if (!ACAT.img) { pToast(tr('फ़ोटो या आइकन चुनें', 'Pick a photo or icon')); return; }
+            const L = vbnAll(); if (VI.bn) Object.assign(L.find(x => x.id === VI.bn), { t, s, img: ACAT.img, th: ACAT.th }); else L.unshift({ id: 'b' + Date.now().toString(36), t, s, img: ACAT.img, th: ACAT.th, on: true });
+            saPut(vbnKey(), L); VI.mode = 'bn'; vInvPaint(); sfx('success'); pToast(tr('बैनर लाइव ✅ — डिजिटल दुकान पर दिख रहा है', 'Banner live ✅ — showing on your digital shop'));
+        }
+        function vbnDel() { saPut(vbnKey(), vbnAll().filter(x => x.id !== VI.bn)); VI.mode = 'bn'; vInvPaint(); }
+        { const f = vInvOpen; vInvOpen = function () { VI.mode = ''; VI.low = false; return f.apply(this, arguments); }; }
+
+        /* ---------- my QR sticker ---------- */
+        const shopCode = vid => 'HF' + String(vid).toUpperCase().replace(/[^A-Z0-9]/g, '');
+        const shopLink = vid => 'https://filtara9811.github.io/happy-food-market/s/?shop=' + shopCode(vid);
+        function openMyQR() {
+            const v = curV(); let el = document.getElementById('myQR'); if (!el) { el = document.createElement('div'); el.id = 'myQR'; el.addEventListener('click', e => { if (e.target === el) el.classList.add('hidden'); }); document.body.appendChild(el); }
+            el.classList.remove('hidden');
+            el.innerHTML = `<div class="qr-card"><div class="qr-stk"><p class="qr-b">Happy <b>Food</b></p><p class="qr-h">📱 ${tr('स्कैन करें • ऑर्डर करें', 'Scan • Order')}</p><div class="qr-box" id="qrBox"></div><p class="qr-n">${esc(v.name)}</p><p class="qr-c">${tr('दुकान कोड', 'Shop code')}: <b>${shopCode(v.id)}</b> • ✅ ${tr('वेरिफ़ाइड', 'Verified')}</p></div>
+                <p class="qr-tip">${tr('इसे प्रिंट करवाकर काउंटर या बाइक पर लगाइए। ग्राहक स्कैन करेगा तो सिर्फ़ आपकी दुकान और आपका स्टॉक दिखेगा।', 'Print it and stick it on your counter or bike. Customers who scan see only your shop and your stock.')}</p>
+                <button class="bl-go" onclick="document.getElementById('myQR').classList.add('hidden');openDShop(curV().id,true)">🏪 ${tr('देखें: ग्राहक को क्या दिखेगा', 'Preview: what customers see')}</button>
+                <div class="grid grid-cols-2 gap-2 mt-2"><button class="bl-wa" onclick="window.open('https://wa.me/?text='+encodeURIComponent('${tr('मेरी दुकान से सीधे ऑर्डर करें', 'Order directly from my shop')} 👉 ${shopLink(v.id)}'),'_blank')"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button><button class="bl-sh" onclick="document.getElementById('myQR').classList.add('hidden')">${tr('बंद करें', 'Close')}</button></div>
+                <p class="qr-note">ℹ️ ${tr('दुकान-सर्वर जुड़ने के बाद यह लिंक हर फ़ोन पर आपकी असली दुकान खोलेगा।', 'Once the shop server is connected, this link opens your live shop on any phone.')}</p></div>`;
+            const box = document.getElementById('qrBox');
+            if (typeof qrcode === 'function') { try { const q = qrcode(0, 'M'); q.addData(shopLink(v.id)); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 5, margin: 1 }); return; } catch (e) { } }
+            box.innerHTML = `<div class="qr-fb">QR<br><small>${shopCode(v.id)}</small></div>`;
+        }
+
+        /* ---------- digital shop (what a customer sees after scanning) ---------- */
+        const DS = { vid: '', cart: {}, store: 'all', step: '', pay: 'upi', name: '', phone: '', done: null };
+        function dsItems(vid) {
+            const keep = PNL.vid; PNL.vid = vid;
+            try { return viAllMine().filter(m => !vOut(vid, m.p.id) && viGet(m.p.id).qty > 0).map(m => m.p); } finally { PNL.vid = keep; }
+        }
+        function openDShop(vid, preview) {
+            Object.assign(DS, { vid: vid, cart: {}, store: 'all', step: '', done: null, preview: !!preview });
+            let el = document.getElementById('dShop'); if (!el) { el = document.createElement('div'); el.id = 'dShop'; document.body.appendChild(el); }
+            el.classList.remove('hidden'); dsPaint(); vib(15);
+        }
+        function closeDShop() { const el = document.getElementById('dShop'); if (el) el.classList.add('hidden'); try { vInvPaint(); } catch (e) { } }
+        const dsQty = () => Object.keys(DS.cart).reduce((s, k) => s + DS.cart[k], 0);
+        const dsTot = () => Object.keys(DS.cart).reduce((s, k) => s + DS.cart[k] * (prodInfo(k) || {}).price, 0);
+        function dsAdd(pid, d) { const keep = PNL.vid; PNL.vid = DS.vid; const max = viGet(pid).qty; PNL.vid = keep; DS.cart[pid] = Math.max(0, Math.min(max, (DS.cart[pid] || 0) + d)); if (!DS.cart[pid]) delete DS.cart[pid]; if (d > 0 && DS.cart[pid] === max) showToast(tr('बस इतना ही स्टॉक है', 'That is all the stock')); vib(10); dsPaint(); }
+        function dsPaint() {
+            const el = document.getElementById('dShop'); if (!el) return;
+            const v = DB.vendors.find(x => x.id === DS.vid) || curV(), items = dsItems(DS.vid), keep = PNL.vid;
+            const stores = STORES.filter(s => items.some(p => (p.store || 'food') === s.id));
+            const L = items.filter(p => DS.store === 'all' || (p.store || 'food') === DS.store);
+            if (DS.done) { el.innerHTML = `<div class="ds-wrap"><div class="ds-ok"><div class="e">✅</div><p class="t">${tr('ऑर्डर दुकान पर पहुँच गया!', 'Order sent to the shop!')}</p><p class="s">${esc(v.name)} ${tr('आपका सामान तैयार कर रहे हैं', 'is getting your items ready')}</p><div class="ds-bill"><span>${tr('बिल', 'Bill')} ${DS.done.no}</span><b>₹${DS.done.tot.toLocaleString('en-IN')}</b><span>${DS.done.pay === 'upi' ? '📱 UPI' : '💵 ' + tr('कैश — दुकान पर दें', 'Cash — pay at the shop')}</span></div>
+                <p class="s">${tr('Happy Food ऐप से अगली बार घर बैठे मँगाइए — कोड HAPPY50 से ₹50 छूट', 'Next time order from home on the Happy Food app — HAPPY50 for ₹50 off')}</p><button class="bl-go" onclick="closeDShop()">${tr('ठीक है', 'OK')}</button></div></div>`; return; }
+            el.innerHTML = `<div class="ds-wrap">${DS.preview ? `<div class="ds-pv">👁️ ${tr('प्रीव्यू — QR स्कैन करने वाले ग्राहक को ऐसा दिखेगा', 'Preview — this is what a customer sees after scanning')}<button onclick="closeDShop()">${tr('बंद', 'Close')} ✕</button></div>` : ''}
+                <div class="ds-hd"><div class="ds-av">${v.photo ? `<img src="${esc(v.photo)}" alt="">` : esc(initials(v.name))}</div><div class="flex-1 min-w-0"><p class="ds-nm">${esc(v.name)} <span class="ds-vf">✅ ${tr('वेरिफ़ाइड', 'Verified')}</span></p><p class="ds-sb">⭐ ${v.rating || '4.6'} • ${v.open ? '🟢 ' + tr('अभी खुली', 'Open now') : '🔴 ' + tr('बंद', 'Closed')} • Happy Food ${tr('पार्टनर', 'partner')}</p></div></div>
+                <div class="px-4">${vbnSlides(DS.vid)}</div>
+                <div class="ds-chips">${[['all', tr('सभी', 'All')]].concat(stores.map(s => [s.id, saN(s.name)])).map(x => `<button class="${DS.store === x[0] ? 'on' : ''}" onclick="DS.store='${x[0]}';dsPaint()">${esc(x[1])}</button>`).join('')}</div>
+                <div class="ds-grid">${L.length ? L.map(p => { PNL.vid = DS.vid; const q = viGet(p.id).qty; PNL.vid = keep; const n = DS.cart[p.id] || 0;
+                    return `<div class="ds-it"><div class="ds-im"><img src="${esc(p.image)}" alt="">${q <= VLOW ? `<span class="ds-lw">${tr('बस ' + q + ' बचे', 'Only ' + q + ' left')}</span>` : ''}${n ? `<div class="ds-st"><button onclick="dsAdd('${p.id}',-1)">−</button><b>${n}</b><button onclick="dsAdd('${p.id}',1)">+</button></div>` : `<button class="ds-add" onclick="dsAdd('${p.id}',1)">ADD +</button>`}</div><p class="ds-in">${esc(saN(p.name0 || p.title))}</p><p class="ds-ip">₹${p.price}${p.packLbl ? ` <small>/ ${esc(saN(p.packLbl))}</small>` : ''}</p></div>`; }).join('') : `<p class="ds-empty">${tr('अभी कोई सामान स्टॉक में नहीं', 'Nothing in stock right now')}</p>`}</div><div style="height:110px"></div></div>
+                ${dsQty() ? (DS.step === 'pay' ? dsPayHtml() : `<button class="ds-cart" onclick="DS.step='pay';dsPaint()"><span>🧺 ${dsQty()} ${tr('आइटम', 'items')} • <b>₹${dsTot().toLocaleString('en-IN')}</b></span><span>${tr('ऑर्डर करें', 'Order')} ›</span></button>`) : ''}`;
+            const bn = el.querySelector('.bn'); if (bn) bnWire(el);
+        }
+        function dsPayHtml() {
+            return `<div class="ds-pay"><div class="flex items-center justify-between"><p class="font-outfit font-extrabold text-[17px]">${tr('ऑर्डर पक्का करें', 'Confirm order')}</p><button class="pk-x" onclick="DS.step='';dsPaint()"><i class="fa-solid fa-xmark"></i></button></div>
+                ${Object.keys(DS.cart).map(k => { const p = prodInfo(k); return `<div class="flex justify-between text-[13px] mt-1.5"><span>${esc(saN(p.title))} × ${DS.cart[k]}</span><b>₹${(p.price * DS.cart[k]).toLocaleString('en-IN')}</b></div>`; }).join('')}
+                <div class="grid grid-cols-2 gap-2 mt-3"><input class="bl-in" placeholder="${tr('आपका नाम', 'Your name')}" value="${esc(DS.name)}" oninput="DS.name=this.value"><input class="bl-in" inputmode="numeric" maxlength="10" placeholder="${tr('मोबाइल', 'Mobile')}" value="${esc(DS.phone)}" oninput="DS.phone=this.value.replace(/\\D/g,'')"></div>
+                <div class="bl-pay">${[['upi', '📱', 'UPI'], ['cash', '💵', tr('कैश (दुकान पर)', 'Cash (at shop)')]].map(x => `<button class="${DS.pay === x[0] ? 'on' : ''}" onclick="DS.pay='${x[0]}';dsPaint()">${x[1]} ${x[2]}</button>`).join('')}</div>
+                <button class="bl-go" onclick="dsPlace()">${DS.pay === 'upi' ? tr('₹' + dsTot() + ' पे करें और ऑर्डर भेजें', 'Pay ₹' + dsTot() + ' & send order') : tr('ऑर्डर भेजें • ₹' + dsTot(), 'Send order • ₹' + dsTot())}</button></div>`;
+        }
+        function dsPlace() {
+            if (DS.phone && DS.phone.length !== 10) { showToast(tr('मोबाइल 10 अंक का लिखिए', 'Mobile must be 10 digits')); return; }
+            const keep = PNL.vid; PNL.vid = DS.vid; const v = curV();
+            try {
+                const no = saGet('hf_billno_' + v.id, 0) + 1; saPut('hf_billno_' + v.id, no);
+                const items = Object.keys(DS.cart).map(k => { const p = prodInfo(k); return { pid: k, name: saN(p.title), price: p.price, qty: DS.cart[k] }; }), tot = items.reduce((s, i) => s + i.price * i.qty, 0);
+                const bill = { no: 'HFB-' + String(no).padStart(4, '0'), vid: v.id, shop: v.name, ts: Date.now(), name: DS.name.trim(), phone: DS.phone, pay: DS.pay, upi: vupi(), items: items, sub: tot, disc: 0, tot: tot, src: 'qr' };
+                items.forEach(i => { const inv = billInvId(i.pid), left = Math.max(0, viGet(inv).qty - i.qty); viPut(inv, { qty: left }); if (!left) vInvSetOut(inv, true); });
+                const L = saGet('hf_bills_v1', []); L.unshift(bill); saPut('hf_bills_v1', L.slice(0, 300)); DB.rev++;
+                DS.done = bill; DS.cart = {}; DS.step = '';
+            } finally { PNL.vid = keep; }
+            sfx('placed'); vib([40, 60, 40]); dsPaint();
+            setTimeout(() => { pToast('🔔 ' + tr('QR से नया ऑर्डर: ₹' + DS.done.tot + ' — ' + (DS.done.pay === 'upi' ? 'UPI' : 'कैश'), 'New QR order: ₹' + DS.done.tot)); }, 900);
         }
 
     </script>
