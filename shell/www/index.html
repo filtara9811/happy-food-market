@@ -847,6 +847,82 @@
         .ss-cart .ic { width:42px; height:42px; border-radius:14px; background:rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; font-size:18px; }
         .ss-cart b { display:block; font-size:14px; } .ss-cart small { font-size:12px; opacity:.85; } .ss-cart .go { font-weight:800; font-size:13.5px; }
         #recommendedGrid.st-mode img { object-fit:contain !important; padding:10%; background:radial-gradient(circle at 50% 40%,#fff 0%,var(--soft) 80%) !important; }
+        /* ===== patch27: banners, radar pins, order box, vertical card ===== */
+        .bn { position:relative; }
+        .bn-track { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; border-radius:22px; scrollbar-width:none; }
+        .bn-track::-webkit-scrollbar { display:none; }
+        .bn-s { flex:0 0 100%; scroll-snap-align:start; position:relative; height:132px; display:flex; align-items:center; padding:0 0 0 18px; text-align:left; overflow:hidden; color:#fff;
+            background:radial-gradient(120% 140% at 100% 50%,color-mix(in srgb,var(--c2) 85%,#fff) 0%,var(--c2) 38%,var(--c1) 100%); }
+        .bn-s::before { content:''; position:absolute; right:-30px; top:-40px; width:180px; height:180px; border-radius:50%; background:rgba(255,255,255,.14); }
+        .bn-s::after { content:''; position:absolute; left:-40px; bottom:-70px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,.06); }
+        .bn-tx { position:relative; z-index:1; flex:1; min-width:0; }
+        .bn-tx b { display:block; font:800 19px/1.15 'Outfit',sans-serif; text-shadow:0 2px 8px rgba(0,0,0,.2); }
+        .bn-tx span { display:block; font-size:12px; font-weight:600; opacity:.9; margin-top:4px; }
+        .bn-tx i { display:inline-block; font-style:normal; margin-top:10px; padding:6px 12px; border-radius:11px; background:#fff; color:var(--c1); font-size:11.5px; font-weight:800; }
+        .bn-s img { position:relative; z-index:1; width:118px; height:118px; object-fit:contain; margin-right:8px; flex-shrink:0; filter:drop-shadow(0 12px 14px rgba(0,0,0,.3)); animation:rzFloat 3.4s ease-in-out infinite; }
+        .bn-dots { display:flex; justify-content:center; gap:5px; margin-top:8px; }
+        .bn-dots span { width:6px; height:6px; border-radius:3px; background:rgba(0,0,0,.18); transition:all .3s; }
+        .bn-dots span.on { width:18px; background:var(--ac,#e2b04a); }
+        #hfBanner { padding:16px 16px 0; } #hfBanner .bn-dots span.on { background:#e2b04a; }
+        .ss-bn { margin-top:12px; }
+        /* radar pins: smaller, pulsing, appear & disappear */
+        .rz-pin { width:32px; height:32px; margin:-16px 0 0 -16px; animation:none; }
+        .rz-pin .b { width:32px; height:32px; font-size:15px; box-shadow:0 4px 10px rgba(0,0,0,.2); animation:none; position:relative; z-index:1; }
+        .rz-pin::before { content:''; position:absolute; inset:0; border-radius:50%; background:rgba(239,68,68,.35); animation:rzPulse 1.8s ease-out infinite; animation-delay:var(--d); }
+        .rz-box.shop .rz-pin::before { background:rgba(226,176,74,.45); }
+        .rz-pin.ghost { opacity:0; animation:rzCome var(--t) ease-in-out infinite; animation-delay:var(--d); }
+        .rz-pin.ghost .b { filter:none; }
+        .rz-pin.on { animation:rzBob 2.4s ease-in-out infinite; }
+        .rz-pin.on::after { width:9px; height:9px; right:0; top:0; }
+        @keyframes rzPulse { 0% { transform:scale(1); opacity:.9; } 100% { transform:scale(2.3); opacity:0; } }
+        @keyframes rzCome { 0% { opacity:0; transform:scale(.4); } 18% { opacity:1; transform:scale(1); } 62% { opacity:1; transform:scale(1) translateY(-4px); } 80%,100% { opacity:0; transform:scale(.6); } }
+        @keyframes rzBob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
+        .rz-items { display:none; }
+        .rz-bag { margin-top:14px; border-radius:18px; background:var(--sh-card); border:1px solid var(--sh-line); overflow:hidden; cursor:pointer; }
+        .rz-bag .hd { display:flex; align-items:center; gap:10px; padding:10px 12px; }
+        .rz-bag .th { display:flex; padding-left:8px; }
+        .rz-bag .th img { width:30px; height:30px; border-radius:50%; object-fit:cover; margin-left:-8px; border:2px solid var(--sh-card); background:#fff; }
+        .rz-bag b { display:block; font-size:13px; font-weight:800; color:var(--sh-tx); } .rz-bag span { font-size:11px; color:var(--sh-mut); font-weight:600; }
+        .rz-bag .hd > i { color:var(--sh-mut); transition:transform .25s; font-size:12px; }
+        .rz-bag.open .hd > i { transform:rotate(180deg); }
+        .rz-bag .bd { max-height:0; overflow:hidden; transition:max-height .35s ease; padding:0 12px; }
+        .rz-bag.open .bd { max-height:420px; overflow-y:auto; padding-bottom:8px; }
+        .rz-bag .rw { display:flex; align-items:center; gap:10px; padding:7px 0; border-top:1px solid var(--sh-line); font-size:12.5px; font-weight:600; color:var(--sh-tx); }
+        .rz-bag .rw img { width:30px; height:30px; border-radius:8px; object-fit:cover; background:#fff; }
+        .rz-bag .rw span { flex:1; font-size:12.5px; color:var(--sh-tx); } .rz-bag .rw b { display:inline; font-size:12.5px; }
+        /* profile header tools */
+        #psTools { display:flex; gap:8px; margin-left:auto; margin-right:8px; }
+        #psTools button { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; background:var(--sh-card); border:1px solid var(--sh-line); color:var(--sh-tx); }
+        #psTools b { font-size:12px; font-weight:800; }
+        /* vertical flip visiting card */
+        #psVcard { display:flex; justify-content:center; padding:4px 0 18px; }
+        .vc-wrap { width:236px; height:350px; perspective:1100px; }
+        .vc { position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .7s cubic-bezier(.3,1.3,.5,1); cursor:pointer; }
+        .vc.flip { transform:rotateY(180deg); }
+        .vc-f, .vc-b { position:absolute; inset:0; border-radius:24px; padding:18px 18px 14px; backface-visibility:hidden; -webkit-backface-visibility:hidden; color:#fff; overflow:hidden; display:flex; flex-direction:column; align-items:center;
+            background:radial-gradient(120% 70% at 50% 0%,rgba(226,176,74,.38),transparent 60%),linear-gradient(170deg,#2a2112 0%,#14110b 55%,#0b0d14 100%); border:1px solid rgba(226,176,74,.45); box-shadow:0 18px 40px rgba(0,0,0,.35); }
+        .vc-b { transform:rotateY(180deg); }
+        .vc-f::after, .vc-b::after { content:''; position:absolute; inset:0; background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.08) 45%,transparent 60%); pointer-events:none; }
+        .vc-top { width:100%; display:flex; justify-content:space-between; align-items:center; }
+        .vc-logo { font:800 15px 'Outfit',sans-serif; } .vc-logo b { color:#e2b04a; }
+        .vc-vip { font-size:10px; font-weight:800; padding:3px 9px; border-radius:999px; background:rgba(226,176,74,.18); color:#fde68a; border:1px solid rgba(226,176,74,.5); }
+        .vc-av { width:96px; height:96px; border-radius:50%; margin-top:26px; display:flex; align-items:center; justify-content:center; font:800 40px 'Outfit',sans-serif; color:#1a1305; background:linear-gradient(135deg,#fce49d,#b88222); box-shadow:0 0 0 5px rgba(226,176,74,.2),0 10px 24px rgba(0,0,0,.4); }
+        .vc-nm { font:800 20px 'Outfit',sans-serif; margin-top:16px; text-align:center; line-height:1.15; }
+        .vc-ph { font-size:12.5px; opacity:.7; margin-top:4px; letter-spacing:.5px; }
+        .vc-row { width:100%; display:flex; justify-content:space-between; margin-top:auto; padding-top:12px; border-top:1px solid rgba(255,255,255,.12); }
+        .vc-row small { display:block; font-size:9.5px; opacity:.55; letter-spacing:1px; text-transform:uppercase; } .vc-row b { font:700 13px 'Outfit',sans-serif; color:#fde68a; }
+        .vc-row div:last-child { text-align:right; }
+        .vc-hint { font-size:10px; opacity:.5; margin-top:10px; }
+        .vc-t { font-size:10.5px; opacity:.6; letter-spacing:1px; margin-top:26px; text-transform:uppercase; }
+        .vc-code { margin-top:8px; padding:10px 16px; border-radius:14px; border:1.5px dashed #e2b04a; font:800 20px 'Outfit',sans-serif; letter-spacing:2px; color:#fde68a; background:rgba(226,176,74,.08); }
+        .vc-addr { width:100%; display:flex; gap:10px; margin-top:20px; padding:12px; border-radius:14px; background:rgba(255,255,255,.06); text-align:left; }
+        .vc-addr i { color:#e2b04a; margin-top:2px; } .vc-addr b { display:block; font-size:12px; } .vc-addr span { font-size:11px; opacity:.65; }
+        .vc-btns { width:100%; display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:auto; }
+        .vc-btns button { padding:9px 4px; border-radius:12px; font-size:12px; font-weight:800; background:rgba(255,255,255,.1); color:#fff; }
+        .vc-btns button:first-child { background:#22c55e; color:#04230f; } .vc-btns button:last-child { background:#e2b04a; color:#1a1305; }
+        .ps-ref { width:100%; display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:18px; margin-top:4px; background:linear-gradient(90deg,rgba(226,176,74,.22),rgba(226,176,74,.06)); border:1px solid rgba(226,176,74,.6); color:var(--sh-tx); }
+        .ps-ref .e { font-size:26px; } .ps-ref b { display:block; font-size:14px; font-weight:800; color:#b8862a; } body:not(.light-mode) .ps-ref b { color:#fde68a; }
+        .ps-ref small { font-size:11px; opacity:.7; } .ps-ref > i { color:#b8862a; font-size:12px; }
     </style>
 <style>
 html,body{height:100%}
@@ -7468,5 +7544,110 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             el.innerHTML = n ? `<button class="ss-cart" onclick="closeStores();setTimeout(()=>openCartModal(),260)"><span class="ic"><i class="fa-solid fa-basket-shopping"></i></span><span class="flex-1 text-left"><b>${n} ${tr('आइटम', 'items')}</b><small>₹${Math.round(sum)}</small></span><span class="go">${tr('कार्ट देखें', 'View cart')} <i class="fa-solid fa-chevron-right"></i></span></button>` : '';
         }
         stFabPaint();
+
+        /* ================= patch27: store banners, radar 3.0, order box, vertical flip profile card ================= */
+        /* ---------- banners (one set per store, auto-slide, clickable) ---------- */
+        const fImg = id => { const p = prodInfo(id); return p ? p.image : FOODIMG.thali; };
+        function bnData(sid) {
+            const B = {
+                food: [['VIP थाली सिर्फ़ ₹149', 'VIP Thali at ₹149', 'शाही पनीर + दाल + नान + मिठाई', 'Paneer + dal + naan + sweet', () => fImg('p1'), 'meals', '#3a2a0c', '#b8862a'],
+                       ['मोमोज़ फ़ेस्ट 🥟', 'Momos fest 🥟', '7 रसीले मोमोज़ सिर्फ़ ₹99', '7 juicy momos at ₹99', () => fImg('p5'), 'snacks', '#5a1d12', '#d9472b'],
+                       ['पहले ऑर्डर पर ₹50 छूट', '₹50 off your first order', 'कोड HAPPY50 लगाइए', 'Use code HAPPY50', () => fImg('rec1'), 'coupon', '#12301a', '#2e8b3a']],
+                fruits: [['आम का मौसम 🥭', 'Mango season 🥭', 'मौसमी फलों पर 25% तक छूट', 'Up to 25% off seasonal fruits', () => E('mango'), 'season', '#6e1d0e', '#e8553d'],
+                         ['रोज़ के फल ₹48 से', 'Daily fruits from ₹48', 'केला, सेब, संतरा — रोज़ ताज़ा', 'Banana, apple, orange — fresh daily', () => E('banana'), 'daily', '#7a4a06', '#e0a21a'],
+                         ['विदेशी फल', 'Exotic fruits', 'कीवी, ब्लूबेरी, स्ट्रॉबेरी', 'Kiwi, blueberries, strawberries', () => E('kiwi_fruit'), 'exotic', '#1d4d1d', '#4f9a2f']],
+                dry: [['त्योहार के मेवे 🎁', 'Festive dry fruits 🎁', 'बादाम, काजू, पिस्ता पर 30% तक छूट', 'Up to 30% off almonds, cashew', () => SBASE.dry[0].img, 'nuts', '#46280f', '#8b5a2b'],
+                      ['हेल्दी स्नैक्स', 'Healthy snacks', 'मखाना और भुनी मूँगफली', 'Makhana & roasted peanuts', () => E('peanuts'), 'snack', '#5a3a12', '#c28a3a']],
+                kirana: [['महीने का राशन एक साथ', 'Monthly ration in one go', 'दाल, आटा, चावल पर 20% तक छूट', 'Up to 20% off dal, atta, rice', () => SBASE.kirana[5].img, 'atta', '#1d431d', '#2f6b2f'],
+                         ['शुद्ध तेल व घी', 'Pure oil & ghee', 'कच्ची घानी सरसों तेल, देसी घी', 'Mustard oil, desi ghee', () => E('jar'), 'oil', '#5a3a06', '#c99a1e'],
+                         ['रोज़ की दालें', 'Everyday dals', 'तूर, मूँग, चना, मसूर', 'Toor, moong, chana, masoor', () => SBASE.kirana[0].img, 'dal', '#4a3206', '#b8862a']],
+                veg: [['मंडी से सुबह ताज़ा 🥬', 'Fresh from the mandi 🥬', 'हर सुबह नई सब्ज़ी', 'New stock every morning', () => E('leafy_green'), 'leafy', '#134d1d', '#2e8b3a'],
+                      ['सब्ज़ी ₹10 से शुरू', 'Veggies from ₹10', 'टमाटर, प्याज़, आलू', 'Tomato, onion, potato', () => E('tomato'), 'daily', '#6e1d0e', '#d9472b'],
+                      ['विदेशी सब्ज़ी', 'Exotic veggies', 'ब्रोकली, मशरूम, एवोकाडो', 'Broccoli, mushroom, avocado', () => E('broccoli'), 'exotic', '#0f3d2a', '#1e8a5c']],
+                dairy: [['रोज़ सुबह दूध 🌅', 'Milk every morning 🌅', 'सुबह 7 बजे से पहले दरवाज़े पर', 'At your door before 7 am', () => E('glass_of_milk'), 'milk', '#163e6b', '#2b6cb0'],
+                        ['ताज़ा पनीर व दही', 'Fresh paneer & curd', 'मलाई पनीर ₹90 से', 'Malai paneer from ₹90', () => E('cheese_wedge'), 'curd', '#5a4206', '#d9a514'],
+                        ['ब्रेड व देसी अंडे', 'Bread & farm eggs', 'नाश्ते का सब कुछ', 'Everything for breakfast', () => E('egg'), 'bread', '#4a2c12', '#a8743f']]
+            };
+            return B[sid] || B.food;
+        }
+        function bnHtml(sid, ctx) {
+            return `<div class="bn" data-ctx="${ctx}" data-store="${sid}"><div class="bn-track">${bnData(sid).map((b, i) => `<button class="bn-s" style="--c1:${b[6]};--c2:${b[7]}" onclick="bnGo('${sid}',${i},'${ctx}')"><div class="bn-tx"><b>${tr(b[0], b[1])}</b><span>${tr(b[2], b[3])}</span><i>${b[5] === 'coupon' ? tr('कोड कॉपी करें', 'Copy code') : tr('अभी देखें', 'Shop now')} ›</i></div><img src="${esc(b[4]())}" alt=""></button>`).join('')}</div>
+                <div class="bn-dots">${bnData(sid).map((b, i) => `<span class="${i ? '' : 'on'}"></span>`).join('')}</div></div>`;
+        }
+        function bnGo(sid, i, ctx) {
+            const b = bnData(sid)[i]; vib(15);
+            if (b[5] === 'coupon') { try { refCopyOld('HAPPY50'); } catch (e) { } showToast(tr('कोड HAPPY50 कॉपी हो गया ✅ — कार्ट में लगाइए', 'Code HAPPY50 copied ✅')); return; }
+            if (ctx === 'ss') { SS.sub = b[5]; ssPaint(); return; }
+            HD.cat = b[5]; HD.sub = ''; renderRecommendedProducts();
+            const t = document.getElementById('txtRecommendedTitle'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        function bnWire(root) {
+            (root || document).querySelectorAll('.bn').forEach(bn => {
+                if (bn.dataset.w) return; bn.dataset.w = 1;
+                const tr_ = bn.querySelector('.bn-track'), dots = bn.querySelectorAll('.bn-dots span');
+                const idx = () => Math.round(tr_.scrollLeft / Math.max(1, tr_.clientWidth));
+                tr_.addEventListener('scroll', () => { const k = idx(); dots.forEach((d, j) => d.classList.toggle('on', j === k)); }, { passive: true });
+                ['touchstart', 'pointerdown'].forEach(ev => tr_.addEventListener(ev, () => { bn.dataset.t = Date.now(); }, { passive: true }));
+            });
+        }
+        setInterval(() => {
+            document.querySelectorAll('.bn').forEach(bn => {
+                if (!bn.offsetParent || Date.now() - (+bn.dataset.t || 0) < 5000) return;
+                const t = bn.querySelector('.bn-track'), n = t.children.length; if (n < 2) return;
+                const k = (Math.round(t.scrollLeft / t.clientWidth) + 1) % n; t.scrollTo({ left: k * t.clientWidth, behavior: 'smooth' });
+            });
+        }, 3600);
+        function homeBanner() {
+            let el = document.getElementById('hfBanner');
+            if (!el) { const d = document.getElementById('hfDisc'); if (!d) return; el = document.createElement('div'); el.id = 'hfBanner'; d.parentNode.insertBefore(el, d.nextSibling); }
+            const key = ST.cur + currentLang; if (el.dataset.k === key) return; el.dataset.k = key;
+            el.innerHTML = bnHtml(ST.cur, 'home'); bnWire(el);
+        }
+        { const f = renderRecommendedProducts; renderRecommendedProducts = function () { const r = f.apply(this, arguments); try { homeBanner(); } catch (e) { } return r; }; }
+        { const f = ssPaint; ssPaint = function () { const r = f.apply(this, arguments); try { const s = document.querySelector('#storeScr .ss-subs'); if (s) { s.insertAdjacentHTML('afterend', `<div class="ss-bn">${bnHtml(SS.id, 'ss')}</div>`); bnWire(document.getElementById('storeScr')); } } catch (e) { } return r; }; }
+
+        /* ---------- radar 3.0: small pulsing pins that come and go; order items in a tap-to-open box ---------- */
+        rzRadar = function (shop) {
+            const its = rzItems(live.dbo, live.ord && live.ord.image), n = its.reduce((s, x) => s + x.qty, 0);
+            const real = shop ? 1 : Math.min(6, (live.eligible || []).length || 0), total = Math.max(real, 6);
+            const pins = RZ_POS.slice(0, total).map((p, i) => `<div class="rz-pin ${i < real ? 'on' : 'ghost'}" style="left:${p[0]}%;top:${p[1]}%;--d:${(i * 0.7).toFixed(1)}s;--t:${(3.2 + (i % 3) * 0.8).toFixed(1)}s"><div class="b">${shop ? '🏪' : '🛵'}</div></div>`).join('');
+            const sum = its.reduce((s, x) => s + 0, 0);
+            return `<div class="rz-box ${shop ? 'shop' : ''}"><div class="radar-bg"></div><div class="radar-ring" style="inset:18%"></div><div class="radar-ring" style="inset:36%"></div><div class="radar-sweep"></div>${pins}
+                    <div class="rz-core"><div class="in ${its.length > 1 ? 'two' : ''}">${its.slice(0, 2).map(x => rzImg(x.img)).join('')}</div>${n > 1 ? `<span class="rz-qty">×${n}</span>` : ''}</div></div>
+                <div class="rz-bag" onclick="this.classList.toggle('open');vib(10)"><div class="hd"><div class="th">${its.slice(0, 3).map(x => rzImg(x.img)).join('')}</div><div class="flex-1 min-w-0"><b>${tr('आपका ऑर्डर', 'Your order')}</b><span>${its.length} ${tr('प्रोडक्ट', 'products')} • ${n} ${tr('नग', 'pcs')}</span></div><i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="bd">${its.map(x => `<div class="rw">${rzImg(x.img)}<span>${esc(x.name)}</span><b>×${x.qty}</b></div>`).join('')}</div></div>`;
+        };
+
+        /* ---------- profile: vertical flip visiting card, language + theme up top, referral ---------- */
+        { const f = openProfileSheet; openProfileSheet = function () {
+            const r = f.apply(this, arguments);
+            try {
+                const vp = document.getElementById('viewProfile'), head = vp.firstElementChild;
+                if (head && head.id !== 'psVcard') head.style.display = 'none';
+                let vc = document.getElementById('psVcard'); if (!vc) { vc = document.createElement('div'); vc.id = 'psVcard'; vp.insertBefore(vc, vp.firstChild); }
+                const u = currentUser() || {}, nm = (u.name || (document.getElementById('profileNameDisplay') || {}).innerText || 'Happy Food VIP').trim();
+                const ph = u.phone ? '+91 ' + String(u.phone).replace(/(\d{5})(\d{5})$/, '$1 $2') : ((document.getElementById('profilePhoneDisplay') || {}).innerText || '');
+                const addT = (document.getElementById('profileAddressTitle') || {}).innerText || '', addD = (document.getElementById('profileAddressDetail') || {}).innerText || '';
+                const mid = 'HF-' + (String(u.phone || '8821').replace(/\D/g, '').slice(-4));
+                vc.innerHTML = `<div class="vc-wrap"><div class="vc" onclick="this.classList.toggle('flip');vib(15)">
+                    <div class="vc-f"><div class="vc-top"><span class="vc-logo">Happy <b>Food</b></span><span class="vc-vip">VIP 👑</span></div>
+                        <div class="vc-av">${esc(nm.charAt(0).toUpperCase())}</div><p class="vc-nm">${esc(nm)}</p><p class="vc-ph">${esc(ph)}</p>
+                        <div class="vc-row"><div><small>${tr('मेंबर ID', 'Member ID')}</small><b>${mid}</b></div><div><small>${tr('सदस्य', 'Since')}</small><b>2026</b></div></div>
+                        <p class="vc-hint">↻ ${tr('टैप करके पलटें', 'Tap to flip')}</p></div>
+                    <div class="vc-b"><div class="vc-top"><span class="vc-logo">Happy <b>Food</b></span><span class="vc-vip">VIP 👑</span></div>
+                        <p class="vc-t">${tr('मेरा रेफ़रल कोड', 'My referral code')}</p><div class="vc-code">${refCode()}</div>
+                        <div class="vc-addr"><i class="fa-solid fa-location-dot"></i><div><b>${esc(addT)}</b><span>${esc(addD)}</span></div></div>
+                        <div class="vc-btns"><button onclick="event.stopPropagation();refWhatsApp()"><i class="fa-brands fa-whatsapp"></i> ${tr('भेजें', 'Send')}</button><button onclick="event.stopPropagation();closeProfileSheet(true);openRefer()"><i class="fa-solid fa-gift"></i> ${tr('रेफ़र', 'Refer')}</button></div>
+                        <p class="vc-hint">↻ ${tr('वापस पलटें', 'Flip back')}</p></div></div></div>`;
+                // language + theme as small buttons next to ✕
+                const hdr = document.getElementById('psTitle').parentNode;
+                let tools = document.getElementById('psTools'); if (!tools) { tools = document.createElement('div'); tools.id = 'psTools'; hdr.insertBefore(tools, hdr.lastElementChild); }
+                const dark = !document.body.classList.contains('light-mode');
+                tools.innerHTML = `<button onclick="toggleLanguage();openProfileSheet()" aria-label="language"><b>${currentLang === 'hi' ? 'EN' : 'हिं'}</b></button><button onclick="toggleTheme();openProfileSheet()" aria-label="theme"><i class="fa-solid ${dark ? 'fa-sun' : 'fa-moon'}"></i></button>`;
+                const ex = document.getElementById('psExtra'), g = ex.querySelector('.grid.grid-cols-2'); if (g) g.remove();
+                ex.insertAdjacentHTML('afterbegin', `<button class="ps-ref" onclick="closeProfileSheet(true);openRefer()"><span class="e">🎁</span><span class="flex-1 text-left"><b>${tr('दोस्त बुलाओ, ₹' + REF_AMT + ' पाओ', 'Refer & earn ₹' + REF_AMT)}</b><small>${tr('आपका कोड', 'Your code')} ${refCode()} • ${tr('WhatsApp पर भेजें', 'share on WhatsApp')}</small></span><i class="fa-solid fa-chevron-right"></i></button>`);
+            } catch (e) { }
+            return r;
+        }; }
 
     </script></body></html>
