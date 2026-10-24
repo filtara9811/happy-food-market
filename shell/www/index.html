@@ -1105,6 +1105,32 @@
         .ds-pay { position:fixed; left:0; right:0; bottom:0; margin:0 auto; max-width:480px; border-radius:24px 24px 0 0; background:#fff; padding:16px 16px calc(16px + env(safe-area-inset-bottom)); box-shadow:0 -12px 30px rgba(0,0,0,.2); animation:rtUp .3s; --ac:#16a34a; }
         .ds-ok { padding:60px 24px; text-align:center; } .ds-ok .e { font-size:64px; animation:rtPop .5s cubic-bezier(.2,1.6,.4,1); } .ds-ok .t { font:800 22px 'Outfit',sans-serif; margin-top:10px; } .ds-ok .s { font-size:13px; color:#666; margin-top:6px; }
         .ds-bill { margin:18px auto; max-width:300px; padding:14px; border-radius:16px; border:1.5px dashed #d9c9a3; background:#fffdf7; display:flex; flex-direction:column; gap:4px; } .ds-bill b { font:800 26px 'Outfit',sans-serif; }
+        /* ===== patch32 ===== */
+        #panelRoot .ph-offbtn { width:100%; padding:11px; border-radius:14px; font-weight:800; font-size:13px; color:var(--p-ok); background:color-mix(in srgb,var(--p-ok) 10%,var(--p-card)); }
+        #panelRoot .ph-days-sm { gap:6px; }
+        #panelRoot .ph-days-sm .ph-day { width:62px; padding:6px 3px 8px; border-radius:14px; }
+        #panelRoot .ph-days-sm .ph-day .w { font-size:11px; font-weight:800; color:var(--p-tx); }
+        #panelRoot .ph-days-sm .ph-day .m { font-size:11px; margin-top:1px; } #panelRoot .ph-days-sm .ph-day .c { font-size:9.5px; }
+        #panelRoot .ph-days-sm .ph-day .bar { left:8px; right:8px; bottom:3px; height:2px; }
+        #panelRoot .ph-days-sm .ph-day.on .w { color:#fff; }
+        #panelRoot .ph-tabs button { padding:9px 6px; font-size:13px; }
+        #panelRoot .ph-tabs .n.hot { background:#ef4444; animation:smGlow 1.2s infinite; }
+        #phNav .mid .mbd { position:absolute; top:-6px; right:-8px; min-width:22px; height:22px; padding:0 6px; border-radius:11px; background:#ef4444; color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; border:2px solid var(--p-card); z-index:2; }
+        #phNav .mid.ring b { animation:vnRing 1.1s ease-in-out infinite; }
+        @keyframes vnRing { 0%,100% { box-shadow:0 8px 18px rgba(226,169,44,.45),0 0 0 0 rgba(239,68,68,.55); } 50% { box-shadow:0 8px 18px rgba(226,169,44,.45),0 0 0 12px rgba(239,68,68,0); } }
+        .vn-slots { margin-top:12px; padding:10px 12px; border-radius:16px; background:var(--p-card); border:1px solid var(--p-line); }
+        .vn-slots p { font-size:12px; font-weight:800; display:flex; justify-content:space-between; } .vn-slots p b { color:var(--p-gold); }
+        .vn-slots > div { display:grid; grid-template-columns:repeat(6,1fr); gap:5px; margin-top:8px; }
+        .vn-slots span { border-radius:10px; padding:5px 2px; text-align:center; background:var(--p-card2); } .vn-slots small { display:block; font-size:9.5px; color:var(--p-mut); font-weight:700; } .vn-slots span b { font:800 14px 'Outfit',sans-serif; color:var(--p-mut); }
+        .vn-slots span.has b { color:var(--p-tx); } .vn-slots span.cur { background:color-mix(in srgb,var(--p-gold) 20%,var(--p-card)); box-shadow:inset 0 0 0 1.5px var(--p-gold); }
+        .vn-wrap { margin-top:12px; } .vn-tt { font:800 15px 'Outfit',sans-serif; } .vn-tt b { display:inline-flex; min-width:22px; height:22px; border-radius:11px; background:#ef4444; color:#fff; font-size:12px; align-items:center; justify-content:center; padding:0 6px; margin-left:4px; } .vn-tt small { display:block; font-family:inherit; font-size:11px; font-weight:600; color:var(--p-mut); }
+        .vn-card { margin-top:8px; padding:12px; border-radius:18px; background:var(--p-card); border:2px solid #f59e0b; box-shadow:0 6px 16px rgba(245,158,11,.15); }
+        .vn-id { font-size:13px; } .vn-ago { font-size:11px; color:var(--p-mut); font-weight:700; } .vn-cu { font-size:12px; color:var(--p-mut); margin-top:2px; font-weight:600; }
+        .vn-it { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; } .vn-it span { font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:9px; background:var(--p-card2); }
+        .vn-tot { font:800 18px 'Outfit',sans-serif; } .vn-pay { font-size:11px; font-weight:700; color:var(--p-mut); }
+        .vn-no { margin-left:auto; height:38px; padding:0 14px; border-radius:12px; font-weight:800; font-size:13px; color:#dc2626; background:rgba(239,68,68,.1); }
+        .vn-ok { height:38px; padding:0 16px; border-radius:12px; font-weight:900; font-size:13px; color:#fff; background:#16a34a; box-shadow:0 6px 14px rgba(22,163,74,.3); }
+        .vn-none { margin-top:10px; padding:10px 12px; border-radius:14px; background:var(--p-card2); font-size:11.5px; font-weight:600; color:var(--p-mut); }
     </style>
 <style>
 html,body{height:100%}
@@ -6882,12 +6908,11 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 ${c.note ? `<div class="ph-note"><span>${c.note}</span>${c.noteClick ? `<button onclick="${c.noteClick}" style="color:#86efac" class="whitespace-nowrap">${tr('देखें', 'View')} ›</button>` : ''}</div>` : ''}
             </div>
             ${c.top || ''}
-            <div class="flex items-center justify-between mt-6"><p class="ph-sec">${tr('आज के टारगेट', "Today's targets")}</p>${!c.duty.on ? `<button onclick="${c.duty.click}" class="text-[13px] font-black" style="color:var(--p-ok)">${c.duty.offSub}</button>` : ''}</div>
-            <div class="grid grid-cols-3 gap-2.5 mt-3">${c.targets.map(t => `<div class="ph-ring">${phRing(t[0], t[1], t[3])}<p class="text-[12.5px] font-extrabold mt-2 leading-tight">${t[2]}</p><span class="ph-badge" style="background:color-mix(in srgb,${t[3]} 14%,transparent);color:${t[3]}">${t[4]}</span></div>`).join('')}</div>
-            <div class="ph-tabs mt-6">${c.tabs.map(t => `<button class="${st.tab === t[0] ? 'on' : ''}" onclick="phSet('${role}','tab','${t[0]}')">${t[1]} <span class="n">${t[2]}</span></button>`).join('')}</div>
+            ${!c.duty.on ? `<button onclick="${c.duty.click}" class="ph-offbtn mt-4">${c.duty.offSub} ›</button>` : ''}
+            <div class="ph-days ph-days-sm mt-4">${days.map(d => { const dt = new Date(d.d0); return `<button class="ph-day ${st.day === d.k ? 'on' : ''}" onclick="phSet('${role}','day','${d.k}')"><div class="w">${d.k === 'today' ? tr('आज', 'Today') : wk[dt.getDay()]} ${dt.getDate()}</div><div class="m">${kfmt(d.amt)}</div><div class="c">${d.n ? d.n + ' ' + c.unit : '—'}</div><div class="bar"><i style="width:${Math.round(d.amt / dmax * 100)}%"></i></div></button>`; }).join('')}
+                <button class="ph-day ${st.day === 'month' ? 'on' : ''}" onclick="phSet('${role}','day','month')"><div class="w">🗓️</div><div class="m">${tr('महीना', 'Month')}</div></button></div>
+            <div class="ph-tabs mt-3">${c.tabs.map(t => `<button class="${st.tab === t[0] ? 'on' : ''}" onclick="${t[3] || `phSet('${role}','tab','${t[0]}')`}">${t[1]} <span class="n ${t[3] && t[2] ? 'hot' : ''}">${t[2]}</span></button>`).join('')}</div>
             ${st.tab !== 'orders' ? `<div class="mt-4">${c.tabBody(st.tab)}</div>` : `
-            <div class="ph-days mt-4">${days.map(d => { const dt = new Date(d.d0); return `<button class="ph-day ${st.day === d.k ? 'on' : ''}" onclick="phSet('${role}','day','${d.k}')"><div class="w">${d.k === 'today' ? tr('आज', 'Today') : wk[dt.getDay()]}</div><div class="d">${dt.getDate()}</div><div class="m">${kfmt(d.amt)}</div><div class="c">${d.n ? d.n + ' ' + c.unit : '—'}</div><div class="bar"><i style="width:${Math.round(d.amt / dmax * 100)}%"></i></div></button>`; }).join('')}
-                <button class="ph-day ${st.day === 'month' ? 'on' : ''}" onclick="phSet('${role}','day','month')"><div class="text-2xl mt-1">🗓️</div><div class="text-[11px] font-black mt-1">${tr('महीना', 'MONTH')}</div></button></div>
             <div class="flex items-center gap-2 mt-3">${[['all', tr('सब', 'All')], ['pending', tr('चालू', 'Pending')], ['done', tr('पूरे', 'Done')]].map(f => `<button class="ph-pill ${st.filter === f[0] ? 'on' : ''}" onclick="phSet('${role}','filter','${f[0]}')">${f[1]}</button>`).join('')}<span class="ml-auto text-[12.5px] font-bold pmut">${items.length} / ${totalN}</span></div>
             <div class="space-y-3 mt-3">${items.length ? items.map(card).join('') : `<div class="ph-card text-center py-8"><div class="text-4xl">${c.emptyEmoji}</div><p class="text-[13px] font-bold mt-2">${c.emptyTxt}</p></div>`}</div>`}
             <div class="h-24"></div>`;
@@ -6998,7 +7023,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const sales = today.filter(o => o.status === 'delivered').reduce((a, o) => a + o.total, 0);
             const avail = allProductsMaster.filter(m => m.available && saVs(m.p).indexOf(v.id) > -1 && !vOut(v.id, m.p.id)).length, total = allProductsMaster.filter(m => saVs(m.p).indexOf(v.id) > -1).length;
             const lbl = { vwait: [tr('🔔 नया', '🔔 New'), '#fef3c7', '#92400e'], cooking: [tr('👨‍🍳 बन रहा', '👨‍🍳 Cooking'), '#ffedd5', '#9a3412'], searching: [tr('🛵 राइडर खोज', '🛵 Finding rider'), '#e0e7ff', '#3730a3'], accepted: [tr('🛵 राइडर आ रहा', '🛵 Rider coming'), '#dbeafe', '#1e40af'], on_the_way: [tr('🛵 रास्ते में', '🛵 On the way'), '#dbeafe', '#1e40af'], delivered: [tr('✅ डिलीवर', '✅ Delivered'), '#dcfce7', '#166534'], cancelled: [tr('रद्द', 'Cancelled'), '#fee2e2', '#991b1b'], no_rider: [tr('राइडर नहीं मिला', 'No rider'), '#fee2e2', '#991b1b'] };
-            const items = mine.map(o => { const st = o.status, L = lbl[st] || [st, '#f3f4f6', '#374151'], p = prodInfo(o.items[0].pid);
+            const items = mine.filter(o => o.status !== 'vwait' && o.status !== 'new').map(o => { const st = o.status, L = lbl[st] || [st, '#f3f4f6', '#374151'], p = prodInfo(o.items[0].pid);
                 const acc = st !== 'vwait' && st !== 'new', packed = !!o.packed || ['searching', 'accepted', 'on_the_way', 'delivered'].indexOf(st) > -1, rider = ['accepted', 'on_the_way', 'delivered'].indexOf(st) > -1 && !!o.riderId, del = st === 'delivered';
                 const cur = !acc ? 0 : (!packed ? 1 : (!rider ? 2 : 3));
                 return { ts: o.ts, state: del ? 'done' : (st === 'cancelled' || st === 'no_rider' ? 'fail' : 'pending'), img: p ? p.image : FOODIMG.thali, badge: del ? '✓' : '🍳', title: o.customer, sub: o.items.map(i => i.qty + '× ' + i.name).join(', ') + ' • ' + fmtT(o.ts), chip: L[0], chipBg: L[1], chipFg: L[2], amt: o.total, amtSub: del ? tr('बिक्री', 'Sale') : (st === 'cancelled' ? '—' : tr('आने वाला', 'Upcoming')), amtColor: st === 'cancelled' ? 'var(--p-mut)' : '', onclick: `orderSheet('${o.id}', true)`,
@@ -7013,7 +7038,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 chipsTitle: '🏪 ' + tr('आज के ऑर्डर', "Today's orders"),
                 chips: [['🔔', today.filter(o => o.status === 'vwait').length, tr('नए', 'New')], ['👨‍🍳', today.filter(o => o.status === 'cooking').length, tr('बन रहे', 'Cooking')], ['🛵', today.filter(o => ['searching', 'accepted', 'on_the_way'].indexOf(o.status) > -1).length, tr('रास्ते में', 'Out')], ['✅', today.filter(o => o.status === 'delivered').length, tr('डिलीवर', 'Delivered')]],
                 targets: [[today.filter(o => o.status === 'delivered').length, 15, tr('ऑर्डर पूरे', 'Orders done'), '#16a34a', tr('लक्ष्य 15', 'Goal 15')], [Math.round(sales / 500), 10, tr('बिक्री (₹500)', 'Sales (₹500)'), '#ea580c', money_(sales)], [avail, total || 1, tr('मेन्यू चालू', 'Menu live'), '#2563eb', avail + '/' + total]],
-                tabs: [['orders', '🧾 ' + tr('ऑर्डर', 'Orders'), mine.length], ['pending', '⏳ ' + tr('चालू', 'Active'), pend.length]],
+                tabs: [['orders', '🧾 ' + tr('ऑर्डर', 'Orders'), mine.filter(o => o.status !== 'vwait' && o.status !== 'new').length], ['pos', '🏪 ' + tr('POS • इन्वेंट्री', 'POS • Inventory'), mine.filter(o => o.status === 'vwait').length, 'vInvOpen()']],
                 tabBody: () => pend.length ? `<div class="space-y-3">${pend.map(o => orderCard(o, true)).join('')}</div>` : `<div class="ph-card text-center py-8"><div class="text-4xl">🍽️</div><p class="text-[13px] font-bold mt-2">${tr('अभी कोई चालू ऑर्डर नहीं', 'No active orders')}</p></div>`,
                 items: items, emptyEmoji: '🍽️', emptyTxt: tr('इस दिन कोई ऑर्डर नहीं', 'No orders on this day')
             });
@@ -8528,6 +8553,40 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             sfx('placed'); vib([40, 60, 40]); dsPaint();
             setTimeout(() => { pToast('🔔 ' + tr('QR से नया ऑर्डर: ₹' + DS.done.tot + ' — ' + (DS.done.pay === 'upi' ? 'UPI' : 'कैश'), 'New QR order: ₹' + DS.done.tot)); }, 900);
         }
+
+        /* ================= patch32: new shop orders live inside the centre + (accept / reject, 3-hour counts) ================= */
+        const vNewOrders = () => DB.orders.filter(o => o.vendorId === curV().id && o.status === 'vwait').sort((a, b) => b.ts - a.ts);
+        function vSlots() {
+            const t0 = phDay(Date.now()), L = DB.orders.filter(o => o.vendorId === curV().id && o.ts >= t0 && o.status !== 'cancelled');
+            const now = new Date().getHours(), out = [];
+            for (let h = 6; h < 24; h += 3) { const n = L.filter(o => { const x = new Date(o.ts).getHours(); return x >= h && x < h + 3; }).length; out.push({ h, n, cur: now >= h && now < h + 3 }); }
+            const fmt = h => { const a = h % 12 || 12; return a; };
+            return `<div class="vn-slots"><p>⏱️ ${tr('आज के ऑर्डर — हर 3 घंटे', "Today's orders — every 3 hours")} <b>${L.length}</b></p><div>${out.map(x => `<span class="${x.cur ? 'cur' : ''} ${x.n ? 'has' : ''}"><small>${fmt(x.h)}–${fmt(x.h + 3)}</small><b>${x.n}</b></span>`).join('')}</div></div>`;
+        }
+        function vNewHtml() {
+            const L = vNewOrders();
+            const ago = ts => { const m = Math.max(0, Math.round((Date.now() - ts) / 60000)); return m < 1 ? tr('अभी', 'now') : m + ' ' + tr('मिनट पहले', 'min ago'); };
+            return vSlots() + (L.length ? `<div class="vn-wrap"><p class="vn-tt">🔔 ${tr('नए ऑर्डर', 'New orders')} <b>${L.length}</b><small>${tr('स्वीकार करते ही होम पर चले जाएँगे', 'Accepted ones move to your home screen')}</small></p>
+                ${L.map(o => `<div class="vn-card"><div class="flex items-center justify-between"><b class="vn-id">${esc(o.id)}</b><span class="vn-ago">${ago(o.ts)}</span></div>
+                    <p class="vn-cu">${esc(o.customer || tr('ग्राहक', 'Customer'))} • ${o.custDist || '1.8'} km</p>
+                    <div class="vn-it">${o.items.map(i => `<span>${i.qty}× ${esc(i.name)}</span>`).join('')}</div>
+                    <div class="flex items-center gap-2 mt-2.5"><b class="vn-tot">₹${Math.round(o.total).toLocaleString('en-IN')}</b><span class="vn-pay">${o.pay === 'UPI' ? '📱 UPI' : '💵 COD'}</span>
+                        <button class="vn-no" onclick="vNewDecide('${o.id}',false)">✕ ${tr('मना', 'Reject')}</button><button class="vn-ok" onclick="vNewDecide('${o.id}',true)">✓ ${tr('स्वीकार', 'Accept')}</button></div></div>`).join('')}</div>`
+                : `<div class="vn-none">✅ ${tr('कोई नया ऑर्डर बाकी नहीं — नया आते ही यहाँ और घंटी के साथ दिखेगा', 'No new order waiting — new ones appear here with a ring')}</div>`);
+        }
+        function vNewDecide(id, ok) { vendorDecide(id, ok); vib(ok ? [30, 40, 30] : 40); sfx(ok ? 'success' : 'remove'); pToast(ok ? tr('स्वीकार ✅ — ऑर्डर होम पर है, पैक कीजिए', 'Accepted ✅ — it is on your home, pack it') : tr('मना कर दिया — अगली दुकान को गया', 'Rejected — sent to the next shop')); vNewRefresh(true); }
+        function vNewRefresh(force) {
+            const box = document.getElementById('viNew'); const L = vNewOrders(), key = L.map(o => o.id).join(',') + '|' + Math.floor(Date.now() / 60000);
+            if (box && (force || box.dataset.k !== key)) { box.dataset.k = key; box.innerHTML = vNewHtml(); }
+            const mid = document.querySelector('#phNav .mid'); if (mid && PNL.role === 'vendor') { let bd = mid.querySelector('.mbd'); if (L.length) { if (!bd) { bd = document.createElement('span'); bd.className = 'mbd'; mid.appendChild(bd); } bd.textContent = L.length; mid.classList.add('ring'); } else { if (bd) bd.remove(); mid.classList.remove('ring'); } }
+        }
+        { const f = vInvPaint; vInvPaint = function () {
+            const r = f.apply(this, arguments);
+            try { if (VI.tab === 'mine' && !VI.mode && !VI.edit) { const top = document.querySelector('#viRoot .vs-top'); if (top && !document.getElementById('viNew')) { top.insertAdjacentHTML('afterend', '<div id="viNew"></div>'); vNewRefresh(true); } } } catch (e) { }
+            return r;
+        }; }
+        { const f = phNavPaint; phNavPaint = function () { const r = f.apply(this, arguments); try { vNewRefresh(); } catch (e) { } return r; }; }
+        setInterval(() => { if (PNL.role === 'vendor') try { vNewRefresh(); } catch (e) { } }, 1500);
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
