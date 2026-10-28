@@ -1254,6 +1254,20 @@
         /* ===== patch38 ===== */
         #storeScr .ss-tile { position:relative; }
         #storeScr .ss-tile .cc { position:absolute; top:4px; right:8px; min-width:20px; height:20px; padding:0 5px; border-radius:10px; background:#1a1305; color:#fde68a; font-style:normal; font-size:11px; font-weight:900; display:flex; align-items:center; justify-content:center; border:2px solid #fff; }
+        /* ===== patch39 ===== */
+        #updSheet { position:fixed; inset:0; z-index:130; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(0,0,0,.6); backdrop-filter:blur(3px); } #updSheet.hidden { display:none; }
+        .upd-card { width:100%; max-width:360px; border-radius:26px; background:var(--sh-bg); color:var(--sh-tx); padding:22px 18px 16px; text-align:center; animation:spPop .45s cubic-bezier(.3,1.3,.5,1); border:1px solid rgba(226,176,74,.4); }
+        .upd-gift { width:76px; height:76px; margin:-60px auto 8px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:38px; background:linear-gradient(145deg,#fde68a,#e2a92c); box-shadow:0 10px 26px rgba(226,169,44,.5); border:4px solid var(--sh-bg); }
+        .upd-t { font:900 20px 'Outfit',sans-serif; } .upd-v { font-size:12.5px; color:var(--sh-mut); margin-top:2px; } .upd-v b { color:#c8912a; }
+        .upd-n { text-align:left; margin:14px 0 4px; padding:10px 12px; border-radius:14px; background:var(--sh-card); font-size:12.5px; font-weight:600; }
+        .upd-n li { padding:3px 0 3px 20px; position:relative; } .upd-n li:before { content:'✨'; position:absolute; left:0; font-size:11px; }
+        .upd-bar { position:relative; height:26px; border-radius:13px; background:var(--sh-card); overflow:hidden; margin-top:14px; border:1px solid var(--sh-line); }
+        .upd-bar i { position:absolute; left:0; top:0; bottom:0; width:0; background:linear-gradient(90deg,#fde68a,#e2a92c); transition:width .25s; }
+        .upd-bar span { position:relative; font-size:12px; font-weight:900; line-height:26px; color:#1a1305; }
+        .upd-h { font-size:11.5px; color:var(--sh-mut); margin-top:10px; line-height:1.5; }
+        .upd-go { width:100%; height:50px; margin-top:14px; border-radius:15px; background:linear-gradient(180deg,#fde68a,#e2a92c); color:#1a1305; font-weight:900; font-size:15px; box-shadow:0 8px 18px rgba(226,169,44,.35); } .upd-go:disabled { opacity:.75; }
+        .upd-later { width:100%; height:40px; margin-top:6px; font-size:13px; font-weight:700; color:var(--sh-mut); }
+        #psVer { display:block; width:100%; margin:14px 0 6px; padding:10px; border-radius:12px; font-size:11.5px; font-weight:700; color:var(--sh-mut); background:transparent; border:1px dashed var(--sh-line); }
     </style>
 <style>
 html,body{height:100%}
@@ -9119,6 +9133,81 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             recommendedProducts.length = 0; keep.forEach(p => recommendedProducts.push(p));
             let r; try { r = f.apply(this, arguments); } finally { recommendedProducts.length = 0; all.forEach(p => recommendedProducts.push(p)); }
             const box = document.getElementById('inCartRecContainer'); if (box && box.parentNode) box.parentNode.style.display = keep.length ? '' : 'none';
+            return r;
+        }; }
+
+        /* ================= patch39: baskets saved on the phone, server store on orders, in-app update ================= */
+        // each store's basket survives closing the app
+        const CART_KEY = 'hf_carts_v1';
+        function cartSave() { try { const c = Object.assign({}, CARTS); c[window.CART_ST] = cart; localStorage.setItem(CART_KEY, JSON.stringify({ st: window.CART_ST, c: c })); } catch (e) { } }
+        (function cartRestore() {
+            try {
+                const o = JSON.parse(localStorage.getItem(CART_KEY) || 'null'); if (!o || !o.c) return;
+                Object.keys(o.c).forEach(k => { CARTS[k] = (o.c[k] || []).filter(x => x && prodInfo(x.productId)); });
+                window.CART_ST = o.st || 'food'; cart = (CARTS[window.CART_ST] || []).slice();
+                cartUse(ST.cur || 'food', true); updateCartUI();
+            } catch (e) { }
+        })();
+        { const f = updateCartUI; updateCartUI = function () { const r = f.apply(this, arguments); cartSave(); return r; }; }
+        { const f = logoutUser; logoutUser = function () { Object.keys(CARTS).forEach(k => delete CARTS[k]); try { localStorage.removeItem(CART_KEY); } catch (e) { } return f.apply(this, arguments); }; }
+        // live orders carry their store from the server
+        { const f = rmRow; rmRow = function (r) { const o = f.apply(this, arguments); o.stores = [r.store || 'food']; return o; }; }
+
+        /* ---------- in-app update: new version → popup → download → install ---------- */
+        const UPD = { repo: 'filtara9811/happy-food-market', file: { customer: 'HappyFood.apk', rider: 'HappyFood-Partner.apk', vendor: 'HappyFood-Shop.apk' }, info: null, busy: false };
+        const updNative = () => { try { const C = window.Capacitor; return !!(C && C.isNativePlatform && C.isNativePlatform()); } catch (e) { return false; } };
+        const updCur = () => Number((window.HF_APP || {}).build || 0);
+        async function updCheck(manual) {
+            if (!updNative() || !updCur()) { if (manual) showToast(tr('अपडेट सिर्फ़ ऐप में मिलता है', 'Updates work inside the app')); return; }
+            try {
+                if (!manual) { const s = JSON.parse(localStorage.getItem('hf_upd_snooze') || '{}'); if (s.until && Date.now() < s.until) return; }
+                const r = await fetch('https://api.github.com/repos/' + UPD.repo + '/releases/latest', { cache: 'no-store' }); if (!r.ok) throw 0;
+                const j = await r.json(), n = parseInt(String(j.tag_name || '').replace(/\D/g, ''), 10) || 0;
+                if (n <= updCur()) { if (manual) showToast(tr('आप सबसे नए वर्ज़न पर हैं ✅', 'You are on the latest version ✅')); return; }
+                const want = UPD.file[APP.role || 'customer'] || UPD.file.customer, a = (j.assets || []).find(x => x.name === want); if (!a) return;
+                const notes = String(j.body || '').split('\n').map(s => s.replace(/^[\s•\-*]+/, '').trim()).filter(s => s && !/^#/.test(s)).slice(0, 6);
+                UPD.info = { n: n, url: a.browser_download_url, mb: (a.size / 1048576).toFixed(1), notes: notes }; updShow();
+            } catch (e) { if (manual) showToast(tr('अभी जाँच नहीं हो पाई, नेट देखें', 'Could not check now')); }
+        }
+        function updShow() {
+            const I = UPD.info; if (!I) return; let el = document.getElementById('updSheet');
+            if (!el) { el = document.createElement('div'); el.id = 'updSheet'; document.body.appendChild(el); }
+            el.classList.remove('hidden');
+            el.innerHTML = `<div class="upd-card"><div class="upd-gift">🎁</div><p class="upd-t">${tr('नया अपडेट आया है!', 'New update available!')}</p>
+                <p class="upd-v">${tr('वर्ज़न', 'Version')} ${updCur()} → <b>${I.n}</b> • ${I.mb} MB</p>
+                ${I.notes.length ? `<ul class="upd-n">${I.notes.map(s => `<li>${esc(s)}</li>`).join('')}</ul>` : ''}
+                <div class="upd-bar hidden" id="updBar"><i id="updFill"></i><span id="updPct">0%</span></div>
+                <p class="upd-h hidden" id="updHelp">${tr('इंस्टॉल स्क्रीन पर <b>Update / इंस्टॉल</b> दबाएँ। पहली बार फ़ोन "Allow from this source" पूछे तो उसे चालू करें।', 'Tap <b>Update</b> on the install screen. If asked, allow installs from this source.')}</p>
+                <button class="upd-go" id="updGo" onclick="updRun()">⬇️ ${tr('अभी अपडेट करें', 'Update now')}</button>
+                <button class="upd-later" onclick="updLater()">${tr('बाद में', 'Later')}</button></div>`;
+        }
+        function updLater() { try { localStorage.setItem('hf_upd_snooze', JSON.stringify({ until: Date.now() + 6 * 3600e3 })); } catch (e) { } const el = document.getElementById('updSheet'); if (el) el.classList.add('hidden'); }
+        async function updRun() {
+            const I = UPD.info; if (!I || UPD.busy) return; UPD.busy = true; vib(15);
+            const go = document.getElementById('updGo'), bar = document.getElementById('updBar'), fill = document.getElementById('updFill'), pct = document.getElementById('updPct');
+            go.disabled = true; go.textContent = tr('डाउनलोड हो रहा है…', 'Downloading…'); bar.classList.remove('hidden');
+            const P = (window.Capacitor && Capacitor.Plugins) || {}, FS = P.Filesystem, FO = P.FileOpener; let h = null;
+            try {
+                if (!FS || !FO) throw new Error('no plugin');
+                h = await FS.addListener('progress', e => { const p = e.contentLength ? Math.min(100, Math.round(e.bytes * 100 / e.contentLength)) : 0; fill.style.width = p + '%'; pct.textContent = p + '%'; });
+                const r = await FS.downloadFile({ url: I.url, path: 'happyfood-update.apk', directory: 'CACHE', progress: true, recursive: true });
+                fill.style.width = '100%'; pct.textContent = '100%';
+                go.textContent = tr('इंस्टॉल हो रहा है…', 'Installing…'); document.getElementById('updHelp').classList.remove('hidden');
+                await FO.open({ filePath: r.path, contentType: 'application/vnd.android.package-archive', openWithDefault: true });
+                go.disabled = false; go.textContent = '📲 ' + tr('फिर से इंस्टॉल खोलें', 'Open installer again'); go.onclick = () => FO.open({ filePath: r.path, contentType: 'application/vnd.android.package-archive', openWithDefault: true });
+            } catch (e) {
+                // fallback: let the phone's browser download it
+                go.disabled = false; go.textContent = tr('ब्राउज़र से डाउनलोड करें', 'Download in browser'); go.onclick = () => { location.href = I.url; };
+                showToast(tr('ऐप में डाउनलोड नहीं हो पाया — ब्राउज़र से कर लें', 'Could not download in app — use the browser'));
+            } finally { UPD.busy = false; try { h && h.remove(); } catch (e) { } }
+        }
+        // check a few seconds after start, and whenever the app comes back after a while
+        setTimeout(() => updCheck(false), 4000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - (UPD.at || 0) > 30 * 60e3) { UPD.at = Date.now(); updCheck(false); } });
+        // version line with a manual check, at the bottom of the profile
+        { const f = openProfileSheet; openProfileSheet = function () {
+            const r = f.apply(this, arguments);
+            try { const ex = document.getElementById('psExtra'); if (ex && !document.getElementById('psVer')) ex.insertAdjacentHTML('beforeend', `<button id="psVer" onclick="updCheck(true)"><i class="fa-solid fa-rotate"></i> ${tr('वर्ज़न', 'Version')} ${updCur() || '—'} • ${tr('अपडेट देखें', 'Check for update')}</button>`); } catch (e) { }
             return r;
         }; }
 

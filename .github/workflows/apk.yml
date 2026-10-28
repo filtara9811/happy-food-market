@@ -59,7 +59,7 @@ jobs:
           cp node_modules/maplibre-gl/dist/maplibre-gl.js node_modules/maplibre-gl/dist/maplibre-gl.css www/
           cp node_modules/qrcode-generator/qrcode.js www/qrcode.js
           node -e "const fs=require('fs'),f='capacitor.config.json',c=JSON.parse(fs.readFileSync(f));c.appId=process.env.APP_ID;c.appName=process.env.APP_NAME;fs.writeFileSync(f,JSON.stringify(c,null,2))"
-          printf 'window.HF_APP={role:"%s",name:"%s"};\n' "$FLAVOR" "$APP_NAME" > www/app-config.js
+          printf 'window.HF_APP={role:"%s",name:"%s",build:%s};\n' "$FLAVOR" "$APP_NAME" "${{ github.run_number }}" > www/app-config.js
           # push is switched on only when the Firebase file contains this app's package name
           PUSH=false
           if [ -n "$GOOGLE_SERVICES_JSON" ] && printf '%s' "$GOOGLE_SERVICES_JSON" | grep -q "\"$APP_ID\""; then PUSH=true; fi
@@ -68,7 +68,7 @@ jobs:
           if [ "$PUSH" = true ]; then printf '%s' "$GOOGLE_SERVICES_JSON" > android/app/google-services.json; fi
           echo "flavor=$FLAVOR appId=$APP_ID push=$PUSH"
           M=android/app/src/main/AndroidManifest.xml
-          sed -i 's#<application#<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <application#' $M
+          sed -i 's#<application#<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>\n    <application#' $M
           # own icon, launch splash and the ring sound for this app
           cp -r ${{ matrix.res }}/. android/app/src/main/res/
           npx cap sync android
@@ -104,6 +104,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           path: apks
@@ -113,4 +114,5 @@ jobs:
         with:
           tag_name: app-${{ github.run_number }}
           name: Happy Food apps ${{ github.run_number }}
+          body_path: shell/whatsnew.txt
           files: apks/*.apk
