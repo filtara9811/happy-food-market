@@ -1207,6 +1207,30 @@
         .sp-days { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; } .sp-days button { height:36px; border-radius:11px; font-size:11.5px; font-weight:800; background:var(--p-card2); color:var(--p-mut); } .sp-days button.on { background:var(--p-gold); color:#1a1305; }
         .sp-list { margin-top:12px; border-radius:18px; overflow:hidden; border:1px solid var(--p-line); background:var(--p-card); }
         .sp-list button { width:100%; display:flex; align-items:center; gap:12px; padding:13px 14px; font-size:13.5px; font-weight:700; text-align:left; border-top:1px solid var(--p-line); } .sp-list button:first-child { border-top:0; } .sp-list button span { flex:1; } .sp-list button i { font-size:11px; color:var(--p-mut); }
+        /* ===== patch35 ===== */
+        .hf-toast { position:fixed; right:14px; bottom:calc(150px + env(safe-area-inset-bottom)); z-index:95; max-width:72%; display:flex; align-items:center; gap:9px; padding:9px 14px 9px 9px; border-radius:16px; background:#14110b; border:1px solid rgba(226,176,74,.6); box-shadow:0 12px 26px rgba(0,0,0,.35); transform:translateX(120%); opacity:0; transition:transform .35s cubic-bezier(.2,1.2,.3,1), opacity .3s; }
+        .hf-toast.in { transform:none; opacity:1; }
+        .hf-toast .ic { width:26px; height:26px; border-radius:50%; background:#e2b04a; color:#14110b; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
+        .hf-toast .tx { color:#fff !important; font-size:12.5px; font-weight:700; line-height:1.3; }
+        .hf-fly { position:fixed; z-index:120; object-fit:cover; border-radius:50%; pointer-events:none; transition:transform .65s cubic-bezier(.5,-.35,.7,1), opacity .65s; box-shadow:0 10px 24px rgba(0,0,0,.3); }
+        .hf-bump { animation:bfBump .5s cubic-bezier(.2,1.8,.4,1); }
+        .of-btn { display:inline-flex; align-items:center; gap:7px; padding:7px 12px; border-radius:999px; border:1.5px solid rgba(226,176,74,.5); background:rgba(226,176,74,.1); color:#a8741b; font-size:12.5px; font-weight:800; cursor:pointer; }
+        .of-btn img { width:20px; height:20px; object-fit:contain; } .of-btn i:last-child { font-size:10px; } .of-btn.on { background:#e2b04a; color:#1a1305; border-color:#e2b04a; }
+        #ofSheet { position:fixed; inset:0; z-index:90; display:flex; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.5); } #ofSheet.hidden { display:none; }
+        .of-card { width:100%; max-width:480px; border-radius:26px 26px 0 0; background:var(--sh-bg); color:var(--sh-tx); padding:18px 16px calc(18px + env(safe-area-inset-bottom)); animation:rtUp .3s cubic-bezier(.2,1,.3,1); }
+        .of-t { font:800 18px 'Outfit',sans-serif; } .of-l { font-size:12px; font-weight:800; color:var(--sh-mut); margin:14px 0 8px; }
+        .of-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+        .of-grid button { position:relative; border-radius:16px; padding:10px 4px 8px; background:var(--sh-card); border:1.5px solid var(--sh-line); display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--sh-tx); }
+        .of-grid img { width:34px; height:34px; object-fit:contain; } .of-grid .e { font-size:26px; line-height:34px; } .of-grid b { font-size:11.5px; font-weight:800; }
+        .of-grid em { position:absolute; top:4px; right:5px; font-style:normal; font-size:10px; font-weight:800; min-width:18px; height:18px; border-radius:9px; background:var(--sh-line); display:flex; align-items:center; justify-content:center; padding:0 4px; }
+        .of-grid button.on { border-color:var(--ac,#e2b04a); background:color-mix(in srgb,var(--ac,#e2b04a) 14%,var(--sh-card)); } .of-grid button.on em { background:var(--ac,#e2b04a); color:#fff; }
+        .of-st { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; } .of-st button { height:40px; border-radius:12px; font-size:12px; font-weight:800; background:var(--sh-card); border:1.5px solid var(--sh-line); color:var(--sh-tx); } .of-st em { font-style:normal; opacity:.6; }
+        .of-st button.on { background:#1a1305; color:#fde68a; border-color:#1a1305; }
+        .of-reset { height:48px; border-radius:14px; background:var(--sh-card); border:1.5px solid var(--sh-line); font-weight:800; color:var(--sh-tx); } .of-go { height:48px; border-radius:14px; background:linear-gradient(180deg,#fde68a,#e2a92c); color:#1a1305; font-weight:900; }
+        .of-empty { text-align:center; padding:40px 10px; color:var(--sh-mut); font-weight:700; font-size:13px; } .of-empty span { display:block; font-size:40px; } .of-empty button { margin-top:10px; padding:8px 16px; border-radius:12px; background:#e2b04a; color:#1a1305; font-weight:800; }
+        #psTools .ps-out { color:#dc2626; border-color:rgba(239,68,68,.35); background:rgba(239,68,68,.08); } #psTools .ps-out.sure { background:#dc2626; color:#fff; }
+        #psRole { position:absolute; right:16px; bottom:calc(18px + env(safe-area-inset-bottom)); z-index:5; width:48px; height:48px; border-radius:50%; background:#1a1305; color:#fde68a; font-size:17px; box-shadow:0 10px 22px rgba(0,0,0,.3); border:2px solid #e2b04a; }
+        #psCard { position:relative; } #psCard:has(#psRole) #psBody { padding-bottom:86px; }
     </style>
 <style>
 html,body{height:100%}
@@ -5430,7 +5454,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 <div class="min-w-0 flex-1"><p class="text-[14.5px] font-extrabold truncate">${esc(saN(c.name))}</p><p class="text-[11px] pmut">${c.subs.length} ${tr('सब-कैटेगरी', 'sub-categories')} • ${saCount(c.id)} ${tr('प्रोडक्ट', 'products')}</p></div>
                 <div class="flex flex-col gap-1"><button class="sa-mv" onclick="saMoveCat(${i},-1)" ${i ? '' : 'disabled'}><i class="fa-solid fa-chevron-up"></i></button><button class="sa-mv" onclick="saMoveCat(${i},1)" ${i < DB.cats.length - 1 ? '' : 'disabled'}><i class="fa-solid fa-chevron-down"></i></button></div>
                 ${sw(c.active, `saToggleCat('${c.id}')`)}</div>
-                <div class="flex flex-wrap gap-1.5 mt-3">${c.subs.map(s => `<button class="sa-chip ${s.active ? '' : 'off'}" onclick="saSubSheet('${c.id}','${s.id}')">${esc(saN(s.name))} <b>${saCount(c.id, s.id)}</b></button>`).join('')}<button class="sa-chip add" onclick="saSubSheet('${c.id}')"><i class="fa-solid fa-plus"></i> ${tr('सब-कैटेगरी', 'Sub-category')}</button></div>
+                <div class="flex flex-wrap gap-1.5 mt-3">${c.subs.map(s => `<button class="sa-chip ${s.active ? '' : 'off'}" onclick="saSubSheet('${c.id}','${s.id}')">${esc((s.name[currentLang] || s.name.hi))} <b>${saCount(c.id, s.id)}</b></button>`).join('')}<button class="sa-chip add" onclick="saSubSheet('${c.id}')"><i class="fa-solid fa-plus"></i> ${tr('सब-कैटेगरी', 'Sub-category')}</button></div>
                 <div class="flex gap-2 mt-3"><button class="pbtn-g flex-1" onclick="saCatSheet('${c.id}')"><i class="fa-solid fa-pen"></i> ${tr('एडिट', 'Edit')}</button><button class="pbtn-g flex-1" onclick="SA.seg='prods';SA.pf='${c.id}';renderPanel()"><i class="fa-solid fa-burger"></i> ${tr('प्रोडक्ट देखें', 'View products')}</button></div>
             </div>`).join('')}</div>`;
         }
@@ -5505,7 +5529,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 const vs = saVs(m.p), c = saCat(x.cat), s = saSub(c, x.sub), v = saVendor(vs[0]);
                 return `<button class="pcard p-3 flex items-center gap-3 w-full text-left ${m.available ? '' : 'opacity-60'}" onclick="saProdSheet(${i})"><img class="pthumb" src="${esc(m.p.image)}" alt="">
                 <div class="min-w-0 flex-1"><div class="flex items-center gap-1.5"><span class="sa-veg ${x.spec.veg ? 'v' : 'n'}"></span><p class="text-[13.5px] font-extrabold truncate">${esc(saN(m.p.title))}</p></div>
-                <p class="text-[11.5px] mt-0.5"><span class="pnum pgold">${money(m.p.price)}</span> <span class="pmut">• ${c ? c.icon + ' ' + esc(saN(c.name)) : '—'}${s ? ' › ' + esc(saN(s.name)) : ''}</span></p>
+                <p class="text-[11.5px] mt-0.5"><span class="pnum pgold">${money(m.p.price)}</span> <span class="pmut">• ${c ? c.icon + ' ' + esc(saN(c.name)) : '—'}${s ? ' › ' + esc((s.name[currentLang] || s.name.hi)) : ''}</span></p>
                 <div class="flex items-center gap-1.5 mt-1.5">${saVAv(v, 20)}<span class="text-[11px] font-bold truncate">${v ? esc(v.name) : tr('वेंडर नहीं', 'No vendor')}</span>${vs.length > 1 ? `<span class="pill gold" style="padding:1px 6px;font-size:9.5px">+${vs.length - 1} ${tr('दुकान', 'shops')}</span>` : ''}${v && v.rating ? `<span class="text-[10.5px] pgold">★ ${v.rating}</span>` : ''}</div></div>
                 <i class="fa-solid fa-chevron-right pmut text-xs"></i></button>`;
             }).join('');
@@ -7311,7 +7335,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             body.innerHTML = `<div class="hd-head"><b>${tr('क्या खाना है आज? 😋', 'What are you craving? 😋')}</b><span>${tr('कैटेगरी चुनें', 'Pick a category')}</span></div>
                 <div class="hd-cats"><button class="hd-cat ${HD.cat === 'all' ? 'on' : ''}" onclick="hdPick('all')">${ring('✨', all.length)}<p>${tr('सभी', 'All')}</p></button>
                 ${cats.map(c => `<button class="hd-cat ${HD.cat === c.id ? 'on' : ''}" onclick="hdPick('${c.id}')">${ring(c.photo ? `<img src="${esc(c.photo)}">` : c.icon, cnt(c.id))}<p>${esc(saN(c.name))}</p></button>`).join('')}</div>
-                ${subs.length ? `<div class="hd-subs"><button class="${HD.sub ? '' : 'on'}" onclick="hdPickSub('')">${tr('सब', 'All')} ${esc(saN(cur.name))}</button>${subs.map(s => `<button class="${HD.sub === s.id ? 'on' : ''}" onclick="hdPickSub('${s.id}')">${esc(saN(s.name))}</button>`).join('')}</div>` : ''}`;
+                ${subs.length ? `<div class="hd-subs"><button class="${HD.sub ? '' : 'on'}" onclick="hdPickSub('')">${tr('सब', 'All')} ${esc(saN(cur.name))}</button>${subs.map(s => `<button class="${HD.sub === s.id ? 'on' : ''}" onclick="hdPickSub('${s.id}')">${esc((s.name[currentLang] || s.name.hi))}</button>`).join('')}</div>` : ''}`;
             const row2 = body.querySelector('.hd-cats'); if (row2 && sl) row2.scrollLeft = sl;
             hdSearchUi();
         }
@@ -7733,7 +7757,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 const t = document.getElementById('txtRecommendedTitle'), s = document.getElementById('txtRecommendedSub');
                 if (t && s && !hdOn()) { const S = stObj(ST.cur), L = i18n[currentLang] || {};
                     if (ST.cur === 'food') { if (ST.tset) { t.innerText = L.recommendedTitle || 'Recommended For You 🔥'; s.innerText = L.recommendedSub || ''; ST.tset = false; } }
-                    else { t.innerText = saN(S.name) + ' • ' + tr('सब आइटम', 'all items'); s.innerText = saN(S.slot); ST.tset = true; } }
+                    else { t.innerText = (S.name[currentLang] || S.name.hi) + ' • ' + tr('सब आइटम', 'all items'); s.innerText = saN(S.slot); ST.tset = true; } }
             } catch (e) { }
         }; }
         // panels always work on the food catalogue
@@ -7759,7 +7783,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         })();
         function stFabPaint() {
             const S = stObj(ST.cur), b = document.getElementById('stFab'); if (!b) return;
-            document.getElementById('stFabImg').src = S.img; document.getElementById('stFabLbl').textContent = saN(S.name);
+            document.getElementById('stFabImg').src = S.img; document.getElementById('stFabLbl').textContent = (S.name[currentLang] || S.name.hi);
             b.style.setProperty('--ac', S.th.ac);
             const home = document.getElementById('viewHome'), panel = document.getElementById('panelRoot');
             const show = home && !home.classList.contains('hidden') && !(panel && !panel.classList.contains('hidden') && panel.offsetParent !== null) && !document.getElementById('storeScr');
@@ -7792,11 +7816,11 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             el.style.cssText = `--bg:${th.bg};--body:${th.body};--soft:${th.soft};--ac:${th.ac};--tx:${th.tx}`;
             const row = el.querySelector('.ss-stores'), sl = row ? row.scrollLeft : null;
             el.innerHTML = `<div class="ss-head"><button class="ss-ic" onclick="closeStores()" aria-label="back"><i class="fa-solid fa-arrow-left"></i></button>
-                    <div class="flex-1 min-w-0"><h2>${saN(S.name)} <small>Happy Food</small></h2><p>${saN(S.slot)}</p></div>
+                    <div class="flex-1 min-w-0"><h2>${(S.name[currentLang] || S.name.hi)} <small>Happy Food</small></h2><p>${saN(S.slot)}</p></div>
                     <button class="ss-ic" onclick="SS.search=!SS.search;ssPaint();setTimeout(()=>{const i=document.getElementById('ssQ');i&&i.focus()},50)" aria-label="search"><i class="fa-solid fa-magnifying-glass"></i></button></div>
-                <div class="ss-stores">${STORES.map(s => `<button class="ss-tile ${s.id === SS.id ? 'on' : ''}" onclick="ssPick('${s.id}')"><img src="${s.img}" alt=""><span>${saN(s.name)}</span></button>`).join('')}</div>
+                <div class="ss-stores">${STORES.map(s => `<button class="ss-tile ${s.id === SS.id ? 'on' : ''}" onclick="ssPick('${s.id}')"><img src="${s.img}" alt=""><span>${(s.name[currentLang] || s.name.hi)}</span></button>`).join('')}</div>
                 <div class="ss-body">
-                    ${SS.search ? `<div class="ss-search"><i class="fa-solid fa-magnifying-glass"></i><input id="ssQ" placeholder="${tr(saN(S.name) + ' में खोजें…', 'Search in ' + saN(S.name) + '…')}" value="${esc(SS.q)}" oninput="SS.q=this.value;ssGrid()"></div>` : ''}
+                    ${SS.search ? `<div class="ss-search"><i class="fa-solid fa-magnifying-glass"></i><input id="ssQ" placeholder="${tr((S.name[currentLang] || S.name.hi) + ' में खोजें…', 'Search in ' + saN(S.name) + '…')}" value="${esc(SS.q)}" oninput="SS.q=this.value;ssGrid()"></div>` : ''}
                     <div class="ss-subs"><button class="${SS.sub === 'all' ? 'on' : ''}" onclick="SS.sub='all';ssPaint()">${tr('सभी', 'All')}</button>${ssSubs(SS.id).map(c => `<button class="${SS.sub === c.id ? 'on' : ''}" onclick="SS.sub='${c.id}';ssPaint()">${c.icon && !c.photo ? c.icon + ' ' : ''}${esc(saN(c.name))}</button>`).join('')}</div>
                     <div id="ssGrid" class="ss-grid"></div><div style="height:96px"></div></div>
                 <div id="ssCart"></div>`;
@@ -8043,11 +8067,11 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 const el = document.getElementById('storeScr');
                 el.querySelectorAll('.ss-tile').forEach((t, i) => { const s = STORES[i]; if (s && !s.active) t.insertAdjacentHTML('beforeend', `<em class="ss-soon">${tr('जल्द', 'Soon')}</em>`); });
                 const c = (STORE_CATS[SS.id] || []).find(x => x.id === SS.sub);
-                if (c && c.subs.length) el.querySelector('.ss-subs').insertAdjacentHTML('afterend', `<div class="ss-sc">${[['', tr('सब', 'All')]].concat(c.subs.map(s => [s.id, saN(s.name)])).map(x => `<button class="${SS.sc === x[0] ? 'on' : ''}" onclick="SS.sc='${x[0]}';ssPaint()">${esc(x[1])}</button>`).join('')}</div>`);
+                if (c && c.subs.length) el.querySelector('.ss-subs').insertAdjacentHTML('afterend', `<div class="ss-sc">${[['', tr('सब', 'All')]].concat(c.subs.map(s => [s.id, (s.name[currentLang] || s.name.hi)])).map(x => `<button class="${SS.sc === x[0] ? 'on' : ''}" onclick="SS.sc='${x[0]}';ssPaint()">${esc(x[1])}</button>`).join('')}</div>`);
             } catch (e) { }
             return r;
         }; }
-        { const f = ssPick; ssPick = function (id) { const s = stObj(id); if (s && !s.active) { vib(20); showToast('🔜 ' + saN(s.name) + ' ' + tr('जल्द शुरू होगा', 'is coming soon')); return; } return f.apply(this, arguments); }; }
+        { const f = ssPick; ssPick = function (id) { const s = stObj(id); if (s && !s.active) { vib(20); showToast('🔜 ' + (s.name[currentLang] || s.name.hi) + ' ' + tr('जल्द शुरू होगा', 'is coming soon')); return; } return f.apply(this, arguments); }; }
 
         /* ---------- banners for meat + any new store ---------- */
         { const f = bnData; bnData = function (sid) {
@@ -8056,14 +8080,14 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 ['मछली व झींगा 🐟', 'Fish & prawns 🐟', 'रोहू, प्रॉन्स — साफ़ और कटे', 'Rohu, prawns — cleaned & cut', () => E('fish'), 'fish', '#0f3550', '#1e6aa0']];
             if (['food', 'fruits', 'dry', 'kirana', 'veg', 'dairy'].indexOf(sid) > -1) return f(sid);
             const S = stObj(sid), c0 = (STORE_CATS[sid] || [])[0];
-            return [[saN(S.name) + ' — अब Happy Food पर', saN(S.name) + ' — now on Happy Food', S.slot.hi || '', S.slot.en || S.slot.hi || '', () => S.img, c0 ? c0.id : 'all', S.th.tx, S.th.ac]];
+            return [[(S.name[currentLang] || S.name.hi) + ' — अब Happy Food पर', saN(S.name) + ' — now on Happy Food', S.slot.hi || '', S.slot.en || S.slot.hi || '', () => S.img, c0 ? c0.id : 'all', S.th.tx, S.th.ac]];
         }; }
 
         /* ---------- D. admin: store → category → sub-category → product ---------- */
         const ACAT = { store: 'food', seg: 'cats', cat: 'all', img: '', th: 'gold' };
         { const f = adminCatalog; adminCatalog = function () {
             const chips = `<div class="ac-stores">${SCAT.stores.map(s => { const n = s.id === 'food' ? allProductsMaster.length : (SCAT.items[s.id] || []).length;
-                return `<button class="${ACAT.store === s.id ? 'on' : ''} ${s.active === false ? 'off' : ''}" onclick="ACAT.store='${s.id}';ACAT.cat='all';renderPanel()"><img src="${esc(imgR(s.img))}" alt=""><span>${esc(saN(s.name))}</span><b>${n}</b></button>`; }).join('')}
+                return `<button class="${ACAT.store === s.id ? 'on' : ''} ${s.active === false ? 'off' : ''}" onclick="ACAT.store='${s.id}';ACAT.cat='all';renderPanel()"><img src="${esc(imgR(s.img))}" alt=""><span>${esc((s.name[currentLang] || s.name.hi))}</span><b>${n}</b></button>`; }).join('')}
                 <button class="add" onclick="acStoreSheet()"><i class="fa-solid fa-plus"></i><span>${tr('नई दुकान', 'New store')}</span></button></div>`;
             if (ACAT.store === 'food') return chips + `<div class="ac-help">🍱 ${tr('फ़ूड की कैटेगरी और प्रोडक्ट (पहले जैसे)', 'Food categories & products (as before)')}</div>` + f.apply(this, arguments);
             return chips + acStoreView();
@@ -8073,7 +8097,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const cats = SCAT.cats[s.id] = SCAT.cats[s.id] || [], items = SCAT.items[s.id] = SCAT.items[s.id] || [];
             const cnt = (cid, sid) => items.filter(i => i.cat === cid && (!sid || i.sub === sid)).length;
             const head = `<div class="pcard p-3.5 mt-3 flex items-center gap-3" style="border-color:${(TH[s.th] || TH.gold).ac}"><div class="ac-big" style="background:${(TH[s.th] || TH.gold).soft}"><img src="${esc(imgR(s.img))}" alt=""></div>
-                <div class="min-w-0 flex-1"><p class="text-[15px] font-extrabold">${esc(saN(s.name))}</p><p class="text-[11px] pmut truncate">${esc(saN(s.slot))}</p><p class="text-[11px] font-bold mt-0.5" style="color:${s.active === false ? '#d97706' : '#16a34a'}">${s.active === false ? tr('🔜 ग्राहक को "जल्द" दिखेगा', '🔜 Shown as "coming soon"') : tr('✅ ग्राहक को दिख रही है', '✅ Live for customers')}</p></div>
+                <div class="min-w-0 flex-1"><p class="text-[15px] font-extrabold">${esc((s.name[currentLang] || s.name.hi))}</p><p class="text-[11px] pmut truncate">${esc(saN(s.slot))}</p><p class="text-[11px] font-bold mt-0.5" style="color:${s.active === false ? '#d97706' : '#16a34a'}">${s.active === false ? tr('🔜 ग्राहक को "जल्द" दिखेगा', '🔜 Shown as "coming soon"') : tr('✅ ग्राहक को दिख रही है', '✅ Live for customers')}</p></div>
                 <div class="flex flex-col items-end gap-2">${sw(s.active !== false, `acToggleStore('${s.id}')`)}<button class="pbtn-g" style="padding:6px 10px" onclick="acStoreSheet('${s.id}')"><i class="fa-solid fa-pen"></i></button></div></div>`;
             const seg = `<div class="pseg mt-3"><button class="${ACAT.seg === 'cats' ? 'on' : ''}" onclick="ACAT.seg='cats';renderPanel()">${tr('कैटेगरी', 'Categories')} (${cats.length})</button><button class="${ACAT.seg === 'prods' ? 'on' : ''}" onclick="ACAT.seg='prods';renderPanel()">${tr('प्रोडक्ट', 'Products')} (${items.length})</button></div>`;
             if (ACAT.seg === 'cats') return head + seg + `<div class="flex items-center justify-between mt-4"><p class="pttl text-[15px]">${tr('कैटेगरी व सब-कैटेगरी', 'Categories & sub-categories')}</p><button class="pbtn" style="padding:8px 14px" onclick="acCatSheet()"><i class="fa-solid fa-plus"></i> ${tr('कैटेगरी', 'Category')}</button></div>
@@ -8167,7 +8191,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 <label class="plabel mt-3">${tr('नाम (हिंदी)', 'Name (Hindi)')}</label><input id="acIHi" value="${esc(it.name.hi)}" class="mb-3" placeholder="जैसे: भिंडी">
                 <label class="plabel">${tr('नाम (English)', 'Name (English)')}</label><input id="acIEn" value="${esc(it.name.en)}" class="mb-3" placeholder="e.g. Lady finger">
                 <div class="grid grid-cols-2 gap-3"><div><label class="plabel">${tr('कैटेगरी', 'Category')}</label><select id="acICat" onchange="acFillSubs(this.value)">${cats.map(c => `<option value="${c.id}" ${c.id === it.cat ? 'selected' : ''}>${esc(saN(c.name))}</option>`).join('')}</select></div>
-                <div><label class="plabel">${tr('सब-कैटेगरी', 'Sub-category')}</label><select id="acISub"><option value="">—</option>${subsOf(it.cat).map(s => `<option value="${s.id}" ${s.id === it.sub ? 'selected' : ''}>${esc(saN(s.name))}</option>`).join('')}</select></div></div>
+                <div><label class="plabel">${tr('सब-कैटेगरी', 'Sub-category')}</label><select id="acISub"><option value="">—</option>${subsOf(it.cat).map(s => `<option value="${s.id}" ${s.id === it.sub ? 'selected' : ''}>${esc((s.name[currentLang] || s.name.hi))}</option>`).join('')}</select></div></div>
                 <label class="plabel mt-4">${tr('पैक व दाम — ग्राहक को यही दाम दिखेगा', 'Packs & price — customers see this price')}</label>
                 <div id="acPacks" class="space-y-2">${it.packs.map(acPackRow).join('')}</div>
                 <button class="pbtn-g w-full mt-2" onclick="document.getElementById('acPacks').insertAdjacentHTML('beforeend',acPackRow({hi:'',price:'',mrp:''}))"><i class="fa-solid fa-plus"></i> ${tr('एक और पैक', 'Add a pack')}</button>
@@ -8177,7 +8201,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 ${id ? `<button class="pbtn-bad w-full mt-2.5" onclick="acDelItem('${id}')"><i class="fa-solid fa-trash"></i> ${tr('प्रोडक्ट हटाएँ', 'Delete product')}</button>` : ''}`);
         }
         function acPackRow(k) { return `<div class="ac-pk"><input placeholder="${tr('पैक (500 g)', 'Pack (500 g)')}" value="${esc(k.hi || '')}"><input inputmode="numeric" placeholder="${tr('दाम ₹', 'Price ₹')}" value="${esc(k.price)}"><input inputmode="numeric" placeholder="MRP ₹" value="${esc(k.mrp)}"><button onclick="this.parentNode.remove()"><i class="fa-solid fa-xmark"></i></button></div>`; }
-        function acFillSubs(cid) { const c = SCAT.cats[ACAT.store].find(x => x.id === cid) || {}; document.getElementById('acISub').innerHTML = '<option value="">—</option>' + (c.subs || []).map(s => `<option value="${s.id}">${esc(saN(s.name))}</option>`).join(''); }
+        function acFillSubs(cid) { const c = SCAT.cats[ACAT.store].find(x => x.id === cid) || {}; document.getElementById('acISub').innerHTML = '<option value="">—</option>' + (c.subs || []).map(s => `<option value="${s.id}">${esc((s.name[currentLang] || s.name.hi))}</option>`).join(''); }
         function acSaveItem(id) {
             const nm = acName('acIHi', 'acIEn'); if (!nm) { pToast(tr('प्रोडक्ट का नाम लिखें', 'Enter the product name')); return; }
             if (!ACAT.img) { pToast(tr('एक आइकन या फ़ोटो चुनें', 'Pick an icon or photo')); return; }
@@ -8202,7 +8226,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const v = curV(), mine = viStoreMine(VI.store), on = mine.filter(m => m.available && !vOut(v.id, m.p.id));
             const units = mine.reduce((s, m) => s + (vOut(v.id, m.p.id) ? 0 : viGet(m.p.id).qty), 0);
             const cats = VI.store === 'food' ? DB.cats.filter(c => c.active) : (STORE_CATS[VI.store] || []);
-            root.innerHTML = `<div class="vi-stores">${STORES.map(s => `<button class="${VI.store === s.id ? 'on' : ''}" onclick="VI.store='${s.id}';VI.cat='all';vInvPaint()"><img src="${esc(s.img)}" alt=""><span>${esc(saN(s.name))}</span>${viStoreMine(s.id).length ? `<b>${viStoreMine(s.id).length}</b>` : ''}</button>`).join('')}</div>
+            root.innerHTML = `<div class="vi-stores">${STORES.map(s => `<button class="${VI.store === s.id ? 'on' : ''}" onclick="VI.store='${s.id}';VI.cat='all';vInvPaint()"><img src="${esc(s.img)}" alt=""><span>${esc((s.name[currentLang] || s.name.hi))}</span>${viStoreMine(s.id).length ? `<b>${viStoreMine(s.id).length}</b>` : ''}</button>`).join('')}</div>
                 <div class="vi-top mt-3"><div class="vi-seg"><button class="${VI.tab === 'mine' ? 'on' : ''}" onclick="VI.tab='mine';VI.cat='all';vInvPaint()">📦 ${tr('मैं बेचता हूँ', 'I sell')} (${mine.length})</button><button class="${VI.tab === 'map' ? 'on' : ''}" onclick="VI.tab='map';VI.cat='all';vInvPaint()">🔗 ${tr('और जोड़ें', 'Add more')}</button></div></div>
                 ${VI.tab === 'mine' ? `<div class="vi-sum"><div><p>${tr('चालू', 'Live')}</p><b>${on.length}</b></div><div><p>${tr('ख़त्म', 'Sold out')}</p><b>${mine.length - on.length}</b></div><div><p>${tr('कुल नग', 'Units')}</p><b>${units}</b></div></div>`
                     : `<div class="vi-note">💡 ${tr('दाम Happy Food तय करता है। आप सिर्फ़ “+ जोड़ें” दबाइए — जिस आइटम को जोड़ेंगे, उसके ऑर्डर आपके पास भी आएँगे।', 'Happy Food sets the price. Just tap “+ Add” — you will get orders for the items you add.')}</div>`}
@@ -8449,7 +8473,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                     <div class="vs-st"><div><b>${units}</b><span>${tr('बचे नग', 'Units left')}</span></div><div><b>${sold}</b><span>${tr('आज बिके', 'Sold today')}</span></div><div><b>₹${sale.toLocaleString('en-IN')}</b><span>${tr('काउंटर बिक्री', 'Counter sales')}</span></div>
                     <button class="${VI.low ? 'on' : ''}" onclick="VI.low=!VI.low;vInvPaint()"><b>${low}</b><span>${tr('भरना है', 'To refill')}</span></button></div>
                     <div class="vs-act"><button onclick="openMyQR()">📱 ${tr('मेरा QR', 'My QR')}</button><button onclick="VI.mode='bn';vInvPaint()">🖼️ ${tr('बैनर', 'Banners')}</button><button onclick="openDShop(curV().id,true)">🏪 ${tr('डिजिटल दुकान', 'Digital shop')}</button></div></div>
-                <div class="vi-stores mt-3">${STORES.map(s => { const n = viStoreMine(s.id).length; return `<button class="${VI.store === s.id ? 'on' : ''}" onclick="VI.store='${s.id}';VI.cat='all';vInvPaint()"><img src="${esc(s.img)}" alt=""><span>${esc(saN(s.name))}</span>${n ? `<b>${n}</b>` : ''}</button>`; }).join('')}</div>
+                <div class="vi-stores mt-3">${STORES.map(s => { const n = viStoreMine(s.id).length; return `<button class="${VI.store === s.id ? 'on' : ''}" onclick="VI.store='${s.id}';VI.cat='all';vInvPaint()"><img src="${esc(s.img)}" alt=""><span>${esc((s.name[currentLang] || s.name.hi))}</span>${n ? `<b>${n}</b>` : ''}</button>`; }).join('')}</div>
                 <div class="vi-top mt-3"><div class="vi-seg"><button class="on">📦 ${tr('मैं बेचता हूँ', 'I sell')} (${mine.length})</button><button onclick="VI.tab='map';VI.cat='all';vInvPaint()">🔗 ${tr('और जोड़ें', 'Add more')}</button></div></div>
                 <div class="vs-sr"><div class="vi-search flex-1" style="margin-top:0"><i class="fa-solid fa-magnifying-glass pmut"></i><input id="viQ" placeholder="${tr('आइटम खोजें…', 'Search items…')}" value="${esc(VI.q || '')}" oninput="VI.q=this.value;vInvList()"></div>
                     <div class="vs-vw">${V.map(x => `<button class="${VI.view === x[0] ? 'on' : ''}" onclick="VI.view='${x[0]}';saPut('hf_viview','${x[0]}');vInvList();this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on'));this.classList.add('on')"><i class="fa-solid ${x[1]}"></i></button>`).join('')}</div></div>
@@ -8602,7 +8626,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             el.innerHTML = `<div class="ds-wrap">${DS.preview ? `<div class="ds-pv">👁️ ${tr('प्रीव्यू — QR स्कैन करने वाले ग्राहक को ऐसा दिखेगा', 'Preview — this is what a customer sees after scanning')}<button onclick="closeDShop()">${tr('बंद', 'Close')} ✕</button></div>` : ''}
                 <div class="ds-hd"><div class="ds-av">${v.photo ? `<img src="${esc(v.photo)}" alt="">` : esc(initials(v.name))}</div><div class="flex-1 min-w-0"><p class="ds-nm">${esc(v.name)} <span class="ds-vf">✅ ${tr('वेरिफ़ाइड', 'Verified')}</span></p><p class="ds-sb">⭐ ${v.rating || '4.6'} • ${v.open ? '🟢 ' + tr('अभी खुली', 'Open now') : '🔴 ' + tr('बंद', 'Closed')} • Happy Food ${tr('पार्टनर', 'partner')}</p></div></div>
                 <div class="px-4">${vbnSlides(DS.vid)}</div>
-                <div class="ds-chips">${[['all', tr('सभी', 'All')]].concat(stores.map(s => [s.id, saN(s.name)])).map(x => `<button class="${DS.store === x[0] ? 'on' : ''}" onclick="DS.store='${x[0]}';dsPaint()">${esc(x[1])}</button>`).join('')}</div>
+                <div class="ds-chips">${[['all', tr('सभी', 'All')]].concat(stores.map(s => [s.id, (s.name[currentLang] || s.name.hi)])).map(x => `<button class="${DS.store === x[0] ? 'on' : ''}" onclick="DS.store='${x[0]}';dsPaint()">${esc(x[1])}</button>`).join('')}</div>
                 <div class="ds-grid">${L.length ? L.map(p => { PNL.vid = DS.vid; const q = viGet(p.id).qty; PNL.vid = keep; const n = DS.cart[p.id] || 0;
                     return `<div class="ds-it"><div class="ds-im"><img src="${esc(p.image)}" alt="">${q <= VLOW ? `<span class="ds-lw">${tr('बस ' + q + ' बचे', 'Only ' + q + ' left')}</span>` : ''}${n ? `<div class="ds-st"><button onclick="dsAdd('${p.id}',-1)">−</button><b>${n}</b><button onclick="dsAdd('${p.id}',1)">+</button></div>` : `<button class="ds-add" onclick="dsAdd('${p.id}',1)">ADD +</button>`}</div><p class="ds-in">${esc(saN(p.name0 || p.title))}</p><p class="ds-ip">₹${p.price}${p.packLbl ? ` <small>/ ${esc(saN(p.packLbl))}</small>` : ''}</p></div>`; }).join('') : `<p class="ds-empty">${tr('अभी कोई सामान स्टॉक में नहीं', 'Nothing in stock right now')}</p>`}</div><div style="height:110px"></div></div>
                 ${dsQty() ? (DS.step === 'pay' ? dsPayHtml() : `<button class="ds-cart" onclick="DS.step='pay';dsPaint()"><span>🧺 ${dsQty()} ${tr('आइटम', 'items')} • <b>₹${dsTot().toLocaleString('en-IN')}</b></span><span>${tr('ऑर्डर करें', 'Order')} ›</span></button>`) : ''}`;
@@ -8720,7 +8744,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 <div class="px-4">${vbnSlides(DS.vid)}</div>
                 <div class="ds-sr"><div class="ds-sb2"><i class="fa-solid fa-magnifying-glass"></i><input id="dsQ" placeholder="${tr('इस दुकान में खोजें…', 'Search this shop…')}" value="${esc(DS.q)}" oninput="DS.q=this.value;dsGrid()"></div>
                     <div class="ds-vw">${V.map(x => `<button class="${DS.view === x[0] ? 'on' : ''}" onclick="DS.view='${x[0]}';saPut('hf_dsview','${x[0]}');dsPaint()"><i class="fa-solid ${x[1]}"></i></button>`).join('')}</div></div>
-                <div class="ds-chips">${[['all', tr('सभी', 'All')]].concat(stores.map(s => [s.id, saN(s.name)])).map(x => `<button class="${DS.store === x[0] ? 'on' : ''}" onclick="DS.store='${x[0]}';dsPaint()">${esc(x[1])}</button>`).join('')}</div>
+                <div class="ds-chips">${[['all', tr('सभी', 'All')]].concat(stores.map(s => [s.id, (s.name[currentLang] || s.name.hi)])).map(x => `<button class="${DS.store === x[0] ? 'on' : ''}" onclick="DS.store='${x[0]}';dsPaint()">${esc(x[1])}</button>`).join('')}</div>
                 <div id="dsGrid" class="ds-grid ds-${DS.view}">${L.length ? L.map(card).join('') : `<p class="ds-empty">${q ? tr('“' + esc(DS.q) + '” नहीं मिला', 'Nothing for “' + esc(DS.q) + '”') : tr('अभी कोई सामान स्टॉक में नहीं', 'Nothing in stock right now')}</p>`}</div><div style="height:110px"></div></div>
                 ${dsQty() ? (DS.step === 'pay' ? dsPayHtml() : `<button class="ds-cart" onclick="DS.step='pay';dsPaint()"><span>🧺 ${dsQty()} ${tr('आइटम', 'items')} • <b>₹${dsTot().toLocaleString('en-IN')}</b></span><span>${tr('ऑर्डर करें', 'Order')} ›</span></button>`) : ''}`;
             const bn = el.querySelector('.bn'); if (bn) bnWire(el);
@@ -8876,6 +8900,100 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const n5 = L.filter(x => x.r.stars >= 4).length;
             openPSheet(tr('ग्राहकों के रिव्यू', 'Customer reviews'), `<div class="ri-st" style="margin-top:0"><div><b>${L.length}</b><span>${tr('रिव्यू', 'Reviews')}</span></div><div><b>😍 ${n5}</b><span>${tr('हैप्पी', 'Happy')}</span></div><div><b>😞 ${L.length - n5}</b><span>${tr('बैड', 'Bad')}</span></div></div>
                 <div class="space-y-2.5 mt-3">${L.slice(0, 20).map(x => `<div class="pcard2 p-3" onclick="closePSheet();setTimeout(()=>orderSheet('${x.o.id}',true),200)"><div class="flex justify-between"><b class="text-[13px]">${esc(x.o.customer)}</b><span class="vx-st">${voStars(x.r.stars)}</span></div><p class="text-[11px] pmut">${new Date(x.o.ts).toLocaleDateString(currentLang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short' })} • ${x.o.items.map(i => esc(i.name)).join(', ')}</p><div class="vx-tags">${x.r.tags.map(t => `<span>${voTag(t)}</span>`).join('')}</div></div>`).join('') || `<p class="text-[12px] pmut">${tr('अभी कोई रिव्यू नहीं', 'No reviews yet')}</p>`}</div>`);
+        }
+
+        /* ================= patch35: clean toast, fly-to-basket, My Orders store filter, clean profile ================= */
+        // toast: higher up, to the side, readable
+        showToast = function (message) {
+            const old = document.getElementById('toastNotification'); if (old) old.remove();
+            const t = document.createElement('div'); t.id = 'toastNotification'; t.className = 'hf-toast';
+            t.innerHTML = `<span class="ic"><i class="fa-solid fa-check"></i></span><span class="tx">${message}</span>`;
+            document.body.appendChild(t); requestAnimationFrame(() => t.classList.add('in'));
+            clearTimeout(window.__hfT); window.__hfT = setTimeout(() => { t.classList.remove('in'); setTimeout(() => t.remove(), 300); }, 2200);
+        };
+        // product image flies into the basket
+        function hfFly(img) {
+            try {
+                if (!img) return; const sum = document.getElementById('floatingOrderSummary');
+                let tgt = sum && !sum.classList.contains('hidden') && sum.offsetParent ? sum.querySelector('.fa-bag-shopping, .fa-basket-shopping, i') : null;
+                if (!tgt) { const b = document.getElementById('cartCountBadge'); tgt = b ? b.parentNode : null; }
+                if (!tgt) return;
+                const a = img.getBoundingClientRect(), b = tgt.getBoundingClientRect(); if (!a.width) return;
+                const c = document.createElement('img'); c.src = img.currentSrc || img.src; c.className = 'hf-fly';
+                Object.assign(c.style, { left: a.left + 'px', top: a.top + 'px', width: a.width + 'px', height: a.height + 'px' }); document.body.appendChild(c);
+                requestAnimationFrame(() => { c.style.transform = `translate(${b.left + b.width / 2 - a.left - a.width / 2}px,${b.top + b.height / 2 - a.top - a.height / 2}px) scale(.1) rotate(30deg)`; c.style.opacity = '.5'; });
+                setTimeout(() => { c.remove(); const bump = (tgt.closest('button, a, div') || tgt); bump.classList.remove('hf-bump'); void bump.offsetWidth; bump.classList.add('hf-bump'); const bd = document.getElementById('cartCountBadge'); if (bd) { bd.classList.remove('hf-bump'); void bd.offsetWidth; bd.classList.add('hf-bump'); } }, 680);
+            } catch (e) { }
+        }
+        function hfSrcImg() { const e = window.event, el = e && e.target && e.target.closest ? e.target.closest('.bg-\\[\\#14141c\\], .bg-\\[\\#14141c\\]\\/90, .ss-card, .rounded-2xl, .rounded-3xl') : null; return el ? el.querySelector('img') : null; }
+        { const f = addRecommendedToCart; addRecommendedToCart = function (id) { const img = hfSrcImg(); const r = f.apply(this, arguments); if (cart.some(c => c.productId === id)) hfFly(img); return r; }; }
+        { const f = addCurrentProductToCart; addCurrentProductToCart = function () { const p = products[currentSlideIndex], had = cart.length, img = document.querySelector('#carouselTrack > *:nth-child(' + (currentSlideIndex + 1) + ') img:not([style*="blur"])') || document.querySelector('#carouselTrack img'); const r = f.apply(this, arguments); if (cart.length !== had || (p && cart.some(c => c.productId === p.id))) hfFly(img); return r; }; }
+        { const f = pkAdd; pkAdd = function (id, d) { const r = f.apply(this, arguments); if (d > 0 && !PK.bill) hfFly(document.querySelector('#pkSheet .pk-img img')); return r; }; }
+
+        /* ---------- My Orders: filter by store and status ---------- */
+        const OF = { store: 'all', st: 'all', map: null };
+        function ordStores(o) {
+            if (o.stores) return o.stores; const d = dbOrder(o.id);
+            if (d && d.items) { const s = [...new Set(d.items.map(i => (prodInfo(i.pid) || {}).store || 'food'))]; return s.length ? s : ['food']; }
+            return ['food'];
+        }
+        function ordState(o) { const s = String(o.status || ''); if (/रद्द|Cancel|नहीं मिला|No partner|No rider/i.test(s)) return 'fail'; if (/डिलीवर हुआ|Delivered/i.test(s) || o.step >= 5) return 'done'; return 'live'; }
+        const ofKeep = o => (OF.store === 'all' || ordStores(o).indexOf(OF.store) > -1) && (OF.st === 'all' || ordState(o) === OF.st);
+        { const f = placeOrderNow; placeOrderNow = function () { const st = [...new Set(cart.map(c => (prodInfo(c.productId) || {}).store || 'food'))], n = ordersHistory.length; const r = f.apply(this, arguments); if (ordersHistory.length > n && ordersHistory[0]) ordersHistory[0].stores = st; return r; }; }
+        { const f = renderOrdersList; renderOrdersList = function () {
+            const full = ordersHistory.slice();
+            if (OF.store === 'all' && OF.st === 'all') { OF.map = null; const r = f.apply(this, arguments); ofHead(); return r; }
+            const idx = []; full.forEach((o, i) => { if (ofKeep(o)) idx.push(i); }); OF.map = idx;
+            ordersHistory.length = 0; idx.forEach(i => ordersHistory.push(full[i]));
+            let r; try { r = f.apply(this, arguments); } finally { ordersHistory.length = 0; full.forEach(o => ordersHistory.push(o)); }
+            const c = document.getElementById('ordersListContainer'); if (c && !idx.length) c.innerHTML = `<div class="of-empty"><span>🔍</span>${tr('इस फ़िल्टर में कोई ऑर्डर नहीं', 'No orders for this filter')}<button onclick="OF.store='all';OF.st='all';renderOrdersList()">${tr('सब दिखाएँ', 'Show all')}</button></div>`;
+            ofHead(); return r;
+        }; }
+        { const f = toggleOrderExpanded; toggleOrderExpanded = function (i) { return f.call(this, OF.map ? OF.map[i] : i); }; }
+        function ofHead() {
+            const el = document.getElementById('txtLiveTracking'); if (!el) return;
+            const S = OF.store === 'all' ? null : stObj(OF.store), on = OF.store !== 'all' || OF.st !== 'all';
+            el.className = 'of-btn' + (on ? ' on' : ''); el.onclick = openOrderFilter;
+            el.innerHTML = `${S ? `<img src="${esc(S.img)}" alt="">` : '<i class="fa-solid fa-sliders"></i>'}<span>${S ? esc((S.name[currentLang] || S.name.hi)) : tr('सभी ऑर्डर', 'All orders')}${OF.st !== 'all' ? ' • ' + { live: tr('चालू', 'Active'), done: tr('पूरे', 'Done'), fail: tr('रद्द', 'Cancelled') }[OF.st] : ''}</span><i class="fa-solid fa-chevron-down"></i>`;
+        }
+        function openOrderFilter() {
+            vib(12); let el = document.getElementById('ofSheet');
+            if (!el) { el = document.createElement('div'); el.id = 'ofSheet'; el.addEventListener('click', e => { if (e.target === el) el.classList.add('hidden'); }); document.body.appendChild(el); }
+            el.classList.remove('hidden'); ofPaint();
+        }
+        function ofPaint() {
+            const el = document.getElementById('ofSheet'); if (!el) return;
+            const cnt = id => ordersHistory.filter(o => (id === 'all' || ordStores(o).indexOf(id) > -1) && (OF.st === 'all' || ordState(o) === OF.st)).length;
+            const sc = k => ordersHistory.filter(o => (OF.store === 'all' || ordStores(o).indexOf(OF.store) > -1) && (k === 'all' || ordState(o) === k)).length;
+            el.innerHTML = `<div class="of-card"><div class="flex items-center justify-between"><p class="of-t">${tr('ऑर्डर छाँटें', 'Filter orders')}</p><button class="pk-x" onclick="document.getElementById('ofSheet').classList.add('hidden')"><i class="fa-solid fa-xmark"></i></button></div>
+                <p class="of-l">${tr('दुकान', 'Store')}</p>
+                <div class="of-grid"><button class="${OF.store === 'all' ? 'on' : ''}" onclick="OF.store='all';ofPaint()"><span class="e">✨</span><b>${tr('सभी', 'All')}</b><em>${cnt('all')}</em></button>
+                    ${STORES.map(s => `<button class="${OF.store === s.id ? 'on' : ''}" onclick="OF.store='${s.id}';ofPaint()" style="--ac:${s.th.ac};--soft:${s.th.soft}"><img src="${esc(s.img)}" alt=""><b>${esc((s.name[currentLang] || s.name.hi))}</b><em>${cnt(s.id)}</em></button>`).join('')}</div>
+                <p class="of-l">${tr('हालत', 'Status')}</p>
+                <div class="of-st">${[['all', '📋', tr('सब', 'All')], ['live', '🛵', tr('चालू', 'Active')], ['done', '✅', tr('पूरे', 'Done')], ['fail', '❌', tr('रद्द', 'Cancelled')]].map(x => `<button class="${OF.st === x[0] ? 'on' : ''}" onclick="OF.st='${x[0]}';ofPaint()">${x[1]} ${x[2]} <em>${sc(x[0])}</em></button>`).join('')}</div>
+                <div class="grid grid-cols-2 gap-2 mt-4"><button class="of-reset" onclick="OF.store='all';OF.st='all';ofPaint()">${tr('साफ़ करें', 'Reset')}</button><button class="of-go" onclick="document.getElementById('ofSheet').classList.add('hidden');renderOrdersList()">${tr('दिखाएँ', 'Show')} (${ordersHistory.filter(ofKeep).length})</button></div></div>`;
+        }
+
+        /* ---------- profile: clean ---------- */
+        { const f = openProfileSheet; openProfileSheet = function () {
+            const r = f.apply(this, arguments);
+            try {
+                const ex = document.getElementById('psExtra');
+                ex.querySelectorAll('button').forEach(b => { const oc = b.getAttribute('onclick') || ''; if (/openRoleGate|logoutUser|openPanel|enterRole/.test(oc)) b.remove(); });
+                ex.querySelectorAll('p').forEach(p => { if (/बिज़नेस पैनल|Business panels/.test(p.textContent)) { const nx = p.nextElementSibling; p.remove(); if (nx && !nx.querySelector('button')) nx.remove(); } });
+                ex.querySelectorAll('.space-y-2').forEach(d => { if (!d.children.length) d.remove(); });
+                const vp = document.getElementById('viewProfile');
+                vp.querySelectorAll('[onclick]').forEach(n => { const oc = n.getAttribute('onclick') || ''; if (/openAuthModal/.test(oc)) n.remove(); if (/openWhatsAppDirect/.test(oc)) { const s = n.querySelector('span'); if (s) s.textContent = tr('WhatsApp सपोर्ट (24×7)', 'WhatsApp support (24×7)'); const i = n.querySelector('i'); if (i) i.className = 'fa-brands fa-whatsapp text-green-500 w-5 text-lg'; } });
+                const tools = document.getElementById('psTools');
+                if (tools && !tools.querySelector('.ps-out')) tools.insertAdjacentHTML('beforeend', `<button class="ps-out" onclick="psLogout(this)" aria-label="logout"><i class="fa-solid fa-right-from-bracket"></i></button>`);
+                const card = document.getElementById('psCard');
+                if (card && !document.getElementById('psRole')) card.insertAdjacentHTML('beforeend', `<button id="psRole" onclick="closeProfileSheet(true);openRoleGate()" aria-label="switch role"><i class="fa-solid fa-repeat"></i></button>`);
+            } catch (e) { }
+            return r;
+        }; }
+        function psLogout(b) {
+            if (!b.classList.contains('sure')) { b.classList.add('sure'); b.innerHTML = '<i class="fa-solid fa-check"></i>'; showToast(tr('लॉगआउट करने के लिए फिर से दबाएँ', 'Tap again to log out')); setTimeout(() => { if (b.isConnected) { b.classList.remove('sure'); b.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i>'; } }, 3000); return; }
+            closeProfileSheet(true); logoutUser();
         }
 
     </script>
