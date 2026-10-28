@@ -1344,6 +1344,12 @@
         .vp-prn { display:flex; align-items:center; justify-content:space-between; padding:12px; border-radius:14px; background:var(--p-card2); font-size:13px; font-weight:800; } .vp-prn button { font-size:12px; color:var(--p-gold); font-weight:800; }
         .vp-prev { padding:10px; border-radius:12px; background:#e7e5e4; max-height:46vh; overflow-y:auto; } .vp-prev canvas { display:block; margin:0 auto; max-width:260px; box-shadow:0 4px 14px rgba(0,0,0,.18); }
         .vp-err { padding:10px 12px; margin-bottom:10px; border-radius:12px; font-size:12px; font-weight:700; line-height:1.45; background:color-mix(in srgb,#ef4444 12%,var(--p-card)); color:#b91c1c; }
+        /* ===== patch43 ===== */
+        .rd-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+        .rd-tile { text-align:left; padding:14px 12px; border-radius:18px; background:color-mix(in srgb,var(--bg) 55%,var(--p-card)); border:1px solid var(--p-line); display:flex; flex-direction:column; gap:2px; transition:transform .15s; }
+        .rd-tile:active { transform:scale(.96); } .rd-tile .ic { font-size:26px; line-height:1; margin-bottom:6px; } .rd-tile b { font-size:14px; font-weight:900; color:var(--p-tx); } .rd-tile small { font-size:11px; color:var(--p-mut); font-weight:600; }
+        body:not(.light-mode) .rd-tile { background:color-mix(in srgb,var(--bg) 12%,var(--p-card)); }
+        .rd-back { display:flex; align-items:center; gap:8px; font:900 18px 'Outfit',sans-serif; margin:4px 0 14px; color:var(--p-tx); } .rd-back i { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--p-card); border:1px solid var(--p-line); font-size:14px; }
     </style>
 <style>
 html,body{height:100%}
@@ -9705,6 +9711,94 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         }
         // print buttons on the finished bill
         { const f = billReceipt; billReceipt = function (b) { const h = f.apply(this, arguments); return h.replace(`<button class="bl-go mt-2"`, `<div class="grid gap-2 mt-2" style="grid-template-columns:1fr 48px"><button class="bl-prn" onclick="prnPrint('${b.no}')"><i class="fa-solid fa-print"></i> ${tr('प्रिंट करें', 'Print')}${PRN.name ? ' • ' + esc(PRN.name) : ''}</button><button class="bl-prn2" onclick="prnSheet('${b.no}')" aria-label="printer settings"><i class="fa-solid fa-gear"></i></button></div><button class="bl-go mt-2"`); }; }
+
+        /* ================= patch43: rider app gets the same partner look as the shop (hero card, day strip, tabs, 3-button bar with a menu in the centre) ================= */
+        function rdPicker(r) {
+            const riders = DB.riders.filter(x => x.status === 'approved');
+            return `<div class="pcard2 p-3 mb-3"><div class="flex items-center gap-2.5"><span class="text-[11.5px] pmut font-bold whitespace-nowrap">${tr('डेमो: राइडर', 'Demo: rider')}</span><select onchange="PNL.riderId=this.value;renderPanel()" style="padding:7px 10px">${riders.map(x => `<option value="${x.id}" ${x.id === r.id ? 'selected' : ''}>${esc(x.name)}${x.distKm ? ' • ' + x.distKm + ' km' : ''}</option>`).join('')}</select></div>
+                <div class="flex items-center justify-between gap-3 mt-2.5 pt-2.5 border-t pline"><div class="min-w-0"><p class="text-[12.5px] font-bold">⚡ ${tr('रिक्वेस्ट ऑटो-एक्सेप्ट', 'Auto-accept')}</p><p class="text-[10.5px] pmut">${tr('रिक्वेस्ट आते ही अपने-आप स्वीकार', 'Accept requests instantly')}</p></div>${sw(r.autoAccept, 'toggleRiderAuto()')}</div></div>`;
+        }
+        function rdLiveCard(base) {
+            // keep the live delivery / new request / waiting card from the classic screen
+            const t = document.createElement('div'); t.innerHTML = base; const kids = [...t.children];
+            const card = kids.find(k => k.classList.contains('pcard') && k.classList.contains('mt-4')); if (!card) return ''; card.classList.remove('mt-4'); return '<div class="mt-1">' + card.outerHTML + '</div>';
+        }
+        function phRiderDemoView(base) {
+            const r = curRider(); if (!r) return base;
+            const t0 = phDay(Date.now());
+            const mine = DB.orders.filter(o => o.riderId === r.id);
+            const money = mine.map(o => ({ ts: o.deliveredAt || o.ts, amt: earnOf(o), done: o.status === 'delivered' }));
+            const delT = mine.filter(o => o.status === 'delivered' && (o.deliveredAt || o.ts) >= t0);
+            const units = Object.values(r.stock || {}).reduce((s, n) => s + (n > 0 ? n : 0), 0);
+            const lbl = { accepted: [tr('स्वीकार किया', 'Accepted'), '#fef3c7', '#92400e'], on_the_way: [tr('🛵 रास्ते में', '🛵 On the way'), '#dbeafe', '#1e40af'], delivered: [tr('✅ डिलीवर', '✅ Delivered'), '#dcfce7', '#166534'], cancelled: [tr('रद्द', 'Cancelled'), '#fee2e2', '#991b1b'] };
+            const items = mine.map(o => { const st = o.status, L = lbl[st] || [st, '#f3f4f6', '#374151'], p = prodInfo(o.items[0].pid), del = st === 'delivered', otw = st === 'on_the_way' || del, cur = !otw ? 1 : (!del ? 2 : 3);
+                return { ts: o.deliveredAt || o.ts, state: del ? 'done' : (st === 'cancelled' || st === 'no_rider' ? 'fail' : 'pending'), img: p ? p.image : FOODIMG.thali, badge: del ? '✓' : '🛵', title: o.customer, sub: o.items.map(i => i.qty + '× ' + i.name).join(', ') + ' • ' + fmtT(o.ts), chip: L[0], chipBg: L[1], chipFg: L[2], amt: earnOf(o), amtLbl: tr('कमाई', 'earned'), onclick: `orderSheet('${o.id}', false)`,
+                    steps: [[tr('स्वीकार', 'Accepted'), true, false], [tr('पिकअप', 'Pickup'), otw, cur === 1, '🛍️'], [tr('रास्ते में', 'On way'), del, cur === 2, '🛵'], [tr('डिलीवर', 'Delivered'), del, false, '🏠']] }; });
+            return phView('rider', {
+                top: '<div class="mt-4">' + rdPicker(r) + rdLiveCard(base) + '</div>',
+                avatar: initials(r.name), name: r.name, sub: tr('डिलीवरी पार्टनर', 'Delivery partner') + (r.bike ? ' · ' + r.bike : ''),
+                duty: { on: r.online, click: 'toggleRiderOnline()', onTxt: tr('ऑनलाइन', 'On duty'), offTxt: tr('ऑफ़लाइन', 'Off duty'), onSub: tr('रिक्वेस्ट आ रही हैं', 'getting requests'), offSub: tr('ड्यूटी शुरू करें', 'Start duty') },
+                earnTitle: tr('मेरी कमाई', 'MY EARNINGS'), unit: tr('डिलीवरी', 'deliveries'), ccTag: 'DELIVERY PARTNER', ccNo: String(r.phone || '').replace(/\D/g, '').slice(-4) || '0001', money: money, detailsClick: "rdMenuGo('earn')",
+                earnSub: per => per.filter(x => x.done).length + ' ' + tr('डिलीवरी पूरी', 'deliveries done') + ' · ' + tr('टिप समेत', 'incl. tips'),
+                tiles: per => [[tr('डिलीवरी', 'Trips'), per.filter(x => x.done).length], [tr('कमाई', 'Earned'), money_(per.reduce((s, x) => s + (x.done ? x.amt : 0), 0))], [tr('कैश हाथ में', 'Cash in hand'), money_(r.cash || 0)]],
+                note: r.cash ? `💵 ${money_(r.cash)} ${tr('कैश आपके पास · आज रात तक जमा करें', 'cash with you · deposit by tonight')}` : '', noteClick: r.cash ? "rdMenuGo('earn')" : '',
+                withdraw: "phWithdraw('rider')",
+                chipsTitle: '🛵 ' + tr('आज की डिलीवरी', "Today's deliveries"),
+                chips: [['🔔', mine.filter(o => o.ts >= t0).length, tr('रिक्वेस्ट', 'Requests')], ['🛵', mine.filter(o => o.status === 'on_the_way' || o.status === 'accepted').length, tr('चालू', 'Active')], ['🏠', delT.length, tr('डिलीवर', 'Delivered')], ['📦', units, tr('स्टॉक', 'Stock')]],
+                targets: [[delT.length, 10, tr('डिलीवरी पूरी', 'Deliveries'), '#16a34a', tr('लक्ष्य 10', 'Goal 10')], [Math.round(delT.reduce((s, o) => s + earnOf(o), 0) / 50), 10, tr('कमाई (₹50)', 'Earnings (₹50)'), '#ea580c', money_(delT.reduce((s, o) => s + earnOf(o), 0))], [Math.min(units, 20), 20, tr('स्टॉक', 'Stock'), '#2563eb', units + ' ' + tr('नग', 'pcs')]],
+                tabs: [['orders', '🛵 ' + tr('डिलीवरी', 'Deliveries'), mine.length], ['stock', '📦 ' + tr('मेरा स्टॉक', 'My stock'), units]],
+                items: items, tabBody: () => riderStock(), emptyEmoji: '🛵', emptyTxt: tr('इस दिन कोई डिलीवरी नहीं', 'No deliveries on this day')
+            });
+        }
+        { const f = riderHome; riderHome = function () { const base = f.apply(this, arguments); if (LIVE) return base; try { return phRiderDemoView(base); } catch (e) { return base; } }; }
+        { const f = phSet; phSet = function (role, k, v) { if (role === 'rider' && !LIVE) { PH[role][k] = v; PNL.tab.rider = 'home'; renderPanel(true); return; } return f.apply(this, arguments); }; }
+        // bottom bar for the rider: Deliveries • centre menu • Profile
+        { const f = phNavPaint; phNavPaint = function () {
+            const r = f.apply(this, arguments);
+            try {
+                if (PNL.role !== 'rider' || LIVE) return r;
+                const n = document.getElementById('phNav'), hero = document.querySelector('#pnlBody .ph-hero'); if (!n) return r;
+                const onHome = PNL.tab.rider === 'home';
+                if (!hero && onHome) return r;
+                const nav = document.getElementById('pnlNav'); if (nav) nav.style.display = 'none';
+                const fab = document.getElementById('phFab'); if (fab) fab.style.display = 'none';
+                document.getElementById('pnlBody').style.paddingBottom = '84px';
+                const rr = curRider(), offer = rr && riderOfferFor(rr) ? 1 : 0;
+                n.classList.add('on');
+                n.innerHTML = `<button class="nb ${onHome ? 'on' : ''}" onclick="rdMenuGo('home')"><i class="fa-solid fa-motorcycle"></i>${tr('डिलीवरी', 'Deliveries')}${offer ? '<span class="bd">1</span>' : ''}</button>
+                    <button class="mid" onclick="rdMenu()"><b><i class="fa-solid fa-grip" style="font-size:22px"></i></b><span>${tr('मेन्यू', 'Menu')}</span></button>
+                    <button class="nb ${PNL.tab.rider === 'me' ? 'on' : ''}" onclick="rdMenuGo('me')"><i class="fa-solid fa-user"></i>${tr('प्रोफ़ाइल', 'Profile')}</button>`;
+            } catch (e) { }
+            return r;
+        }; }
+        function rdMenuGo(t) { try { closePSheet(); } catch (e) { } PNL.tab.rider = t; if (t === 'home') PH.rider.tab = 'orders'; renderPanel(true); const b = document.getElementById('pnlBody'); if (b) b.scrollTop = 0; vib(10); }
+        function rdMenu() {
+            vib(15); const r = curRider() || {};
+            const tile = (ic, t, s, click, bg) => `<button class="rd-tile" onclick="${click}" style="--bg:${bg}"><span class="ic">${ic}</span><b>${t}</b><small>${s}</small></button>`;
+            openPSheet(tr('मेन्यू', 'Menu'), `<div class="rd-grid">
+                ${tile('📦', tr('मेरा स्टॉक', 'My stock'), tr('टोकरी में क्या है', 'What you carry'), "closePSheet();PH.rider.tab='stock';rdMenuGo('home');setTimeout(()=>{const b=document.getElementById('pnlBody');b.scrollTop=b.scrollHeight},80)", '#dbeafe')}
+                ${tile('🏪', tr('वेंडर से माल', 'Buy from shop'), tr('थोक में ख़रीदें', 'Restock wholesale'), "closePSheet();pToast(tr('वेंडर से माल ख़रीदना जल्द आएगा 🔜','Buying from shops is coming soon 🔜'))", '#fef3c7')}
+                ${tile('💵', tr('कैश जमा', 'Deposit cash'), money_(r.cash || 0) + ' ' + tr('हाथ में', 'in hand'), "rdMenuGo('earn')", '#dcfce7')}
+                ${tile('💰', tr('कमाई व हिसाब', 'Earnings'), tr('हफ़्ते का ग्राफ़', 'Weekly chart'), "rdMenuGo('earn')", '#ffedd5')}
+                ${tile('⬇️', tr('पैसे निकालें', 'Withdraw'), tr('UPI / बैंक में', 'To UPI / bank'), "closePSheet();phWithdraw('rider')", '#ede9fe')}
+                ${tile(r.online ? '🔴' : '🟢', r.online ? tr('ड्यूटी बंद', 'Go off duty') : tr('ड्यूटी शुरू', 'Go on duty'), tr('रिक्वेस्ट चालू/बंद', 'Requests on/off'), "closePSheet();toggleRiderOnline()", '#fee2e2')}
+                ${tile('🎧', tr('मदद', 'Help'), tr('WhatsApp सपोर्ट', 'WhatsApp support'), "closePSheet();openWhatsAppDirect&&openWhatsAppDirect()", '#e0f2fe')}
+                ${tile('🔄', tr('रोल बदलें', 'Switch role'), tr('ग्राहक / दुकान', 'Customer / shop'), "closePSheet();exitPanel()", '#f5f5f4')}
+            </div>`);
+        }
+        // the classic earn / profile pages get the slim partner header instead of the old one
+        { const f = renderPanel; renderPanel = function () {
+            const r = f.apply(this, arguments);
+            try {
+                if (PNL.role === 'rider' && !LIVE) {
+                    const rr = curRider(), hero = document.querySelector('#pnlBody .ph-hero');
+                    if (hero) phChrome({ mini: `<div class="flex items-center gap-3"><div class="ph-av" style="width:40px;height:40px;font-size:14px;border-width:2px">${initials(rr.name)}</div><div class="flex-1 min-w-0"><p class="font-outfit font-black text-[18px]">💰 ${money_((window.PH_LAST && PH_LAST.rider && PH_LAST.rider.amt) || 0)}</p><p class="text-[11px]" style="color:rgba(255,255,255,.65)">${tr('आज की कमाई', "Today's earnings")}</p></div></div>`, fab: '' });
+                    else { const h = document.getElementById('pnlHead'); if (h) h.style.display = 'none'; const b = document.getElementById('pnlBody'); if (b && !b.querySelector('.rd-back')) b.insertAdjacentHTML('afterbegin', `<button class="rd-back" onclick="rdMenuGo('home')"><i class="fa-solid fa-arrow-left"></i> ${PNL.tab.rider === 'earn' ? tr('कमाई व हिसाब', 'Earnings') : PNL.tab.rider === 'me' ? tr('मेरी प्रोफ़ाइल', 'My profile') : tr('वापस', 'Back')}</button>`); }
+                    phNavPaint();
+                }
+            } catch (e) { }
+            return r;
+        }; }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
