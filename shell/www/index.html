@@ -1231,6 +1231,12 @@
         #psTools .ps-out { color:#dc2626; border-color:rgba(239,68,68,.35); background:rgba(239,68,68,.08); } #psTools .ps-out.sure { background:#dc2626; color:#fff; }
         #psRole { position:absolute; right:16px; bottom:calc(18px + env(safe-area-inset-bottom)); z-index:5; width:48px; height:48px; border-radius:50%; background:#1a1305; color:#fde68a; font-size:17px; box-shadow:0 10px 22px rgba(0,0,0,.3); border:2px solid #e2b04a; }
         #psCard { position:relative; } #psCard:has(#psRole) #psBody { padding-bottom:86px; }
+        /* ===== patch36 ===== */
+        .sp-orbit span.sp-st { width:46px; height:52px; margin:-26px -23px; }
+        .sp-orbit span.sp-st b { display:flex; flex-direction:column; align-items:center; gap:2px; filter:none; }
+        .sp-orbit span.sp-st i { display:block; width:36px; height:36px; animation:spFloat 2.2s ease-in-out infinite; filter:drop-shadow(0 5px 7px rgba(0,0,0,.55)); }
+        .sp-orbit span.sp-st img { width:100%; height:100%; object-fit:contain; }
+        .sp-orbit span.sp-st em { font-style:normal; font-size:9.5px; font-weight:700; color:#e9cf8f; white-space:nowrap; opacity:.85; }
     </style>
 <style>
 html,body{height:100%}
@@ -8995,6 +9001,13 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             if (!b.classList.contains('sure')) { b.classList.add('sure'); b.innerHTML = '<i class="fa-solid fa-check"></i>'; showToast(tr('लॉगआउट करने के लिए फिर से दबाएँ', 'Tap again to log out')); setTimeout(() => { if (b.isConnected) { b.classList.remove('sure'); b.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i>'; } }, 3000); return; }
             closeProfileSheet(true); logoutUser();
         }
+
+        /* ================= patch36: splash orbit shows the stores ================= */
+        (function () {
+            const o = document.querySelector('#splash .sp-orbit'); if (!o || typeof STORES === 'undefined') return;
+            const n = STORES.length;
+            o.innerHTML = STORES.map((s, i) => `<span class="sp-st" style="--a:${Math.round(i * 360 / n)}deg"><b><i style="animation-delay:${(i * .37).toFixed(2)}s"><img src="${esc(s.img)}" alt=""></i><em>${esc(s.name.hi)}</em></b></span>`).join('');
+        })();
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
