@@ -1329,6 +1329,21 @@
         .cn-row i { width:38px; height:22px; border-radius:11px; background:#d6d3d1; position:relative; flex-shrink:0; transition:background .2s; } .cn-row i:after { content:''; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:#fff; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.25); }
         .cn-row.on i { background:#e2a92c; } .cn-row.on i:after { left:19px; }
         #coinEarn { font-size:11.5px; font-weight:700; color:#a8741b; text-align:right; margin-top:4px; } #coinEarn b { color:#c8912a; }
+        /* ===== patch42 ===== */
+        .vc-bar { display:flex; align-items:center; gap:6px; overflow-x:auto; padding:2px 0 10px; scrollbar-width:none; } .vc-bar::-webkit-scrollbar { display:none; }
+        .vc-l { font-size:11px; font-weight:800; color:var(--p-mut); flex-shrink:0; }
+        .vc-bar > button { flex-shrink:0; display:flex; align-items:center; gap:5px; height:34px; padding:0 11px 0 5px; border-radius:999px; font-size:12px; font-weight:800; background:var(--p-card); border:1.5px solid var(--p-line); color:var(--p-tx); }
+        .vc-bar > button img { width:24px; height:24px; object-fit:contain; } .vc-bar > button.on { border-color:var(--ac); background:color-mix(in srgb,var(--ac) 14%,var(--p-card)); }
+        .vc-bar .vc-add { padding:0 11px; color:var(--p-gold); border-style:dashed; } .vc-p { flex-shrink:0; font-size:11px; font-weight:800; padding:7px 10px; border-radius:999px; background:color-mix(in srgb,#f59e0b 15%,var(--p-card)); color:#b45309; }
+        .vc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; } .vc-grid button { padding:12px 4px; border-radius:16px; background:var(--p-card2); border:1.5px solid var(--p-line); display:flex; flex-direction:column; align-items:center; gap:4px; } .vc-grid img { width:38px; height:38px; object-fit:contain; } .vc-grid b { font-size:12px; } .vc-grid button:active { border-color:var(--ac); }
+        .vp-two { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px; } .vp-two > div { padding:10px; border-radius:14px; background:var(--p-card2); border:1px solid var(--p-line); }
+        .vp-two span { display:block; font-size:11px; font-weight:800; color:var(--p-mut); } .vp-two b { display:block; font:900 22px 'Outfit',sans-serif; margin-top:4px; } .vp-two small { display:block; font-size:10px; color:var(--p-mut); margin-top:2px; }
+        .vp-two .mine { border-color:var(--p-gold); background:color-mix(in srgb,var(--p-gold) 10%,var(--p-card2)); } .vp-two .mine input { width:100%; margin-top:4px; font:900 20px 'Outfit',sans-serif; padding:4px 8px; }
+        .vp-tag { display:inline-block; font-size:11px; font-weight:800; padding:2px 7px; border-radius:8px; background:var(--p-card2); margin-right:4px; } .vp-tag.mine { background:color-mix(in srgb,var(--p-gold) 18%,var(--p-card2)); color:var(--p-gold); }
+        .bl-prn { height:48px; border-radius:14px; font-weight:900; font-size:14px; background:#111; color:#fde68a; } .bl-prn2 { width:48px; height:48px; border-radius:14px; background:var(--p-card2,#eee); border:1px solid var(--p-line,#ddd); }
+        .vp-prn { display:flex; align-items:center; justify-content:space-between; padding:12px; border-radius:14px; background:var(--p-card2); font-size:13px; font-weight:800; } .vp-prn button { font-size:12px; color:var(--p-gold); font-weight:800; }
+        .vp-prev { padding:10px; border-radius:12px; background:#e7e5e4; max-height:46vh; overflow-y:auto; } .vp-prev canvas { display:block; margin:0 auto; max-width:260px; box-shadow:0 4px 14px rgba(0,0,0,.18); }
+        .vp-err { padding:10px 12px; margin-bottom:10px; border-radius:12px; font-size:12px; font-weight:700; line-height:1.45; background:color-mix(in srgb,#ef4444 12%,var(--p-card)); color:#b91c1c; }
     </style>
 <style>
 html,body{height:100%}
@@ -9294,7 +9309,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         // the old draggable button is no longer needed
         { const f = stFabPaint; stFabPaint = function () { try { f.apply(this, arguments); } catch (e) { } const b = document.getElementById('stFab'); if (b) b.style.display = 'none'; navStorePaint(); }; }
         // choosing a store makes it the home; it stays the home after restarting the app
-        { const f = storeApply; storeApply = function (id) { const r = f.apply(this, arguments); try { localStorage.setItem('hf_home_store', ST.cur); } catch (e) { } navStorePaint(); return r; }; }
+        { const f = storeApply; storeApply = function (id) { const r = f.apply(this, arguments); try { if (!window.__noHomeSave) localStorage.setItem('hf_home_store', ST.cur); } catch (e) { } navStorePaint(); return r; }; }
         { const f = closeStores; closeStores = function () { const r = f.apply(this, arguments); if (!navOnHome() && !(document.getElementById('panelRoot') && document.getElementById('panelRoot').offsetParent)) showTab('home'); return r; }; }
         function navRestoreHome() { try { const s = localStorage.getItem('hf_home_store'); if (s && s !== ST.cur && STORES.some(x => x.id === s) && !(APP.role && APP.role !== 'customer')) { window.__cartQuiet = true; try { storeApply(s); } finally { window.__cartQuiet = false; } } } catch (e) { } stFabPaint(); }
         if (document.readyState === 'complete') setTimeout(navRestoreHome, 50); else window.addEventListener('load', () => setTimeout(navRestoreHome, 50));
@@ -9539,6 +9554,157 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         { const f = hdPaint; hdPaint = function () { const r = f.apply(this, arguments); hfMic(); if (!document.getElementById('hfPrem')) hfPrem(); return r; }; }
         { const f = showTab; showTab = function (t) { const r = f.apply(this, arguments); if (t === 'home') { hfHello(); hfPrem(); } return r; }; }
         setInterval(hfHello, 10 * 60e3);
+
+        /* ================= patch42: one category per shop (admin approves more), shop's own price for POS/QR shop, Bluetooth thermal printing ================= */
+        /* ---------- shop categories ---------- */
+        const VCAT_KEY = 'hf_vcat_v1';
+        const vcatAll = () => saGet(VCAT_KEY, {});
+        function vcatOf(vid) { const a = vcatAll(); return a[vid] || { stores: ['food'], reqs: [] }; }
+        function vcatPut(vid, x) { const a = vcatAll(); a[vid] = x; saPut(VCAT_KEY, a); DB.rev++; }
+        const vCats = vid => vcatOf(vid).stores;
+        function vcatBar() {
+            const v = curV(), c = vcatOf(v.id), pend = (c.reqs || []).find(r => r.status === 'pending');
+            return `<div class="vc-bar"><span class="vc-l">${tr('मेरी श्रेणी', 'My category')}</span>${c.stores.map(id => { const S = stObj(id); return `<button class="${VI.store === id ? 'on' : ''}" style="--ac:${S.th.ac}" onclick="VI.store='${id}';VI.cat='all';vInvPaint()"><img src="${esc(S.img)}" alt="">${esc(S.name[currentLang] || S.name.hi)}</button>`; }).join('')}
+                ${pend ? `<span class="vc-p">⏳ ${esc(stObj(pend.store).name.hi)} ${tr('मंज़ूरी बाकी', 'pending')}</span>` : `<button class="vc-add" onclick="vcatAsk()"><i class="fa-solid fa-plus"></i> ${tr('दूसरी श्रेणी', 'Another category')}</button>`}</div>`;
+        }
+        { const f = vInvPaint; vInvPaint = function () { try { const c = vCats(curV().id); if (c.indexOf(VI.store) < 0) VI.store = c[0]; } catch (e) { } const r = f.apply(this, arguments); try { const root = document.getElementById('viRoot'); if (root && !VI.edit) { const old = root.querySelector('.vi-stores'); if (old) old.remove(); if (!root.querySelector('.vc-bar')) root.insertAdjacentHTML('afterbegin', vcatBar()); } } catch (e) { } return r; }; }
+        function vcatAsk() {
+            const v = curV(), c = vcatOf(v.id), rest = STORES.filter(s => c.stores.indexOf(s.id) < 0);
+            openPSheet(tr('दूसरी श्रेणी में बेचना है?', 'Sell in another category?'), `<p class="text-[12.5px] pmut leading-snug">${tr('एक दुकान एक ही श्रेणी में बेचती है। दूसरी श्रेणी चाहिए तो एडमिन को अनुरोध भेजिए — मंज़ूरी के बाद आप उसके प्रोडक्ट जोड़ पाएँगे।', 'A shop sells in one category. Ask the admin for another — once approved you can add its products.')}</p>
+                <div class="vc-grid">${rest.map(s => `<button onclick="vcatSend('${s.id}')" style="--ac:${s.th.ac}"><img src="${esc(s.img)}" alt=""><b>${esc(s.name[currentLang] || s.name.hi)}</b></button>`).join('')}</div>
+                <label class="plabel mt-3">${tr('वजह (ज़रूरी नहीं)', 'Reason (optional)')}</label><input id="vcWhy" placeholder="${tr('जैसे — मेरी दुकान पर दूध-दही भी मिलता है', 'e.g. I also sell milk and curd')}">`);
+        }
+        function vcatSend(sid) {
+            const v = curV(), c = vcatOf(v.id); c.reqs = (c.reqs || []).filter(r => r.status !== 'pending');
+            c.reqs.unshift({ store: sid, why: ((document.getElementById('vcWhy') || {}).value || '').trim(), ts: Date.now(), status: 'pending' }); vcatPut(v.id, c);
+            closePSheet(); sfx('success'); pToast(tr('अनुरोध एडमिन को गया ✅', 'Request sent to admin ✅')); try { vInvPaint(); } catch (e) { }
+        }
+        // admin: requests on the dashboard
+        function vcatPending() { const a = vcatAll(), out = []; Object.keys(a).forEach(vid => (a[vid].reqs || []).forEach(r => { if (r.status === 'pending') out.push(Object.assign({ vid: vid }, r)); })); return out; }
+        { const f = aDash; aDash = function () { const h = f.apply(this, arguments), P = vcatPending(); if (!P.length) return h; return `<button class="pcard p-3 mb-3 w-full flex items-center gap-3 text-left" style="border-color:var(--p-gold)" onclick="vcatAdmin()"><span class="pill warn">${P.length}</span><span class="text-[12.5px] font-bold flex-1">${tr('दुकानों ने नई श्रेणी माँगी है', 'Shops asked for a new category')}</span><i class="fa-solid fa-chevron-right pmut text-xs"></i></button>` + h; }; }
+        function vcatAdmin() {
+            const P = vcatPending();
+            openPSheet(tr('श्रेणी अनुरोध', 'Category requests'), P.length ? P.map(r => { const v = DB.vendors.find(x => x.id === r.vid) || { name: r.vid }, S = stObj(r.store), have = vCats(r.vid).map(s => stObj(s).name.hi).join(', ');
+                return `<div class="pcard2 p-3 mb-2.5"><div class="flex items-center gap-3"><img src="${esc(S.img)}" style="width:42px;height:42px;object-fit:contain"><div class="flex-1 min-w-0"><p class="font-extrabold text-[14px]">${esc(v.name)}</p><p class="text-[11.5px] pmut">${tr('अभी', 'Now')}: ${esc(have)} → <b style="color:${S.th.ac}">${esc(S.name.hi)}</b></p>${r.why ? `<p class="text-[11.5px] mt-1">“${esc(r.why)}”</p>` : ''}</div></div>
+                    <div class="grid grid-cols-2 gap-2 mt-2.5"><button class="pbtn" onclick="vcatDecide('${r.vid}','${r.store}',1)">✅ ${tr('मंज़ूर', 'Approve')}</button><button class="py-2.5 rounded-xl font-bold text-[13px]" style="background:color-mix(in srgb,#ef4444 12%,var(--p-card));color:#dc2626" onclick="vcatDecide('${r.vid}','${r.store}',0)">✖ ${tr('मना', 'Reject')}</button></div></div>`; }).join('') : `<p class="pmut text-center py-6">${tr('कोई अनुरोध नहीं', 'No requests')}</p>`);
+        }
+        function vcatDecide(vid, sid, ok) {
+            const c = vcatOf(vid); (c.reqs || []).forEach(r => { if (r.store === sid && r.status === 'pending') { r.status = ok ? 'approved' : 'rejected'; r.at = Date.now(); } });
+            if (ok && c.stores.indexOf(sid) < 0) c.stores.push(sid); vcatPut(vid, c);
+            sfx(ok ? 'success' : 'tap'); pToast(ok ? tr('मंज़ूर ✅ — दुकान अब यह श्रेणी बेच सकती है', 'Approved ✅') : tr('अनुरोध मना किया', 'Request rejected')); vcatAdmin(); try { renderPanel(true); } catch (e) { }
+        }
+
+        /* ---------- shop's own price (POS bill + QR shop); app customers always pay the admin price ---------- */
+        const vsp = (vid, pid) => { const x = DB.vinv[vid + ':' + pid]; return x && x.sp ? Number(x.sp) : null; };
+        function withShopPrice(vid, fn, self, args) {
+            const orig = prodInfo;
+            prodInfo = function (pid) { const p = orig.apply(this, arguments); const s = p && vid ? vsp(vid, pid) : null; return s ? Object.assign({}, p, { price: s, onlinePrice: p.price }) : p; };
+            try { return fn.apply(self, args); } finally { prodInfo = orig; }
+        }
+        ['billPaint', 'billMake', 'billPick', 'billAdd', 'billBar', 'billTotLive', 'billSub', 'billTotals'].forEach(n => { const f = window[n]; if (typeof f !== 'function') return; window[n] = function () { return withShopPrice(curV().id, f, this, arguments); }; });
+        ['dsPaint', 'dsAdd', 'dsPlace', 'dsAgain', 'dsGrid'].forEach(n => { const f = window[n]; if (typeof f !== 'function') return; window[n] = function () { return withShopPrice(DS.vid, f, this, arguments); }; });
+        vInvEditHtml = function (pid) {
+            const p = prodInfo(pid); if (!p) { VI.edit = ''; return ''; }
+            const x = viGet(pid), out = vOut(curV().id, pid), c = saCat(hdMeta(p).cat), spec = saMeta(p).spec || {}, sp = vsp(curV().id, pid);
+            return `<div class="vi-ed"><button class="text-[12.5px] font-bold pmut mb-3" onclick="VI.edit='';vInvPaint()"><i class="fa-solid fa-arrow-left"></i> ${tr('वापस', 'Back')}</button>
+                <img src="${esc(p.image)}" alt=""><p class="font-outfit font-extrabold text-[18px] mt-3">${esc(saN(p.title))}</p><p class="text-[12px] pmut">${c ? c.icon + ' ' + esc(saN(c.name)) : ''}</p>
+                <div class="vp-two"><div><span>🛵 ${tr('ऐप पर ग्राहक का दाम', 'App price')}</span><b>${money(p.price)}</b><small>${tr('एडमिन तय करता है', 'set by admin')}</small></div>
+                    <div class="mine"><span>🏪 ${tr('मेरी दुकान का दाम', 'My shop price')}</span><input id="viSp" inputmode="numeric" value="${sp || p.price}"><small>${tr('POS बिल और QR दुकान में', 'for POS bill & QR shop')}</small></div></div>
+                <div class="grid grid-cols-2 gap-3 mt-3"><div><label class="plabel">${tr('स्टॉक (नग)', 'Stock (pcs)')}</label><input id="viQt" inputmode="numeric" value="${out ? 0 : x.qty}"></div>
+                <div><label class="plabel">${tr('बनने का समय (मिनट)', 'Prep (min)')}</label><input id="viPp" inputmode="numeric" value="${x.prep != null ? x.prep : (spec.prep || 15)}"></div></div>
+                <p class="text-[11px] pmut mt-2 leading-snug"><i class="fa-solid fa-circle-info pgold"></i> ${tr('ऐप वाले ग्राहक हमेशा एडमिन वाला दाम देंगे। अपनी दुकान पर आप अपना दाम रख सकते हैं — वह सिर्फ़ आपके बिल और QR दुकान में चलेगा।', 'App customers always pay the admin price. Your own price is used only on your bills and QR shop.')}</p>
+                <button class="pbtn w-full mt-4" onclick="vInvSave('${pid}')"><i class="fa-solid fa-floppy-disk"></i> ${tr('सेव करें', 'Save')}</button>
+                <button class="w-full mt-2.5 py-3 rounded-2xl text-[13px] font-bold" style="color:#dc2626;background:color-mix(in srgb,#ef4444 10%,var(--p-card))" onclick="vInvDel('${pid}')"><i class="fa-solid fa-trash"></i> ${tr('दुकान से हटाएँ', 'Remove from shop')}</button></div>`;
+        };
+        vInvSave = function (pid) {
+            const p = prodInfo(pid), sp = Math.max(1, parseInt(document.getElementById('viSp').value, 10) || p.price);
+            const q = Math.max(0, parseInt(document.getElementById('viQt').value, 10) || 0), pp = Math.max(1, parseInt(document.getElementById('viPp').value, 10) || 15);
+            viPut(pid, { sp: sp === Number(p.price) ? null : sp, price: null, qty: q, prep: pp }); vInvSetOut(pid, q === 0);
+            sfx('success'); pToast(tr('सेव हो गया ✅', 'Saved ✅')); VI.edit = ''; vInvPaint();
+        };
+        { const f = vInvList; vInvList = function () { const r = f.apply(this, arguments); try { if (VI.tab !== 'mine') return r; document.querySelectorAll('#viList .vi-row').forEach(row => { const b = row.querySelector('[onclick^="VI.edit="]'); const m = b && (b.getAttribute('onclick') || '').match(/VI\.edit='([^']+)'/); if (!m) return; const s = vsp(curV().id, m[1]), pr = row.querySelector('.pr'); if (pr) pr.innerHTML = `<span class="vp-tag">🛵 ${money(prodInfo(m[1]).price)}</span>${s ? `<span class="vp-tag mine">🏪 ${money(s)}</span>` : ''}`; }); } catch (e) { } return r; }; }
+
+        /* ---------- Bluetooth thermal printer (58 / 80 mm, ESC/POS) ---------- */
+        const PRN = Object.assign({ paper: 58, id: '', name: '', via: '' }, saGet('hf_printer_v1', {}));
+        const prnSave = () => saPut('hf_printer_v1', { paper: PRN.paper, id: PRN.id, name: PRN.name, via: PRN.via });
+        const BLE_SVC = ['000018f0-0000-1000-8000-00805f9b34fb', '0000ff00-0000-1000-8000-00805f9b34fb', '49535343-fe7d-4ae5-8fa9-9fafd205e455', '0000ffe0-0000-1000-8000-00805f9b34fb', 'e7810a71-73ae-499d-8c15-faa9aef0c3f2'];
+        function prnCanvas(b) {
+            const W = PRN.paper === 80 ? 576 : 384, pad = 8, cv = document.createElement('canvas'), x = cv.getContext('2d'); cv.width = W; cv.height = 3000;
+            x.fillStyle = '#fff'; x.fillRect(0, 0, W, 3000); x.fillStyle = '#000'; x.textBaseline = 'top';
+            let y = 6; const F = (s, w) => { x.font = `${w || 400} ${s}px "Noto Sans Devanagari","Mukta",sans-serif`; };
+            const C = (t, s, w) => { F(s, w); x.textAlign = 'center'; x.fillText(t, W / 2, y); y += s + 8; };
+            const LR = (l, r, s, w) => { F(s, w); x.textAlign = 'left'; let L = String(l); while (x.measureText(L).width > W - pad * 2 - x.measureText(r).width - 10 && L.length > 3) L = L.slice(0, -2); if (L !== String(l)) L += '…'; x.fillText(L, pad, y); x.textAlign = 'right'; x.fillText(r, W - pad, y); y += s + 7; };
+            const line = () => { x.fillRect(pad, y + 3, W - pad * 2, 2); y += 12; };
+            const dt = new Date(b.ts).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            C(b.shop, PRN.paper === 80 ? 34 : 28, 800); C('Happy Food ' + tr('पार्टनर', 'partner'), 18);
+            line(); LR(tr('बिल', 'Bill') + ': ' + b.no, '', 20, 700); LR(dt, '', 18);
+            if (b.name || b.phone) LR((b.name || tr('ग्राहक', 'Customer')), b.phone ? '+91 ' + b.phone : '', 18);
+            line(); b.items.forEach(i => { LR(i.name, '₹' + (i.price * i.qty).toLocaleString('en-IN'), 21, 600); LR('  ₹' + i.price + ' × ' + i.qty, '', 17); });
+            line(); LR(tr('जोड़', 'Subtotal'), '₹' + b.sub.toLocaleString('en-IN'), 20); if (b.disc) LR(tr('छूट', 'Discount'), '−₹' + b.disc, 20);
+            LR(tr('कुल', 'TOTAL'), '₹' + b.tot.toLocaleString('en-IN'), 30, 900); LR(tr('भुगतान', 'Paid by'), b.pay === 'upi' ? 'UPI' : tr('कैश', 'Cash'), 19);
+            if (b.pay === 'upi' && b.upi && typeof qrcode === 'function') { try { const q = qrcode(0, 'M'); q.addData(`upi://pay?pa=${encodeURIComponent(b.upi)}&pn=${encodeURIComponent(b.shop)}&am=${b.tot}&cu=INR&tn=${encodeURIComponent(b.no)}`); q.make(); const n = q.getModuleCount(), cs = Math.floor(Math.min(220, W - 40) / n), ox = Math.floor((W - n * cs) / 2); y += 6; for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) x.fillRect(ox + c * cs, y + r * cs, cs, cs); y += n * cs + 8; C(b.upi, 17); } catch (e) { } }
+            line(); C(tr('धन्यवाद 🙏 फिर आइए', 'Thank you 🙏 visit again'), 20, 700); C(tr('घर बैठे मँगाएँ — Happy Food ऐप', 'Order from home — Happy Food app'), 17);
+            const out = document.createElement('canvas'); out.width = W; out.height = y + 10; out.getContext('2d').drawImage(cv, 0, 0); return out;
+        }
+        function prnBytes(cv) {
+            const W = cv.width, H = cv.height, d = cv.getContext('2d').getImageData(0, 0, W, H).data, bw = W / 8, img = new Uint8Array(bw * H);
+            for (let yy = 0; yy < H; yy++) for (let xx = 0; xx < W; xx++) { const i = (yy * W + xx) * 4; if ((d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11) < 150) img[yy * bw + (xx >> 3)] |= 0x80 >> (xx & 7); }
+            const out = [], push = a => { for (const v of a) out.push(v); };
+            push([0x1b, 0x40]);
+            for (let y0 = 0; y0 < H; y0 += 240) { const h = Math.min(240, H - y0); push([0x1d, 0x76, 0x30, 0x00, bw & 255, bw >> 8, h & 255, h >> 8]); push(img.subarray(y0 * bw, (y0 + h) * bw)); }
+            push([0x1b, 0x64, 0x04, 0x1d, 0x56, 0x42, 0x00]);
+            return new Uint8Array(out);
+        }
+        const hexOf = u => Array.from(u, v => (v < 16 ? '0' : '') + v.toString(16)).join(' ');
+        const b64Of = u => { let s = ''; for (let i = 0; i < u.length; i += 8192) s += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return btoa(s); };
+        async function prnSendNative(bytes) {
+            const B = Capacitor.Plugins.BluetoothLe; await B.initialize({ androidNeverForLocation: true });
+            if (!PRN.id) { const d = await B.requestDevice({ optionalServices: BLE_SVC }); PRN.id = d.deviceId; PRN.name = d.name || 'Printer'; PRN.via = 'ble'; prnSave(); }
+            try { await B.connect({ deviceId: PRN.id, timeout: 10000 }); } catch (e) { if (!/already/i.test(String(e && e.message))) throw e; }
+            const sv = (await B.getServices({ deviceId: PRN.id })).services || [];
+            let tgt = null; sv.forEach(s => (s.characteristics || []).forEach(c => { const pr = c.properties || {}; if (!tgt && (pr.write || pr.writeWithoutResponse)) tgt = { s: s.uuid, c: c.uuid, nr: !pr.write }; }));
+            if (!tgt) throw new Error('no writable characteristic');
+            let size = 180;
+            for (let i = 0; i < bytes.length; i += size) {
+                const part = bytes.subarray(i, i + size);
+                try { await B[tgt.nr ? 'writeWithoutResponse' : 'write']({ deviceId: PRN.id, service: tgt.s, characteristic: tgt.c, value: hexOf(part) }); }
+                catch (e) { if (size > 20) { size = 20; i -= 20; continue; } throw e; }
+            }
+            try { await B.disconnect({ deviceId: PRN.id }); } catch (e) { }
+        }
+        async function prnSendWeb(bytes) {
+            if (!PRN.dev) { PRN.dev = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: BLE_SVC }); PRN.name = PRN.dev.name || 'Printer'; PRN.via = 'web'; prnSave(); }
+            const g = PRN.dev.gatt.connected ? PRN.dev.gatt : await PRN.dev.gatt.connect(); let ch = null;
+            for (const s of await g.getPrimaryServices()) { for (const c of await s.getCharacteristics()) if (!ch && (c.properties.write || c.properties.writeWithoutResponse)) ch = c; }
+            if (!ch) throw new Error('no writable characteristic');
+            for (let i = 0; i < bytes.length; i += 180) { const part = bytes.slice(i, i + 180); ch.properties.write ? await ch.writeValueWithResponse(part) : await ch.writeValueWithoutResponse(part); }
+        }
+        function prnRawBT(bytes) { location.href = 'rawbt:base64,' + b64Of(bytes); }
+        async function prnPrint(no) {
+            const b = billFind(no) || (BILL.done && BILL.done.no === no ? BILL.done : null); if (!b) return;
+            const cv = prnCanvas(b), bytes = prnBytes(cv); vib(15); pToast('🖨️ ' + tr('प्रिंट भेज रहे हैं…', 'Sending to printer…'));
+            try {
+                if (PRN.via === 'rawbt') return prnRawBT(bytes);
+                if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.BluetoothLe && updNative()) await prnSendNative(bytes);
+                else if (navigator.bluetooth) await prnSendWeb(bytes);
+                else throw new Error('no bluetooth');
+                sfx('success'); pToast('✅ ' + tr('प्रिंट हो गया', 'Printed'));
+            } catch (e) { PRN.lastErr = String(e && e.message || e); prnSheet(no, true); }
+        }
+        function prnSheet(no, failed) {
+            const b = billFind(no) || BILL.done;
+            const host = document.querySelector('#billSheet:not(.hidden) .bl-card'); const show = (t, h) => { if (host) host.innerHTML = `<div class="bl-hd"><div><p class="bl-t">${t}</p></div><button class="pk-x" onclick="billPaint()"><i class="fa-solid fa-arrow-left"></i></button></div>` + h; else openPSheet(t, h); };
+            show(tr('🖨️ प्रिंटर', '🖨️ Printer'), `${failed ? `<div class="vp-err">⚠️ ${tr('प्रिंटर से जुड़ नहीं पाए। प्रिंटर चालू करें, फ़ोन का Bluetooth चालू करें और फिर कोशिश करें — या नीचे RawBT ऐप से प्रिंट करें।', 'Could not reach the printer. Turn on the printer and Bluetooth and try again — or print through the RawBT app below.')}</div>` : ''}
+                <div class="vp-prn"><span>${PRN.name ? '🟢 ' + esc(PRN.name) : '⚪ ' + tr('कोई प्रिंटर नहीं जुड़ा', 'No printer yet')}</span>${PRN.name ? `<button onclick="PRN.id='';PRN.name='';PRN.dev=null;PRN.via='';prnSave();prnSheet('${no}')">${tr('बदलें', 'Change')}</button>` : ''}</div>
+                <label class="plabel mt-3">${tr('काग़ज़ की चौड़ाई', 'Paper width')}</label>
+                <div class="bl-pay">${[58, 80].map(w => `<button class="${PRN.paper === w ? 'on' : ''}" onclick="PRN.paper=${w};prnSave();prnSheet('${no}')">${w} mm</button>`).join('')}</div>
+                <button class="bl-prn w-full mt-4" onclick="PRN.via=PRN.via==='rawbt'?'':PRN.via;prnSave();closePSheet();billPaint();prnPrint('${no}')"><i class="fa-brands fa-bluetooth-b"></i> ${PRN.name ? tr('प्रिंट करें', 'Print') : tr('प्रिंटर खोजें और प्रिंट करें', 'Find printer & print')}</button>
+                <button class="vi-link" onclick="PRN.via='rawbt';prnSave();closePSheet();billPaint();prnPrint('${no}')">📲 <span>${tr('RawBT ऐप से प्रिंट (पुराने Bluetooth प्रिंटर के लिए)', 'Print via RawBT app (classic Bluetooth printers)')}</span></button>
+                <p class="plabel mt-3">${tr('झलक', 'Preview')}</p><div class="vp-prev" id="prnPrev"></div>`);
+            setTimeout(() => { const box = document.getElementById('prnPrev'); if (box && b) { const cv = prnCanvas(b); cv.style.width = '100%'; box.appendChild(cv); } }, 30);
+        }
+        // print buttons on the finished bill
+        { const f = billReceipt; billReceipt = function (b) { const h = f.apply(this, arguments); return h.replace(`<button class="bl-go mt-2"`, `<div class="grid gap-2 mt-2" style="grid-template-columns:1fr 48px"><button class="bl-prn" onclick="prnPrint('${b.no}')"><i class="fa-solid fa-print"></i> ${tr('प्रिंट करें', 'Print')}${PRN.name ? ' • ' + esc(PRN.name) : ''}</button><button class="bl-prn2" onclick="prnSheet('${b.no}')" aria-label="printer settings"><i class="fa-solid fa-gear"></i></button></div><button class="bl-go mt-2"`); }; }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
