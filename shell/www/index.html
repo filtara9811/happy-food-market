@@ -1237,6 +1237,20 @@
         .sp-orbit span.sp-st i { display:block; width:36px; height:36px; animation:spFloat 2.2s ease-in-out infinite; filter:drop-shadow(0 5px 7px rgba(0,0,0,.55)); }
         .sp-orbit span.sp-st img { width:100%; height:100%; object-fit:contain; }
         .sp-orbit span.sp-st em { font-style:normal; font-size:9.5px; font-weight:700; color:#e9cf8f; white-space:nowrap; opacity:.85; }
+        /* ===== patch37 ===== */
+        .hf-bag { position:relative; overflow:visible !important; }
+        .hb-st { position:relative; display:block; width:100%; height:100%; }
+        .hb-st img { position:absolute; width:78%; height:78%; top:11%; left:calc(11% + (var(--i) * -5px)); object-fit:contain; border-radius:50%; background:#fff; border:1.5px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,.2); z-index:calc(3 - var(--i)); transform:rotate(calc(var(--i) * -12deg)); }
+        .hb-n { position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; padding:0 4px; border-radius:9px; background:#1a1305; color:#fde68a; font-style:normal; font-size:10px; font-weight:900; display:flex; align-items:center; justify-content:center; border:1.5px solid #fff; z-index:5; }
+        #floatingOrderSummary .hf-bag { width:44px !important; height:44px !important; background:#fff7e3 !important; }
+        #ofChips { display:flex; gap:8px; overflow-x:auto; padding:4px 2px 14px; margin:0 -4px; }
+        #ofChips button { flex-shrink:0; display:flex; align-items:center; gap:6px; height:38px; padding:0 12px 0 6px; border-radius:999px; background:var(--sh-card); border:1.5px solid var(--sh-line); color:var(--sh-tx); font-size:12.5px; font-weight:800; transition:transform .15s; }
+        #ofChips button:active { transform:scale(.94); }
+        #ofChips img { width:26px; height:26px; object-fit:contain; } #ofChips .e { font-size:18px; width:26px; text-align:center; font-weight:400; }
+        #ofChips em { font-style:normal; font-size:10.5px; min-width:18px; height:18px; border-radius:9px; background:var(--sh-line); display:flex; align-items:center; justify-content:center; padding:0 5px; }
+        #ofChips button.on { background:var(--ac); border-color:var(--ac); color:#fff; box-shadow:0 6px 14px color-mix(in srgb,var(--ac) 40%,transparent); }
+        #ofChips button.on em { background:rgba(255,255,255,.3); color:#fff; }
+        #ofChips button[style*="#e2b04a"].on { color:#1a1305; }
     </style>
 <style>
 html,body{height:100%}
@@ -8931,9 +8945,9 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 setTimeout(() => { c.remove(); const bump = (tgt.closest('button, a, div') || tgt); bump.classList.remove('hf-bump'); void bump.offsetWidth; bump.classList.add('hf-bump'); const bd = document.getElementById('cartCountBadge'); if (bd) { bd.classList.remove('hf-bump'); void bd.offsetWidth; bd.classList.add('hf-bump'); } }, 680);
             } catch (e) { }
         }
-        function hfSrcImg() { const e = window.event, el = e && e.target && e.target.closest ? e.target.closest('.bg-\\[\\#14141c\\], .bg-\\[\\#14141c\\]\\/90, .ss-card, .rounded-2xl, .rounded-3xl') : null; return el ? el.querySelector('img') : null; }
+        function hfSrcImg() { const e = window.event, el = e && e.target && e.target.closest ? e.target.closest('.bg-\\[\\#14141c\\], .bg-\\[\\#14141c\\]\\/90, .ss-card, .rounded-2xl, .rounded-3xl') : null; return el ? hfSnap(el.querySelector('img')) : null; }
         { const f = addRecommendedToCart; addRecommendedToCart = function (id) { const img = hfSrcImg(); const r = f.apply(this, arguments); if (cart.some(c => c.productId === id)) hfFly(img); return r; }; }
-        { const f = addCurrentProductToCart; addCurrentProductToCart = function () { const p = products[currentSlideIndex], had = cart.length, img = document.querySelector('#carouselTrack > *:nth-child(' + (currentSlideIndex + 1) + ') img:not([style*="blur"])') || document.querySelector('#carouselTrack img'); const r = f.apply(this, arguments); if (cart.length !== had || (p && cart.some(c => c.productId === p.id))) hfFly(img); return r; }; }
+        { const f = addCurrentProductToCart; addCurrentProductToCart = function () { const p = products[currentSlideIndex], had = cart.length; let img = document.querySelector('#carouselTrack > *:nth-child(' + (currentSlideIndex + 1) + ') img:not([style*="blur"])') || document.querySelector('#carouselTrack img'); img = hfSnap(img); const r = f.apply(this, arguments); if (cart.length !== had || (p && cart.some(c => c.productId === p.id))) hfFly(img); return r; }; }
         { const f = pkAdd; pkAdd = function (id, d) { const r = f.apply(this, arguments); if (d > 0 && !PK.bill) hfFly(document.querySelector('#pkSheet .pk-img img')); return r; }; }
 
         /* ---------- My Orders: filter by store and status ---------- */
@@ -9008,6 +9022,68 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const n = STORES.length;
             o.innerHTML = STORES.map((s, i) => `<span class="sp-st" style="--a:${Math.round(i * 360 / n)}deg"><b><i style="animation-delay:${(i * .37).toFixed(2)}s"><img src="${esc(s.img)}" alt=""></i><em>${esc(s.name.hi)}</em></b></span>`).join('');
         })();
+
+        /* ================= patch37: theme button beside cart, fly into store basket, basket shows item photos, inline order chips ================= */
+        (function () {
+            const t = document.getElementById('hdrTheme'), cb = document.getElementById('cartCountBadge');
+            if (t && cb) { const sp = document.createElement('div'); sp.className = 'w-9 h-9'; t.parentNode.insertBefore(sp, t); cb.parentNode.parentNode.insertBefore(t, cb.parentNode); }
+        })();
+        // fly: read source now, find target after the screen re-renders
+        hfFly = function (img) {
+            try {
+                if (!img) return; const a = img.getBoundingClientRect(); if (!a.width) return;
+                const c = document.createElement('img'); c.src = img.currentSrc || img.src; c.className = 'hf-fly';
+                Object.assign(c.style, { left: a.left + 'px', top: a.top + 'px', width: a.width + 'px', height: a.height + 'px' }); document.body.appendChild(c);
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    const vis = e => e && e.offsetParent && e.getBoundingClientRect().width;
+                    let tgt = document.querySelector('#ssCart .ic'); if (!vis(tgt)) tgt = null;
+                    if (!tgt) { const s = document.querySelector('#floatingOrderSummary .hf-bag'); if (vis(s)) tgt = s; }
+                    if (!tgt) { const b = document.getElementById('cartCountBadge'); tgt = b ? b.parentNode : null; }
+                    if (!tgt) { c.remove(); return; }
+                    const b = tgt.getBoundingClientRect();
+                    c.style.transform = `translate(${b.left + b.width / 2 - a.left - a.width / 2}px,${b.top + b.height / 2 - a.top - a.height / 2}px) scale(${Math.max(.12, 34 / a.width)}) rotate(20deg)`;
+                    setTimeout(() => { c.remove(); tgt.classList.remove('hf-bump'); void tgt.offsetWidth; tgt.classList.add('hf-bump'); hfBags(); }, 680);
+                }));
+            } catch (e) { }
+        };
+        // basket icon shows the photos of what's inside, with total quantity
+        function hfBagHtml() {
+            const n = cart.reduce((s, c) => s + c.quantity, 0); if (!n) return '<i class="fa-solid fa-basket-shopping"></i>';
+            const im = cart.slice(-3).reverse().map(c => { const p = prodInfo(c.productId); return p && p.image ? p.image : ''; }).filter(Boolean);
+            return `<span class="hb-st">${im.map((s, i) => `<img src="${esc(s)}" style="--i:${i}" alt="">`).join('')}</span><em class="hb-n">${n}</em>`;
+        }
+        function hfBags() {
+            const h = hfBagHtml();
+            const ic = document.querySelector('#ssCart .ic'); if (ic && ic.innerHTML !== h) { ic.innerHTML = h; ic.classList.add('hf-bag'); }
+            const s = document.querySelector('#floatingOrderSummary .glass-sheet > div > div:first-child');
+            if (s) { s.classList.add('hf-bag'); s.classList.remove('animate-pulse'); if (s.innerHTML !== h) s.innerHTML = h; }
+        }
+        { const f = updateCartUI; updateCartUI = function () { const r = f.apply(this, arguments); hfBags(); return r; }; }
+        { const f = ssCartBar; ssCartBar = function () { const r = f.apply(this, arguments); hfBags(); return r; }; }
+        const hfSnap = i => { if (!i) return null; const r = i.getBoundingClientRect(), u = i.currentSrc || i.src; return { getBoundingClientRect: () => r, currentSrc: u, src: u }; };
+        { const f = ssAdd; ssAdd = function (id) { const ev = window.event, card = ev && ev.target && ev.target.closest ? ev.target.closest('.ss-card') : null, img = hfSnap(card && card.querySelector('.ss-img img')); window.__hfNoFly = true; try { f.apply(this, arguments); } finally { window.__hfNoFly = false; } if (cart.some(c => c.productId === id)) hfFly(img); }; }
+        { const f = hfFly; hfFly = function () { if (window.__hfNoFly) return; return f.apply(this, arguments); }; }
+
+        /* ---------- My Orders: store chips right under the title (no popup) ---------- */
+        OF.st = 'all';
+        ofHead = function () {
+            const el = document.getElementById('txtLiveTracking'); if (!el) return; el.style.display = 'none';
+            let row = document.getElementById('ofChips');
+            if (!row) { row = document.createElement('div'); row.id = 'ofChips'; row.className = 'no-scrollbar'; const hd = el.closest('.flex'); hd.classList.remove('mb-5'); hd.classList.add('mb-2'); hd.parentNode.insertBefore(row, hd.nextSibling); }
+            const cnt = id => ordersHistory.filter(o => id === 'all' || ordStores(o).indexOf(id) > -1).length;
+            const chip = (id, ic, nm, ac) => `<button class="${OF.store === id ? 'on' : ''}" style="--ac:${ac}" onclick="OF.store='${id}';vib(8);renderOrdersList()">${ic}<span>${nm}</span><em>${cnt(id)}</em></button>`;
+            row.innerHTML = chip('all', '<b class="e">✨</b>', tr('सभी', 'All'), '#e2b04a') + STORES.map(s => chip(s.id, `<img src="${esc(s.img)}" alt="">`, esc(s.name[currentLang] || s.name.hi), s.th.ac)).join('');
+            const on = row.querySelector('.on'); if (on && on.scrollIntoView && !row.__sc) { row.__sc = 1; } else if (on) on.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+        };
+
+        // pack sheet: first ADD closes the sheet and the photo flies into the basket
+        { const f = pkAdd; pkAdd = function (id, d) {
+            if (PK.bill || !(d > 0) || cart.some(c => c.productId === id)) return f.apply(this, arguments);
+            const img = hfSnap(document.querySelector('#pkSheet img')); window.__hfNoFly = true;
+            let r; try { r = f.apply(this, arguments); } finally { window.__hfNoFly = false; }
+            if (cart.some(c => c.productId === id)) { hfFly(img); closePack(); }
+            return r;
+        }; }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
