@@ -1367,6 +1367,19 @@
         .rs-row .text-right b { display:block; font:900 20px 'Outfit',sans-serif; color:var(--p-gold); } .rs-row .text-right b.low { color:#dc2626; } .rs-row .text-right span { font-size:10px; font-weight:700; color:var(--p-mut); }
         .rs-step { display:flex; align-items:center; gap:2px; border-radius:12px; background:var(--p-card2); border:1px solid var(--p-line); } .rs-step button { width:34px; height:34px; font-size:18px; font-weight:900; color:var(--p-gold); } .rs-step b { min-width:22px; text-align:center; font:900 15px 'Outfit',sans-serif; }
         .rs-row.on .rs-step { background:var(--p-gold); border-color:var(--p-gold); } .rs-row.on .rs-step button, .rs-row.on .rs-step b { color:#1a1305; }
+        /* ===== patch45 ===== */
+        #srcBadge { position:absolute; left:50%; z-index:30; transform:translate(-50%,10px) scale(.6); opacity:0; display:flex; flex-direction:column; align-items:center; pointer-events:none; transition:transform .35s cubic-bezier(.3,1.4,.5,1), opacity .25s; }
+        #srcBadge.on { transform:translate(-50%,0) scale(1); opacity:1; }
+        #srcBadge .c { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; background:var(--p-card); border:3px solid var(--c); box-shadow:0 10px 24px color-mix(in srgb,var(--c) 40%,transparent), 0 0 0 5px var(--p-bg,#fff); }
+        #srcBadge em { margin-top:-10px; font-style:normal; font-size:10.5px; font-weight:900; color:#fff; padding:2px 9px; border-radius:999px; box-shadow:0 3px 8px rgba(0,0,0,.2); }
+        .vp-wp { margin-top:8px; padding:10px; border-radius:14px; border:1px dashed var(--p-ok); background:color-mix(in srgb,var(--p-ok) 8%,var(--p-card2)); } .vp-wp span { display:block; font-size:11px; font-weight:800; color:var(--p-mut); } .vp-wp input { width:100%; margin-top:4px; font:900 18px 'Outfit',sans-serif; padding:4px 8px; } .vp-wp small { display:block; font-size:10px; color:var(--p-mut); margin-top:2px; }
+        .wm-shop { width:100%; display:flex; align-items:center; gap:10px; padding:12px; border-radius:16px; background:var(--p-card); border:1px solid var(--p-line); }
+        .wm-shop .av { width:44px; height:44px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-weight:900; background:linear-gradient(145deg,#fde68a,#e2a92c); color:#1a1305; flex-shrink:0; }
+        .wm-shop b { display:block; font-size:14px; } .wm-shop small { display:block; font-size:11px; color:var(--p-mut); } .wm-shop em { font-style:normal; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:999px; } .wm-shop em.op { background:#dcfce7; color:#166534; } .wm-shop em.cl { background:#fee2e2; color:#991b1b; }
+        .wm-gain { margin-top:10px; padding:10px 12px; border-radius:12px; font-size:12.5px; font-weight:700; background:color-mix(in srgb,var(--p-ok) 10%,var(--p-card)); } .wm-gain b { color:var(--p-ok); }
+        .wm-card { padding:12px; border-radius:16px; background:var(--p-card); border:1.5px solid var(--p-gold); margin-bottom:10px; } .wm-card.rd { border-color:var(--p-ok); }
+        .wm-code { margin-top:8px; padding:8px 10px; border-radius:10px; background:var(--p-card2); font-size:11.5px; font-weight:700; display:flex; justify-content:space-between; align-items:center; } .wm-code b { font:900 20px 'Outfit',sans-serif; letter-spacing:4px; color:var(--p-gold); }
+        .wm-shopbox { margin-bottom:12px; } .wm-shopbox .t { font:900 15px 'Outfit',sans-serif; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
     </style>
 <style>
 html,body{height:100%}
@@ -9916,6 +9929,114 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             };
             try { return f.apply(this, arguments); } finally { phView = orig; }
         }; }
+
+        /* ================= patch45: round "source" badge on every journey sheet + rider wholesale market (buy stock from a shop) ================= */
+        /* ---------- source badge: 📱 app order • 🏪 shop order • 🧾 POS • 📦 wholesale ---------- */
+        const SRC = { app: ['📱', 'ऐप ऑर्डर', 'App order', '#16a34a'], shop: ['🏪', 'दुकान ऑर्डर', 'Shop order', '#d97706'], pos: ['🧾', 'POS बिक्री', 'POS sale', '#7c3aed'], wm: ['📦', 'थोक ख़रीद', 'Wholesale', '#2563eb'], qr: ['🔳', 'QR दुकान', 'QR shop', '#0891b2'] };
+        function sheetBadge(kind) {
+            const S = SRC[kind]; if (!S) return; const host = document.getElementById('pSheet'), card = host && host.querySelector('.psheet'); if (!card) return;
+            let b = document.getElementById('srcBadge'); if (!b) { b = document.createElement('div'); b.id = 'srcBadge'; host.appendChild(b); }
+            b.innerHTML = `<span class="c" style="--c:${S[3]}">${S[0]}</span><em style="background:${S[3]}">${tr(S[1], S[2])}</em>`;
+            const place = () => { const hr = host.getBoundingClientRect(), cr = card.getBoundingClientRect(); b.style.top = (cr.top - hr.top - 34) + 'px'; b.classList.add('on'); };
+            requestAnimationFrame(() => requestAnimationFrame(place)); setTimeout(place, 320);
+            try { if (window.__srcRO) window.__srcRO.disconnect(); window.__srcRO = new ResizeObserver(() => { if (document.getElementById('srcBadge')) place(); }); window.__srcRO.observe(card); } catch (e) { }
+        }
+        { const f = openPSheet; openPSheet = function () { const b = document.getElementById('srcBadge'); if (b) b.remove(); return f.apply(this, arguments); }; }
+        { const f = closePSheet; closePSheet = function () { const b = document.getElementById('srcBadge'); if (b) b.remove(); return f.apply(this, arguments); }; }
+        { const f = rjOpen; rjOpen = function (id) { const r = f.apply(this, arguments); const j = rjDemo().concat(rjSales()).concat(wmJourneys()).find(x => x.id === id); if (j) sheetBadge({ counter: 'pos', stock: 'app', vendor: 'shop', restock: 'wm' }[j.kind]); return r; }; }
+        { const f = riderJourney; riderJourney = function (oid) { const r = f.apply(this, arguments); const o = dbOrder(oid); if (o) sheetBadge(orderRoute(o) === 'stock' ? 'app' : 'shop'); return r; }; }
+        { const f = orderSheet; orderSheet = function (id, forVendor) { const r = f.apply(this, arguments); const o = dbOrder(id); if (o) sheetBadge(o.src === 'qr' ? 'qr' : (PNL.role === 'rider' && orderRoute(o) !== 'stock' ? 'shop' : 'app')); return r; }; }
+
+        /* ---------- wholesale price the shop gives riders ---------- */
+        const wpOf = (vid, pid) => { const x = DB.vinv[vid + ':' + pid], p = prodInfo(pid) || {}; return x && x.wp ? Number(x.wp) : Math.round((p.price || 0) * 0.85); };
+        { const f = vInvEditHtml; vInvEditHtml = function (pid) { const h = f.apply(this, arguments); if (!h) return h; const wp = wpOf(curV().id, pid);
+            return h.replace('<div class="grid grid-cols-2 gap-3 mt-3">', `<div class="vp-wp"><span>🛵 ${tr('राइडर को थोक दाम', 'Wholesale price for riders')}</span><input id="viWp" inputmode="numeric" value="${wp}"><small>${tr('राइडर आपसे इसी दाम पर माल ख़रीदेंगे', 'riders buy stock from you at this price')}</small></div><div class="grid grid-cols-2 gap-3 mt-3">`); }; }
+        { const f = vInvSave; vInvSave = function (pid) { const el = document.getElementById('viWp'); if (el) { const w = Math.max(1, parseInt(el.value, 10) || 0); viPut(pid, { wp: w }); } return f.apply(this, arguments); }; }
+
+        /* ---------- rider wholesale market ---------- */
+        const WM_KEY = 'hf_wm_v1';
+        const wmAll = () => saGet(WM_KEY, []);
+        const wmSave = L => { saPut(WM_KEY, L.slice(0, 200)); DB.rev++; };
+        const WMS = { vid: '', items: {}, step: 'shops', paying: false };
+        const wmShops = () => DB.vendors.filter(v => v.status === 'approved');
+        const wmItemsOf = vid => allProductsMaster.filter(m => saVs(m.p).indexOf(vid) > -1 && !vOut(vid, m.p.id)).map(m => ({ p: m.p, qty: (DB.vinv[vid + ':' + m.p.id] || {}).qty == null ? 20 : DB.vinv[vid + ':' + m.p.id].qty, wp: wpOf(vid, m.p.id) })).filter(x => x.qty > 0);
+        function wmOpen() { WMS.vid = ''; WMS.items = {}; WMS.step = 'shops'; vib(12); openPSheet(tr('🏪 दुकान से माल भरें', '🏪 Restock from a shop'), '<div id="wmRoot"></div>'); wmPaint(); sheetBadge('wm'); }
+        function wmPaint() {
+            const el = document.getElementById('wmRoot'); if (!el) return;
+            if (WMS.step === 'shops') {
+                el.innerHTML = `<p class="text-[12px] pmut">${tr('अपनी श्रेणी की पास वाली दुकान चुनिए। दाम थोक वाले हैं — ग्राहक को ऐप के दाम पर बेचेंगे, बीच का फ़र्क आपका।', 'Pick a nearby shop in your category. Prices are wholesale — you sell at the app price and keep the difference.')}</p>
+                    <div class="space-y-2.5 mt-3">${wmShops().map(v => { const n = wmItemsOf(v.id).length; return `<button class="wm-shop" onclick="WMS.vid='${v.id}';WMS.step='items';wmPaint()"><span class="av">${initials(v.name)}</span><span class="flex-1 min-w-0 text-left"><b>${esc(v.name)}</b><small>${esc(v.address || '')} • ⭐ ${v.rating || '—'}</small></span><span class="text-right"><em class="${v.open ? 'op' : 'cl'}">${v.open ? tr('खुली', 'Open') : tr('बंद', 'Closed')}</em><small>${n} ${tr('आइटम', 'items')}</small></span></button>`; }).join('')}</div>`;
+                return;
+            }
+            const v = DB.vendors.find(x => x.id === WMS.vid), L = wmItemsOf(WMS.vid), tot = Object.keys(WMS.items).reduce((s, k) => s + WMS.items[k] * wpOf(WMS.vid, k), 0), units = Object.values(WMS.items).reduce((s, n) => s + n, 0);
+            const gain = Object.keys(WMS.items).reduce((s, k) => s + WMS.items[k] * (((prodInfo(k) || {}).price || 0) - wpOf(WMS.vid, k)), 0);
+            el.innerHTML = `<button class="text-[12.5px] font-bold pmut mb-2" onclick="WMS.step='shops';wmPaint()"><i class="fa-solid fa-arrow-left"></i> ${esc(v.name)}</button>
+                <div class="space-y-2">${L.map(x => { const q = WMS.items[x.p.id] || 0; return `<div class="rs-row ${q ? 'on' : ''}"><img src="${esc(x.p.image)}" alt=""><div class="flex-1 min-w-0"><p class="nm">${esc(saN(x.p.title))}</p><p class="pr"><b style="color:var(--p-ok)">${money_(x.wp)}</b> ${tr('थोक', 'wholesale')} · <s>${money_(x.p.price)}</s> · ${x.qty} ${tr('उपलब्ध', 'in stock')}</p></div><div class="rs-step"><button onclick="wmAdd('${x.p.id}',-1)">−</button><b>${q}</b><button onclick="wmAdd('${x.p.id}',1)">+</button></div></div>`; }).join('') || `<p class="pmut text-center py-6">${tr('इस दुकान पर अभी माल नहीं', 'Nothing in stock here')}</p>`}</div>
+                ${units ? `<div class="wm-gain">💡 ${tr(`सब बिकने पर आपका मुनाफ़ा लगभग <b>${money_(gain)}</b>`, `Profit when all sold: about <b>${money_(gain)}</b>`)}</div>` : ''}
+                <button class="pbtn w-full mt-3" style="position:sticky;bottom:6px;z-index:2;${units ? '' : 'opacity:.5'}" ${units ? '' : 'disabled'} onclick="wmPay()"><i class="fa-solid fa-mobile-screen"></i> ${WMS.paying ? tr('पेमेंट हो रहा है…', 'Paying…') : tr(`UPI से ${money_(tot)} भरें • ${units} नग`, `Pay ${money_(tot)} by UPI • ${units} pcs`)}</button>`;
+        }
+        function wmAdd(pid, d) { const max = (wmItemsOf(WMS.vid).find(x => x.p.id === pid) || {}).qty || 0, q = Math.max(0, Math.min(max, (WMS.items[pid] || 0) + d)); WMS.items[pid] = q; if (!q) delete WMS.items[pid]; vib(8); wmPaint(); }
+        function wmPay() {
+            if (WMS.paying) return; const r = curRider(), ks = Object.keys(WMS.items); if (!ks.length) return;
+            WMS.paying = true; wmPaint();
+            // prototype: UPI succeeds after a moment (the real app goes through the payment gateway)
+            setTimeout(() => {
+                const items = ks.map(k => ({ pid: k, name: saN((prodInfo(k) || {}).title), qty: WMS.items[k], price: wpOf(WMS.vid, k), mrp: (prodInfo(k) || {}).price || 0 }));
+                const o = { id: 'WM-' + String(Date.now()).slice(-5), rid: r.id, rname: r.name, vid: WMS.vid, items: items, tot: items.reduce((s, i) => s + i.qty * i.price, 0), status: 'paid', code: String(1000 + Math.floor(Math.random() * 9000)), ts: Date.now(), tl: { paid: Date.now() } };
+                const L = wmAll(); L.unshift(o); wmSave(L);
+                WMS.paying = false; WMS.items = {}; sfx('success'); vib([30, 40, 60]); closePSheet(); renderPanel(true);
+                pToast(tr('पेमेंट हो गया ✅ — दुकान माल तैयार करेगी', 'Paid ✅ — the shop will get it ready'));
+            }, 900);
+        }
+        function wmReady(id) { const L = wmAll(), o = L.find(x => x.id === id); if (!o || o.status !== 'paid') return; o.status = 'ready'; o.tl.ready = Date.now(); o.items.forEach(i => { const k = o.vid + ':' + i.pid, x = DB.vinv[k] || {}; DB.vinv[k] = Object.assign({}, x, { qty: Math.max(0, (x.qty == null ? 20 : x.qty) - i.qty) }); }); saPut('hf_vinv_v1', DB.vinv); wmSave(L); sfx('success'); pToast(tr('माल तैयार ✅ — राइडर को सूचना गई', 'Ready ✅ — rider notified')); renderPanel(true); }
+        function wmReject(id) { const L = wmAll(), o = L.find(x => x.id === id); if (!o || o.status !== 'paid') return; o.status = 'cancelled'; o.tl.cancelled = Date.now(); wmSave(L); pToast(tr('मना किया — राइडर का पैसा वापस जाएगा', 'Declined — rider gets a refund')); renderPanel(true); }
+        function wmPicked(id) {
+            const L = wmAll(), o = L.find(x => x.id === id); if (!o || o.status !== 'ready') return; const r = dbRider(o.rid) || curRider();
+            o.items.forEach(i => { r.stock[i.pid] = (r.stock[i.pid] || 0) + i.qty; }); o.status = 'picked'; o.tl.picked = Date.now(); wmSave(L);
+            sfx('success'); vib([30, 40, 60]); pToast(tr('माल टोकरी में जुड़ गया 📦✅', 'Added to your box 📦✅')); renderPanel(true);
+        }
+        // rider: open orders card inside the stock tab + menu tiles
+        function wmRiderCard() {
+            const r = curRider(), L = wmAll().filter(o => o.rid === r.id && (o.status === 'paid' || o.status === 'ready')); if (!L.length) return '';
+            return L.map(o => { const v = DB.vendors.find(x => x.id === o.vid) || { name: '' }, rd = o.status === 'ready';
+                return `<div class="wm-card ${rd ? 'rd' : ''}"><div class="flex items-center justify-between"><b>📦 ${esc(v.name)}</b><span class="pill ${rd ? 'ok' : 'gold'}">${rd ? tr('माल तैयार ✅', 'Ready ✅') : tr('पेमेंट हुआ • तैयार हो रहा', 'Paid • being packed')}</span></div>
+                    <p class="text-[12px] mt-1.5">${o.items.map(i => i.qty + '× ' + esc(i.name)).join(', ')} • <b>${money_(o.tot)}</b></p>
+                    <div class="wm-code">${tr('दुकान पर यह कोड बताएँ', 'Show this code at the shop')} <b>${o.code}</b></div>
+                    ${rd ? `<button class="pbtn w-full mt-2.5" onclick="wmPicked('${o.id}')"><i class="fa-solid fa-box-open"></i> ${tr('माल उठा लिया — टोकरी में जोड़ें', 'Picked up — add to my box')}</button>` : `<p class="text-[11px] pmut mt-2">⏳ ${tr('दुकान तैयार करते ही यहाँ बटन आ जाएगा', 'A button appears here once the shop is ready')}</p>`}</div>`; }).join('');
+        }
+        { const f = rdStockBody; rdStockBody = function () { return wmRiderCard() + f.apply(this, arguments).replace(`onclick="pToast(tr('वेंडर से माल ख़रीदना जल्द आएगा 🔜','Buying from shops is coming soon 🔜'))"`, 'onclick="wmOpen()"'); }; riderStock = rdStockBody; }
+        { const f = rdMenu; rdMenu = function () { const r = f.apply(this, arguments); const b = [...document.querySelectorAll('#pSheetBody .rd-tile')].find(x => /वेंडर से माल|Buy from shop/.test(x.textContent)); if (b) b.setAttribute('onclick', 'closePSheet();wmOpen()'); return r; }; }
+        // rider list: wholesale buys show as their own journey
+        function wmJourneys() {
+            const r = curRider(); if (!r) return [];
+            return wmAll().filter(o => o.rid === r.id).map(o => { const v = DB.vendors.find(x => x.id === o.vid) || { name: '' }, p = prodInfo(o.items[0].pid) || {};
+                const tl = [{ ic: '🛒', t: tr('माल चुना', 'Items chosen'), d: esc(v.name), ts: o.ts }, { ic: '💳', t: tr('UPI से पेमेंट', 'Paid by UPI'), d: money_(o.tot), ts: o.tl.paid }];
+                if (o.tl.ready) tl.push({ ic: '📦', t: tr('दुकान ने माल तैयार किया', 'Shop got it ready'), d: tr('कोड', 'code') + ' ' + o.code, ts: o.tl.ready });
+                if (o.tl.picked) tl.push({ ic: '🛵', t: tr('माल उठाया', 'Picked up'), d: tr('टोकरी में जुड़ गया', 'added to your box'), ts: o.tl.picked });
+                if (o.tl.cancelled) tl.push({ ic: '↩️', t: tr('दुकान ने मना किया', 'Shop declined'), d: tr('पैसा वापस', 'refunded'), ts: o.tl.cancelled });
+                return { id: o.id, kind: 'restock', title: v.name, img: p.image || FOODIMG.thali, items: o.items, pay: 'UPI', ts: o.ts, total: o.tot, earn: 0, tl: tl, status: o.status }; });
+        }
+        RJ_KIND.restock = ['📦 ' + 'थोक ख़रीद', '📦 Wholesale buy', '#dbeafe', '#1e40af'];
+        { const f = phRiderDemoView; phRiderDemoView = function (base) {
+            const orig = phView;
+            phView = function (role, c) {
+                const extra = wmJourneys().map(j => { const K = rjKind('restock'), done = j.status === 'picked';
+                    return { ts: j.ts, state: done ? 'done' : (j.status === 'cancelled' ? 'fail' : 'pending'), img: j.img, badge: done ? '✓' : '📦', title: j.title, sub: j.items.map(i => i.qty + '× ' + i.name).join(', ') + ' • ' + rjTime(j.ts), chip: K[0], chipBg: K[1], chipFg: K[2], amt: j.total, amtLbl: tr('ख़र्च', 'spent'), amtColor: '#2563eb', onclick: `rjOpen('${j.id}')`,
+                        steps: [[tr('पेमेंट', 'Paid'), true, false, '💳'], [tr('तैयार', 'Ready'), j.status === 'ready' || done, j.status === 'paid', '📦'], [tr('पिकअप', 'Pickup'), done, j.status === 'ready', '🛵'], [tr('टोकरी में', 'In box'), done, false, '🧺']] }; });
+                c.items = extra.concat(c.items || []); c.tabs = c.tabs.map(t => t[0] === 'orders' ? [t[0], t[1], c.items.length] : t);
+                return orig.call(this, role, c);
+            };
+            try { return f.apply(this, arguments); } finally { phView = orig; }
+        }; }
+        { const f = rjOpen; rjOpen = function (id) { if (/^WM-/.test(id)) { const j = wmJourneys().find(x => x.id === id); if (!j) return; const save = rjDemo; rjDemo = () => save().concat([j]); try { return f.apply(this, arguments); } finally { rjDemo = save; } } return f.apply(this, arguments); }; }
+        // shop: wholesale orders from riders on the home screen
+        function wmShopCard() {
+            const v = curV(), L = wmAll().filter(o => o.vid === v.id && (o.status === 'paid' || o.status === 'ready')); if (!L.length) return '';
+            return `<div class="wm-shopbox"><p class="t">🛵 ${tr('राइडर के थोक ऑर्डर', 'Rider wholesale orders')} <span class="pill gold">${L.length}</span></p>${L.map(o => `<div class="wm-card ${o.status === 'ready' ? 'rd' : ''}"><div class="flex items-center justify-between"><b>${esc(o.rname)}</b><span class="pill ok">💳 ${tr('पेमेंट हो गया', 'Paid')} ${money_(o.tot)}</span></div>
+                <p class="text-[12px] mt-1.5">${o.items.map(i => i.qty + '× ' + esc(i.name)).join(', ')}</p><p class="text-[11px] pmut mt-1">${tr('पिकअप कोड', 'Pickup code')}: <b>${o.code}</b> ${tr('— राइडर से मिलाएँ', '— match with the rider')}</p>
+                ${o.status === 'paid' ? `<div class="grid gap-2 mt-2.5" style="grid-template-columns:1fr auto"><button class="pbtn" onclick="wmReady('${o.id}')"><i class="fa-solid fa-box"></i> ${tr('माल तैयार है', 'Mark ready')}</button><button class="px-4 rounded-xl font-bold text-[12.5px]" style="background:color-mix(in srgb,#ef4444 12%,var(--p-card));color:#dc2626" onclick="wmReject('${o.id}')">${tr('मना', 'Decline')}</button></div>` : `<p class="text-[12px] font-bold mt-2" style="color:var(--p-ok)">✅ ${tr('तैयार — राइडर के आने का इंतज़ार', 'Ready — waiting for the rider')}</p>`}</div>`).join('')}</div>`;
+        }
+        { const f = vShopPicker; vShopPicker = function () { return f.apply(this, arguments) + wmShopCard(); }; }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
