@@ -1155,6 +1155,58 @@
         .ds-hd2 { font-size:11.5px; color:#888; margin-top:3px; } .ds-hi { font-size:12.5px; color:#333; margin-top:6px; line-height:1.4; } .ds-ht { font:800 18px 'Outfit',sans-serif; }
         .ds-ag { height:34px; padding:0 14px; border-radius:11px; background:#1a1305; color:#fde68a; font-size:12.5px; font-weight:800; }
         .ds-login { margin:20px 16px; padding:20px; border-radius:20px; background:#fff; border:1px solid #f0e8d6; text-align:center; } .ds-login .e { font-size:44px; } .ds-login p { font-size:13px; color:#555; margin:6px 0 14px; }
+        /* ===== patch34: shop orders + shop page ===== */
+        .vo-av { position:relative; border-radius:50%; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#fce49d,#b88222); color:#1a1305; flex-shrink:0; box-shadow:0 0 0 2px #fff,0 0 0 3.5px #22c55e; cursor:pointer; }
+        .vo-av img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1; } .vo-av b { font:800 12px 'Outfit',sans-serif; } .vo-av.empty { box-shadow:none; background:var(--p-card2); font-size:14px; }
+        #panelRoot .ph-st.vo-st { cursor:pointer; position:relative; padding-right:22px; }
+        #panelRoot .ph-st .dot.av { border:0; background:none; padding:0; } #panelRoot .ph-st .dot.av .vo-av { width:28px !important; height:28px !important; }
+        .vo-chev { position:absolute; right:0; top:6px; width:20px; height:20px; border-radius:50%; background:var(--p-card2); display:flex; align-items:center; justify-content:center; font-size:9px; color:var(--p-mut); transition:transform .25s; } .vo-chev.on { transform:rotate(180deg); }
+        .vo-x { margin-top:12px; padding-top:12px; border-top:1px dashed var(--p-line); animation:rzIn .25s ease; }
+        .vx-bar { height:6px; border-radius:3px; background:var(--p-card2); overflow:hidden; margin-bottom:12px; } .vx-bar i { display:block; height:100%; border-radius:3px; background:linear-gradient(90deg,#22c55e,#e2b04a); transition:width .5s; }
+        .vx-r { display:flex; gap:10px; position:relative; padding-bottom:12px; }
+        .vx-r::before { content:''; position:absolute; left:13px; top:28px; bottom:0; width:2px; background:var(--p-line); } .vx-r:last-of-type::before { display:none; } .vx-r.done::before { background:#22c55e; }
+        .vx-i { width:28px; height:28px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; background:var(--p-card2); border:2px solid var(--p-line); z-index:1; }
+        .vx-r.done .vx-i { background:color-mix(in srgb,#22c55e 15%,var(--p-card)); border-color:#22c55e; color:#16a34a; } .vx-r.cur .vx-i { background:#fde68a; border-color:#e2b04a; box-shadow:0 0 0 4px rgba(226,176,74,.25); }
+        .vx-r b { font-size:13px; font-weight:800; } .vx-r small { font-size:11px; color:var(--p-mut); font-weight:700; } .vx-r p { font-size:12px; color:var(--p-mut); margin-top:2px; }
+        .vx-imgs { display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; } .vx-imgs span { position:relative; width:42px; height:42px; border-radius:12px; background:var(--p-card2); display:flex; align-items:center; justify-content:center; } .vx-imgs img { width:86%; height:86%; object-fit:contain; border-radius:8px; }
+        .vx-imgs em { position:absolute; right:-4px; bottom:-4px; min-width:18px; height:18px; border-radius:9px; background:#1a1305; color:#fde68a; font-style:normal; font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; padding:0 4px; }
+        .vx-btn { margin-top:8px; height:36px; padding:0 14px; border-radius:12px; background:linear-gradient(180deg,#fde68a,#e2a92c); color:#1a1305; font-weight:900; font-size:12.5px; }
+        .vx-rd { display:flex; align-items:center; gap:10px; margin-top:6px; padding:8px; border-radius:14px; background:var(--p-card2); cursor:pointer; } .vx-rd b { display:block; font-size:13px; } .vx-rd small { font-size:11px; }
+        .vx-call { width:34px; height:34px; border-radius:50%; background:#22c55e; color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; }
+        .vx-st { color:#f59e0b; font-size:14px; letter-spacing:1px; } .vx-st i { font-style:normal; color:var(--p-line); } .vx-st span { font-size:11px; font-weight:800; letter-spacing:0; margin-left:6px; padding:2px 8px; border-radius:8px; } .vx-st span.happy { background:#dcfce7; color:#15803d; } .vx-st span.bad { background:#fee2e2; color:#b91c1c; } .vx-st.big { font-size:20px; }
+        .vx-tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; } .vx-tags span { font-size:11px; font-weight:700; padding:3px 9px; border-radius:9px; background:var(--p-card); border:1px solid var(--p-line); }
+        .vx-q { font-size:12px; font-style:italic; margin-top:6px; color:var(--p-tx) !important; }
+        .vx-more { width:100%; height:38px; border-radius:12px; background:var(--p-card2); font-weight:800; font-size:12.5px; color:var(--p-gold); }
+        .vs-head { display:flex; align-items:center; justify-content:space-between; } .vs-head small { font-size:12px; color:var(--p-mut); font-weight:600; }
+        .vs-prog { position:relative; display:flex; justify-content:space-between; margin-top:16px; padding:0 4px; }
+        .vs-prog .ln { position:absolute; left:28px; right:28px; top:21px; height:4px; border-radius:2px; background:var(--p-card2); } .vs-prog .ln i { display:block; height:100%; border-radius:2px; background:linear-gradient(90deg,#22c55e,#e2b04a); }
+        .vs-prog .nd { position:relative; z-index:1; width:20%; display:flex; flex-direction:column; align-items:center; text-align:center; }
+        .vs-prog .c { width:44px; height:44px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; font:800 13px 'Outfit',sans-serif; background:var(--p-card2); border:3px solid var(--p-line); font-size:18px; position:relative; }
+        .vs-prog .c img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:#fff; }
+        .vs-prog .nd.done .c { border-color:#22c55e; } .vs-prog .nd.cur .c { border-color:#e2b04a; box-shadow:0 0 0 5px rgba(226,176,74,.25); animation:smGlow 1.4s infinite; } .vs-prog .nd:not(.done):not(.cur) .c { filter:grayscale(1); opacity:.6; }
+        .vs-prog b { font-size:11px; font-weight:800; margin-top:6px; line-height:1.15; } .vs-prog small { font-size:10px; color:var(--p-mut); font-weight:700; }
+        .vs-itm { display:flex; align-items:center; gap:10px; padding:8px; border-radius:14px; background:var(--p-card2); } .vs-itm img { width:46px; height:46px; border-radius:12px; object-fit:cover; background:#fff; } .vs-itm b { display:block; font-size:13px; } .vs-itm small { font-size:11px; color:var(--p-mut); }
+        .vs-mini { display:inline-block; margin-top:6px; font-size:11.5px; font-weight:800; color:var(--p-gold); }
+        .ri-hd { display:flex; align-items:center; gap:14px; } .ri-nm { font:800 19px 'Outfit',sans-serif; } .ri-sb { font-size:12px; color:var(--p-mut); margin-top:2px; }
+        .ri-st { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; } .ri-st div { border-radius:14px; padding:10px 6px; text-align:center; background:var(--p-card2); } .ri-st b { display:block; font:800 16px 'Outfit',sans-serif; } .ri-st span { font-size:10.5px; color:var(--p-mut); font-weight:600; }
+        .ri-tl { position:relative; padding-left:6px; } .ri-r { display:flex; gap:12px; padding-bottom:12px; position:relative; }
+        .ri-r::before { content:''; position:absolute; left:5px; top:14px; bottom:0; width:2px; background:var(--p-line); } .ri-r:last-child::before { display:none; }
+        .ri-r .d { width:12px; height:12px; border-radius:50%; background:var(--p-line); margin-top:4px; flex-shrink:0; z-index:1; } .ri-r.done .d { background:#22c55e; }
+        .ri-r b { font-size:13px; } .ri-r small { font-size:11px; color:var(--p-mut); font-weight:700; } .ri-r p { font-size:12px; color:var(--p-mut); margin-top:1px; } .ri-r .m { font-size:11px; }
+        .sp-hero { display:flex; align-items:center; gap:14px; padding:16px; border-radius:22px; color:#fff; background:radial-gradient(120% 90% at 85% 0%,rgba(226,176,74,.35),transparent 60%),linear-gradient(165deg,#2a2112,#0b0d14); }
+        .sp-av { position:relative; width:72px; height:72px; border-radius:20px; background:linear-gradient(135deg,#fce49d,#b88222); color:#1a1305; display:flex; align-items:center; justify-content:center; font:800 24px 'Outfit',sans-serif; flex-shrink:0; cursor:pointer; overflow:hidden; }
+        .sp-av img { width:100%; height:100%; object-fit:cover; } .sp-av span { position:absolute; right:3px; bottom:3px; width:24px; height:24px; border-radius:50%; background:#1a1305; color:#fde68a; font-size:10px; display:flex; align-items:center; justify-content:center; }
+        .sp-nm { font:800 19px 'Outfit',sans-serif; } .sp-sb { font-size:12px; opacity:.75; margin-top:2px; }
+        .sp-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px; } .sp-stats div { border-radius:16px; padding:10px 6px; text-align:center; background:var(--p-card); border:1px solid var(--p-line); } .sp-stats b { display:block; font:800 16px 'Outfit',sans-serif; } .sp-stats span { font-size:10.5px; color:var(--p-mut); font-weight:600; }
+        .sp-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:12px; }
+        .sp-t { position:relative; border-radius:16px; padding:10px 4px 9px; background:var(--p-card); border:1px solid var(--p-line); display:flex; flex-direction:column; align-items:center; gap:4px; } .sp-t span { font-size:22px; } .sp-t b { font-size:11px; font-weight:800; }
+        .sp-t em { position:absolute; top:4px; right:5px; font-style:normal; font-size:9.5px; font-weight:800; min-width:18px; height:18px; border-radius:9px; background:#16a34a; color:#fff; display:flex; align-items:center; justify-content:center; padding:0 4px; }
+        .sp-sec { margin-top:10px; border-radius:18px; padding:13px 14px; background:var(--p-card); border:1px solid var(--p-line); }
+        .sp-sec summary { list-style:none; display:flex; align-items:center; gap:8px; font-size:14px; font-weight:800; cursor:pointer; } .sp-sec summary::-webkit-details-marker { display:none; }
+        .sp-sec summary::after { content:'\f078'; font-family:'Font Awesome 6 Free'; font-weight:900; font-size:11px; margin-left:auto; color:var(--p-mut); transition:transform .25s; } .sp-sec[open] summary::after { transform:rotate(180deg); }
+        .sp-days { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; } .sp-days button { height:36px; border-radius:11px; font-size:11.5px; font-weight:800; background:var(--p-card2); color:var(--p-mut); } .sp-days button.on { background:var(--p-gold); color:#1a1305; }
+        .sp-list { margin-top:12px; border-radius:18px; overflow:hidden; border:1px solid var(--p-line); background:var(--p-card); }
+        .sp-list button { width:100%; display:flex; align-items:center; gap:12px; padding:13px 14px; font-size:13.5px; font-weight:700; text-align:left; border-top:1px solid var(--p-line); } .sp-list button:first-child { border-top:0; } .sp-list button span { flex:1; } .sp-list button i { font-size:11px; color:var(--p-mut); }
     </style>
 <style>
 html,body{height:100%}
@@ -8678,6 +8730,153 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         // remember the customer after an order so "my orders" works
         { const f = dsPlace; dsPlace = function () { if (DS.phone && DS.phone.length === 10) saPut('hf_ds_me', { name: (DS.name || '').trim(), phone: DS.phone }); return f.apply(this, arguments); }; }
         { const f = openDShop; openDShop = function () { const r = f.apply(this, arguments); DS.q = ''; DS.hist = false; const me = dsMe(); DS.name = me.name; DS.phone = me.phone; dsPaint(); return r; }; }
+
+        /* ================= patch34: shop order cards expand, rich order sheet, rider profile, better shop page ================= */
+        // remember when each step happened
+        { const f = setSt; setSt = function (o, st) { if (o) { o.tl = o.tl || {}; o.tl[st] = Date.now(); } return f.apply(this, arguments); }; }
+        { const f = vendorPack; vendorPack = function (id) { const o = dbOrder(id); if (o) { o.tl = o.tl || {}; o.tl.packed = Date.now(); } return f.apply(this, arguments); }; }
+        const VX = new Set();
+        function voSteps(o) {
+            const st = o.status, acc = st !== 'vwait' && st !== 'new', packed = !!o.packed || ['searching', 'accepted', 'on_the_way', 'delivered'].indexOf(st) > -1;
+            const picked = st === 'on_the_way' || st === 'delivered', del = st === 'delivered', fail = st === 'cancelled' || st === 'no_rider';
+            const T = k => (o.tl && o.tl[k]) || null, base = o.ts;
+            const t = [T('cooking') || (acc ? base + 60e3 : null), T('packed') || (packed ? base + 9 * 60e3 : null), T('on_the_way') || (picked ? base + 13 * 60e3 : null), T('delivered') || (del ? base + 29 * 60e3 : null)];
+            const S = [{ k: 'acc', done: acc, t: t[0] }, { k: 'pack', done: packed, t: t[1] }, { k: 'pick', done: picked, t: t[2] }, { k: 'del', done: del, t: t[3] }, { k: 'rate', done: del && !!voRating(o), t: t[3] }];
+            const cur = fail ? -1 : S.findIndex(s => !s.done);
+            return { S, cur, fail, pct: fail ? 0 : Math.round(S.filter(s => s.done).length / S.length * 100) };
+        }
+        function voRating(o) {
+            const r = (typeof rtStore === 'function' ? rtStore() : {})[o.id]; if (r) return { stars: r.mood === 'happy' ? 5 : 2, mood: r.mood, tags: (r.food || []).concat(r.rider || []), txt: r.txt };
+            if (o.status !== 'delivered') return null;
+            let h = 0; for (const ch of o.id) h = (h * 31 + ch.charCodeAt(0)) % 997;
+            const happy = h % 7 !== 0;
+            return { stars: happy ? (h % 3 ? 5 : 4) : 2, mood: happy ? 'happy' : 'bad', tags: happy ? [['Tasty', 'Fast delivery'], ['Piping hot', 'Polite'], ['Neat packing', 'Value for money']][h % 3] : ['Food was cold'], txt: '' };
+        }
+        const voTag = t => { const all = []; try { Object.keys(RT_TAGS).forEach(k => ['food', 'rider'].forEach(g => RT_TAGS[k][g].forEach(x => all.push(x)))); } catch (e) { } const m = all.find(x => x[2] === t); return m ? m[0] + ' ' + tr(m[1], m[2]) : t; };
+        const voAv = (r, sz) => r ? `<span class="vo-av" style="width:${sz}px;height:${sz}px" onclick="event.stopPropagation();riderInfo('${r.id}')">${r.photo ? `<img src="${esc(r.photo)}" alt="" onerror="this.remove()">` : ''}<b>${esc(initials(r.name))}</b></span>` : `<span class="vo-av empty" style="width:${sz}px;height:${sz}px">🛵</span>`;
+        const fmtHM = ts => ts ? new Date(ts).toLocaleTimeString(currentLang === 'hi' ? 'hi-IN' : 'en-IN', { hour: 'numeric', minute: '2-digit' }) : '—';
+        function voStars(n) { return '★★★★★'.slice(0, n) + '<i>' + '★★★★★'.slice(n) + '</i>'; }
+        // the expanded part under a home order card
+        function voExpand(o) {
+            const X = voSteps(o), r = DB.riders.find(x => x.id === o.riderId), rt = voRating(o), labels = voLbl();
+            const row = (i, icon, body) => { const s = X.S[i], st = s.done ? 'done' : (i === X.cur ? 'cur' : ''); return `<div class="vx-r ${st}"><span class="vx-i">${s.done ? '<i class="fa-solid fa-check"></i>' : icon}</span><div class="flex-1 min-w-0"><div class="flex justify-between gap-2"><b>${labels[i]}</b><small>${s.done ? fmtHM(s.t) : (i === X.cur ? tr('अभी', 'now') : '')}</small></div>${body}</div></div>`; };
+            return `<div class="vo-x" onclick="event.stopPropagation()"><div class="vx-bar"><i style="width:${X.pct}%"></i></div>
+                ${row(0, '🔔', `<p>${X.S[0].done ? tr('आपने ऑर्डर स्वीकार किया', 'You accepted the order') : tr('स्वीकार का इंतज़ार', 'Waiting for you')}</p>`)}
+                ${row(1, '📦', `<div class="vx-imgs">${o.items.map(i => { const p = prodInfo(i.pid); return `<span><img src="${esc(p ? p.image : '')}" alt=""><em>${i.qty}</em></span>`; }).join('')}</div>${!X.S[1].done && X.cur === 1 ? `<button class="vx-btn" onclick="vendorPack('${o.id}');renderPanel(true)">📦 ${tr('पैक हो गया', 'Packed')}</button>` : ''}`)}
+                ${row(2, '🛵', r ? `<div class="vx-rd" onclick="riderInfo('${r.id}')">${voAv(r, 38)}<div class="min-w-0 flex-1"><b>${esc(r.name)}</b><small>${esc(r.bike)} • ⭐ ${r.rating}</small></div><a href="tel:${esc(r.phone.replace(/\s/g, ''))}" onclick="event.stopPropagation()" class="vx-call"><i class="fa-solid fa-phone"></i></a></div>` : `<p>${tr('राइडर ढूँढ रहे हैं…', 'Finding a rider…')}</p>`)}
+                ${row(3, '🏠', `<p>${esc(o.customer)} • ${esc(o.address || '')}</p>`)}
+                ${row(4, '⭐', rt ? `<p class="vx-st">${voStars(rt.stars)} <span class="${rt.mood}">${rt.mood === 'happy' ? tr('हैप्पी', 'Happy') : tr('बैड', 'Bad')}</span></p><div class="vx-tags">${rt.tags.map(t => `<span>${voTag(t)}</span>`).join('')}</div>${rt.txt ? `<p class="vx-q">“${esc(rt.txt)}”</p>` : ''}` : `<p>${tr('डिलीवरी के बाद ग्राहक की रेटिंग यहाँ दिखेगी', "Customer's rating appears after delivery")}</p>`)}
+                <button class="vx-more" onclick="orderSheet('${o.id}', true)">${tr('पूरी डिटेल देखें', 'Full details')} ›</button></div>`;
+        }
+        const voLbl = () => [tr('स्वीकार', 'Accepted'), tr('पैकिंग', 'Packing'), tr('पिकअप • डिलीवरी बॉय', 'Pickup • delivery partner'), tr('ग्राहक को डिलीवर', 'Delivered to customer'), tr('रिव्यू व रेटिंग', 'Review & rating')];
+        function voToggle(id) { VX.has(id) ? VX.delete(id) : VX.add(id); vib(12); renderPanel(true); }
+        // decorate home order cards after every render
+        { const f = renderPanel; renderPanel = function () {
+            const r = f.apply(this, arguments);
+            try {
+                if (PNL.role !== 'vendor') return r;
+                document.querySelectorAll('#pnlBody .ph-card[onclick^="orderSheet"]').forEach(card => {
+                    const m = card.getAttribute('onclick').match(/orderSheet\('([^']+)'/); if (!m) return; const o = dbOrder(m[1]); if (!o) return;
+                    const stEl = card.querySelector('.ph-st'); if (!stEl) return;
+                    const X = voSteps(o), L = [tr('स्वीकार', 'Accept'), tr('पैकिंग', 'Packing'), tr('पिकअप', 'Pickup'), tr('डिलीवर', 'Delivered'), tr('रेटिंग', 'Rating')], r2 = DB.riders.find(x => x.id === o.riderId);
+                    stEl.innerHTML = X.S.map((s, i) => `<div class="s ${s.done ? 'done' : (i === X.cur ? 'cur' : '')}"><span class="dot ${i === 2 && r2 ? 'av' : ''}">${i === 2 && r2 ? voAv(r2, 28) : (s.done ? '<i class="fa-solid fa-check"></i>' : ['🔔', '📦', '🛵', '🏠', '⭐'][i])}</span>${L[i]}</div>`).join('') + `<span class="vo-chev ${VX.has(o.id) ? 'on' : ''}"><i class="fa-solid fa-chevron-down"></i></span>`;
+                    stEl.classList.add('vo-st'); stEl.setAttribute('onclick', `event.stopPropagation();voToggle('${o.id}')`);
+                    if (VX.has(o.id)) card.insertAdjacentHTML('beforeend', voExpand(o));
+                });
+            } catch (e) { }
+            return r;
+        }; }
+        // full order sheet for the shop
+        { const f = orderSheet; orderSheet = function (id, forVendor) {
+            if (!forVendor) return f.apply(this, arguments);
+            const o = dbOrder(id); if (!o) return;
+            const X = voSteps(o), r = DB.riders.find(x => x.id === o.riderId), v = DB.vendors.find(x => x.id === o.vendorId) || curV(), rt = voRating(o);
+            const sub = o.items.reduce((s, i) => s + i.qty * i.price, 0), comm = Math.round(o.total * (DB.settings.commission || 10) / 100);
+            const nodes = [['🏪', v.photo ? `<img src="${esc(v.photo)}" alt="">` : esc(initials(v.name))], ['📦', `<img src="${esc((prodInfo(o.items[0].pid) || {}).image || '')}" alt="">`], ['🛵', r ? `${esc(initials(r.name))}${r.photo ? `<img src="${esc(r.photo)}" alt="" onerror="this.remove()">` : ''}` : '🛵'], ['🏠', '🏠'], ['⭐', '⭐']];
+            let act = '';
+            if (o.status === 'vwait') act = `<button class="pbtn-bad flex-1" onclick="vendorDecide('${o.id}', false); closePSheet()">✕ ${tr('मना', 'Reject')}</button><button class="pbtn flex-1" onclick="vendorDecide('${o.id}', true); closePSheet()">✓ ${tr('स्वीकार करें', 'Accept')}</button>`;
+            else if (X.cur === 1) act = `<button class="pbtn flex-1" onclick="vendorPack('${o.id}'); closePSheet(); renderPanel(true)">📦 ${tr('पैक हो गया — राइडर को बताएँ', 'Packed — tell the rider')}</button>`;
+            openPSheet(o.id, `<div class="vs-head"><span>${statusPill(o.status)}</span><small>${new Date(o.ts).toLocaleString(currentLang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}</small></div>
+                <div class="vs-prog"><div class="ln"><i style="width:${Math.max(0, (X.S.filter(s => s.done).length - 1) / 4 * 100)}%"></i></div>${X.S.map((s, i) => `<div class="nd ${s.done ? 'done' : (i === X.cur ? 'cur' : '')}"><span class="c">${nodes[i][1]}</span><b>${voLbl()[i].split(' • ')[0]}</b><small>${s.done ? fmtHM(s.t) : (i === X.cur ? tr('अभी', 'now') : '—')}</small></div>`).join('')}</div>
+                ${act ? `<div class="flex gap-2.5 mt-3">${act}</div>` : ''}
+                <p class="plabel mt-4 mb-2">${tr('सामान', 'Items')} (${o.items.reduce((s, i) => s + i.qty, 0)})</p>
+                <div class="space-y-2">${o.items.map(i => { const p = prodInfo(i.pid) || {}; return `<div class="vs-itm"><img src="${esc(p.image || '')}" alt=""><div class="flex-1 min-w-0"><b>${esc(i.name)}</b><small>${money(i.price)} × ${i.qty}${p.packLbl ? ' • ' + esc(saN(p.packLbl)) : ''}</small></div><span class="pnum">${money(i.qty * i.price)}</span></div>`; }).join('')}</div>
+                <div class="pcard2 p-3.5 mt-3 text-[13px] space-y-1.5"><div class="flex justify-between"><span class="pmut">${tr('आइटम', 'Items')}</span><span class="pnum">${money(sub)}</span></div><div class="flex justify-between"><span class="pmut">${tr('Happy Food कमीशन', 'Happy Food commission')}</span><span class="pnum">−${money(comm)}</span></div>
+                    <div class="flex justify-between pt-2 border-t pline"><b>${tr('आपकी कमाई', 'You earn')}</b><b class="pnum pgold text-base">${money(o.total - comm)}</b></div><p class="text-[11px] pmut">${tr('ग्राहक ने दिया', 'Customer paid')} ${money(o.total)} • ${o.pay}</p></div>
+                <div class="grid grid-cols-2 gap-2.5 mt-3">
+                    <div class="pcard2 p-3"><p class="plabel">${tr('ग्राहक', 'Customer')}</p><p class="text-[13px] font-bold mt-1">${esc(o.customer)}</p><p class="text-[11px] pmut">${esc(o.phone)}</p><a class="vs-mini" href="tel:${esc(String(o.phone).replace(/\s/g, ''))}"><i class="fa-solid fa-phone"></i> ${tr('कॉल', 'Call')}</a></div>
+                    <div class="pcard2 p-3" ${r ? `onclick="riderInfo('${r.id}')"` : ''}><p class="plabel">${tr('डिलीवरी बॉय', 'Delivery partner')}</p>${r ? `<div class="flex items-center gap-2 mt-1">${voAv(r, 34)}<div class="min-w-0"><p class="text-[13px] font-bold truncate">${esc(r.name)}</p><p class="text-[11px] pmut">⭐ ${r.rating} • ${esc(r.bike)}</p></div></div><span class="vs-mini">${tr('प्रोफ़ाइल', 'Profile')} ›</span>` : `<p class="text-[12px] pmut mt-1">${tr('अभी तय नहीं', 'Not assigned yet')}</p>`}</div></div>
+                <div class="pcard2 p-3 mt-2.5"><p class="plabel">${tr('डिलीवरी का पता', 'Delivery address')}</p><p class="text-[13px] mt-1">${esc(o.address)}</p></div>
+                <p class="plabel mt-4 mb-2">⭐ ${tr('ग्राहक की रेटिंग', "Customer's rating")}</p>
+                ${rt ? `<div class="pcard2 p-3.5"><p class="vx-st big">${voStars(rt.stars)} <span class="${rt.mood}">${rt.mood === 'happy' ? '😍 ' + tr('हैप्पी सर्विस', 'Happy service') : '😞 ' + tr('बैड सर्विस', 'Bad service')}</span></p><div class="vx-tags">${rt.tags.map(t => `<span>${voTag(t)}</span>`).join('')}</div>${rt.txt ? `<p class="vx-q">“${esc(rt.txt)}”</p>` : ''}</div>` : `<div class="pcard2 p-3.5 text-[12px] pmut">${tr('डिलीवरी के बाद ग्राहक जो रेटिंग देगा, वह यहाँ दिखेगी', 'The customer rating shows here after delivery')}</div>`}`);
+        }; }
+        // rider profile (from the shop's point of view)
+        function riderInfo(rid) {
+            const r = DB.riders.find(x => x.id === rid); if (!r) return; vib(12);
+            const v = curV(), L = DB.orders.filter(o => o.riderId === rid && o.vendorId === v.id).sort((a, b) => b.ts - a.ts);
+            const del = L.filter(o => o.status === 'delivered'), t0 = phDay(Date.now()), today = del.filter(o => o.ts >= t0);
+            const mins = del.map(o => { const X = voSteps(o); return X.S[3].t && X.S[2].t ? Math.max(1, Math.round((X.S[3].t - X.S[2].t) / 60000)) : 16; });
+            const avg = mins.length ? Math.round(mins.reduce((a, b) => a + b, 0) / mins.length) : 0;
+            openPSheet(tr('डिलीवरी बॉय', 'Delivery partner'), `<div class="ri-hd">${voAv(r, 74)}<div class="flex-1 min-w-0"><p class="ri-nm">${esc(r.name)}</p><p class="ri-sb">${esc(r.bike)} • ${r.online ? '🟢 ' + tr('ऑनलाइन', 'Online') : '⚪ ' + tr('ऑफ़लाइन', 'Offline')}</p><p class="ri-sb">⭐ ${r.rating} • ${Number(r.trips || 0).toLocaleString('en-IN')} ${tr('डिलीवरी', 'deliveries')} • ${tr('जुड़े', 'since')} ${esc(r.joined || '')}</p></div></div>
+                <div class="grid grid-cols-2 gap-2 mt-3"><a class="pbtn-g text-center" href="tel:${esc(r.phone.replace(/\s/g, ''))}"><i class="fa-solid fa-phone"></i> ${tr('कॉल करें', 'Call')}</a><a class="pbtn-g text-center" href="https://wa.me/${esc(r.phone.replace(/\D/g, ''))}" target="_blank"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a></div>
+                <div class="ri-st"><div><b>${L.length}</b><span>${tr('आपके ऑर्डर', 'Your orders')}</span></div><div><b>${today.length}</b><span>${tr('आज डिलीवर', 'Delivered today')}</span></div><div><b>${avg ? avg + ' ' + tr('मि', 'min') : '—'}</b><span>${tr('औसत समय', 'Avg time')}</span></div></div>
+                <p class="plabel mt-4 mb-2">📍 ${tr('कहाँ-कहाँ डिलीवर किया', 'Where they delivered')}</p>
+                <div class="ri-tl">${L.length ? L.slice(0, 12).map((o, i) => { const X = voSteps(o), done = o.status === 'delivered'; return `<div class="ri-r ${done ? 'done' : ''}"><span class="d"></span><div class="flex-1 min-w-0"><div class="flex justify-between gap-2"><b>${esc(o.customer)}</b><small>${fmtHM(X.S[3].t || o.ts)}</small></div><p>${esc(o.address || '')}</p><p class="m">${o.items.map(x => x.qty + '× ' + esc(x.name)).join(', ')} • ${money(o.total)} • ${done ? tr('✅ डिलीवर', '✅ Delivered') + (mins[del.indexOf(o)] ? ' ' + tr(mins[del.indexOf(o)] + ' मिनट में', 'in ' + mins[del.indexOf(o)] + ' min') : '') : statusPill(o.status)}</p></div></div>`; }).join('') : `<p class="text-[12px] pmut">${tr('अभी आपकी दुकान का कोई ऑर्डर नहीं', 'No orders from your shop yet')}</p>`}</div>`);
+        }
+
+        /* ---------- the shop page (right tab) ---------- */
+        vendorShop = function () {
+            const v = curV(), mine = DB.orders.filter(o => o.vendorId === v.id), del = mine.filter(o => o.status === 'delivered');
+            const m0 = new Date(); m0.setDate(1); m0.setHours(0, 0, 0, 0); const comm = (DB.settings.commission || 10) / 100;
+            const month = del.filter(o => o.ts >= m0.getTime()).reduce((s, o) => s + o.total * (1 - comm), 0);
+            const rts = del.map(voRating).filter(Boolean), avg = rts.length ? (rts.reduce((s, x) => s + x.stars, 0) / rts.length).toFixed(1) : '—';
+            const days = v.days || [1, 1, 1, 1, 1, 1, 1], dn = currentLang === 'hi' ? ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि'] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const [oT, cT] = String(v.hours || '09:00 - 23:00').split('-').map(s => s.trim());
+            const tile = (ic, t, fn, b) => `<button class="sp-t" onclick="${fn}"><span>${ic}</span><b>${t}</b>${b ? `<em>${b}</em>` : ''}</button>`;
+            const doc = (k, val) => `<span class="pill ${val ? 'ok' : 'warn'}">${val ? '✓ ' + tr('जमा', 'Added') : tr('बाक़ी', 'Pending')}</span>`;
+            return `<div class="sp-hero"><label class="sp-av" for="spPh">${v.photo ? `<img src="${esc(v.photo)}" alt="">` : esc(initials(v.name))}<span><i class="fa-solid fa-camera"></i></span><input id="spPh" type="file" accept="image/*" class="hidden" onchange="spPhoto(this)"></label>
+                    <div class="flex-1 min-w-0"><p class="sp-nm">${esc(v.name)}</p><p class="sp-sb">${esc(v.owner || '')} • ${v.status === 'approved' ? '✅ ' + tr('वेरिफ़ाइड', 'Verified') : '⏳ ' + tr('मंज़ूरी बाकी', 'Pending approval')}</p><p class="sp-sb">⭐ ${avg} • ${tr('जुड़े', 'Joined')} ${esc(v.joined || '2026')}</p></div></div>
+                <div class="sp-stats"><div><b>${mine.length}</b><span>${tr('कुल ऑर्डर', 'Orders')}</span></div><div><b>${money_(month)}</b><span>${tr('इस महीने', 'This month')}</span></div><div><b>⭐ ${avg}</b><span>${rts.length} ${tr('रिव्यू', 'reviews')}</span></div></div>
+                <div class="pcard p-3.5 mt-3 space-y-3"><div class="flex items-center justify-between gap-3"><div><p class="text-[13.5px] font-bold">${v.open ? '🟢 ' + tr('दुकान खुली है', 'Shop is open') : '🔴 ' + tr('दुकान बंद है', 'Shop is closed')}</p><p class="text-[11px] pmut">${tr('बंद होने पर ग्राहक को आपके आइटम नहीं दिखेंगे', 'When closed, customers cannot order from you')}</p></div>${sw(v.open, 'toggleShop()')}</div>
+                    <div class="flex items-center justify-between gap-3 pt-3 border-t pline"><div><p class="text-[13.5px] font-bold">⚡ ${tr('ऑर्डर अपने-आप स्वीकार', 'Auto-accept orders')}</p><p class="text-[11px] pmut">${tr('भीड़ के समय काम आता है', 'Handy at rush hour')}</p></div>${sw(v.autoAccept, 'toggleAuto()')}</div></div>
+                <div class="sp-grid">${tile('📱', tr('मेरा QR', 'My QR'), 'openMyQR()')}${tile('🏪', tr('डिजिटल दुकान', 'Digital shop'), `openDShop(curV().id,true)`)}${tile('🖼️', tr('बैनर', 'Banners'), "vInvOpen();VI.mode='bn';vInvPaint()")}${tile('📦', tr('इन्वेंट्री', 'Inventory'), 'vInvOpen()')}
+                    ${tile('💰', tr('कमाई', 'Earnings'), "setTab('earn')")}${tile('🧾', tr('बिल', 'Bills'), 'openBill()', saGet('hf_bills_v1', []).filter(b => b.vid === v.id).length || '')}${tile('⭐', tr('रिव्यू', 'Reviews'), 'spReviews()', rts.length)}${tile('🛵', tr('राइडर स्टॉक', 'Rider stock'), "setTab('stock')")}</div>
+                <details class="sp-sec" open><summary>🏪 ${tr('दुकान की जानकारी', 'Shop details')}</summary><div class="space-y-3 mt-3">
+                    <div><label class="plabel">${tr('दुकान का नाम', 'Shop name')}</label><input id="shName" value="${esc(v.name)}"></div>
+                    <div><label class="plabel">${tr('मालिक का नाम', 'Owner')}</label><input id="shOwn" value="${esc(v.owner || '')}"></div>
+                    <div><label class="plabel">${tr('पता', 'Address')}</label><input id="shAddr" value="${esc(v.address || '')}"></div>
+                    <div class="grid grid-cols-2 gap-3"><div><label class="plabel">${tr('फ़ोन', 'Phone')}</label><input id="shPh" value="${esc(v.phone || '')}" inputmode="tel"></div><div><label class="plabel">${tr('तैयारी (मिनट)', 'Prep (min)')}</label><input id="shPrep" value="${v.prep || 15}" inputmode="numeric"></div></div></div></details>
+                <details class="sp-sec"><summary>⏰ ${tr('खुलने का समय', 'Opening hours')}</summary><div class="mt-3"><div class="sp-days">${dn.map((d, i) => `<button class="${days[i] ? 'on' : ''}" onclick="this.classList.toggle('on')">${d}</button>`).join('')}</div>
+                    <div class="grid grid-cols-2 gap-3 mt-3"><div><label class="plabel">${tr('खुलना', 'Opens')}</label><input id="shOpen" type="time" value="${esc(oT || '09:00')}"></div><div><label class="plabel">${tr('बंद', 'Closes')}</label><input id="shClose" type="time" value="${esc(cT || '23:00')}"></div></div></div></details>
+                <details class="sp-sec"><summary>💳 ${tr('पेमेंट (पैसा कहाँ आए)', 'Payouts')}</summary><div class="space-y-3 mt-3">
+                    <div><label class="plabel">UPI ID</label><input id="shUpi" value="${esc(v.upi || '')}" placeholder="shop@ybl"></div>
+                    <div class="grid grid-cols-2 gap-3"><div><label class="plabel">${tr('बैंक खाता', 'Bank account')}</label><input id="shAcc" value="${esc(v.acc || '')}" inputmode="numeric"></div><div><label class="plabel">IFSC</label><input id="shIfsc" value="${esc(v.ifsc || '')}" style="text-transform:uppercase"></div></div></div></details>
+                <details class="sp-sec"><summary>📄 ${tr('दस्तावेज़', 'Documents')} ${!(v.fssai && v.gst && v.pan) ? '<span class="pill warn">' + tr('अधूरे', 'Incomplete') + '</span>' : ''}</summary><div class="space-y-3 mt-3">
+                    <div><label class="plabel flex justify-between">FSSAI ${doc('f', v.fssai)}</label><input id="shFs" value="${esc(v.fssai || '')}"></div>
+                    <div><label class="plabel flex justify-between">GSTIN ${doc('g', v.gst)}</label><input id="shGst" value="${esc(v.gst || '')}" style="text-transform:uppercase" placeholder="${tr('नहीं है तो ख़ाली छोड़ें', 'Leave empty if none')}"></div>
+                    <div><label class="plabel flex justify-between">PAN ${doc('p', v.pan)}</label><input id="shPan" value="${esc(v.pan || '')}" style="text-transform:uppercase"></div></div></details>
+                <button class="pbtn w-full mt-3" onclick="saveShop()"><i class="fa-solid fa-check"></i> ${tr('सब सेव करें', 'Save all')}</button>
+                <div class="sp-list"><button onclick="window.open('https://wa.me/919540068380','_blank')">💬 <span>${tr('Happy Food सपोर्ट (WhatsApp)', 'Happy Food support (WhatsApp)')}</span><i class="fa-solid fa-chevron-right"></i></button>
+                    <button onclick="toggleLanguage();renderPanel(true)">🌐 <span>${tr('भाषा: हिंदी → English', 'Language: English → हिंदी')}</span><i class="fa-solid fa-chevron-right"></i></button>
+                    <button onclick="exitPanel()">🔄 <span>${tr('रोल / ऐप बदलें', 'Switch role / app')}</span><i class="fa-solid fa-chevron-right"></i></button></div>
+                <p class="text-center text-[10.5px] pmut mt-4">Happy Food Shop • ${tr('दुकान कोड', 'Shop code')} ${shopCode(v.id)}</p>`;
+        };
+        saveShop = function () {
+            const v = curV(), g = id => { const e = document.getElementById(id); return e ? e.value.trim() : ''; };
+            if (!g('shName')) { pToast(tr('नाम लिखें', 'Enter shop name')); return; }
+            const upi = g('shUpi'); if (upi && !/^[\w.\-]{2,}@[a-z]{2,}$/i.test(upi)) { pToast(tr('UPI ID सही नहीं लग रही', 'UPI ID looks wrong')); return; }
+            Object.assign(v, { name: g('shName'), owner: g('shOwn'), address: g('shAddr'), phone: g('shPh'), prep: +g('shPrep') || 15, upi: upi, acc: g('shAcc'), ifsc: g('shIfsc').toUpperCase(), fssai: g('shFs'), gst: g('shGst').toUpperCase(), pan: g('shPan').toUpperCase(),
+                hours: (g('shOpen') || '09:00') + ' - ' + (g('shClose') || '23:00'), days: [...document.querySelectorAll('.sp-days button')].map(b => b.classList.contains('on') ? 1 : 0) });
+            if (upi) saPut('hf_vupi_' + v.id, upi);
+            DB.rev++; renderPanel(true); sfx('success'); pToast(tr('दुकान की जानकारी सेव ✅', 'Shop details saved ✅'));
+        };
+        function spPhoto(inp) { const f = inp.files && inp.files[0]; if (!f) return; fileToJpeg(f, d => { const v = curV(); v.photo = d; try { const ph = saGet('hf_vph_v1', {}); ph[v.id] = d; saPut('hf_vph_v1', ph); } catch (e) { } DB.rev++; renderPanel(true); pToast(tr('दुकान की फ़ोटो लग गई ✅', 'Shop photo updated ✅')); }); }
+        function spReviews() {
+            const v = curV(), L = DB.orders.filter(o => o.vendorId === v.id && o.status === 'delivered').sort((a, b) => b.ts - a.ts).map(o => ({ o, r: voRating(o) })).filter(x => x.r);
+            const n5 = L.filter(x => x.r.stars >= 4).length;
+            openPSheet(tr('ग्राहकों के रिव्यू', 'Customer reviews'), `<div class="ri-st" style="margin-top:0"><div><b>${L.length}</b><span>${tr('रिव्यू', 'Reviews')}</span></div><div><b>😍 ${n5}</b><span>${tr('हैप्पी', 'Happy')}</span></div><div><b>😞 ${L.length - n5}</b><span>${tr('बैड', 'Bad')}</span></div></div>
+                <div class="space-y-2.5 mt-3">${L.slice(0, 20).map(x => `<div class="pcard2 p-3" onclick="closePSheet();setTimeout(()=>orderSheet('${x.o.id}',true),200)"><div class="flex justify-between"><b class="text-[13px]">${esc(x.o.customer)}</b><span class="vx-st">${voStars(x.r.stars)}</span></div><p class="text-[11px] pmut">${new Date(x.o.ts).toLocaleDateString(currentLang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short' })} • ${x.o.items.map(i => esc(i.name)).join(', ')}</p><div class="vx-tags">${x.r.tags.map(t => `<span>${voTag(t)}</span>`).join('')}</div></div>`).join('') || `<p class="text-[12px] pmut">${tr('अभी कोई रिव्यू नहीं', 'No reviews yet')}</p>`}</div>`);
+        }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
