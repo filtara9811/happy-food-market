@@ -1251,6 +1251,9 @@
         #ofChips button.on { background:var(--ac); border-color:var(--ac); color:#fff; box-shadow:0 6px 14px color-mix(in srgb,var(--ac) 40%,transparent); }
         #ofChips button.on em { background:rgba(255,255,255,.3); color:#fff; }
         #ofChips button[style*="#e2b04a"].on { color:#1a1305; }
+        /* ===== patch38 ===== */
+        #storeScr .ss-tile { position:relative; }
+        #storeScr .ss-tile .cc { position:absolute; top:4px; right:8px; min-width:20px; height:20px; padding:0 5px; border-radius:10px; background:#1a1305; color:#fde68a; font-style:normal; font-size:11px; font-weight:900; display:flex; align-items:center; justify-content:center; border:2px solid #fff; }
     </style>
 <style>
 html,body{height:100%}
@@ -9082,6 +9085,40 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const img = hfSnap(document.querySelector('#pkSheet img')); window.__hfNoFly = true;
             let r; try { r = f.apply(this, arguments); } finally { window.__hfNoFly = false; }
             if (cart.some(c => c.productId === id)) { hfFly(img); closePack(); }
+            return r;
+        }; }
+
+        /* ================= patch38: one basket per store (food, fruits, kirana… never mixed) ================= */
+        const CARTS = {};
+        const itemStore = id => ((typeof prodInfo === 'function' && prodInfo(id)) || {}).store || 'food';
+        window.CART_ST = cart.length ? itemStore(cart[0].productId) : (ST.cur || 'food');
+        function cartUse(sid, quiet) {
+            if (!sid || sid === window.CART_ST) return false;
+            const prev = window.CART_ST, had = cart.reduce((s, c) => s + c.quantity, 0);
+            CARTS[prev] = cart.slice(); cart = (CARTS[sid] || []).slice(); window.CART_ST = sid;
+            try { isSummaryDismissed = false; } catch (e) { }
+            try { updateCartUI(); updateActionButton && updateActionButton(); } catch (e) { }
+            if (!quiet && had) { const P = stObj(prev); showToast(tr(`${P.name.hi} की टोकरी (${had}) अलग रखी है 👍`, `${P.name.en} basket (${had}) kept aside 👍`)); }
+            return true;
+        }
+        function cartCount(sid) { const a = sid === window.CART_ST ? cart : (CARTS[sid] || []); return a.reduce((s, c) => s + c.quantity, 0); }
+        { const f = storeApply; storeApply = function (id) { const r = f.apply(this, arguments); cartUse(ST.cur); return r; }; }
+        { const f = addRecommendedToCart; addRecommendedToCart = function (id) { cartUse(itemStore(id), true); return f.apply(this, arguments); }; }
+        { const f = addCurrentProductToCart; addCurrentProductToCart = function () { const p = products[currentSlideIndex]; if (p) cartUse(itemStore(p.id), true); return f.apply(this, arguments); }; }
+        // after an order is placed, that store's basket is empty; others stay
+        { const f = placeOrderNow; placeOrderNow = function () { const r = f.apply(this, arguments); CARTS[window.CART_ST] = cart.slice(); return r; }; }
+
+        // store tiles show how many items wait in each store's own basket
+        function ssBadges() { document.querySelectorAll('#storeScr .ss-tile').forEach(b => { const m = (b.getAttribute('onclick') || '').match(/ssPick\('(\w+)'\)/); if (!m) return; const n = cartCount(m[1]); let e = b.querySelector('.cc'); if (!n) { if (e) e.remove(); return; } if (!e) { e = document.createElement('em'); e.className = 'cc'; b.appendChild(e); } e.textContent = n; }); }
+        { const f = ssPaint; ssPaint = function () { const r = f.apply(this, arguments); ssBadges(); return r; }; }
+        { const f = ssCartBar; ssCartBar = function () { const r = f.apply(this, arguments); ssBadges(); return r; }; }
+
+        // "Frequently added together" only suggests items from the same store as the basket
+        { const f = renderCartModalItems; renderCartModalItems = function () {
+            const all = recommendedProducts.slice(), keep = all.filter(p => itemStore(p.id) === window.CART_ST && !p.custom).slice(0, 12);
+            recommendedProducts.length = 0; keep.forEach(p => recommendedProducts.push(p));
+            let r; try { r = f.apply(this, arguments); } finally { recommendedProducts.length = 0; all.forEach(p => recommendedProducts.push(p)); }
+            const box = document.getElementById('inCartRecContainer'); if (box && box.parentNode) box.parentNode.style.display = keep.length ? '' : 'none';
             return r;
         }; }
 
