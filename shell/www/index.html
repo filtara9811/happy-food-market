@@ -1268,6 +1268,20 @@
         .upd-go { width:100%; height:50px; margin-top:14px; border-radius:15px; background:linear-gradient(180deg,#fde68a,#e2a92c); color:#1a1305; font-weight:900; font-size:15px; box-shadow:0 8px 18px rgba(226,169,44,.35); } .upd-go:disabled { opacity:.75; }
         .upd-later { width:100%; height:40px; margin-top:6px; font-size:13px; font-weight:700; color:var(--sh-mut); }
         #psVer { display:block; width:100%; margin:14px 0 6px; padding:10px; border-radius:12px; font-size:11.5px; font-weight:700; color:var(--sh-mut); background:transparent; border:1px dashed var(--sh-line); }
+        /* ===== patch40 ===== */
+        #bottomNavbar { justify-content:space-around; padding-left:18px; padding-right:18px; overflow:visible; }
+        #bottomNavbar > button:not(#navStore) { width:76px; }
+        #navStore { position:relative; width:84px; height:40px; display:flex; flex-direction:column; align-items:center; }
+        #navStore .ring { position:absolute; top:-34px; left:50%; margin-left:-31px; width:62px; height:62px; border-radius:50%; padding:3px; background:conic-gradient(from 0deg,var(--ac,#a8741b),#fde68a,var(--ac,#a8741b),#fde68a,var(--ac,#a8741b)); box-shadow:0 10px 24px color-mix(in srgb,var(--ac,#a8741b) 45%,transparent), 0 0 0 5px var(--nav-bg,#fff); transition:transform .2s; }
+        #navStore .in { width:100%; height:100%; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+        #navStore img { width:76%; height:76%; object-fit:contain; animation:spFloat 2.6s ease-in-out infinite; }
+        #navStore b { position:absolute; bottom:-2px; font-size:10.5px; font-weight:800; padding:2px 10px; border-radius:999px; background:#111; color:#fde68a; white-space:nowrap; }
+        #navStore:active .ring { transform:scale(.9); }
+        #navStore:not(.on) .ring { filter:saturate(.75); }
+        #navStore:not(.on) b { background:var(--ac,#111); color:#fff; }
+        body.light-mode #bottomNavbar { --nav-bg:#fff; } body:not(.light-mode) #bottomNavbar { --nav-bg:#121218; }
+        #floatingOrderSummary { bottom:calc(4rem + 18px) !important; }
+        #stFab { display:none !important; }
     </style>
 <style>
 html,body{height:100%}
@@ -9116,7 +9130,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             return true;
         }
         function cartCount(sid) { const a = sid === window.CART_ST ? cart : (CARTS[sid] || []); return a.reduce((s, c) => s + c.quantity, 0); }
-        { const f = storeApply; storeApply = function (id) { const r = f.apply(this, arguments); cartUse(ST.cur); return r; }; }
+        { const f = storeApply; storeApply = function (id) { const r = f.apply(this, arguments); cartUse(ST.cur, !!window.__cartQuiet); return r; }; }
         { const f = addRecommendedToCart; addRecommendedToCart = function (id) { cartUse(itemStore(id), true); return f.apply(this, arguments); }; }
         { const f = addCurrentProductToCart; addCurrentProductToCart = function () { const p = products[currentSlideIndex]; if (p) cartUse(itemStore(p.id), true); return f.apply(this, arguments); }; }
         // after an order is placed, that store's basket is empty; others stay
@@ -9210,6 +9224,33 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             try { const ex = document.getElementById('psExtra'); if (ex && !document.getElementById('psVer')) ex.insertAdjacentHTML('beforeend', `<button id="psVer" onclick="updCheck(true)"><i class="fa-solid fa-rotate"></i> ${tr('वर्ज़न', 'Version')} ${updCur() || '—'} • ${tr('अपडेट देखें', 'Check for update')}</button>`); } catch (e) { }
             return r;
         }; }
+
+        /* ================= patch40: bottom bar = My Orders · store button (centre) · Profile; chosen store is home ================= */
+        (function () {
+            const nav = document.getElementById('bottomNavbar'), home = document.getElementById('navHome'), ord = document.getElementById('navOrders'); if (!nav || !ord) return;
+            if (home) home.style.display = 'none';
+            const c = document.createElement('button'); c.id = 'navStore'; c.setAttribute('aria-label', 'store');
+            c.innerHTML = '<span class="ring"><span class="in"><img id="navStoreImg" alt=""></span></span><b id="navStoreLbl"></b>';
+            ord.after(c);
+            let lp = null, longDone = false;
+            c.addEventListener('pointerdown', () => { longDone = false; lp = setTimeout(() => { longDone = true; vib(20); openStores(); }, 450); });
+            ['pointerup', 'pointerleave', 'pointercancel'].forEach(e => c.addEventListener(e, () => clearTimeout(lp)));
+            c.addEventListener('click', () => { if (longDone) return; navStoreTap(); });
+        })();
+        function navOnHome() { const h = document.getElementById('viewHome'); return h && !h.classList.contains('hidden'); }
+        function navStoreTap() { vib(12); sfx && sfx('tap'); if (navOnHome()) openStores(); else showTab('home'); }
+        function navStorePaint() {
+            const S = stObj(ST.cur), c = document.getElementById('navStore'); if (!c) return;
+            document.getElementById('navStoreImg').src = S.img; document.getElementById('navStoreLbl').textContent = (S.name[currentLang] || S.name.hi);
+            c.style.setProperty('--ac', S.th.ac); c.classList.toggle('on', navOnHome());
+        }
+        // the old draggable button is no longer needed
+        { const f = stFabPaint; stFabPaint = function () { try { f.apply(this, arguments); } catch (e) { } const b = document.getElementById('stFab'); if (b) b.style.display = 'none'; navStorePaint(); }; }
+        // choosing a store makes it the home; it stays the home after restarting the app
+        { const f = storeApply; storeApply = function (id) { const r = f.apply(this, arguments); try { localStorage.setItem('hf_home_store', ST.cur); } catch (e) { } navStorePaint(); return r; }; }
+        { const f = closeStores; closeStores = function () { const r = f.apply(this, arguments); if (!navOnHome() && !(document.getElementById('panelRoot') && document.getElementById('panelRoot').offsetParent)) showTab('home'); return r; }; }
+        function navRestoreHome() { try { const s = localStorage.getItem('hf_home_store'); if (s && s !== ST.cur && STORES.some(x => x.id === s) && !(APP.role && APP.role !== 'customer')) { window.__cartQuiet = true; try { storeApply(s); } finally { window.__cartQuiet = false; } } } catch (e) { } stFabPaint(); }
+        if (document.readyState === 'complete') setTimeout(navRestoreHome, 50); else window.addEventListener('load', () => setTimeout(navRestoreHome, 50));
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
