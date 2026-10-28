@@ -1282,6 +1282,53 @@
         body.light-mode #bottomNavbar { --nav-bg:#fff; } body:not(.light-mode) #bottomNavbar { --nav-bg:#121218; }
         #floatingOrderSummary { bottom:calc(4rem + 18px) !important; }
         #stFab { display:none !important; }
+        /* ===== patch41 ===== */
+        #stTint { position:absolute; left:0; right:0; top:0; height:520px; z-index:0; pointer-events:none; background-color:var(--tint,transparent); transition:background-color .7s ease; -webkit-mask:linear-gradient(180deg,#000 0,#000 35%,transparent 100%); mask:linear-gradient(180deg,#000 0,#000 35%,transparent 100%); }
+        body:not(.light-mode) #stTint { opacity:.35; }
+        #viewHome > *:not(#stTint) { position:relative; z-index:1; }
+        #hfHello { display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; padding:0 12px; flex-shrink:0; }
+        #hfHello .g { font-size:12.5px; font-weight:800; }
+        #hfHello button { font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px; color:var(--st-ac,#a8741b); background:color-mix(in srgb,var(--st-ac,#a8741b) 12%,transparent); border:1px solid color-mix(in srgb,var(--st-ac,#a8741b) 35%,transparent); }
+        #hfHello button i { font-size:9px; margin-left:2px; }
+        .hf-sk { border-radius:22px; padding:10px; background:var(--sh-card); border:1px solid var(--sh-line); }
+        .hf-sk i { display:block; border-radius:12px; background:linear-gradient(90deg,var(--sh-line) 0,rgba(255,255,255,.55) 50%,var(--sh-line) 100%); background-size:200% 100%; animation:hfShim 1.1s linear infinite; }
+        .hf-sk .a { height:110px; } .hf-sk .b { height:12px; width:80%; margin-top:10px; } .hf-sk .c { height:12px; width:45%; margin-top:6px; }
+        body:not(.light-mode) .hf-sk i { background:linear-gradient(90deg,#1c1c26 0,#2a2a36 50%,#1c1c26 100%); background-size:200% 100%; }
+        @keyframes hfShim { from { background-position:200% 0; } to { background-position:-200% 0; } }
+        #hfPrem { padding:0 16px; margin-top:4px; }
+        .hf-trust { display:flex; gap:6px; overflow-x:auto; padding:2px 0 8px; scrollbar-width:none; } .hf-trust::-webkit-scrollbar { display:none; }
+        .hf-trust span { flex-shrink:0; font-size:11px; font-weight:700; padding:5px 10px; border-radius:999px; background:var(--sh-card); border:1px solid var(--sh-line); color:var(--sh-tx); }
+        .hf-trust b { color:var(--st-ac,#a8741b); }
+        #hfAgain { display:flex; align-items:center; gap:10px; padding:10px; margin-bottom:10px; border-radius:18px; background:linear-gradient(135deg,#1a1305,#3a2a0c); color:#fde68a; box-shadow:0 10px 22px rgba(26,19,5,.25); }
+        #hfAgain .ims { position:relative; width:64px; height:42px; flex-shrink:0; }
+        #hfAgain .ims img { position:absolute; top:0; left:calc(var(--i) * 14px); width:42px; height:42px; border-radius:50%; object-fit:cover; background:#fff; border:2px solid #e2b04a; z-index:calc(3 - var(--i)); }
+        #hfAgain .tx { flex:1; min-width:0; } #hfAgain small { display:block; font-size:10.5px; opacity:.75; font-weight:700; } #hfAgain b { font-size:13px; font-weight:900; color:#fff; }
+        #hfAgain button { flex-shrink:0; height:38px; padding:0 12px; border-radius:12px; background:linear-gradient(180deg,#fde68a,#e2a92c); color:#1a1305; font-weight:900; font-size:12px; }
+        .hd-mic { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--st-ac,#a8741b); margin-right:4px; flex-shrink:0; }
+        .hd-mic.on { background:#dc2626; color:#fff; animation:micPulse 1s ease-in-out infinite; }
+        @keyframes micPulse { 0%,100% { box-shadow:0 0 0 0 rgba(220,38,38,.45); } 50% { box-shadow:0 0 0 10px rgba(220,38,38,0); } }
+        #hfPtr { position:fixed; top:70px; left:50%; z-index:60; width:40px; height:40px; margin-top:-40px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#fff; color:#c8912a; box-shadow:0 6px 16px rgba(0,0,0,.18); opacity:0; transform:translate(-50%,0); pointer-events:none; transition:opacity .2s; }
+        #hfPtr.ready { color:#fff; background:#e2a92c; } #hfPtr.spin i { animation:spSpin .7s linear infinite; }
+        .hf-free { margin-bottom:12px; padding:10px 12px; border-radius:14px; background:color-mix(in srgb,#e2b04a 12%,var(--sh-card)); border:1px solid rgba(226,176,74,.35); }
+        .hf-free p { font-size:12px; font-weight:700; } .hf-free b { color:#c8912a; }
+        .hf-free .bar { height:7px; border-radius:4px; background:var(--sh-line); margin-top:7px; overflow:hidden; } .hf-free .bar i { display:block; height:100%; border-radius:4px; background:linear-gradient(90deg,#fde68a,#e2a92c); transition:width .4s; }
+        .hf-free.done { font-size:12.5px; font-weight:800; color:#15803d; background:rgba(34,197,94,.1); border-color:rgba(34,197,94,.35); } .hf-free.done s { opacity:.6; font-weight:600; margin-left:4px; }
+        #coinChip { display:flex; align-items:center; gap:4px; height:30px; padding:0 9px 0 5px; border-radius:999px; background:linear-gradient(180deg,#fff7df,#fde68a); border:1px solid #e2b04a; color:#5a3d06; font-size:12px; font-weight:900; box-shadow:0 3px 8px rgba(226,169,44,.3); }
+        #coinChip .c { font-size:15px; }
+        #coinSheet { position:fixed; inset:0; z-index:92; display:flex; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.55); } #coinSheet.hidden { display:none; }
+        .cn-card { width:100%; max-width:480px; border-radius:26px 26px 0 0; background:var(--sh-bg); color:var(--sh-tx); padding:0 16px calc(16px + env(safe-area-inset-bottom)); animation:rtUp .3s cubic-bezier(.2,1,.3,1); overflow:hidden; }
+        .cn-top { margin:0 -16px; padding:22px 16px 18px; text-align:center; background:radial-gradient(circle at 50% 0,#4a360f,#14110b 70%); color:#fde68a; }
+        .cn-coin { font-size:46px; animation:spFloat 2.4s ease-in-out infinite; } .cn-l { font-size:12px; font-weight:700; opacity:.8; } .cn-b { font:900 44px/1 'Outfit',sans-serif; color:#fff; margin-top:4px; } .cn-s { font-size:12px; font-weight:700; color:#e2b04a; margin-top:2px; }
+        .cn-how { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; } .cn-how div { padding:10px 6px; border-radius:14px; background:var(--sh-card); text-align:center; } .cn-how b { display:block; font:900 18px 'Outfit',sans-serif; color:#c8912a; } .cn-how span { font-size:10.5px; font-weight:700; color:var(--sh-mut); }
+        .cn-h { font-size:12px; font-weight:800; color:var(--sh-mut); margin:14px 0 6px; }
+        .cn-list { max-height:30vh; overflow-y:auto; } .cn-list > div { display:flex; justify-content:space-between; align-items:center; padding:9px 2px; border-bottom:1px solid var(--sh-line); font-size:13px; font-weight:700; }
+        .cn-list small { display:block; font-size:10.5px; color:var(--sh-mut); font-weight:600; } .cn-list b.p { color:#16a34a; } .cn-list b.m { color:#dc2626; } .cn-e { font-size:12.5px; color:var(--sh-mut); text-align:center; padding:14px 0; }
+        .cn-ok { width:100%; height:48px; margin-top:12px; border-radius:14px; background:linear-gradient(180deg,#fde68a,#e2a92c); color:#1a1305; font-weight:900; }
+        .cn-row { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; margin:4px 0; border-radius:12px; border:1.5px dashed rgba(226,176,74,.6); background:rgba(226,176,74,.08); font-size:12px; font-weight:700; cursor:pointer; }
+        .cn-row b { color:#c8912a; } .cn-row input { display:none; }
+        .cn-row i { width:38px; height:22px; border-radius:11px; background:#d6d3d1; position:relative; flex-shrink:0; transition:background .2s; } .cn-row i:after { content:''; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:#fff; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.25); }
+        .cn-row.on i { background:#e2a92c; } .cn-row.on i:after { left:19px; }
+        #coinEarn { font-size:11.5px; font-weight:700; color:#a8741b; text-align:right; margin-top:4px; } #coinEarn b { color:#c8912a; }
     </style>
 <style>
 html,body{height:100%}
@@ -6266,7 +6313,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             try {
                 const pos = await rmGetPos();
                 const addr = currentAddress.text;
-                const { data, error } = await sb.rpc('place_order', { p_items: items, p_lat: pos.lat, p_lng: pos.lng, p_address: addr });
+                const pcoins = (typeof COIN !== 'undefined' && COIN.server && window.__coinsLive) || 0; const { data, error } = await sb.rpc('place_order', Object.assign({ p_items: items, p_lat: pos.lat, p_lng: pos.lng, p_address: addr }, pcoins ? { p_coins: pcoins } : {}));
                 if (error) throw error;
                 closeCartModal();
                 const total = lines.reduce((s, l) => s + l.qty * l.price, 0), id = rmShort(data);
@@ -9251,6 +9298,247 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         { const f = closeStores; closeStores = function () { const r = f.apply(this, arguments); if (!navOnHome() && !(document.getElementById('panelRoot') && document.getElementById('panelRoot').offsetParent)) showTab('home'); return r; }; }
         function navRestoreHome() { try { const s = localStorage.getItem('hf_home_store'); if (s && s !== ST.cur && STORES.some(x => x.id === s) && !(APP.role && APP.role !== 'customer')) { window.__cartQuiet = true; try { storeApply(s); } finally { window.__cartQuiet = false; } } } catch (e) { } stFabPaint(); }
         if (document.readyState === 'complete') setTimeout(navRestoreHome, 50); else window.addEventListener('load', () => setTimeout(navRestoreHome, 50));
+
+        /* ================= patch41: premium touches — store colour, add feel, skeletons, greeting, reorder, voice, refresh/back, free delivery, trust, VIP coins ================= */
+        const isHome = () => { const h = document.getElementById('viewHome'); return h && !h.classList.contains('hidden'); };
+
+        /* 1. whole home softly takes the store's colour */
+        (function () { const h = document.getElementById('viewHome'); if (h && !document.getElementById('stTint')) { const t = document.createElement('div'); t.id = 'stTint'; h.prepend(t); } })();
+        function stTint() { const S = stObj(ST.cur), t = document.getElementById('stTint'); if (!t) return; t.style.setProperty('--tint', ST.cur === 'food' ? 'rgba(226,176,74,.16)' : S.th.soft); t.style.setProperty('--ac', S.th.ac); document.documentElement.style.setProperty('--st-ac', S.th.ac); }
+
+        /* 3. shimmer cards while a store loads */
+        function hfSkeleton(ms) {
+            const g = document.getElementById('recommendedGrid'); if (!g) return;
+            g.innerHTML = Array.from({ length: 4 }, () => '<div class="hf-sk"><i class="a"></i><i class="b"></i><i class="c"></i></div>').join('');
+            clearTimeout(window.__skT); window.__skT = setTimeout(() => { try { renderRecommendedProducts(); } catch (e) { } }, ms || 380);
+        }
+        { const f = storeApply; storeApply = function (id) { const was = ST.cur, r = f.apply(this, arguments); stTint(); if (was !== ST.cur && !window.__cartQuiet) hfSkeleton(); hfHello(); hfPrem(); return r; }; }
+        if (typeof liveLoadMenu === 'function') { const f = liveLoadMenu; liveLoadMenu = async function () { const g = document.getElementById('recommendedGrid'); if (g && !g.children.length) hfSkeleton(4000); try { return await f.apply(this, arguments); } finally { clearTimeout(window.__skT); try { renderRecommendedProducts(); } catch (e) { } hfPrem(); } }; }
+
+        /* 2. ADD feels physical: small buzz + "tuk" */
+        function hfAddFeel(before) { const now = cart.reduce((s, c) => s + c.quantity, 0); if (now > before) { vib(18); sfx('add'); } }
+        { const f = addRecommendedToCart; addRecommendedToCart = function () { const b = cart.reduce((s, c) => s + c.quantity, 0); const r = f.apply(this, arguments); hfAddFeel(b); return r; }; }
+        { const f = addCurrentProductToCart; addCurrentProductToCart = function () { const b = cart.reduce((s, c) => s + c.quantity, 0); const r = f.apply(this, arguments); hfAddFeel(b); return r; }; }
+        { const f = changeQuantity; changeQuantity = function (id, d) { const r = f.apply(this, arguments); vib(d > 0 ? 12 : 8); sfx(d > 0 ? 'tap' : 'remove'); return r; }; }
+
+        /* 4. greeting by time of day, with a matching suggestion */
+        function hfSlot() {
+            const h = new Date().getHours();
+            if (h >= 5 && h < 11) return { hi: 'सुप्रभात', en: 'Good morning', ic: '☀️', st: 'dairy', s: ['सुबह का दूध-दही?', 'Milk & curd for breakfast?'] };
+            if (h >= 11 && h < 16) return { hi: 'नमस्ते', en: 'Good afternoon', ic: '🌤️', st: 'food', q: 'थाली', s: ['दोपहर की गरम थाली?', 'A hot thali for lunch?'] };
+            if (h >= 16 && h < 20) return { hi: 'शुभ संध्या', en: 'Good evening', ic: '🌇', st: 'food', q: 'मोमोज़', s: ['शाम के मोमोज़-चाट?', 'Momos & chaat?'] };
+            return { hi: 'शुभ रात्रि', en: 'Good night', ic: '🌙', st: 'food', q: 'जामुन', s: ['खाने के बाद कुछ मीठा?', 'Something sweet?'] };
+        }
+        function hfHello() {
+            const hint = document.getElementById('txtSwipeHint'); if (!hint) return; const row = hint.parentElement; row.style.display = 'none';
+            let el = document.getElementById('hfHello'); if (!el) { el = document.createElement('div'); el.id = 'hfHello'; row.after(el); }
+            const u = currentUser(), nm = u && u.name && !/^VIP Member/.test(u.name) ? String(u.name).split(' ')[0] : '', S = hfSlot();
+            el.innerHTML = `<span class="g">${S.ic} ${tr(S.hi, S.en)}${nm ? ', ' + esc(nm) : ''} 👋</span><button onclick="hfSuggest()">${tr(S.s[0], S.s[1])} <i class="fa-solid fa-arrow-right"></i></button>`;
+        }
+        function hfSuggest() {
+            const S = hfSlot(); vib(10);
+            if (S.st !== ST.cur) { storeApply(S.st); showToast(tr(stObj(S.st).name.hi + ' की दुकान खुल गई ✨', stObj(S.st).name.en + ' store opened ✨')); return; }
+            if (S.q) { const i = document.getElementById('hdQ'); if (i) { i.value = S.q; HD.q = S.q; HD.cat = 'all'; HD.sub = ''; hdSearchUi(); renderRecommendedProducts(); const tt = document.getElementById('txtRecommendedTitle'); if (tt) tt.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
+        }
+
+        /* 5 + 9. "order again" card and an honest store strip, above the search */
+        const LAST_KEY = 'hf_last_v1';
+        const lastGet = () => { try { return JSON.parse(localStorage.getItem(LAST_KEY) || '{}'); } catch (e) { return {}; } };
+        { const f = placeOrderNow; placeOrderNow = function () {
+            const snap = cart.map(c => ({ productId: c.productId, quantity: c.quantity })), st = window.CART_ST || 'food', n = ordersHistory.length;
+            const r = f.apply(this, arguments);
+            const save = () => { const L = lastGet(); L[st] = { items: snap, at: Date.now() }; try { localStorage.setItem(LAST_KEY, JSON.stringify(L)); } catch (e) { } hfPrem(); };
+            if (ordersHistory.length > n) save(); else setTimeout(() => { if (ordersHistory.length > n) save(); }, 4000);
+            return r;
+        }; }
+        function hfLast() {
+            const L = lastGet()[ST.cur]; let items = L && L.items;
+            if (!items && ST.cur === 'food' && !LIVE && ordersHistory.length) items = [{ productId: 'p1', quantity: 1 }];   // demo order in the prototype
+            return (items || []).filter(x => prodInfo(x.productId));
+        }
+        function hfAgain() {
+            const items = hfLast(); if (!items.length) return; vib(15);
+            items.forEach(x => { const c = cart.find(y => y.productId === x.productId); if (c) c.quantity = Math.max(c.quantity, x.quantity); else { PK.direct = true; try { addRecommendedToCart(x.productId); } finally { PK.direct = false; } const n = cart.find(y => y.productId === x.productId); if (n) n.quantity = x.quantity; } });
+            updateCartUI(); try { renderRecommendedProducts(); } catch (e) { }
+            hfFly(document.querySelector('#hfAgain .ims img')); sfx('success');
+            showToast(tr('पिछला ऑर्डर टोकरी में आ गया ✅', 'Last order added to basket ✅'));
+            setTimeout(() => openCartModal(), 650);
+        }
+        let STAT = { at: 0, st: '', d: null };
+        async function hfStats() {
+            if (!LIVE || !window.sb) return null;
+            if (STAT.st === ST.cur && Date.now() - STAT.at < 120000) return STAT.d;
+            try { const { data } = await sb.rpc('store_stats', { p_store: ST.cur }); STAT = { at: Date.now(), st: ST.cur, d: data || null }; } catch (e) { STAT = { at: Date.now(), st: ST.cur, d: null }; }
+            return STAT.d;
+        }
+        function hfLocalStats() {
+            const t0 = new Date(); t0.setHours(0, 0, 0, 0);
+            const mine = DB.orders.filter(o => (o.ts || 0) >= t0.getTime() && ((o.items || []).some(i => (prodInfo(i.pid) || {}).store === ST.cur) || (ST.cur === 'food' && !(o.items || []).some(i => (prodInfo(i.pid) || {}).store))));
+            let rated = 0, happy = 0; try { (JSON.parse(localStorage.getItem('hf_ratings_v1') || '[]') || []).forEach(r => { rated++; if (r.mood === 'h' || r.mood === 'happy') happy++; }); } catch (e) { }
+            return { today: mine.length, rated: rated, happy: happy };
+        }
+        async function hfPrem() {
+            const disc = document.getElementById('hfDisc'); if (!disc) return;
+            let el = document.getElementById('hfPrem'); if (!el) { el = document.createElement('div'); el.id = 'hfPrem'; disc.parentElement.insertBefore(el, disc); }
+            const S = stObj(ST.cur), items = hfLast();
+            const sum = items.reduce((s, x) => { const p = prodInfo(x.productId); return s + (p ? p.price * x.quantity : 0); }, 0);
+            const d = (await hfStats()) || hfLocalStats();
+            const chips = [];
+            if (d.rated >= 3) chips.push(`😊 <b>${Math.round(d.happy * 100 / d.rated)}%</b> ${tr('खुश ग्राहक', 'happy customers')}`); else chips.push(`✨ ${tr('नई दुकान', 'New store')}`);
+            if (d.today >= 1) chips.push(`🛍️ ${tr('आज', 'Today')} <b>${d.today}</b> ${tr('ऑर्डर', 'orders')}`);
+            chips.push(`${esc(tr(S.slot ? S.slot.hi : '⚡ 20 मिनट', S.slot ? S.slot.en : '⚡ 20 min'))}`);
+            el.innerHTML = `<div class="hf-trust">${chips.map(c => `<span>${c}</span>`).join('')}</div>` +
+                (items.length ? `<div id="hfAgain"><div class="ims">${items.slice(0, 3).map((x, i) => `<img src="${esc(prodInfo(x.productId).image)}" style="--i:${i}" alt="">`).join('')}</div>
+                    <div class="tx"><small>${tr('पिछला ऑर्डर', 'Your last order')}</small><b>${items.length} ${tr('आइटम', 'items')} • ₹${Math.round(sum)}</b></div>
+                    <button onclick="hfAgain()"><i class="fa-solid fa-rotate-right"></i> ${tr('फिर से मँगाएँ', 'Order again')}</button></div>` : '');
+        }
+
+        /* 6. voice search 🎤 (hi-IN) */
+        function hfMic() {
+            const box = document.getElementById('hdBox'); if (!box || document.getElementById('hdMic')) return;
+            const b = document.createElement('button'); b.id = 'hdMic'; b.className = 'hd-mic'; b.innerHTML = '<i class="fa-solid fa-microphone"></i>'; b.onclick = hfListen;
+            const go = document.getElementById('hdGo'); box.insertBefore(b, go || null);
+        }
+        function hfHeard(text) {
+            text = String(text || '').trim(); if (!text) return;
+            const i = document.getElementById('hdQ'); const clean = text.replace(/(आधा|एक|दो|तीन|चार|पाँच|पांच|\d+(\.\d+)?)\s*(किलो|kg|ग्राम|g|लीटर|पैकेट|पीस|दर्जन)?/gi, '').replace(/\s+/g, ' ').trim() || text;
+            if (i) { i.value = clean; HD.q = clean; HD.cat = 'all'; HD.sub = ''; hdSearchUi(); renderRecommendedProducts(); }
+            showToast('🎤 “' + esc(text) + '”');
+            const all = hdAll ? hdAll() : [], hit = all.filter(p => { const n = ((p.title && (p.title.hi + ' ' + p.title.en)) || (p.name && (p.name.hi + ' ' + p.name.en)) || '').toLowerCase(); return clean.toLowerCase().split(' ').some(w => w.length > 1 && n.includes(w)); });
+            if (hit.length === 1 && /(आधा|एक|दो|तीन|चार|पाँच|पांच|\d)/.test(text)) setTimeout(() => { try { addRecommendedToCart(hit[0].id); } catch (e) { } }, 500);
+        }
+        async function hfListen() {
+            const b = document.getElementById('hdMic'); vib(15);
+            const P = (window.Capacitor && Capacitor.Plugins) || {}, SR = P.SpeechRecognition;
+            const W = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const ui = on => { b && b.classList.toggle('on', on); const ph = document.getElementById('hdPh'); if (ph && on) ph.innerHTML = '🎤 ' + tr('बोलिए… जैसे “आधा किलो टमाटर”', 'Speak… e.g. “1 kg tomatoes”'); if (!on) hdRollPh(); };
+            try {
+                if (SR && updNative()) {
+                    const ok = await SR.available(); if (!ok || !ok.available) throw 0;
+                    const pm = await SR.requestPermissions(); if (pm && pm.speechRecognition && pm.speechRecognition !== 'granted') { showToast(tr('माइक की अनुमति दें', 'Allow the microphone')); return; }
+                    ui(true); const r = await SR.start({ language: 'hi-IN', maxResults: 1, prompt: tr('बोलिए…', 'Speak…'), partialResults: false, popup: false });
+                    ui(false); hfHeard(r && r.matches && r.matches[0]); return;
+                }
+                if (W) { const rec = new W(); rec.lang = 'hi-IN'; rec.interimResults = false; rec.maxAlternatives = 1; rec.onresult = e => hfHeard(e.results[0][0].transcript); rec.onend = () => ui(false); rec.onerror = () => { ui(false); showToast(tr('आवाज़ समझ नहीं आई, फिर बोलें', 'Didn’t catch that')); }; ui(true); rec.start(); return; }
+                throw 0;
+            } catch (e) { ui(false); showToast(tr('इस फ़ोन पर आवाज़ से खोज नहीं चल पाई', 'Voice search not available here')); }
+        }
+
+        /* 7. pull down to refresh, and the phone's back button */
+        (function () {
+            const ptr = document.createElement('div'); ptr.id = 'hfPtr'; ptr.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i>'; document.body.appendChild(ptr);
+            let y0 = null, dy = 0, sc = null;
+            const scroller = () => { const v = ['viewHome', 'viewOrders'].map(i => document.getElementById(i)).find(e => e && !e.classList.contains('hidden')); return v; };
+            document.addEventListener('touchstart', e => { sc = scroller(); if (!sc || sc.scrollTop > 0 || document.querySelector('#storeScr, #cartModal:not(.hidden), #profileSheet.open')) { y0 = null; return; } y0 = e.touches[0].clientY; dy = 0; }, { passive: true });
+            document.addEventListener('touchmove', e => { if (y0 == null) return; dy = e.touches[0].clientY - y0; if (dy <= 0 || sc.scrollTop > 0) { ptr.style.opacity = 0; return; } const d = Math.min(90, dy * .5); ptr.style.opacity = Math.min(1, d / 60); ptr.style.transform = `translate(-50%,${d}px) rotate(${d * 4}deg)`; ptr.classList.toggle('ready', d >= 60); }, { passive: true });
+            document.addEventListener('touchend', async () => {
+                if (y0 == null) return; const ready = ptr.classList.contains('ready'); y0 = null;
+                if (!ready) { ptr.style.opacity = 0; ptr.style.transform = 'translate(-50%,0)'; return; }
+                ptr.classList.add('spin'); vib(15);
+                try { if (LIVE) { await (typeof liveLoadMenu === 'function' ? liveLoadMenu() : 0); if (!isHome() && typeof liveLoadHistory === 'function') { const h = await liveLoadHistory(); } } STAT.at = 0; renderRecommendedProducts(); if (!isHome()) renderOrdersList(); await hfPrem(); hfHello(); } catch (e) { }
+                setTimeout(() => { ptr.classList.remove('spin', 'ready'); ptr.style.opacity = 0; ptr.style.transform = 'translate(-50%,0)'; showToast(tr('ताज़ा हो गया ✨', 'Refreshed ✨')); }, 500);
+            });
+        })();
+        function hfBack() {
+            const vis = id => { const e = document.getElementById(id); return e && !e.classList.contains('hidden') && e.offsetParent !== null; };
+            if (vis('updSheet')) return updLater();
+            if (vis('coinSheet')) return document.getElementById('coinSheet').classList.add('hidden');
+            if (vis('pkSheet')) return closePack();
+            if (vis('ofSheet')) return document.getElementById('ofSheet').classList.add('hidden');
+            if (vis('pSheet')) return closePSheet();
+            if (document.getElementById('storeScr')) return closeStores();
+            if (vis('cartModal')) return closeCartModal();
+            const ps = document.getElementById('profileSheet'); if (ps && ps.classList.contains('open')) return closeProfileSheet();
+            const pr = document.getElementById('panelRoot'); if (pr && !pr.classList.contains('hidden') && pr.offsetParent !== null) { try { (window.Capacitor.Plugins.App).minimizeApp(); } catch (e) { } return; }
+            if (!isHome()) return showTab('home');
+            try { window.Capacitor.Plugins.App.minimizeApp(); } catch (e) { }
+        }
+        try { if (updNative() && Capacitor.Plugins.App) Capacitor.Plugins.App.addListener('backButton', hfBack); } catch (e) { }
+
+        /* 8. free-delivery progress in the basket */
+        if (DB.settings.freeAbove == null) DB.settings.freeAbove = 199;
+        if (!LIVE && !DB.settings.deliveryFee) DB.settings.deliveryFee = 25;   // prototype shows how the free-delivery nudge works
+        { const f = feeNow; feeNow = function () { const fee = f.apply(this, arguments); if (!fee) return 0; return calculateSubtotal() >= (DB.settings.freeAbove || 0) && DB.settings.freeAbove ? 0 : fee; }; }
+        function hfFreeBar() {
+            const list = document.getElementById('cartItemsList'); if (!list) return;
+            let el = document.getElementById('hfFree'); if (!el) { el = document.createElement('div'); el.id = 'hfFree'; list.parentElement.insertBefore(el, list); }
+            const lim = DB.settings.freeAbove || 0, sub = calculateSubtotal(), base = orderMode === 'pickup' ? 0 : DB.settings.deliveryFee;
+            if (!base || !lim || !cart.length) { el.innerHTML = cart.length && orderMode !== 'pickup' ? `<div class="hf-free done">🎉 ${tr('इस ऑर्डर पर डिलीवरी फ़्री है', 'Free delivery on this order')}</div>` : ''; return; }
+            const left = Math.max(0, lim - sub), pct = Math.min(100, Math.round(sub * 100 / lim));
+            el.innerHTML = left > 0 ? `<div class="hf-free"><p>🛵 ${tr(`<b>₹${left}</b> का सामान और जोड़ें — डिलीवरी फ़्री!`, `Add <b>₹${left}</b> more for free delivery!`)}</p><div class="bar"><i style="width:${pct}%"></i></div></div>`
+                : `<div class="hf-free done">🎉 ${tr('बधाई! आपको फ़्री डिलीवरी मिल गई', 'Yay! You unlocked free delivery')} <s>₹${base}</s></div>`;
+        }
+
+        /* 10. VIP coins: 5% back on every delivered order, use up to 20% of the next bill */
+        const COIN = { bal: 0, hist: [], use: false, server: false };
+        const coinLoc = () => { try { return JSON.parse(localStorage.getItem('hf_coins_v1') || 'null'); } catch (e) { return null; } };
+        function coinLocSave() { try { localStorage.setItem('hf_coins_v1', JSON.stringify({ bal: COIN.bal, hist: COIN.hist.slice(0, 30) })); } catch (e) { } }
+        function coinAdd(delta, why) { COIN.bal = Math.max(0, COIN.bal + delta); COIN.hist.unshift({ delta: delta, reason: why, at: new Date().toISOString() }); coinLocSave(); coinPaint(); }
+        async function coinLoad() {
+            if (LIVE && window.sb && currentUser()) {
+                try { const { data, error } = await sb.rpc('my_coins'); if (!error && data) { COIN.server = true; COIN.bal = Number(data.balance) || 0; COIN.hist = data.history || []; coinPaint(); return; } } catch (e) { }
+                COIN.server = false; COIN.bal = 0; COIN.hist = []; coinPaint(); return;
+            }
+            const l = coinLoc(); if (l) { COIN.bal = l.bal || 0; COIN.hist = l.hist || []; } else { COIN.bal = 0; COIN.hist = []; coinAdd(25, 'bonus'); }
+            coinPaint();
+        }
+        const coinMax = sub => Math.min(COIN.bal, Math.floor(sub * 0.2));
+        function coinUseNow() { return COIN.use && (COIN.server || !LIVE) ? coinMax(calculateSubtotal()) : 0; }
+        function coinPaint() {
+            const cb = document.getElementById('cartCountBadge'); if (!cb) return; const wrap = cb.parentNode.parentNode;
+            let ch = document.getElementById('coinChip'); if (!ch) { ch = document.createElement('button'); ch.id = 'coinChip'; ch.onclick = openCoins; wrap.insertBefore(ch, wrap.firstChild); }
+            ch.innerHTML = `<span class="c">🪙</span><b>${COIN.bal}</b>`; ch.style.display = (LIVE && !COIN.server) || (APP.role && APP.role !== 'customer') ? 'none' : '';
+        }
+        function openCoins() {
+            vib(12); let el = document.getElementById('coinSheet');
+            if (!el) { el = document.createElement('div'); el.id = 'coinSheet'; el.addEventListener('click', e => { if (e.target === el) el.classList.add('hidden'); }); document.body.appendChild(el); }
+            el.classList.remove('hidden');
+            const why = { earn: tr('ऑर्डर पर मिले', 'Earned on order'), redeem: tr('ऑर्डर में इस्तेमाल', 'Used on order'), refund: tr('वापस मिले', 'Refunded'), bonus: tr('स्वागत बोनस 🎁', 'Welcome bonus 🎁') };
+            el.innerHTML = `<div class="cn-card"><div class="cn-top"><div class="cn-coin">🪙</div><p class="cn-l">${tr('आपके VIP सिक्के', 'Your VIP coins')}</p><p class="cn-b">${COIN.bal}</p><p class="cn-s">= ₹${COIN.bal} ${tr('की छूट', 'off')}</p></div>
+                <div class="cn-how"><div><b>5%</b><span>${tr('हर ऑर्डर पर सिक्के वापस', 'back on every order')}</span></div><div><b>20%</b><span>${tr('तक बिल सिक्कों से', 'of a bill payable in coins')}</span></div><div><b>1🪙</b><span>= ₹1</span></div></div>
+                <p class="cn-h">${tr('हिसाब', 'History')}</p>
+                <div class="cn-list">${COIN.hist.length ? COIN.hist.slice(0, 12).map(h => `<div><span>${why[h.reason] || h.reason}<small>${new Date(h.at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</small></span><b class="${h.delta > 0 ? 'p' : 'm'}">${h.delta > 0 ? '+' : ''}${h.delta}</b></div>`).join('') : `<p class="cn-e">${tr('पहला ऑर्डर कीजिए और सिक्के कमाइए ✨', 'Place an order to start earning ✨')}</p>`}</div>
+                <button class="cn-ok" onclick="document.getElementById('coinSheet').classList.add('hidden')">${tr('ठीक है', 'Got it')}</button></div>`;
+        }
+        // basket: coins switch + totals
+        { const f = renderCartModalItems; renderCartModalItems = function () {
+            const r = f.apply(this, arguments);
+            try {
+                hfFreeBar();
+                const tp = document.getElementById('totalPrice'), dr = document.getElementById('discountRow'); if (!tp || !dr) return r;
+                let row = document.getElementById('coinRow');
+                const sub = calculateSubtotal(), can = coinMax(sub), show = cart.length && COIN.bal > 0 && (COIN.server || !LIVE) && !(APP.role && APP.role !== 'customer');
+                if (!row) { row = document.createElement('div'); row.id = 'coinRow'; dr.parentElement.insertBefore(row, dr); }
+                const use = coinUseNow();
+                row.innerHTML = show ? `<label class="cn-row ${COIN.use ? 'on' : ''}"><span>🪙 ${tr(`${COIN.bal} सिक्के — <b>₹${can}</b> बचाएँ`, `${COIN.bal} coins — save <b>₹${can}</b>`)}</span><input type="checkbox" ${COIN.use ? 'checked' : ''} onchange="COIN.use=this.checked;vib(12);renderCartModalItems()"><i></i></label>${use ? `<div class="flex justify-between text-green-500 font-semibold"><span>${tr('VIP सिक्के', 'VIP coins')}</span><span>-₹${use}</span></div>` : ''}` : '';
+                if (use) { const t = Number(String(tp.innerText).replace(/[^\d.]/g, '')) || 0; tp.innerText = '₹' + Math.max(0, t - use); }
+                let earn = document.getElementById('coinEarn'); if (!earn) { earn = document.createElement('p'); earn.id = 'coinEarn'; tp.parentElement.after(earn); }
+                const back = Math.max(1, Math.floor((sub) * 0.05));
+                earn.innerHTML = cart.length && (COIN.server || !LIVE) ? `🪙 ${tr(`इस ऑर्डर पर <b>${back}</b> सिक्के मिलेंगे`, `You’ll earn <b>${back}</b> coins on this order`)}` : '';
+            } catch (e) { }
+            return r;
+        }; }
+        // local (prototype): spend on placing, earn when delivered
+        { const f = placeOrderNow; placeOrderNow = function () {
+            const use = !LIVE ? coinUseNow() : 0, n = ordersHistory.length;
+            if (LIVE) window.__coinsLive = coinUseNow();
+            const r = f.apply(this, arguments);
+            if (!LIVE && ordersHistory.length > n && use) { coinAdd(-use, 'redeem'); const o = ordersHistory[0]; o.total = Math.max(0, (o.total || 0) - use); const d = dbOrder(o.id); if (d) d.total = Math.max(0, d.total - use); }
+            if (ordersHistory.length > n) COIN.use = false;
+            if (LIVE) setTimeout(coinLoad, 5000);
+            return r;
+        }; }
+        { const f = setSt; setSt = function (o, st) {
+            const was = o && o.status, r = f.apply(this, arguments);
+            try { if (!LIVE && o && st === 'delivered' && was !== 'delivered' && !o.remote && !o.coined && ordersHistory.some(h => h.id === o.id)) { o.coined = true; const c = Math.max(1, Math.floor((o.total || 0) * 0.05)); coinAdd(c, 'earn'); setTimeout(() => showToast(tr(`🪙 ${c} VIP सिक्के मिले!`, `🪙 You earned ${c} coins!`)), 1800); } } catch (e) { }
+            return r;
+        }; }
+
+        // first paint
+        stTint(); hfHello(); hfMic(); coinLoad(); setTimeout(hfPrem, 300);
+        { const f = hdPaint; hdPaint = function () { const r = f.apply(this, arguments); hfMic(); if (!document.getElementById('hfPrem')) hfPrem(); return r; }; }
+        { const f = showTab; showTab = function (t) { const r = f.apply(this, arguments); if (t === 'home') { hfHello(); hfPrem(); } return r; }; }
+        setInterval(hfHello, 10 * 60e3);
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
