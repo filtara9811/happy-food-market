@@ -1350,6 +1350,23 @@
         .rd-tile:active { transform:scale(.96); } .rd-tile .ic { font-size:26px; line-height:1; margin-bottom:6px; } .rd-tile b { font-size:14px; font-weight:900; color:var(--p-tx); } .rd-tile small { font-size:11px; color:var(--p-mut); font-weight:600; }
         body:not(.light-mode) .rd-tile { background:color-mix(in srgb,var(--bg) 12%,var(--p-card)); }
         .rd-back { display:flex; align-items:center; gap:8px; font:900 18px 'Outfit',sans-serif; margin:4px 0 14px; color:var(--p-tx); } .rd-back i { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--p-card); border:1px solid var(--p-line); font-size:14px; }
+        /* ===== patch44 ===== */
+        .rj-top { display:flex; align-items:center; gap:12px; } .rj-top img { width:58px; height:58px; border-radius:16px; object-fit:cover; background:var(--p-card2); }
+        .rj-chip { display:inline-block; font-size:11px; font-weight:800; padding:3px 9px; border-radius:999px; }
+        .rj-items { margin-top:12px; padding:10px 12px; border-radius:14px; background:var(--p-card2); } .rj-items div { display:flex; justify-content:space-between; font-size:13px; font-weight:700; padding:3px 0; }
+        .rj-tl { position:relative; margin-top:14px; padding-left:4px; } .rj-tl:before { content:''; position:absolute; left:21px; top:18px; bottom:18px; width:3px; border-radius:2px; background:linear-gradient(180deg,#22c55e,#e2b04a); }
+        .rj-s { position:relative; display:flex; align-items:flex-start; gap:12px; padding:7px 0; animation:pIn .35s ease both; }
+        .rj-s .ic { width:36px; height:36px; flex-shrink:0; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:17px; background:var(--p-card); border:2px solid #22c55e; z-index:1; }
+        .rj-s .t { font-size:13.5px; font-weight:900; } .rj-s .d { font-size:11.5px; color:var(--p-mut); margin-top:1px; } .rj-s time { font-size:11px; font-weight:800; color:var(--p-mut); white-space:nowrap; padding-top:3px; }
+        .rj-rev { margin-top:10px; padding:12px; border-radius:14px; background:color-mix(in srgb,#e2b04a 12%,var(--p-card)); border:1px solid rgba(226,176,74,.4); } .rj-rev b { font-size:16px; } .rj-rev p { font-size:13px; font-weight:700; margin-top:4px; }
+        .rj-sum { display:grid; grid-template-columns:repeat(auto-fit,minmax(90px,1fr)); gap:8px; margin-top:12px; } .rj-sum div { padding:10px; border-radius:14px; background:var(--p-card2); text-align:center; } .rj-sum span { display:block; font-size:10.5px; font-weight:700; color:var(--p-mut); } .rj-sum b { font:900 17px 'Outfit',sans-serif; }
+        .rs-sum { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; } .rs-sum div { padding:10px; border-radius:14px; background:var(--p-card); border:1px solid var(--p-line); text-align:center; } .rs-sum p { font-size:10.5px; font-weight:700; color:var(--p-mut); } .rs-sum b { font:900 18px 'Outfit',sans-serif; }
+        .rs-sell, .rs-buy { height:46px; border-radius:14px; font-weight:900; font-size:13.5px; } .rs-sell { background:linear-gradient(180deg,#fde68a,#e2a92c); color:#1a1305; } .rs-buy { background:var(--p-card); border:1.5px solid var(--p-line); color:var(--p-tx); }
+        .rs-row { display:flex; align-items:center; gap:10px; padding:10px; border-radius:16px; background:var(--p-card); border:1px solid var(--p-line); } .rs-row.on { border-color:var(--p-gold); }
+        .rs-row img { width:48px; height:48px; border-radius:12px; object-fit:cover; background:var(--p-card2); } .rs-row .nm { font-size:13.5px; font-weight:800; } .rs-row .pr { font-size:11px; color:var(--p-mut); margin-top:1px; }
+        .rs-row .text-right b { display:block; font:900 20px 'Outfit',sans-serif; color:var(--p-gold); } .rs-row .text-right b.low { color:#dc2626; } .rs-row .text-right span { font-size:10px; font-weight:700; color:var(--p-mut); }
+        .rs-step { display:flex; align-items:center; gap:2px; border-radius:12px; background:var(--p-card2); border:1px solid var(--p-line); } .rs-step button { width:34px; height:34px; font-size:18px; font-weight:900; color:var(--p-gold); } .rs-step b { min-width:22px; text-align:center; font:900 15px 'Outfit',sans-serif; }
+        .rs-row.on .rs-step { background:var(--p-gold); border-color:var(--p-gold); } .rs-row.on .rs-step button, .rs-row.on .rs-step b { color:#1a1305; }
     </style>
 <style>
 html,body{height:100%}
@@ -9798,6 +9815,106 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 }
             } catch (e) { }
             return r;
+        }; }
+
+        /* ================= patch44: rider — stock tab with photos + counter sale, full journeys for 3 kinds of orders ================= */
+        const RJ_T = () => { const t = new Date(); t.setHours(0, 0, 0, 0); return t.getTime(); };
+        const rjAt = (h, m) => RJ_T() + (h * 60 + m) * 60000;
+        const rjTime = ts => new Date(ts).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
+        // three example journeys (today), so every kind of order can be seen end to end
+        function rjDemo() {
+            const r = curRider() || { name: 'Rider' }, P = id => prodInfo(id) || { title: { hi: id, en: id }, price: 0, image: FOODIMG.thali };
+            const nm = id => saN(P(id).title);
+            return [
+                { id: 'J-C1', kind: 'counter', title: tr('काउंटर ग्राहक', 'Walk-in customer'), img: P('p1').image, items: [{ pid: 'p1', name: nm('p1'), qty: 2, price: P('p1').price }, { pid: 'rec4', name: nm('rec4'), qty: 1, price: P('rec4').price }], pay: 'UPI', ts: rjAt(13, 5),
+                    tl: [['🛒', tr('ग्राहक बाइक पर आया', 'Customer walked up'), tr('“2 थाली और जामुन दे दो”', '“2 thalis and gulab jamun please”'), 0], ['📷', tr('सामान स्कैन / चुना', 'Items scanned'), tr('टोकरी के स्टॉक से', 'from the bike stock'), 1], ['🧾', tr('बिल बना', 'Bill created'), 'HFR-0012', 1], ['💳', tr('पैसे मिले', 'Paid'), tr('UPI से तुरंत', 'instantly by UPI'), 1], ['📦', tr('स्टॉक घटा', 'Stock updated'), tr('थाली 6 → 4, जामुन 8 → 7', 'thali 6 → 4, jamun 8 → 7'), 0]] },
+                { id: 'J-S1', kind: 'stock', title: 'Kavita Sharma', img: P('p5').image, items: [{ pid: 'p5', name: nm('p5'), qty: 2, price: P('p5').price }], pay: 'COD', ts: rjAt(12, 20), rating: 5, review: tr('5 मिनट में गरम-गरम मिला 😍', 'Arrived hot in 5 minutes 😍'),
+                    tl: [['🔔', tr('रिक्वेस्ट आई', 'Request received'), tr('ग्राहक 600 मीटर दूर • मोमोज़ आपकी टोकरी में हैं', 'customer 600 m away • momos are in your box'), 0], ['✅', tr('आपने स्वीकार किया', 'You accepted'), tr('8 सेकंड में', 'in 8 seconds'), 0], ['🛵', tr('निकल गए', 'On the way'), tr('सीधे टोकरी से — दुकान नहीं जाना', 'straight from your box — no shop stop'), 1], ['🔑', tr('OTP से डिलीवर', 'Delivered with OTP'), 'OTP 4821', 4], ['💵', tr('कैश लिया', 'Cash collected'), money_(2 * P('p5').price), 0], ['⭐', tr('ग्राहक ने रेटिंग दी', 'Customer rated'), '⭐⭐⭐⭐⭐', 2]] },
+                { id: 'J-V1', kind: 'vendor', title: 'Rahul Singh', img: P('p2').image, items: [{ pid: 'p2', name: nm('p2'), qty: 1, price: P('p2').price }, { pid: 'rec2', name: nm('rec2'), qty: 1, price: P('rec2').price }], pay: 'UPI', ts: rjAt(11, 0), rating: 4, review: tr('खाना बढ़िया, थोड़ी देर हुई', 'Great food, slightly late'), shop: 'Happy Food Kitchen',
+                    tl: [['🔔', tr('रिक्वेस्ट आई', 'Request in'), tr('किसी राइडर की टोकरी में पूरा सामान नहीं था', 'no rider had the full order'), 0], ['🏪', tr('दुकान को गई', 'Sent to shop'), 'Happy Food Kitchen • 1.2 km', 0], ['✅', tr('दुकान ने माना', 'Shop accepted'), tr('40 सेकंड में', 'in 40 seconds'), 1], ['👨‍🍳', tr('पैक हुआ', 'Packed'), tr('12 मिनट में', 'in 12 minutes'), 12], ['🛵', tr('आपको मिला', 'Assigned to you'), tr('सबसे पास वाले राइडर', 'nearest rider'), 0], ['📍', tr('दुकान पहुँचे', 'Reached shop'), tr('4 मिनट में', 'in 4 minutes'), 4], ['🛍️', tr('पिकअप किया', 'Picked up'), tr('पैकेट गिनकर', 'packets checked'), 1], ['🛵', tr('रास्ते में', 'On the way'), '2.1 km', 0], ['🏠', tr('डिलीवर', 'Delivered'), 'OTP 3307', 9], ['⭐', tr('ग्राहक ने रेटिंग दी', 'Customer rated'), '⭐⭐⭐⭐', 3]] }
+            ].map(j => { let t = j.ts; j.tl = j.tl.map(s => { t += s[3] * 60000; return { ic: s[0], t: s[1], d: s[2], ts: t }; }); j.total = j.items.reduce((s, i) => s + i.qty * i.price, 0); j.earn = j.kind === 'counter' ? 0 : (j.kind === 'stock' ? 35 : 25); return j; });
+        }
+        const RJ_KIND = { counter: ['🧾 ' + 'काउंटर बिक्री', '🧾 Counter sale', '#ede9fe', '#5b21b6'], stock: ['⚡ ' + 'टोकरी से डिलीवरी', '⚡ From your box', '#dcfce7', '#166534'], vendor: ['🏪 ' + 'दुकान से डिलीवरी', '🏪 From a shop', '#fef3c7', '#92400e'] };
+        const rjKind = k => { const x = RJ_KIND[k]; return [currentLang === 'hi' ? x[0] : x[1], x[2], x[3]]; };
+        function rjCardSteps(j) {
+            const pick = { counter: [0, 2, 3, 4], stock: [0, 2, 3, 4, 5], vendor: [2, 3, 6, 8, 9] }[j.kind];
+            const L = { counter: [tr('ग्राहक', 'Customer'), tr('बिल', 'Bill'), tr('पेमेंट', 'Paid'), tr('स्टॉक', 'Stock')], stock: [tr('रिक्वेस्ट', 'Request'), tr('रास्ते में', 'On way'), tr('OTP', 'OTP'), tr('कैश', 'Cash'), tr('रेटिंग', 'Rating')], vendor: [tr('दुकान', 'Shop'), tr('पैक', 'Packed'), tr('पिकअप', 'Pickup'), tr('डिलीवर', 'Delivered'), tr('रेटिंग', 'Rating')] }[j.kind];
+            return pick.map((i, k) => [L[k], true, false, (j.tl[i] || {}).ic || '']);
+        }
+        function rjItem(j) {
+            const K = rjKind(j.kind);
+            return { ts: j.ts, state: 'done', img: j.img, badge: '✓', title: j.title + ' · ' + tr('उदाहरण', 'example'), sub: j.items.map(i => i.qty + '× ' + i.name).join(', ') + ' • ' + rjTime(j.ts), chip: K[0], chipBg: K[1], chipFg: K[2],
+                amt: j.kind === 'counter' ? j.total : j.earn, amtLbl: j.kind === 'counter' ? tr('बिक्री', 'sale') : tr('कमाई', 'earned'), onclick: `rjOpen('${j.id}')`, steps: rjCardSteps(j) };
+        }
+        function rjOpen(id) {
+            const j = rjDemo().concat(rjSales()).find(x => x.id === id); if (!j) return; vib(12);
+            const K = rjKind(j.kind), r = curRider() || {};
+            openPSheet(tr('पूरी जर्नी', 'Full journey'), `<div class="rj-top"><img src="${esc(j.img)}" alt=""><div class="flex-1 min-w-0"><span class="rj-chip" style="background:${K[1]};color:${K[2]}">${K[0]}</span><p class="font-outfit font-black text-[18px] mt-1 truncate">${esc(j.title)}</p><p class="text-[11.5px] pmut">${rjTime(j.ts)} • ${j.pay === 'COD' ? tr('कैश', 'Cash') : 'UPI'}</p></div><b class="font-outfit text-[22px] pgold">${money_(j.total)}</b></div>
+                <div class="rj-items">${j.items.map(i => `<div><span>${i.qty}× ${esc(i.name)}</span><b>${money_(i.qty * i.price)}</b></div>`).join('')}</div>
+                <div class="rj-tl">${j.tl.map((s, i) => `<div class="rj-s" style="animation-delay:${i * 70}ms"><span class="ic">${s.ic}</span><div class="flex-1 min-w-0"><p class="t">${esc(s.t)}</p><p class="d">${esc(s.d)}</p></div><time>${rjTime(s.ts)}</time></div>`).join('')}</div>
+                ${j.rating ? `<div class="rj-rev"><b>${'⭐'.repeat(j.rating)}</b><p>“${esc(j.review)}”</p></div>` : ''}
+                <div class="rj-sum">${j.kind === 'counter' ? `<div><span>${tr('ग्राहक से मिले', 'Received')}</span><b>${money_(j.total)}</b></div><div><span>${tr('समय लगा', 'Time taken')}</span><b>${Math.round((j.tl[j.tl.length - 1].ts - j.ts) / 60000) || 1} ${tr('मिनट', 'min')}</b></div>`
+                    : `<div><span>${tr('आपकी कमाई', 'You earned')}</span><b class="pgold">${money_(j.earn)}</b></div><div><span>${tr('कुल समय', 'Total time')}</span><b>${Math.round((j.tl[j.tl.length - 2].ts - j.ts) / 60000)} ${tr('मिनट', 'min')}</b></div><div><span>${j.pay === 'COD' ? tr('कैश लिया', 'Cash collected') : tr('ऑनलाइन पेमेंट', 'Paid online')}</span><b>${money_(j.total)}</b></div>`}</div>`);
+        }
+
+        /* ---------- counter sale from the bike stock ---------- */
+        const RS = { items: {}, pay: 'cash', name: '', phone: '' };
+        const rjSalesKey = () => 'hf_rsales_' + ((curRider() || {}).id || 'r');
+        function rjSales() {
+            const L = saGet(rjSalesKey(), []);
+            return L.map(b => ({ id: b.no, kind: 'counter', title: b.name || tr('काउंटर ग्राहक', 'Walk-in customer'), img: (prodInfo(b.items[0].pid) || {}).image || FOODIMG.thali, items: b.items, pay: b.pay === 'upi' ? 'UPI' : 'COD', ts: b.ts, total: b.tot, earn: 0,
+                tl: [{ ic: '🛒', t: tr('ग्राहक बाइक पर आया', 'Customer walked up'), d: b.items.map(i => i.qty + '× ' + i.name).join(', '), ts: b.ts }, { ic: '🧾', t: tr('बिल बना', 'Bill created'), d: b.no, ts: b.ts }, { ic: b.pay === 'upi' ? '💳' : '💵', t: tr('पैसे मिले', 'Paid'), d: b.pay === 'upi' ? 'UPI' : tr('कैश', 'Cash'), ts: b.ts }, { ic: '📦', t: tr('स्टॉक घटा', 'Stock updated'), d: tr('टोकरी से', 'from the bike'), ts: b.ts }] }));
+        }
+        function rdStockBody() {
+            const r = curRider(), ent = Object.entries(r.stock || {}).filter(e => e[1] > 0);
+            const val = ent.reduce((s, e) => s + e[1] * ((prodInfo(e[0]) || {}).price || 0), 0), units = ent.reduce((s, e) => s + e[1], 0);
+            return `<div class="rs-sum"><div><p>${tr('आइटम', 'Items')}</p><b>${ent.length}</b></div><div><p>${tr('कुल नग', 'Units')}</p><b>${units}</b></div><div><p>${tr('माल की कीमत', 'Stock value')}</p><b>${money_(val)}</b></div></div>
+                <div class="grid grid-cols-2 gap-2.5 mt-3"><button class="rs-sell" onclick="rsOpen()"><i class="fa-solid fa-receipt"></i> ${tr('तुरंत बेचें', 'Quick sale')}</button><button class="rs-buy" onclick="pToast(tr('वेंडर से माल ख़रीदना जल्द आएगा 🔜','Buying from shops is coming soon 🔜'))"><i class="fa-solid fa-store"></i> ${tr('माल भरें', 'Restock')}</button></div>
+                <div class="space-y-2.5 mt-3">${ent.length ? ent.map(e => { const p = prodInfo(e[0]) || { title: { hi: e[0], en: e[0] }, price: 0, image: FOODIMG.thali }, low = e[1] <= 2;
+                    return `<div class="rs-row"><img src="${esc(p.image)}" alt=""><div class="flex-1 min-w-0"><p class="nm">${esc(saN(p.title))}</p><p class="pr">${money_(p.price)} · ${tr('कीमत', 'value')} ${money_(p.price * e[1])}</p></div><div class="text-right"><b class="${low ? 'low' : ''}">${e[1]}</b><span>${low ? tr('कम बचा', 'running low') : tr('नग', 'pcs')}</span></div></div>`; }).join('')
+                    : `<div class="ph-card text-center py-8"><div class="text-4xl">📦</div><p class="text-[13px] font-bold mt-2">${tr('टोकरी ख़ाली है — दुकान से माल भरें', 'Box is empty — restock from a shop')}</p></div>`}</div>`;
+        }
+        riderStock = rdStockBody;
+        function rsOpen() { RS.items = {}; RS.pay = 'cash'; RS.done = null; vib(12); openPSheet(tr('🧾 तुरंत बेचें', '🧾 Quick sale'), '<div id="rsRoot"></div>'); rsPaint(); }
+        function rsAdd(pid, d) { const r = curRider(), have = (r.stock || {})[pid] || 0, q = Math.max(0, Math.min(have, (RS.items[pid] || 0) + d)); if (d > 0 && q === (RS.items[pid] || 0)) pToast(tr('इतना ही स्टॉक है', 'That is all the stock')); RS.items[pid] = q; if (!q) delete RS.items[pid]; vib(8); rsPaint(); }
+        function rsPaint() {
+            const el = document.getElementById('rsRoot'); if (!el) return; const r = curRider();
+            if (RS.done) { const b = RS.done; el.innerHTML = `<div class="text-center py-2"><div class="text-5xl">✅</div><p class="font-outfit font-black text-[20px] mt-2">${tr('बिल बन गया', 'Bill created')} • ${money_(b.tot)}</p><p class="text-[12px] pmut">${b.no} • ${b.pay === 'upi' ? 'UPI' : tr('कैश', 'Cash')} • ${tr('स्टॉक अपने-आप घटा', 'stock updated')}</p></div>
+                <div class="grid grid-cols-2 gap-2 mt-3"><button class="bl-wa" onclick="billWA('${b.no}')"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button><button class="bl-prn" onclick="closePSheet();prnSheet('${b.no}')"><i class="fa-solid fa-print"></i> ${tr('प्रिंट', 'Print')}</button></div>
+                <button class="pbtn w-full mt-2.5" onclick="closePSheet();PH.rider.tab='orders';renderPanel(true)">${tr('ठीक है', 'Done')}</button>`; return; }
+            const ent = Object.entries(r.stock || {}).filter(e => e[1] > 0), tot = Object.keys(RS.items).reduce((s, k) => s + RS.items[k] * ((prodInfo(k) || {}).price || 0), 0);
+            el.innerHTML = `<p class="text-[12px] pmut">${tr('ग्राहक बाइक पर खड़ा है? टोकरी से सामान चुनिए, बिल बनाइए, पैसे लीजिए।', 'Customer at your bike? Pick items from your box, bill and collect.')}</p>
+                <div class="space-y-2 mt-3">${ent.map(e => { const p = prodInfo(e[0]) || { title: { hi: e[0], en: e[0] }, price: 0, image: '' }, q = RS.items[e[0]] || 0;
+                    return `<div class="rs-row ${q ? 'on' : ''}"><img src="${esc(p.image)}" alt=""><div class="flex-1 min-w-0"><p class="nm">${esc(saN(p.title))}</p><p class="pr">${money_(p.price)} · ${e[1]} ${tr('बचे', 'left')}</p></div><div class="rs-step"><button onclick="rsAdd('${e[0]}',-1)">−</button><b>${q}</b><button onclick="rsAdd('${e[0]}',1)">+</button></div></div>`; }).join('')}</div>
+                <div class="bl-pay mt-3">${[['cash', '💵', tr('कैश', 'Cash')], ['upi', '📱', 'UPI']].map(x => `<button class="${RS.pay === x[0] ? 'on' : ''}" onclick="RS.pay='${x[0]}';rsPaint()">${x[1]} ${x[2]}</button>`).join('')}</div>
+                <button class="pbtn w-full mt-3" style="position:sticky;bottom:6px;z-index:2;box-shadow:0 8px 20px rgba(0,0,0,.2);${tot ? '' : 'opacity:.5'}" ${tot ? '' : 'disabled'} onclick="rsMake()"><i class="fa-solid fa-receipt"></i> ${tr('बिल बनाएँ', 'Create bill')} • ${money_(tot)}</button>`;
+        }
+        function rsMake() {
+            const r = curRider(), ks = Object.keys(RS.items); if (!ks.length) return;
+            const items = ks.map(k => { const p = prodInfo(k) || {}; return { pid: k, name: saN(p.title), price: p.price || 0, qty: RS.items[k] }; }), tot = items.reduce((s, i) => s + i.price * i.qty, 0);
+            const n = saGet('hf_rbillno_' + r.id, 0) + 1; saPut('hf_rbillno_' + r.id, n);
+            const b = { no: 'HFR-' + String(n).padStart(4, '0'), vid: 'rider:' + r.id, shop: r.name + ' • Happy Food', ts: Date.now(), name: '', phone: '', pay: RS.pay, upi: saGet('hf_upi_v1', '') || '', items: items, sub: tot, disc: 0, tot: tot };
+            items.forEach(i => { r.stock[i.pid] = Math.max(0, (r.stock[i.pid] || 0) - i.qty); }); if (RS.pay === 'cash') r.cash = (r.cash || 0) + tot;
+            const L = saGet(rjSalesKey(), []); L.unshift(b); saPut(rjSalesKey(), L.slice(0, 200));
+            const B = saGet('hf_bills_v1', []); B.unshift(b); saPut('hf_bills_v1', B.slice(0, 300));
+            RS.done = b; RS.items = {}; DB.rev++; sfx('success'); vib([30, 40, 60]); rsPaint();
+        }
+        // put the journeys into the rider's list: counter sales + 3 examples, and give real orders the right steps
+        { const f = phRiderDemoView; phRiderDemoView = function (base) {
+            const r = curRider(); if (!r) return f.apply(this, arguments);
+            const orig = phView;
+            phView = function (role, c) {
+                c.items = rjSales().map(rjItem).map(x => (x.title = x.title.replace(' · ' + tr('उदाहरण', 'example'), ''), x)).concat(rjDemo().map(rjItem)).concat((c.items || []).map(it => {
+                    const o = DB.orders.find(x => x.riderId === r.id && it.onclick && it.onclick.indexOf(x.id) > -1); if (!o) return it;
+                    const stk = orderRoute(o) === 'stock', del = o.status === 'delivered', otw = o.status === 'on_the_way' || del, K = rjKind(stk ? 'stock' : 'vendor');
+                    it.steps = stk ? [[tr('स्वीकार', 'Accepted'), true, false, '✅'], [tr('टोकरी से', 'From box'), true, false, '📦'], [tr('रास्ते में', 'On way'), del, otw && !del, '🛵'], [tr('डिलीवर', 'Delivered'), del, false, '🏠'], [tr('कैश', 'Cash'), del, false, '💵']]
+                        : [[tr('दुकान', 'Shop'), true, false, '🏪'], [tr('पैक', 'Packed'), otw || !!o.packed, !otw && !o.packed, '📦'], [tr('पिकअप', 'Pickup'), otw, !otw && !!o.packed, '🛍️'], [tr('रास्ते में', 'On way'), del, otw && !del, '🛵'], [tr('डिलीवर', 'Delivered'), del, false, '🏠']];
+                    if (del) { it.chip = K[0]; it.chipBg = K[1]; it.chipFg = K[2]; }
+                    return it; }));
+                c.tabs = c.tabs.map(t => t[0] === 'orders' ? [t[0], t[1], c.items.length] : t);
+                return orig.call(this, role, c);
+            };
+            try { return f.apply(this, arguments); } finally { phView = orig; }
         }; }
 
     </script>
