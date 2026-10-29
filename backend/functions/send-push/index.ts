@@ -52,7 +52,7 @@ async function sendTo(userIds: string[], msg: Msg) {
   if (!rows?.length) return { sent: 0, note: "no tokens" };
   const sa = JSON.parse(raw);
   const at = await accessToken(sa);
-  let sent = 0;
+  let sent = 0; const errs: string[] = [];
   for (const { token } of rows) {
     const r = await fetch(`https://fcm.googleapis.com/v1/projects/${sa.project_id}/messages:send`, {
       method: "POST",
@@ -70,11 +70,11 @@ async function sendTo(userIds: string[], msg: Msg) {
     });
     if (r.ok) sent++;
     else {
-      const t = await r.text();
+      const t = await r.text(); errs.push(t.slice(0, 160));
       if (/UNREGISTERED|NOT_FOUND/.test(t)) await SB.from("push_tokens").delete().eq("token", token);
     }
   }
-  return { sent };
+  return errs.length ? { sent, errs } : { sent };
 }
 
 const STATUS: Record<string, [string, string]> = {
@@ -99,6 +99,12 @@ Deno.serve(async (req) => {
       const { count } = await SB.from("push_tokens").select("token", { count: "exact", head: true });
       return Response.json({ fcm: "ok", project_id: sa.project_id, devices: count ?? 0 });
     } catch (e) { return Response.json({ fcm: "invalid", error: String(e).slice(0, 160) }); }
+  }
+  if (p.test && p.user_id) {
+    // test from the admin: one ring-style and one normal notification to every phone of this user
+    const ring = await sendTo([String(p.user_id)], { title: "🔔 टेस्ट: नई डिलीवरी रिक्वेस्ट", body: "यह घंटी वाली टेस्ट सूचना है — Happy Food", channel: "orders_ring", ttl: "60s", data: { kind: "test" } });
+    const upd = await sendTo([String(p.user_id)], { title: "✅ Happy Food नोटिफ़िकेशन चालू", body: "आपके फ़ोन पर ऑर्डर की हर ख़बर अब आएगी 🎉", channel: "updates", data: { kind: "test" } });
+    return Response.json({ ring, upd });
   }
   const rec = p.record ?? {};
   let out: unknown = { ignored: true };
