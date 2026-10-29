@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Colours and type taken from the HTML prototype (partner panel, light mode).
 class HF {
@@ -18,16 +17,18 @@ class HF {
   static const heroTop = Color(0xFF15110A);
   static const heroBottom = Color(0xFF3A2A0C);
 
-  static TextStyle num(double size, {Color color = tx, FontWeight w = FontWeight.w900}) =>
-      GoogleFonts.outfit(fontSize: size, fontWeight: w, color: color, height: 1.1);
+  // fonts are bundled in the app (assets/fonts) so everything works without internet
+  static TextStyle num(double size, {Color color = tx, FontWeight w = FontWeight.w900}) => TextStyle(
+      fontFamily: 'Outfit', fontFamilyFallback: const ['Mukta'], fontSize: size, fontWeight: w, color: color, height: 1.1,
+      fontVariations: [FontVariation('wght', w.value.toDouble())]);
   static TextStyle hi(double size, {Color color = tx, FontWeight w = FontWeight.w700}) =>
-      GoogleFonts.mukta(fontSize: size, fontWeight: w, color: color, height: 1.25);
+      TextStyle(fontFamily: 'Mukta', fontSize: size, fontWeight: w, color: color, height: 1.25);
 
   static ThemeData theme() => ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: bg,
         colorScheme: ColorScheme.fromSeed(seedColor: gold, primary: goldDeep, surface: card),
-        textTheme: GoogleFonts.muktaTextTheme(),
+        fontFamily: 'Mukta',
       );
 
   static const goldGrad = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [goldLight, Color(0xFFE2A92C)]);

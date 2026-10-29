@@ -39,6 +39,14 @@ jobs:
           sed -i 's#<application#<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <application#' $M
           grep -n "label\|permission" $M
 
+      - name: Bundle fonts (Hindi + numbers) so the app works offline
+        run: |
+          mkdir -p assets/fonts && cd assets/fonts
+          B=https://raw.githubusercontent.com/google/fonts/main/ofl
+          for w in Regular Medium SemiBold Bold ExtraBold; do curl -fsSL -o Mukta-$w.ttf "$B/mukta/Mukta-$w.ttf"; done
+          curl -fsSL -o Outfit.ttf "$B/outfit/Outfit%5Bwght%5D.ttf"
+          ls -l
+
       - name: Same signing key every build
         run: |
           mkdir -p ~/.android

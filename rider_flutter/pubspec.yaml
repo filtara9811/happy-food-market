@@ -9,7 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  google_fonts: ^6.2.1
   supabase_flutter: ^2.6.0
   shared_preferences: ^2.3.2
 
@@ -20,3 +19,19 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  # downloaded by CI from github.com/google/fonts (see workflow) — bundled so the app works offline
+  fonts:
+    - family: Mukta
+      fonts:
+        - asset: assets/fonts/Mukta-Regular.ttf
+        - asset: assets/fonts/Mukta-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Mukta-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Mukta-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Mukta-ExtraBold.ttf
+          weight: 800
+    - family: Outfit
+      fonts:
+        - asset: assets/fonts/Outfit.ttf
