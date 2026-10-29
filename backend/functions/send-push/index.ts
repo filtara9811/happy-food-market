@@ -1,6 +1,7 @@
 // Happy Food — push notifications (FCM HTTP v1), called by DB triggers via pg_net.
-// Secrets: PUSH_HOOK_SECRET (same value as vault secret "push_hook_secret"),
-//          FCM_SERVICE_ACCOUNT (Firebase service-account JSON, pasted by the owner).
+// Auth: header x-push-secret is checked against the vault secret "push_hook_secret" (never leaves the DB).
+// Secret: FCM_SERVICE_ACCOUNT (Firebase service-account JSON, pasted by the owner in Supabase secrets),
+//         or app_secrets key "fcm_service_account" typed in the admin API hub.
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const SB = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
@@ -35,12 +36,19 @@ async function accessToken(sa: { client_email: string; private_key: string }) {
 
 type Msg = { title: string; body: string; channel: "orders_ring" | "updates"; ttl?: string; data?: Record<string, string> };
 
+async function saRaw(): Promise<string | null> {
+  const env = Deno.env.get("FCM_SERVICE_ACCOUNT");
+  if (env) return env;
+  const { data } = await SB.from("app_secrets").select("value").eq("key", "fcm_service_account").maybeSingle();
+  return data?.value ?? null;
+}
+
 async function sendTo(userIds: string[], msg: Msg) {
-  const raw = Deno.env.get("FCM_SERVICE_ACCOUNT");
+  const raw = await saRaw();
   if (!raw) return { skipped: "FCM_SERVICE_ACCOUNT not set" };
   const ids = userIds.filter(Boolean);
   if (!ids.length) return { sent: 0 };
-  const { data: rows } = await SB.from("push_tokens").select("token").in("user_id", ids);
+  const { data: rows } = await SB.from("push_tokens").select("token").in("user_id", ids).eq("active", true);
   if (!rows?.length) return { sent: 0, note: "no tokens" };
   const sa = JSON.parse(raw);
   const at = await accessToken(sa);
@@ -77,9 +85,21 @@ const STATUS: Record<string, [string, string]> = {
 };
 
 Deno.serve(async (req) => {
-  const secret = Deno.env.get("PUSH_HOOK_SECRET");
-  if (!secret || req.headers.get("x-push-secret") !== secret) return new Response("forbidden", { status: 403 });
+  const given = req.headers.get("x-push-secret") ?? "";
+  const { data: ok } = await SB.rpc("push_secret_ok", { p: given });
+  if (!given || ok !== true) return new Response("forbidden", { status: 403 });
   const p = await req.json();
+  if (p.check) {
+    // health check: is the Firebase key present and does Google accept it? (no secret values returned)
+    const raw = await saRaw();
+    if (!raw) return Response.json({ fcm: "missing" });
+    try {
+      const sa = JSON.parse(raw);
+      await accessToken(sa);
+      const { count } = await SB.from("push_tokens").select("token", { count: "exact", head: true });
+      return Response.json({ fcm: "ok", project_id: sa.project_id, devices: count ?? 0 });
+    } catch (e) { return Response.json({ fcm: "invalid", error: String(e).slice(0, 160) }); }
+  }
   const rec = p.record ?? {};
   let out: unknown = { ignored: true };
   try {

@@ -67,6 +67,7 @@ jobs:
           npx cap add android
           if [ "$PUSH" = true ]; then printf '%s' "$GOOGLE_SERVICES_JSON" > android/app/google-services.json; fi
           echo "flavor=$FLAVOR appId=$APP_ID push=$PUSH"
+          echo "::notice title=push $FLAVOR::appId=$APP_ID push=$PUSH"
           M=android/app/src/main/AndroidManifest.xml
           sed -i 's#<application#<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>\n    <uses-permission android:name="android.permission.RECORD_AUDIO"/>\n    <application#' $M
           # voice search needs to see the phone's speech service (Android 11+)

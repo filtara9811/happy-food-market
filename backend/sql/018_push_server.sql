@@ -1,0 +1,4 @@
+-- Applied 2026-10-30: pg_net, push_tokens (+active flag for logout), save_push_token / drop_push_token,
+-- vault secret push_hook_secret generated inside the DB, push_secret_ok() for the edge function,
+-- notify_push() + triggers push_offer_new / push_order_new / push_order_status.
+-- send-push edge function v2 deployed (checks secret via push_secret_ok, health check {"check":true}).
