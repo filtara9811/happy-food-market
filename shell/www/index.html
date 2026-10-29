@@ -1521,6 +1521,23 @@
         .au-step input { margin-top:16px; }
         .au-loc { display:flex; align-items:center; gap:8px; margin-top:10px; font-size:14px; font-weight:800; color:#e8761a; }
         .au-skip2 { display:block; margin:10px auto 0; font-size:13.5px; font-weight:800; color:#8b7a5c; }
+        .ab-it { display:flex; align-items:center; gap:10px; padding:11px; border-radius:16px; background:rgba(255,255,255,.04); border:1.5px solid rgba(255,255,255,.08); cursor:pointer; }
+        .ab-it.on { border-color:rgba(226,176,74,.6); background:rgba(226,176,74,.08); }
+        .ab-ic { width:38px; height:38px; flex:none; border-radius:12px; display:grid; place-items:center; font-size:18px; background:rgba(226,176,74,.14); }
+        .ab-l { font-size:13.5px; font-weight:900; color:#fff; } .ab-l em { font-style:normal; font-size:9.5px; font-weight:900; padding:1px 6px; border-radius:6px; background:#e2b04a; color:#000; margin-left:4px; vertical-align:middle; }
+        .ab-t { font-size:12px; color:#9ca3af; line-height:1.35; margin-top:1px; }
+        .ab-b { width:34px; height:34px; flex:none; border-radius:11px; display:grid; place-items:center; font-size:12.5px; color:#e2b04a; background:rgba(226,176,74,.12); }
+        .ab-b.del { color:#f87171; background:rgba(239,68,68,.12); }
+        .ab-empty { text-align:center; font-size:13px; color:#9ca3af; padding:10px 0; }
+        .ab-add { width:100%; padding:12px; border-radius:16px; border:1.5px dashed rgba(226,176,74,.6); color:#e2b04a; font-weight:900; font-size:13.5px; }
+        .ab-form { padding:2px; }
+        .ab-chips { display:flex; gap:6px; margin:10px 0; } .ab-chips button { flex:1; padding:8px 4px; border-radius:12px; font-size:12px; font-weight:800; color:#cbd5e1; border:1.5px solid rgba(255,255,255,.12); } .ab-chips button.on { border-color:#e2b04a; color:#e2b04a; background:rgba(226,176,74,.12); }
+        .ab-in { width:100%; margin-top:8px; padding:11px 12px; border-radius:13px; font-size:14px; background:rgba(255,255,255,.06); border:1.5px solid rgba(255,255,255,.12); color:#fff; outline:none; } .ab-in:focus { border-color:#e2b04a; }
+        .ab-pin { width:100%; margin-top:8px; padding:10px; border-radius:13px; font-size:12.5px; font-weight:800; color:#60a5fa; background:rgba(59,130,246,.1); text-align:left; }
+        .ab-cancel { padding:11px; border-radius:13px; font-weight:800; font-size:13.5px; color:#cbd5e1; border:1.5px solid rgba(255,255,255,.14); }
+        .ab-save { padding:11px; border-radius:13px; font-weight:900; font-size:13.5px; color:#1d1609; background:linear-gradient(135deg,#f6d27a,#d99a1e); }
+        body.light-mode .ab-it { background:#fff; border-color:#eadfc8; } body.light-mode .ab-l { color:#2a2115; } body.light-mode .ab-t { color:#6f6250; }
+        body.light-mode .ab-in { background:#fff; border-color:#e6d6b4; color:#2a2115; } body.light-mode .ab-chips button, body.light-mode .ab-cancel { color:#5a4a33; border-color:#e6d6b4; }
     </style>
 <style>
 html,body{height:100%}
@@ -10183,7 +10200,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         /* ================= patch46: service zones (city → area → micro-areas), outside-area screen, offline mode, keys go to the server ================= */
         const ZN_KEY = 'hf_zones_v1';
         const ZN_SEED = { cities: [{ id: 'delhi', name: 'दिल्ली', on: true }], zones: [
-            { id: 'sadar', city: 'delhi', name: 'सदर बाज़ार – बाड़ा हिंदू राव', parent: '', lat: 28.6620, lng: 77.2080, r: 2300, status: 'live', stores: ['food', 'dairy', 'kirana', 'veg', 'fruits'], min: 99, fee: 25, free: 199, from: '07:00', to: '23:00', closed: [], paused: false, msg: '', rain: false, rainFee: 10, fast: true },
+            { id: 'sadar', city: 'delhi', name: 'सदर बाज़ार – बाड़ा हिंदू राव', parent: '', lat: 28.6620, lng: 77.2080, r: 2300, status: 'live', stores: ['food', 'dairy', 'kirana', 'veg', 'fruits'], min: 99, fee: 25, free: 199, from: '00:00', to: '23:59', closed: [], paused: false, msg: '', rain: false, rainFee: 10, fast: true },
             { id: 'sadar-mkt', city: 'delhi', name: 'सदर बाज़ार मार्केट', parent: 'sadar', lat: 28.6588, lng: 77.2118, r: 900, status: 'live', fast: true, note: 'तंग गलियाँ — साइकिल / पैदल राइडर' },
             { id: 'bhr', city: 'delhi', name: 'बाड़ा हिंदू राव / पुल बंगश', parent: 'sadar', lat: 28.6668, lng: 77.2052, r: 800, status: 'live', fast: true, note: 'रिहायशी — सुबह दूध, शाम खाना' },
             { id: 'kg', city: 'delhi', name: 'किशन गंज / तेलीवाड़ा', parent: 'sadar', lat: 28.6642, lng: 77.1985, r: 800, status: 'soon', fast: false, note: 'बाइक राइडर' }
@@ -10895,6 +10912,92 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         { const f = authLogin; authLogin = function () { const r = f.apply(this, arguments); setTimeout(() => { try { zoneRecheck(false); } catch (e) { } }, 1500); return r; }; }
 
         { const f = enterRole; enterRole = function (r) { const x = f.apply(this, arguments); if (r === 'customer') setTimeout(() => { try { zoneRecheck(false); } catch (e) { } }, 900); return x; }; }
+
+
+        /* ---------- address book: add / edit / delete / default (replaces the fixed demo list) ---------- */
+        const AB_KEY = 'hf_addr_v1';
+        const AB = saGet(AB_KEY, null) || { list: [], sel: '' };
+        const abSave = () => saPut(AB_KEY, AB);
+        const abIc = { home: '🏠', work: '💼', other: '📍' };
+        const abName = l => ({ home: tr('घर', 'Home'), work: tr('ऑफ़िस / दुकान', 'Work / Shop'), other: tr('अन्य', 'Other') }[l] || l);
+        const abText = a => [a.flat, a.area, a.landmark ? tr('पास में', 'near') + ' ' + a.landmark : ''].filter(Boolean).join(', ');
+        function abApply(a, quiet) {
+            if (!a) return;
+            currentAddress = { label: abName(a.label), text: abText(a), lat: a.lat, lng: a.lng, id: a.id };
+            const set = (id, v) => { const e = document.getElementById(id); if (e) e.innerText = v; };
+            set('selectedAddressLabel', abName(a.label)); set('selectedAddressText', abText(a));
+            set('profileAddressTitle', `${(a.flat || a.area || '').split(',')[0]} (${abName(a.label)})`); set('profileAddressDetail', abText(a));
+            if (!quiet) showToast(tr(`📍 पता चुना: ${abName(a.label)}`, `📍 Address set: ${abName(a.label)}`));
+        }
+        // the order uses the saved pin of the chosen address when it has one
+        if (typeof rmGetPos === 'function') { const f = rmGetPos; rmGetPos = async function () { if (currentAddress && currentAddress.lat && currentAddress.lng) return { lat: currentAddress.lat, lng: currentAddress.lng }; return f.apply(this, arguments); }; }
+        function abRender() {
+            const box = document.querySelector('#addressModal .space-y-2'); if (!box) return;
+            const t = document.getElementById('txtSelectDeliveryAddress'); if (t) t.textContent = tr('डिलीवरी का पता', 'Delivery address');
+            const g = document.getElementById('btnUseLiveLocation'); if (g) g.textContent = tr('मेरी अभी की जगह (GPS)', 'Use current GPS location');
+            box.classList.remove('max-h-[220px]'); box.style.maxHeight = '52vh';
+            box.innerHTML = (AB.list.length ? AB.list.map(a => `<div class="ab-it ${a.id === AB.sel ? 'on' : ''}" onclick="abPick('${a.id}')">
+                    <span class="ab-ic">${abIc[a.label] || '📍'}</span>
+                    <div class="flex-1 min-w-0"><p class="ab-l">${lgEsc(abName(a.label))} ${a.id === AB.sel ? `<em>${tr('चुना हुआ', 'SELECTED')}</em>` : ''}</p><p class="ab-t">${lgEsc(abText(a))}</p>${a.phone ? `<p class="ab-t">📞 ${lgEsc(a.phone)}</p>` : ''}</div>
+                    <button class="ab-b" onclick="event.stopPropagation();abEdit('${a.id}')" aria-label="edit"><i class="fa-solid fa-pen"></i></button>
+                    <button class="ab-b del" onclick="event.stopPropagation();abDel('${a.id}')" aria-label="delete"><i class="fa-solid fa-trash"></i></button></div>`).join('')
+                : `<p class="ab-empty">${tr('अभी कोई पता सेव नहीं है', 'No saved address yet')}</p>`) +
+                `<button class="ab-add" onclick="abEdit('')"><i class="fa-solid fa-plus"></i> ${tr('नया पता जोड़ें', 'Add new address')}</button>`;
+        }
+        { const f = openAddressModal; openAddressModal = function () { const r = f.apply(this, arguments); abRender(); return r; }; }
+        function abPick(id) { AB.sel = id; abSave(); abApply(AB.list.find(a => a.id === id)); closeAddressModal(); }
+        function abDel(id) {
+            const a = AB.list.find(x => x.id === id); if (!a) return;
+            const box = document.querySelector('#addressModal .space-y-2');
+            box.innerHTML = `<div class="ab-form"><p class="ab-l">🗑️ ${tr('यह पता हटाएँ?', 'Delete this address?')}</p><p class="ab-t mt-1">${lgEsc(abText(a))}</p>
+                <div class="grid grid-cols-2 gap-2 mt-3"><button class="ab-cancel" onclick="abRender()">${tr('रहने दें', 'Cancel')}</button><button class="ab-save" style="background:#dc2626;color:#fff" onclick="abDelGo('${id}')">${tr('हटाएँ', 'Delete')}</button></div></div>`;
+        }
+        function abDelGo(id) {
+            AB.list = AB.list.filter(x => x.id !== id);
+            if (AB.sel === id) { AB.sel = AB.list[0] ? AB.list[0].id : ''; if (AB.list[0]) abApply(AB.list[0], true); }
+            abSave(); abRender(); vib(20); showToast(tr('पता हटा दिया', 'Address deleted'));
+        }
+        function abEdit(id) {
+            const a = AB.list.find(x => x.id === id) || { id: '', label: 'home', flat: '', area: '', landmark: '', phone: '', lat: null, lng: null };
+            window.__abDraft = Object.assign({}, a);
+            const box = document.querySelector('#addressModal .space-y-2');
+            box.innerHTML = `<div class="ab-form"><p class="ab-l">${id ? '✏️ ' + tr('पता बदलें', 'Edit address') : '➕ ' + tr('नया पता', 'New address')}</p>
+                <div class="ab-chips">${['home', 'work', 'other'].map(l => `<button class="${a.label === l ? 'on' : ''}" onclick="__abDraft.label='${l}';[...this.parentElement.children].forEach(b=>b.classList.remove('on'));this.classList.add('on')">${abIc[l]} ${abName(l)}</button>`).join('')}</div>
+                <input id="ab_flat" class="ab-in" placeholder="${tr('मकान / फ़्लैट नंबर, मंज़िल *', 'House / flat no., floor *')}" value="${lgEsc(a.flat)}">
+                <input id="ab_area" class="ab-in" placeholder="${tr('गली, इलाका *', 'Street, area *')}" value="${lgEsc(a.area)}">
+                <input id="ab_land" class="ab-in" placeholder="${tr('पास में (लैंडमार्क)', 'Landmark (optional)')}" value="${lgEsc(a.landmark)}">
+                <input id="ab_phone" class="ab-in" type="tel" inputmode="numeric" maxlength="10" placeholder="${tr('डिलीवरी पर फ़ोन (ज़रूरी नहीं)', 'Phone for delivery (optional)')}" value="${lgEsc(a.phone || '')}">
+                <button class="ab-pin" id="abPin" onclick="abPinHere()"><i class="fa-solid fa-location-crosshairs"></i> ${a.lat ? tr('📍 पिन लगा है — दोबारा लें', '📍 Pin saved — take again') : tr('इस पते पर हूँ — मेरी जगह का पिन लगाएँ', 'I am here — pin my location')}</button>
+                <div class="grid grid-cols-2 gap-2 mt-2"><button class="ab-cancel" onclick="abRender()">${tr('रहने दें', 'Cancel')}</button><button class="ab-save" onclick="abSaveForm()">${tr('सेव करें', 'Save')}</button></div></div>`;
+            setTimeout(() => { const i = document.getElementById('ab_flat'); i && i.focus(); }, 200);
+        }
+        function abPinHere() {
+            const b = document.getElementById('abPin'); if (b) b.innerHTML = '⏳ ' + tr('जगह ले रहे हैं…', 'Getting location…');
+            navigator.geolocation.getCurrentPosition(p => { __abDraft.lat = +p.coords.latitude.toFixed(6); __abDraft.lng = +p.coords.longitude.toFixed(6); if (b) b.innerHTML = '✅ ' + tr('पिन लग गया', 'Pinned') + ` (${__abDraft.lat.toFixed(4)}, ${__abDraft.lng.toFixed(4)})`; }, () => { if (b) b.innerHTML = '⚠️ ' + tr('लोकेशन की अनुमति दें', 'Allow location access'); }, { enableHighAccuracy: true, timeout: 10000 });
+        }
+        function abSaveForm() {
+            const v = id => (document.getElementById(id).value || '').trim(), d = window.__abDraft;
+            d.flat = v('ab_flat'); d.area = v('ab_area'); d.landmark = v('ab_land'); d.phone = v('ab_phone').replace(/\D/g, '');
+            if (!d.flat || !d.area) { showToast(tr('मकान नंबर और इलाका लिखिए', 'Enter house no. and area')); return; }
+            if (!d.id) { d.id = 'a' + Date.now().toString(36); AB.list.unshift(d); } else AB.list = AB.list.map(x => x.id === d.id ? d : x);
+            AB.sel = d.id; abSave(); abApply(d, true); abRender(); sfx && sfx('success'); showToast(tr('✅ पता सेव हो गया', '✅ Address saved'));
+        }
+        // GPS: no more fake "Connaught Place" text
+        useLiveLocation = function () {
+            showToast(tr('📡 आपकी जगह ले रहे हैं…', '📡 Getting your location…'));
+            if (!navigator.geolocation) return;
+            navigator.geolocation.getCurrentPosition(p => {
+                const lat = +p.coords.latitude.toFixed(6), lng = +p.coords.longitude.toFixed(6);
+                currentAddress = { label: tr('अभी की जगह', 'Current location'), text: `📍 GPS (${lat.toFixed(4)}, ${lng.toFixed(4)})`, lat, lng };
+                const set = (id, v) => { const e = document.getElementById(id); if (e) e.innerText = v; };
+                set('selectedAddressLabel', currentAddress.label); set('selectedAddressText', currentAddress.text);
+                closeAddressModal(); showToast(tr('📍 अभी की जगह चुनी — पता भी सेव कर सकते हैं', '📍 Current location set'));
+            }, () => showToast(tr('लोकेशन की अनुमति दें', 'Allow location access')), { enableHighAccuracy: true, timeout: 10000 });
+        };
+        // on start: use the saved default address; if none, no fake address
+        setTimeout(() => { try { const a = AB.list.find(x => x.id === AB.sel) || AB.list[0]; if (a) abApply(a, true); else { currentAddress = { label: tr('अभी की जगह', 'Current location'), text: tr('पता जोड़ें', 'Add an address') }; const e = document.getElementById('selectedAddressText'); if (e) e.innerText = tr('पता जोड़ें — CHANGE दबाएँ', 'Add an address — tap CHANGE'); const l = document.getElementById('selectedAddressLabel'); if (l) l.innerText = tr('पता', 'Address'); } } catch (e) { } }, 600);
+        // placing an order without any address → open the address book first
+        { const f = placeOrderNow; placeOrderNow = function () { if (orderMode !== 'pickup' && !(currentAddress && (currentAddress.id || currentAddress.lat))) { showToast(tr('पहले डिलीवरी का पता चुनें 📍', 'Choose a delivery address first 📍')); openAddressModal(); return; } return f.apply(this, arguments); }; }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
