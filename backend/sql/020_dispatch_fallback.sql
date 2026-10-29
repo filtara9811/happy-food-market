@@ -1,0 +1,4 @@
+-- Applied 2026-10-30: app_settings allow_no_stock_riders (true while testing).
+-- next_rider_for: never offers a rider his own order; riders holding the full order first, then (if allowed)
+-- any nearby online rider who picks up from a shop. respond_offer reserves only what the rider carries.
+-- complete_delivery never takes stock below zero.
