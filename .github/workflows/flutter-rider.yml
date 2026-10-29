@@ -1,0 +1,71 @@
+name: Flutter rider app
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [flutter-rider]
+    paths:
+      - "rider_flutter/**"
+      - ".github/workflows/flutter-rider.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rider_flutter
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.5"
+          channel: stable
+          cache: true
+
+      - name: Create the platform folders (keeps our lib/ and pubspec)
+        run: |
+          flutter create --org com.happyfood --project-name hf_rider --platforms android,web .
+          rm -rf test
+          M=android/app/src/main/AndroidManifest.xml
+          sed -i 's#android:label="hf_rider"#android:label="Happy Food Rider"#' $M
+          sed -i 's#<application#<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <application#' $M
+          grep -n "label\|permission" $M
+
+      - name: Same signing key every build
+        run: |
+          mkdir -p ~/.android
+          cp ../shell/signing/debug.keystore ~/.android/debug.keystore
+
+      - run: flutter pub get
+      - run: flutter analyze --no-fatal-infos --no-fatal-warnings || true
+      - run: flutter build apk --release
+      - run: flutter build web --release --web-renderer html --base-href /
+
+      - name: Collect
+        run: |
+          mkdir -p ../out
+          cp build/app/outputs/flutter-apk/app-release.apk ../out/HappyFood-Rider-Flutter.apk
+          cd build/web && zip -qr ../../../out/rider-web.zip .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rider-flutter
+          path: out/*
+
+      # pre-release so the customer app's "latest release" update check is not affected
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: rider-${{ github.run_number }}
+          name: Rider app (Flutter) ${{ github.run_number }}
+          prerelease: true
+          target_commitish: ${{ github.sha }}
+          files: out/HappyFood-Rider-Flutter.apk
