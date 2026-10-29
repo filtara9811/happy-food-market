@@ -55,7 +55,7 @@ jobs:
           if [ $ok = 1 ]; then flutter build web --release --web-renderer html --base-href / 2>&1 | tee -a ../build.log || ok=0; fi
           if [ $ok = 0 ]; then
             # logs are not readable from the agent sandbox, so surface the errors as annotations
-            msg=$(grep -E "error|Error|lib/.*dart:[0-9]+" ../build.log | grep -v "^\s*$" | head -60 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            msg=$( (grep -E "rror|lib/.*dart:[0-9]+|FAILURE|wrong" ../build.log || tail -40 ../build.log) | head -60 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}' || true)
             echo "::error title=build::$msg"
             exit 1
           fi
