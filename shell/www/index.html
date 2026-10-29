@@ -10601,12 +10601,12 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 contact: {
                     icon: '📞',
                     hi: { title: 'संपर्क व शिकायत', sections: [
-                        ['कंपनी', [`${co}`, `${addr}`, C.gstin ? `GSTIN: ${C.gstin}` : '', C.cin ? `CIN: ${C.cin}` : ''].filter(Boolean)],
+                        ['कंपनी', [`${co}`, `${addr}`, C.gstin ? `GSTIN: ${C.gstin}` : '', C.cin ? `CIN: ${C.cin}` : '', C.udyam ? `UDYAM: ${C.udyam}` : ''].filter(Boolean)],
                         ['सहायता', [`ईमेल: ${mail}`, `फ़ोन / WhatsApp: ${tel}`]],
                         ['शिकायत अधिकारी', [`${off} — ${mail}। 48 घंटे में पावती, 30 दिन में निपटारा।`]],
                     ] },
                     en: { title: 'Contact & Grievance', sections: [
-                        ['Company', [`${coE}`, `${addrE}`, C.gstin ? `GSTIN: ${C.gstin}` : '', C.cin ? `CIN: ${C.cin}` : ''].filter(Boolean)],
+                        ['Company', [`${coE}`, `${addrE}`, C.gstin ? `GSTIN: ${C.gstin}` : '', C.cin ? `CIN: ${C.cin}` : '', C.udyam ? `UDYAM: ${C.udyam}` : ''].filter(Boolean)],
                         ['Support', [`Email: ${mailE}`, `Phone / WhatsApp: ${telE}`]],
                         ['Grievance Officer', [`${offE} — ${mailE}. Acknowledged within 48 hours, resolved within 30 days.`]],
                     ] },
@@ -10617,7 +10617,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
 
         /* ================= legal pages, company info, footer, permissions, intro video + new login ================= */
         const LG_KEY = 'hf_legal_v1';
-        const LG = Object.assign({}, LEGAL_DEF, { company: 'Filipra Private Limited', address: 'बाड़ा हिंदू राव, दिल्ली', phone: '+91 95400 68380' }, saGet(LG_KEY, {}));
+        const LG = Object.assign({}, LEGAL_DEF, { company: 'Filipra Private Limited', address: '4988, First Floor, Gali Maliyan Chowk, Ahata Kidara, Near Sadar, New Delhi, Delhi 110006', phone: '+91 95400 68380', email: 'ashu@filipra.com', officer: 'Ashu Qureshi', gstin: '07AAECF8894N1ZQ', cin: 'U18101DL2022PTC392497', udyam: 'UDYAM-DL-01-0020958' }, saGet(LG_KEY, {}));
         const lgSave = () => saPut(LG_KEY, LG);
         (async () => { try { if (LIVE && window.sb) { const { data } = await sb.rpc('company_info'); if (data && typeof data === 'object') { Object.assign(LG, data); lgSave(); if (data.intro) { INTRO.video = data.intro; saPut('hf_intro_v1', INTRO); } } } } catch (e) { } })();
         const lgBuild = () => ((window.HF_APP || {}).build ? '1.0.' + window.HF_APP.build : '4.3');
@@ -10870,7 +10870,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 <div class="grid gap-2.5 mt-3">${f('company', tr('कंपनी का पूरा नाम', 'Company legal name'), 'Filipra Private Limited')}${f('brand', tr('ऐप/ब्रांड का नाम', 'App / brand'), 'Happy Food')}${f('address', tr('पंजीकृत पता', 'Registered address'), tr('पूरा पता, पिन कोड', 'Full address, PIN'))}
                 <div class="grid grid-cols-2 gap-2.5">${f('email', tr('सपोर्ट ईमेल', 'Support email'), 'support@…', 'email')}${f('phone', tr('सपोर्ट फ़ोन', 'Support phone'), '+91 …', 'tel')}</div>
                 ${f('officer', tr('शिकायत अधिकारी का नाम', 'Grievance officer'), tr('जैसे — आशु क़ुरैशी', 'e.g. Ashu Qureshi'))}
-                <div class="grid grid-cols-2 gap-2.5">${f('gstin', 'GSTIN', tr('अगर है', 'if any'))}${f('cin', 'CIN', tr('कंपनी नंबर', 'company no.'))}</div>
+                <div class="grid grid-cols-2 gap-2.5">${f('gstin', 'GSTIN', tr('अगर है', 'if any'))}${f('cin', 'CIN', tr('कंपनी नंबर', 'company no.'))}</div>${f('udyam', 'UDYAM', 'UDYAM-…')}
                 ${f('web', tr('नीतियों का वेब पता', 'Policies web address'), 'https://…/')}</div>
                 <button class="pbtn w-full mt-3" onclick="lgSaveForm()"><i class="fa-solid fa-floppy-disk"></i> ${tr('सेव करें', 'Save')}</button></div>
             ${sectionHead(tr('नीतियाँ (देखें)', 'Policies (preview)'))}
@@ -10884,7 +10884,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             <div class="h-10"></div>`;
         }
         async function lgSaveForm() {
-            ['company', 'brand', 'address', 'email', 'phone', 'officer', 'gstin', 'cin', 'web'].forEach(k => { const e = document.getElementById('lg_' + k); if (e) LG[k] = e.value.trim(); });
+            ['company', 'brand', 'address', 'email', 'phone', 'officer', 'gstin', 'cin', 'udyam', 'web'].forEach(k => { const e = document.getElementById('lg_' + k); if (e) LG[k] = e.value.trim(); });
             if (LG.web && !/\/$/.test(LG.web)) LG.web += '/';
             lgSave(); renderPanel(true); sfx('success');
             if (LIVE && window.sb) { try { const { error } = await sb.rpc('admin_set_company_info', { p: LG }); pToast(error ? tr('फ़ोन में सेव ✅', 'Saved on phone ✅') : tr('सर्वर पर सेव ✅ — सबके ऐप में लागू', 'Saved on server ✅')); } catch (e) { pToast(tr('फ़ोन में सेव ✅', 'Saved on phone ✅')); } } else pToast(tr('सेव हो गया ✅', 'Saved ✅'));
