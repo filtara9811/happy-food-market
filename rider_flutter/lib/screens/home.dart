@@ -6,6 +6,8 @@ import '../data/demo.dart';
 import '../widgets/common.dart';
 import 'sheets.dart';
 import 'pages.dart';
+import 'day_sheet.dart';
+import 'profile_sheet.dart';
 
 /// Rider home — same layout as the prototype's partner screen:
 /// dark hero with earnings card, waiting card, day strip, Deliveries / My stock tabs, order cards.
@@ -263,12 +265,25 @@ class _RiderHomeState extends State<RiderHome> {
       height: 88,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: Demo.days.length,
+        itemCount: Demo.days.length + 1,
         separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (_, i) {
+          if (i == Demo.days.length) {
+            return GestureDetector(
+              onTap: () => showCalendar(context),
+              child: Container(
+                width: 76,
+                decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(18), border: Border.all(color: HF.gold, width: 1.5)),
+                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [const Text('🗓️', style: TextStyle(fontSize: 24)), Text('कैलेंडर', style: HF.hi(12, color: HF.goldDeep, w: FontWeight.w800))]),
+              ),
+            );
+          }
           final d = now.subtract(Duration(days: i)), on = day == i, v = Demo.days[i];
           return GestureDetector(
-            onTap: () => setState(() => day = i),
+            onTap: () {
+              setState(() => day = i);
+              showDaySheet(context, d);
+            },
             child: Container(
               width: 76,
               padding: const EdgeInsets.fromLTRB(6, 8, 6, 6),
@@ -414,7 +429,7 @@ class _RiderHomeState extends State<RiderHome> {
             child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
               nb(Icons.two_wheeler, 'डिलीवरी', true, () => scroll.animateTo(0, duration: const Duration(milliseconds: 350), curve: Curves.easeOut)),
               const Expanded(child: SizedBox()),
-              nb(Icons.person, 'प्रोफ़ाइल', false, () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfilePage()))),
+              nb(Icons.person, 'प्रोफ़ाइल', false, () => showProfileSheet(context, onChanged: refresh)),
             ]),
           ),
         ),

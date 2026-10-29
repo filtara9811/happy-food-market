@@ -7,6 +7,7 @@ import '../data/demo.dart';
 import '../widgets/common.dart';
 import 'home.dart';
 import 'pages.dart';
+import '../sound.dart';
 
 /// Bottom sheet with a round "source" badge sitting on its top edge (📱 app / 🏪 shop / 🧾 POS / 📦 wholesale).
 Future<T?> hfSheet<T>(BuildContext context, {required String title, required Widget Function(BuildContext, StateSetter) body, (String, String, Color)? badge}) {
@@ -305,16 +306,8 @@ void showWithdraw(BuildContext context) {
 void showRequest(BuildContext context, {required VoidCallback onDone}) {
   var left = 30;
   Timer? t;
-  var rang = 0;
-  Timer.periodic(const Duration(milliseconds: 900), (tm) {
-    if (rang >= 3) {
-      tm.cancel();
-      return;
-    }
-    rang++;
-    SystemSound.play(SystemSoundType.alert);
-    HapticFeedback.heavyImpact();
-  });
+  var accepted = false;
+  Sound.ring3();
   hfSheet(context, title: '🔔 नई रिक्वेस्ट!', badge: sourceOf(Kind.stock), body: (ctx, setS) {
     t ??= Timer.periodic(const Duration(seconds: 1), (_) {
       if (!ctx.mounted) {
@@ -354,6 +347,7 @@ void showRequest(BuildContext context, {required VoidCallback onDone}) {
             style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(50), foregroundColor: HF.bad, side: const BorderSide(color: Color(0x66DC2626)), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
             onPressed: () {
               t?.cancel();
+              Sound.stop();
               Navigator.pop(ctx);
               hfToast(context, 'रिक्वेस्ट छोड़ी — अगले राइडर को गई');
             },
@@ -365,13 +359,17 @@ void showRequest(BuildContext context, {required VoidCallback onDone}) {
           flex: 2,
           child: GoldButton('✓ स्वीकार करें', onTap: () {
             t?.cancel();
+            accepted = true;
+            Sound.stop().then((_) => Sound.ding());
             Navigator.pop(ctx);
-            HapticFeedback.heavyImpact();
             hfToast(context, 'स्वीकार ✅ — ग्राहक की ओर चलिए 🛵');
             onDone();
           }),
         ),
       ]),
     ]);
-  }).whenComplete(() => t?.cancel());
+  }).whenComplete(() {
+    t?.cancel();
+    if (!accepted) Sound.stop();
+  });
 }
