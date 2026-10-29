@@ -1,0 +1,135 @@
+name: Build AAB (Play Store)
+
+# Runs when the "play" branch is pushed (or by hand). Produces signed .aab files for Google Play.
+# Needs two repository secrets: ANDROID_UPLOAD_KEYSTORE_B64 and ANDROID_UPLOAD_PASSWORD.
+on:
+  workflow_dispatch:
+  push:
+    branches: [play]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - flavor: customer
+            app_id: com.happyfood.market
+            app_name: Happy Food
+            res: res
+            file: HappyFood.aab
+          - flavor: rider
+            app_id: com.happyfood.partner
+            app_name: Happy Food Partner
+            res: res-partner
+            file: HappyFood-Partner.aab
+          - flavor: vendor
+            app_id: com.happyfood.shop
+            app_name: Happy Food Shop
+            res: res-shop
+            file: HappyFood-Shop.aab
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the upload key is there
+        env:
+          KS: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_B64 }}
+          PW: ${{ secrets.ANDROID_UPLOAD_PASSWORD }}
+        run: |
+          if [ -z "$KS" ] || [ -z "$PW" ]; then echo "::error title=upload key missing::Add GitHub secrets ANDROID_UPLOAD_KEYSTORE_B64 and ANDROID_UPLOAD_PASSWORD"; exit 1; fi
+          printf '%s' "$KS" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          keytool -list -keystore "$RUNNER_TEMP/upload.jks" -storepass "$PW" >/dev/null || { echo "::error title=upload key::keystore or password is wrong"; exit 1; }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Create the Android project (${{ matrix.flavor }})
+        working-directory: shell
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          APP_ID: ${{ matrix.app_id }}
+          APP_NAME: ${{ matrix.app_name }}
+          FLAVOR: ${{ matrix.flavor }}
+        run: |
+          npm install --no-audit --no-fund
+          U=node_modules/@supabase/supabase-js/dist/umd/supabase.js; [ -f $U ] || U=$(find node_modules/@supabase/supabase-js/dist -path "*umd*" -name "*.js" | head -1); cp "$U" www/supabase.js
+          cp node_modules/maplibre-gl/dist/maplibre-gl.js node_modules/maplibre-gl/dist/maplibre-gl.css www/
+          cp node_modules/qrcode-generator/qrcode.js www/qrcode.js
+          node -e "const fs=require('fs'),f='capacitor.config.json',c=JSON.parse(fs.readFileSync(f));c.appId=process.env.APP_ID;c.appName=process.env.APP_NAME;fs.writeFileSync(f,JSON.stringify(c,null,2))"
+          # store:true = installed from Play, so the app's own APK updater stays off
+          printf 'window.HF_APP={role:"%s",name:"%s",build:%s,store:true};\n' "$FLAVOR" "$APP_NAME" "${{ github.run_number }}" > www/app-config.js
+          PUSH=false
+          if [ -n "$GOOGLE_SERVICES_JSON" ] && printf '%s' "$GOOGLE_SERVICES_JSON" | grep -q "\"$APP_ID\""; then PUSH=true; fi
+          echo "window.HF_PUSH=$PUSH;" > www/push-config.js
+          npx cap add android
+          if [ "$PUSH" = true ]; then printf '%s' "$GOOGLE_SERVICES_JSON" > android/app/google-services.json; fi
+          echo "::notice title=play $FLAVOR::appId=$APP_ID push=$PUSH"
+          M=android/app/src/main/AndroidManifest.xml
+          # no REQUEST_INSTALL_PACKAGES here: Play does not allow self-updating apps
+          sed -i 's#<application#<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <uses-permission android:name="android.permission.RECORD_AUDIO"/>\n    <application#' $M
+          sed -i 's#</manifest>#    <queries><intent><action android:name="android.speech.RecognitionService"/></intent></queries>\n</manifest>#' $M
+          cp -r ${{ matrix.res }}/. android/app/src/main/res/
+          # Play needs target API 35 for new apps
+          sed -i -E 's/compileSdkVersion = [0-9]+/compileSdkVersion = 35/; s/targetSdkVersion = [0-9]+/targetSdkVersion = 35/' android/variables.gradle
+          echo "android.suppressUnsupportedCompileSdk=35" >> android/gradle.properties
+          # every Play upload needs a bigger version number
+          sed -i -E "s/versionCode [0-9]+/versionCode $((1000 + ${{ github.run_number }}))/; s/versionName \"[^\"]*\"/versionName \"1.0.${{ github.run_number }}\"/" android/app/build.gradle
+          grep -E "versionCode|versionName" android/app/build.gradle
+          npx cap sync android
+
+      - name: Status bar colour, keep the old (non edge-to-edge) layout on Android 15
+        working-directory: shell
+        continue-on-error: true
+        run: |
+          RES=android/app/src/main/res
+          sed -i 's#<style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">#<style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">\n        <item name="android:statusBarColor">\#0B0D14</item>\n        <item name="android:navigationBarColor">\#0B0D14</item>\n        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>#' $RES/values/styles.xml
+
+      - name: Build signed AAB
+        working-directory: shell/android
+        env:
+          PW: ${{ secrets.ANDROID_UPLOAD_PASSWORD }}
+        run: |
+          ./gradlew bundleRelease --no-daemon \
+            -Pandroid.injected.signing.store.file="$RUNNER_TEMP/upload.jks" \
+            -Pandroid.injected.signing.store.password="$PW" \
+            -Pandroid.injected.signing.key.alias=upload \
+            -Pandroid.injected.signing.key.password="$PW" 2>&1 | tee "$RUNNER_TEMP/gradle.log"
+          test -f app/build/outputs/bundle/release/app-release.aab || { grep -iE "error|what went wrong" -A3 "$RUNNER_TEMP/gradle.log" | head -20 | while read -r l; do echo "::error title=bundle::$l"; done; exit 1; }
+
+      - name: Name the AAB
+        run: |
+          mkdir -p out
+          cp shell/android/app/build/outputs/bundle/release/app-release.aab "out/${{ matrix.file }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.flavor }}
+          path: out/${{ matrix.file }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: aabs
+          merge-multiple: true
+      - run: ls -l aabs
+      # pre-release, so the in-app APK updater (releases/latest) never picks it
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: play-${{ github.run_number }}
+          name: Play Store bundles ${{ github.run_number }}
+          prerelease: true
+          body: "Google Play के लिए .aab फ़ाइलें — Play Console → Testing → Internal testing → Create release → Upload"
+          files: aabs/*.aab

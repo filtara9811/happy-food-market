@@ -9299,6 +9299,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         const updNative = () => { try { const C = window.Capacitor; return !!(C && C.isNativePlatform && C.isNativePlatform()); } catch (e) { return false; } };
         const updCur = () => Number((window.HF_APP || {}).build || 0);
         async function updCheck(manual) {
+            if ((window.HF_APP || {}).store) { if (manual) showToast(tr('अपडेट Play Store से मिलेगा', 'Updates come from the Play Store')); return; }   // Play build: Play handles updates
             if (!updNative() || !updCur()) { if (manual) showToast(tr('अपडेट सिर्फ़ ऐप में मिलता है', 'Updates work inside the app')); return; }
             try {
                 if (!manual) { const s = JSON.parse(localStorage.getItem('hf_upd_snooze') || '{}'); if (s.until && Date.now() < s.until) return; }
