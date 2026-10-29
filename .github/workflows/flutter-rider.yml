@@ -77,4 +77,6 @@ jobs:
           name: Rider app (Flutter) ${{ github.run_number }}
           prerelease: true
           target_commitish: ${{ github.sha }}
-          files: out/HappyFood-Rider-Flutter.apk
+          files: |
+            out/HappyFood-Rider-Flutter.apk
+            out/rider-web.zip
