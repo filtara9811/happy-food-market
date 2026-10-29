@@ -1538,6 +1538,7 @@
         .ab-save { padding:11px; border-radius:13px; font-weight:900; font-size:13.5px; color:#1d1609; background:linear-gradient(135deg,#f6d27a,#d99a1e); }
         body.light-mode .ab-it { background:#fff; border-color:#eadfc8; } body.light-mode .ab-l { color:#2a2115; } body.light-mode .ab-t { color:#6f6250; }
         body.light-mode .ab-in { background:#fff; border-color:#e6d6b4; color:#2a2115; } body.light-mode .ab-chips button, body.light-mode .ab-cancel { color:#5a4a33; border-color:#e6d6b4; }
+        .zc-off { border-color:rgba(239,68,68,.45) !important; background:color-mix(in srgb,#ef4444 7%,var(--p-card)) !important; }
     </style>
 <style>
 html,body{height:100%}
@@ -10998,6 +10999,72 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         setTimeout(() => { try { const a = AB.list.find(x => x.id === AB.sel) || AB.list[0]; if (a) abApply(a, true); else { currentAddress = { label: tr('अभी की जगह', 'Current location'), text: tr('पता जोड़ें', 'Add an address') }; const e = document.getElementById('selectedAddressText'); if (e) e.innerText = tr('पता जोड़ें — CHANGE दबाएँ', 'Add an address — tap CHANGE'); const l = document.getElementById('selectedAddressLabel'); if (l) l.innerText = tr('पता', 'Address'); } } catch (e) { } }, 600);
         // placing an order without any address → open the address book first
         { const f = placeOrderNow; placeOrderNow = function () { if (orderMode !== 'pickup' && !(currentAddress && (currentAddress.id || currentAddress.lat))) { showToast(tr('पहले डिलीवरी का पता चुनें 📍', 'Choose a delivery address first 📍')); openAddressModal(); return; } return f.apply(this, arguments); }; }
+
+
+        /* ---------- admin control over the zone check and its messages ---------- */
+        const ZC_DEF = { enabled: true, messages: {
+            outside: { on: true, hi: 'आपके इलाके में जल्द आ रहे हैं', en: 'Coming to your area soon' },
+            soon: { on: true, hi: 'यह हिस्सा जल्द चालू होगा', en: 'This area opens soon' },
+            closed: { on: true, hi: 'अभी बंद है — खुलने का समय देखें', en: 'Closed right now' },
+            paused: { on: true, hi: 'थोड़ी देर के लिए रुका है', en: 'Paused for a while' },
+            browse: { on: true, hi: 'आपके इलाके में जल्द — अभी सिर्फ़ मेन्यू देख सकते हैं', en: 'Coming to your area soon — browse only' } } };
+        const ZC = (() => { const s = saGet('hf_zcfg_v1', null) || {}; return { enabled: s.enabled !== false, messages: Object.assign({}, JSON.parse(JSON.stringify(ZC_DEF.messages)), s.messages || {}) }; })();
+        const zcSave = () => saPut('hf_zcfg_v1', ZC);
+        const zcKey = r => (r === 'closed_time' || r === 'closed_day') ? 'closed' : r;
+        const zcMsg = k => { const m = ZC.messages[k] || ZC_DEF.messages[k] || {}; return tr(m.hi || '', m.en || m.hi || ''); };
+        async function zcLoad() {
+            if (!LIVE || !window.sb) return;
+            try { const { data } = await sb.rpc('zone_settings'); if (data) { ZC.enabled = data.enabled !== false; Object.assign(ZC.messages, data.messages || {}); zcSave(); if (!ZC.enabled) { document.body.classList.remove('zone-browse'); const g = document.getElementById('zoneGate'); if (g) g.remove(); } } } catch (e) { }
+        }
+        zcLoad();
+        { const f = zoneCheckLocal; zoneCheckLocal = function () { if (!ZC.enabled) return { ok: true, reason: 'check_off' }; return f.apply(this, arguments); }; }
+        { const f = zoneNow; zoneNow = async function () { if (!ZC.enabled) return { ok: true, reason: 'check_off' }; return f.apply(this, arguments); }; }
+        // a message switched off in admin = that screen is not shown at all
+        { const f = zoneGate; zoneGate = function (z) {
+            if (!z.ok && (!ZC.enabled || (ZC.messages[zcKey(z.reason)] && ZC.messages[zcKey(z.reason)].on === false))) z = { ok: true };
+            const r = f.call(this, z);
+            try { const t = document.querySelector('#zoneGate .zg-t'); if (t && !z.ok) { const m = zcMsg(zcKey(z.reason)); if (m) t.textContent = m; } } catch (e) { }
+            return r;
+        }; }
+        // "menu only" never sticks: adding to the basket checks again first
+        ['addRecommendedToCart', 'addCurrentProductToCart'].forEach(n => {
+            const f = window[n]; if (typeof f !== 'function') return;
+            window[n] = function () {
+                const self = this, args = arguments;
+                if (!document.body.classList.contains('zone-browse')) return f.apply(self, args);
+                zcLoad().then(() => zoneRecheck(false)).then(z => {
+                    if (z && z.ok) { document.body.classList.remove('zone-browse'); return f.apply(self, args); }
+                    if (ZC.messages.browse && ZC.messages.browse.on === false) { document.body.classList.remove('zone-browse'); return f.apply(self, args); }
+                    showToast(zcMsg('browse'));
+                });
+            };
+        });
+        try { addRecommendedToCart = window.addRecommendedToCart; addCurrentProductToCart = window.addCurrentProductToCart; } catch (e) { }
+
+        // admin: master switch + message editor on top of the Zones page
+        { const f = adminZones; adminZones = function () {
+            const head = `<div class="pcard p-4 mb-3 ${ZC.enabled ? '' : 'zc-off'}"><div class="flex items-center justify-between gap-3"><div class="min-w-0"><p class="pttl text-[15.5px]">📍 ${tr('ज़ोन जाँच', 'Zone check')}</p><p class="text-[11.5px] pmut">${ZC.enabled ? tr('चालू — सिर्फ़ चालू ज़ोन और समय में ऑर्डर', 'On — orders only in live zones and hours') : tr('बंद — हर जगह से, हर समय ऑर्डर (टेस्टिंग)', 'Off — orders from anywhere, any time (testing)')}</p></div>${sw(ZC.enabled, 'zcToggle()')}</div>
+                <button class="zn-sm w-full mt-3" onclick="zcEditMsgs()">💬 ${tr('ग्राहक को दिखने वाले मैसेज', 'Messages customers see')} — ${Object.values(ZC.messages).filter(m => m.on !== false).length}/5 ${tr('चालू', 'on')}</button></div>`;
+            return head + f.apply(this, arguments);
+        }; }
+        async function zcPush(msg) {
+            zcSave(); renderPanel(true);
+            if (!LIVE || !window.sb) { pToast(msg || tr('सेव हो गया ✅', 'Saved ✅')); return; }
+            try { const { error } = await sb.rpc('admin_set_zone_settings', { p_enabled: ZC.enabled, p_messages: ZC.messages }); pToast(error ? tr('फ़ोन में सेव ✅ — सर्वर से जुड़ना बाकी', 'Saved on phone ✅') : (msg || tr('सर्वर पर सेव ✅ — सबके ऐप में लागू', 'Saved on server ✅'))); } catch (e) { pToast(tr('फ़ोन में सेव ✅', 'Saved on phone ✅')); }
+        }
+        function zcToggle() { ZC.enabled = !ZC.enabled; vib(25); zcPush(ZC.enabled ? tr('📍 ज़ोन जाँच चालू', '📍 Zone check on') : tr('🌍 ज़ोन जाँच बंद — हर जगह से ऑर्डर', '🌍 Zone check off — orders from anywhere')); }
+        function zcEditMsgs() {
+            const names = { outside: ['🗺️', tr('ज़ोन के बाहर', 'Outside zone')], soon: ['🚀', tr('जल्द आने वाला हिस्सा', 'Coming-soon area')], closed: ['🌙', tr('बंद / छुट्टी का समय', 'Closed hours / day off')], paused: ['⏸️', tr('ज़ोन रुका हुआ', 'Zone paused')], browse: ['👀', tr('"सिर्फ़ मेन्यू" वाला छोटा मैसेज', '"Browse only" toast')] };
+            openPSheet(tr('ग्राहक को दिखने वाले मैसेज', 'Messages customers see'), `<p class="text-[12px] pmut mb-3">${tr('बंद करने पर वह स्क्रीन/मैसेज ग्राहक को नहीं दिखेगा और ऑर्डर नहीं रुकेगा।', 'Switched off = that screen/message is not shown and ordering is not blocked.')}</p>
+                ${Object.keys(names).map(k => { const m = ZC.messages[k] || {}; return `<div class="pcard2 p-3 mb-2.5" data-k="${k}"><div class="flex items-center justify-between gap-2"><b class="text-[13.5px]">${names[k][0]} ${names[k][1]}</b>${sw(m.on !== false, "this.classList.toggle('on')")}</div>
+                    <input class="mt-2" data-f="hi" value="${esc(m.hi || '')}" placeholder="हिंदी"><input class="mt-1.5" data-f="en" value="${esc(m.en || '')}" placeholder="English"></div>`; }).join('')}
+                <button class="pbtn w-full mt-2" onclick="zcSaveMsgs()"><i class="fa-solid fa-floppy-disk"></i> ${tr('सेव और लागू करें', 'Save & publish')}</button>
+                <button class="w-full mt-2 py-2.5 rounded-xl font-bold text-[13px] pmut" onclick="ZC.messages=JSON.parse(JSON.stringify(ZC_DEF.messages));closePSheet();zcPush(tr('मैसेज पहले जैसे कर दिए','Messages reset'))">↺ ${tr('पहले जैसे करें', 'Reset to default')}</button>`);
+        }
+        function zcSaveMsgs() {
+            document.querySelectorAll('#pSheetBody [data-k]').forEach(c => { const k = c.dataset.k; ZC.messages[k] = { on: c.querySelector('.psw').classList.contains('on'), hi: c.querySelector('[data-f=hi]').value.trim(), en: c.querySelector('[data-f=en]').value.trim() }; });
+            closePSheet(); sfx('success'); zcPush();
+        }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>

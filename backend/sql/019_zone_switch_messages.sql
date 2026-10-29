@@ -1,0 +1,3 @@
+-- Applied 2026-10-30: app_settings zone_check_enabled (master switch, set to false for testing) and zone_messages;
+-- zone_check honours the switch and archived zones; zone_settings() public; admin_set_zone_settings(); delhi-all testing zone;
+-- account_deletion_requests + request_account_deletion(); company_info() / admin_set_company_info().
