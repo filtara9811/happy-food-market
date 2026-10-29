@@ -47,8 +47,18 @@ jobs:
 
       - run: flutter pub get
       - run: flutter analyze --no-fatal-infos --no-fatal-warnings || true
-      - run: flutter build apk --release
-      - run: flutter build web --release --web-renderer html --base-href /
+      - name: Build APK and web
+        run: |
+          set -o pipefail
+          ok=1
+          flutter build apk --release 2>&1 | tee ../build.log || ok=0
+          if [ $ok = 1 ]; then flutter build web --release --web-renderer html --base-href / 2>&1 | tee -a ../build.log || ok=0; fi
+          if [ $ok = 0 ]; then
+            # logs are not readable from the agent sandbox, so surface the errors as annotations
+            msg=$(grep -E "error|Error|lib/.*dart:[0-9]+" ../build.log | grep -v "^\s*$" | head -60 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error title=build::$msg"
+            exit 1
+          fi
 
       - name: Collect
         run: |
