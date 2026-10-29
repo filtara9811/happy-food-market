@@ -74,6 +74,7 @@ jobs:
           sed -i 's#</manifest>#    <queries><intent><action android:name="android.speech.RecognitionService"/></intent></queries>\n</manifest>#' $M
           # own icon, launch splash and the ring sound for this app
           cp -r ${{ matrix.res }}/. android/app/src/main/res/
+          python3 native/patch_android.py
           npx cap sync android
 
       - name: Dark status bar
@@ -91,7 +92,9 @@ jobs:
 
       - name: Build APK
         working-directory: shell/android
-        run: ./gradlew assembleDebug --no-daemon
+        run: |
+          ./gradlew assembleDebug --no-daemon 2>&1 | tee "$RUNNER_TEMP/gradle.log"
+          test -f app/build/outputs/apk/debug/app-debug.apk || { grep -E "error:|What went wrong" -A2 "$RUNNER_TEMP/gradle.log" | head -20 | while read -r l; do echo "::error title=build::$l"; done; exit 1; }
 
       - name: Name the APK
         run: |

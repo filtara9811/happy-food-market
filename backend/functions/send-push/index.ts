@@ -43,35 +43,43 @@ async function saRaw(): Promise<string | null> {
   return data?.value ?? null;
 }
 
-async function sendTo(userIds: string[], msg: Msg) {
+type Opts = { apps?: string[]; dataOnly?: boolean };
+// which phones: tokens are saved as "android:<app>" (customer / rider / vendor); old ones are plain "android"
+async function tokensFor(ids: string[], apps?: string[]) {
+  const { data: rows } = await SB.from("push_tokens").select("token,platform").in("user_id", ids).eq("active", true);
+  return (rows ?? []).filter((r: { platform: string }) => !apps || r.platform === "android" || apps.some((a) => r.platform === "android:" + a));
+}
+
+async function sendTo(userIds: string[], msg: Msg, opts: Opts = {}) {
   const raw = await saRaw();
   if (!raw) return { skipped: "FCM_SERVICE_ACCOUNT not set" };
   const ids = userIds.filter(Boolean);
   if (!ids.length) return { sent: 0 };
-  const { data: rows } = await SB.from("push_tokens").select("token").in("user_id", ids).eq("active", true);
-  if (!rows?.length) return { sent: 0, note: "no tokens" };
+  const rows = await tokensFor(ids, opts.apps);
+  if (!rows.length) return { sent: 0, note: "no tokens" };
   const sa = JSON.parse(raw);
   const at = await accessToken(sa);
   let sent = 0; const errs: string[] = [];
-  for (const { token } of rows) {
+  for (const { token, platform } of rows) {
+    // new apps (tagged tokens) get a data-only message for requests, so the app itself rings like a call
+    if (msg.data?.kind === "offer_gone" && platform === "android") continue; // old apps have nothing to stop
+    const dataOnly = opts.dataOnly && platform !== "android";
+    const message = dataOnly
+      ? { token, data: Object.assign({ title: msg.title, body: msg.body }, msg.data ?? {}), android: { priority: "high", ttl: msg.ttl ?? "300s" } }
+      : { token, notification: { title: msg.title, body: msg.body }, data: msg.data ?? {},
+          android: { priority: "high", ttl: msg.ttl ?? "300s",
+            notification: { channel_id: msg.channel, sound: msg.channel === "orders_ring" ? "ring" : "default",
+                            default_vibrate_timings: true, notification_priority: "PRIORITY_MAX" } } };
+    if (dataOnly && msg.data?.kind === "offer_gone") delete (message as { data: Record<string, string> }).data.title;
     const r = await fetch(`https://fcm.googleapis.com/v1/projects/${sa.project_id}/messages:send`, {
       method: "POST",
       headers: { Authorization: "Bearer " + at, "Content-Type": "application/json" },
-      body: JSON.stringify({ message: {
-        token,
-        notification: { title: msg.title, body: msg.body },
-        data: msg.data ?? {},
-        android: {
-          priority: "high", ttl: msg.ttl ?? "300s",
-          notification: { channel_id: msg.channel, sound: msg.channel === "orders_ring" ? "ring" : "default",
-                          default_vibrate_timings: true, notification_priority: "PRIORITY_MAX" },
-        },
-      } }),
+      body: JSON.stringify({ message }),
     });
     if (r.ok) sent++;
     else {
       const t = await r.text(); errs.push(t.slice(0, 160));
-      if (/UNREGISTERED|NOT_FOUND/.test(t)) await SB.from("push_tokens").delete().eq("token", token);
+      if (/UNREGISTERED|NOT_FOUND/.test(t)) await SB.from("push_tokens").update({ active: false }).eq("token", token);
     }
   }
   return errs.length ? { sent, errs } : { sent };
@@ -102,7 +110,8 @@ Deno.serve(async (req) => {
   }
   if (p.test && p.user_id) {
     // test from the admin: one ring-style and one normal notification to every phone of this user
-    const ring = await sendTo([String(p.user_id)], { title: "🔔 टेस्ट: नई डिलीवरी रिक्वेस्ट", body: "यह घंटी वाली टेस्ट सूचना है — Happy Food", channel: "orders_ring", ttl: "60s", data: { kind: "test" } });
+    const ring = await sendTo([String(p.user_id)], { title: "🔔 टेस्ट: नई डिलीवरी रिक्वेस्ट", body: "₹99 का ऑर्डर • 0.2 km दूर — जल्दी स्वीकार करें", channel: "orders_ring", ttl: "60s",
+      data: { kind: "offer", order_id: "test", offer_id: "test-" + Date.now(), expires_at_ms: String(Date.now() + 45000) } }, { apps: ["rider"], dataOnly: true });
     const upd = await sendTo([String(p.user_id)], { title: "✅ Happy Food नोटिफ़िकेशन चालू", body: "आपके फ़ोन पर ऑर्डर की हर ख़बर अब आएगी 🎉", channel: "updates", data: { kind: "test" } });
     return Response.json({ ring, upd });
   }
@@ -115,9 +124,14 @@ Deno.serve(async (req) => {
       out = await sendTo([rec.rider_id], {
         title: "🔔 नई डिलीवरी रिक्वेस्ट",
         body: `₹${o?.total ?? ""} का ऑर्डर • ${km} km दूर — जल्दी स्वीकार करें`,
-        channel: "orders_ring", ttl: "40s",
-        data: { kind: "offer", order_id: String(rec.order_id), offer_id: String(rec.id) },
-      });
+        channel: "orders_ring", ttl: "60s",
+        data: { kind: "offer", order_id: String(rec.order_id), offer_id: String(rec.id),
+                expires_at_ms: String(Date.parse(rec.expires_at ?? "") || Date.now() + 60000) },
+      }, { apps: ["rider"], dataOnly: true });
+    } else if (p.table === "order_offers" && p.op === "UPDATE" && rec.status !== "pending" && p.old?.status === "pending") {
+      // request taken / declined / timed out: stop the ring on the rider's phone
+      out = await sendTo([rec.rider_id], { title: "", body: "", channel: "updates", ttl: "60s",
+        data: { kind: "offer_gone", offer_id: String(rec.id) } }, { apps: ["rider"], dataOnly: true });
     } else if (p.table === "orders" && p.op === "INSERT") {
       const { data: admins } = await SB.from("profiles").select("id").contains("roles", ["admin"]);
       out = await sendTo((admins ?? []).map((a: { id: string }) => a.id), {
@@ -127,7 +141,7 @@ Deno.serve(async (req) => {
     } else if (p.table === "orders" && p.op === "UPDATE" && STATUS[rec.status]) {
       const [title, body] = STATUS[rec.status];
       out = await sendTo([rec.customer_id], { title, body, channel: "updates",
-        data: { kind: "order", order_id: String(rec.id), status: String(rec.status) } });
+        data: { kind: "order", order_id: String(rec.id), status: String(rec.status) } }, { apps: ["customer"] });
     }
   } catch (e) {
     out = { error: String(e) };

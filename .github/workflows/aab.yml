@@ -79,6 +79,7 @@ jobs:
           sed -i 's#<application#<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <uses-permission android:name="android.permission.RECORD_AUDIO"/>\n    <uses-permission android:name="android.permission.CAMERA"/>\n    <application#' $M
           sed -i 's#</manifest>#    <queries><intent><action android:name="android.speech.RecognitionService"/></intent></queries>\n</manifest>#' $M
           cp -r ${{ matrix.res }}/. android/app/src/main/res/
+          python3 native/patch_android.py
           # Play needs target API 35 for new apps
           sed -i -E 's/compileSdkVersion = [0-9]+/compileSdkVersion = 35/; s/targetSdkVersion = [0-9]+/targetSdkVersion = 35/' android/variables.gradle
           echo "android.suppressUnsupportedCompileSdk=35" >> android/gradle.properties

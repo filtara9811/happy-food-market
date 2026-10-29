@@ -6822,7 +6822,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 await P.createChannel({ id: 'orders_ring', name: 'नए ऑर्डर (घंटी)', description: 'दुकान और राइडर के लिए नई रिक्वेस्ट', importance: 5, visibility: 1, sound: 'ring', vibration: true, lights: true });
                 await P.createChannel({ id: 'updates', name: 'ऑर्डर अपडेट', description: 'पार्टनर मिला, रास्ते में, डिलीवर', importance: 4, visibility: 1, vibration: true });
                 await P.removeAllListeners();
-                P.addListener('registration', async t => { PUSH.token = t.value; try { await sb.rpc('save_push_token', { p_token: t.value, p_platform: 'android' }); } catch (e) { } });
+                P.addListener('registration', async t => { PUSH.token = t.value; try { await sb.rpc('save_push_token', { p_token: t.value, p_platform: 'android:' + ((window.HF_APP || {}).role || 'customer') }); } catch (e) { } });
                 P.addListener('registrationError', e => { try { console.warn('push registration error', e); } catch (x) { } });
                 P.addListener('pushNotificationReceived', n => {
                     const d = (n && n.data) || {};
@@ -11065,6 +11065,34 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             document.querySelectorAll('#pSheetBody [data-k]').forEach(c => { const k = c.dataset.k; ZC.messages[k] = { on: c.querySelector('.psw').classList.contains('on'), hi: c.querySelector('[data-f=hi]').value.trim(), en: c.querySelector('[data-f=en]').value.trim() }; });
             closePSheet(); sfx('success'); zcPush();
         }
+
+
+        /* ---------- call-style ring for new requests (native part in shell/native/ring) ---------- */
+        // same id as the Java side: (offerId.hashCode() & 0x3fffffff) + 1000
+        function ringNid(s) { let h = 0; s = String(s || ''); for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0; return (h & 0x3fffffff) + 1000; }
+        async function ringClear(offerId) { try { const P = pushPlugin(); if (P && P.removeDeliveredNotifications) await P.removeDeliveredNotifications({ notifications: [{ id: String(ringNid(offerId)), data: {} }] }); } catch (e) { } try { const P = pushPlugin(); if (P && P.removeAllDeliveredNotifications && !offerId) await P.removeAllDeliveredNotifications(); } catch (e) { } }
+        { const f = rlRespond; rlRespond = async function (id, ok) { const r = await f.apply(this, arguments); ringClear(id); return r; }; }
+        // buttons on the ring: happyfood://offer?id=…&act=accept|reject|open
+        const RINGQ = { busy: false };
+        async function ringHandleUrl(url) {
+            try {
+                if (!url || url.indexOf('happyfood://offer') !== 0 || RINGQ.busy) return;
+                const q = new URL(url.replace('happyfood://', 'https://x/')).searchParams, id = q.get('id'), act = q.get('act') || 'open';
+                RINGQ.busy = true;
+                for (let i = 0; i < 40 && !(LIVE && window.sb && currentUser()); i++) await new Promise(r => setTimeout(r, 250));
+                try { if (!PNL.role || PNL.role !== 'rider') { try { document.getElementById('roleGate').classList.remove('show'); } catch (e) { } openPanel('rider'); } } catch (e) { }
+                if (id && (act === 'accept' || act === 'reject')) { await rlRespond(id, act === 'accept'); }
+                else { try { await rlRefresh(true); } catch (e) { } }
+                ringClear(id);
+            } finally { RINGQ.busy = false; }
+        }
+        (function () {
+            try {
+                const A = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App; if (!A) return;
+                A.addListener('appUrlOpen', e => ringHandleUrl(e && e.url));
+                A.getLaunchUrl && A.getLaunchUrl().then(r => { if (r && r.url) setTimeout(() => ringHandleUrl(r.url), 1200); }).catch(() => { });
+            } catch (e) { }
+        })();
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>

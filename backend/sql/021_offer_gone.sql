@@ -1,0 +1,1 @@
+-- Applied 2026-10-30: trigger push_offer_done on order_offers status change from pending -> send-push sends "offer_gone" to stop the ring.
