@@ -1409,6 +1409,118 @@
         .cr-prev { margin-top:12px; padding:10px 12px; border-radius:12px; font-size:12px; background:color-mix(in srgb,#e2a92c 12%,var(--p-card2)); border:1px dashed rgba(226,169,44,.5); }
         .cr-log { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--p-line); font-size:13px; } .cr-log:last-child { border:0; }
         .cr-log small { display:block; font-size:11px; color:var(--p-mut); } .cr-log b.p { color:#16a34a; } .cr-log b.m { color:#dc2626; }
+
+        /* ===== policies screen ===== */
+        #lgView { position:absolute; inset:0; z-index:140; display:none; flex-direction:column; background:#fbf6ec; color:#2a2115; font-family:'Plus Jakarta Sans','Mukta',sans-serif; }
+        #lgView.show { display:flex; animation:lgIn .28s cubic-bezier(.2,.8,.2,1); }
+        @keyframes lgIn { from { transform:translateY(24px); opacity:0 } }
+        .lg-top { display:flex; align-items:center; gap:12px; padding:calc(env(safe-area-inset-top) + 14px) 16px 10px; }
+        .lg-top h2 { font-family:'Outfit',sans-serif; font-weight:900; font-size:20px; line-height:1.15; }
+        .lg-k { font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#a8741b; }
+        .lg-x,.lg-lang { flex:none; height:40px; min-width:40px; border-radius:14px; display:grid; place-items:center; background:#fff; border:1.5px solid #ecd9a8; color:#8a5c12; font-weight:900; font-size:12px; padding:0 10px; }
+        .lg-lang { margin-left:auto; }
+        .lg-tabs { display:flex; gap:8px; overflow-x:auto; padding:2px 16px 12px; scrollbar-width:none; } .lg-tabs::-webkit-scrollbar { display:none; }
+        .lg-tabs button { flex:none; padding:8px 13px; border-radius:99px; font-size:12.5px; font-weight:800; background:#fff; border:1.5px solid #ecd9a8; color:#6b5534; white-space:nowrap; }
+        .lg-tabs button.on { background:linear-gradient(135deg,#f6c453,#d99a1e); border-color:#d99a1e; color:#2a1a00; box-shadow:0 6px 16px rgba(217,154,30,.3); }
+        .lg-body { flex:1; overflow-y:auto; padding:6px 16px 30px; }
+        .lg-upd { font-size:11.5px; color:#8b7a5c; margin-bottom:10px; }
+        .lg-body section { background:#fff; border:1.5px solid #f0e2bf; border-radius:20px; padding:14px 15px; margin-bottom:10px; }
+        .lg-body h3 { display:flex; align-items:center; gap:9px; font-weight:900; font-size:15px; margin-bottom:6px; }
+        .lg-body h3 span { width:24px; height:24px; flex:none; border-radius:8px; display:grid; place-items:center; background:#fdf0cf; color:#a8741b; font-size:12px; }
+        .lg-body p { font-size:13.5px; line-height:1.65; color:#45392a; } .lg-body p + p { margin-top:4px; }
+        .lg-body b { color:#2a2115; }
+        .lg-ph { background:#fde68a; color:#7a4b00; border-radius:5px; padding:0 4px; }
+        .lg-web { display:block; text-align:center; margin:8px 0 4px; font-size:12.5px; font-weight:800; color:#a8741b; text-decoration:underline; }
+        .lg-del { width:100%; margin:6px 0; padding:13px; border-radius:16px; font-weight:900; color:#fff; background:linear-gradient(135deg,#ef4444,#b91c1c); }
+        body.dark-legal #lgView { }
+        /* ===== footer (design: links · POWERED BY · company · ©) ===== */
+        .lg-foot { text-align:center; padding:18px 6px 10px; }
+        .lg-links { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:4px 10px; margin-bottom:12px; }
+        .lg-links button { font-size:13px; font-weight:700; color:var(--sh-tx,#5a4a33); opacity:.85; }
+        .lg-links i { opacity:.35; font-style:normal; }
+        .lg-pw { font-size:11px; font-weight:800; letter-spacing:.32em; color:#b98a2c; }
+        .lg-co { font-family:'Cormorant Garamond','Playfair Display',Georgia,serif; font-size:23px; font-weight:700; color:var(--sh-tx,#2a2115); margin-top:2px; }
+        .lg-cp { font-size:11.5px; opacity:.6; margin-top:6px; }
+        #drawerContent .lg-foot { padding-top:12px; } #drawerContent .lg-co { color:#f1d48a; font-size:19px; } #drawerContent .lg-links button { color:#cbd5e1; font-size:12px; } #drawerContent .lg-cp { color:#9ca3af; }
+        #pSheetBody .lg-co { color:var(--p-tx); }
+        /* ===== profile menu cards ===== */
+        .lg-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:4px 0 14px; }
+        .lg-card { position:relative; display:flex; flex-direction:column; align-items:center; gap:7px; padding:12px 4px 10px; border-radius:20px; background:var(--sh-card,#fff); border:1.5px solid rgba(226,176,74,.45); font-size:11.5px; }
+        .lg-card b { font-weight:800; line-height:1.15; text-align:center; }
+        .lg-ci { width:42px; height:42px; border-radius:50%; display:grid; place-items:center; background:rgba(226,176,74,.16); border:1.5px solid rgba(226,176,74,.45); color:#b07a12; font-size:16px; }
+        .lg-badge { position:absolute; top:-7px; right:-2px; font-style:normal; font-size:10.5px; font-weight:900; padding:2px 7px; border-radius:99px; background:#fff7e6; color:#c2410c; border:1.5px solid #fdba74; }
+        .lg-badge.ok { background:#16a34a; color:#fff; border-color:#16a34a; }
+        .lg-delrow { width:100%; margin-top:10px; display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:16px; font-size:13.5px; font-weight:800; color:#dc2626; background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.25); }
+        /* ===== permission popup ===== */
+        .pm-wrap { position:absolute; inset:0; z-index:150; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(20,14,4,.45); backdrop-filter:blur(6px); }
+        .pm-wrap.show { display:flex; }
+        .pm-card { width:100%; max-width:380px; background:#fdf8ee; color:#2a2115; border-radius:30px; padding:20px 18px 14px; box-shadow:0 30px 60px rgba(0,0,0,.3); animation:pmIn .32s cubic-bezier(.2,.9,.25,1.2); font-family:'Plus Jakarta Sans','Mukta',sans-serif; }
+        @keyframes pmIn { from { transform:scale(.9) translateY(20px); opacity:0 } }
+        .pm-head { display:flex; gap:13px; align-items:center; margin-bottom:14px; }
+        .pm-head h3 { font-family:'Outfit','Mukta',sans-serif; font-weight:900; font-size:21px; line-height:1.15; }
+        .pm-head p { font-size:13px; color:#7a6a4e; margin-top:2px; }
+        .pm-ic { width:52px; height:52px; flex:none; border-radius:16px; display:grid; place-items:center; font-size:22px; color:#fff; background:linear-gradient(135deg,#f7a43b,#e8761a); box-shadow:0 10px 20px rgba(232,118,26,.35); }
+        .pm-row { display:flex; align-items:center; gap:12px; padding:11px 12px; margin-bottom:8px; background:#fff; border:1.5px solid #f1e3c4; border-radius:20px; }
+        .pm-row b { display:block; font-size:15px; font-weight:800; } .pm-row small { display:block; font-size:12px; color:#7a6a4e; line-height:1.3; }
+        .pm-ri { width:42px; height:42px; flex:none; border-radius:13px; display:grid; place-items:center; font-size:16px; }
+        .pm-sw { flex:none; width:52px; height:30px; border-radius:99px; background:#e8e0cf; position:relative; transition:background .2s; }
+        .pm-sw::after { content:''; position:absolute; left:3px; top:3px; width:24px; height:24px; border-radius:50%; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,.2); transition:transform .22s cubic-bezier(.3,1.4,.5,1); }
+        .pm-sw.on { background:#16a34a; } .pm-sw.on::after { transform:translateX(22px); }
+        .pm-n { text-align:center; font-size:13px; font-weight:800; color:#8b7a5c; margin:6px 0 10px; }
+        .pm-all { width:100%; height:54px; border-radius:20px; font-size:17px; font-weight:900; color:#fff; background:linear-gradient(135deg,#f7a43b,#e8761a); box-shadow:0 12px 24px rgba(232,118,26,.35); }
+        .pm-later { display:block; width:100%; margin-top:6px; padding:9px; font-size:14px; font-weight:800; color:#7a6a4e; }
+        .pm-in { width:100%; border-radius:14px; border:1.5px solid #f1e3c4; padding:10px 12px; font-size:14px; margin-bottom:12px; background:#fff; }
+        /* ===== intro video + login sheets ===== */
+        #auth.au-v2 { padding:0; justify-content:flex-end; background:#000; overflow:hidden; }
+        #auth.au-v2 > .text-center { display:none; }
+        #auStage { position:absolute; inset:0; }
+        #auStage video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+        .au-slides { position:absolute; inset:0; overflow:hidden; }
+        .au-sl { position:absolute; inset:-6%; background-size:cover; background-position:center; opacity:0; animation:auKen 9s linear infinite; }
+        @keyframes auKen { 0% { opacity:0; transform:scale(1.18) translateX(-2%) } 4% { opacity:1 } 16% { opacity:1 } 20% { opacity:0; transform:scale(1.02) translateX(2%) } 100% { opacity:0 } }
+        .au-shade { position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.05) 30%,rgba(0,0,0,.1) 55%,rgba(0,0,0,.75) 100%); }
+        .au-brand { position:absolute; left:18px; right:18px; top:calc(env(safe-area-inset-top) + 24px); display:flex; align-items:center; gap:12px; }
+        .au-logo { width:58px; height:58px; border-radius:18px; display:grid; place-items:center; font-size:30px; background:linear-gradient(135deg,#fff3cf,#f2c55c); box-shadow:0 8px 20px rgba(0,0,0,.35); }
+        .au-t { font-family:'Outfit',sans-serif; font-size:32px; font-weight:900; line-height:1; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.4); } .au-t em { font-style:normal; color:#f6b73c; }
+        .au-s { font-size:11px; letter-spacing:.32em; color:rgba(255,255,255,.85); margin-top:6px; }
+        .au-mute { margin-left:auto; width:46px; height:46px; border-radius:50%; background:rgba(0,0,0,.45); border:1.5px solid rgba(255,255,255,.25); color:#fff; display:grid; place-items:center; }
+        .au-cap { position:absolute; left:20px; right:20px; bottom:200px; color:#fff; font-family:'Outfit','Mukta',sans-serif; font-weight:900; font-size:26px; line-height:1.2; text-shadow:0 3px 16px rgba(0,0,0,.6); opacity:0; }
+        .au-cap.in { animation:auCap .6s ease forwards; } @keyframes auCap { from { opacity:0; transform:translateY(14px) } to { opacity:1; transform:none } }
+        .au-bar { position:absolute; left:22px; right:22px; bottom:calc(env(safe-area-inset-bottom) + 14px); height:4px; border-radius:4px; background:rgba(255,255,255,.3); overflow:hidden; } .au-bar i { display:block; height:100%; width:0; background:#fff; border-radius:4px; transition:width .12s linear; }
+        #auth.au-v2 #auBody { position:relative; z-index:2; }
+        .au-cta { padding:0 18px calc(env(safe-area-inset-bottom) + 34px); display:flex; flex-direction:column; gap:10px; opacity:.0; transform:translateY(16px); transition:all .45s ease; pointer-events:none; }
+        #auth.au-ready .au-cta { opacity:1; transform:none; pointer-events:auto; }
+        #auth:not(.au-ready) .au-cta .au-skip { opacity:1; }
+        .au-cta .au-skip { pointer-events:auto; }
+        #auth:not(.au-ready) .au-cta { opacity:1; transform:none; } #auth:not(.au-ready) .au-cta .au-btn { visibility:hidden; }
+        .au-btn { display:flex; align-items:center; gap:14px; height:62px; padding:0 22px; border-radius:22px; background:rgba(255,255,255,.88); border:2px solid #fff; color:#1d1609; font-size:17px; font-weight:900; backdrop-filter:blur(8px); box-shadow:0 12px 30px rgba(0,0,0,.3); }
+        .au-btn span { flex:1; text-align:center; } .au-btn b { font-size:20px; }
+        .au-skip { align-self:center; font-size:13px; font-weight:800; color:rgba(255,255,255,.85); padding:6px 12px; }
+        #auth.au-sheet-on .au-cap { opacity:0 !important; } #auth.au-sheet-on .au-bar { display:none; }
+        .au-sh { background:#fbf6ec; color:#2a2115; border-radius:34px 34px 0 0; padding:22px 22px calc(env(safe-area-inset-bottom) + 22px); animation:auUp .38s cubic-bezier(.2,.9,.25,1); box-shadow:0 -20px 40px rgba(0,0,0,.25); }
+        @keyframes auUp { from { transform:translateY(100%) } }
+        .au-bk { width:46px; height:46px; border-radius:50%; background:#efe6d3; color:#3b2f1d; display:grid; place-items:center; margin-bottom:12px; }
+        .au-sh h2 { font-family:'Outfit','Mukta',sans-serif; font-size:27px; font-weight:900; line-height:1.15; }
+        .au-sub { font-size:14.5px; color:#6f6250; margin-top:4px; } .au-sub b { color:#2a2115; }
+        .au-ed { color:#e8761a; font-weight:900; margin-left:6px; }
+        .au-row { display:flex; gap:10px; margin-top:18px; }
+        .au-cc { flex:none; display:flex; align-items:center; padding:0 14px; height:58px; border-radius:18px; border:2px solid #ecd9a8; background:#fff; font-weight:800; font-size:16px; }
+        .au-ph { flex:1; min-width:0; height:58px; border-radius:18px; border:2px solid #ecd9a8; background:#fff; padding:0 16px; font-size:17px; font-weight:700; color:#2a2115; outline:none; }
+        .au-ph:focus { border-color:#e8761a; box-shadow:0 0 0 4px rgba(232,118,26,.12); }
+        .au-sh .gold-btn.au-go { margin-top:14px; height:58px; border-radius:20px; font-size:17px; background:linear-gradient(135deg,#f7a43b,#e8761a); color:#fff; transition:opacity .2s; }
+        .au-sh .gold-btn.au-go.dim { opacity:.5; }
+        .au-terms { font-size:13px; color:#6f6250; text-align:center; margin-top:16px; line-height:1.55; } .au-terms a { color:#3b2f1d; text-decoration:underline; font-weight:700; cursor:pointer; }
+        .au-otp { position:relative; display:flex; justify-content:center; gap:12px; margin-top:20px; }
+        .au-otp span { width:64px; height:70px; border-radius:18px; border:2px solid #ecd9a8; background:#fff; display:grid; place-items:center; font-size:28px; font-weight:900; color:#2a2115; transition:all .15s; }
+        .au-otp span.cur { border-color:#e8761a; box-shadow:0 0 0 4px rgba(232,118,26,.12); } .au-otp span.fill { border-color:#d99a1e; }
+        .au-otp input { position:absolute; inset:0; opacity:0; font-size:16px; }
+        .au-rs { display:block; margin:14px auto 0; font-size:15px; font-weight:700; color:#6f6250; } .au-rs:not([disabled]) { color:#e8761a; }
+        .au-demo { font-size:12.5px; color:#8b7a5c; text-align:center; margin-top:12px; } .au-demo b { color:#2a2115; letter-spacing:2px; }
+        .au-sh .au-err { color:#dc2626; font-size:13px; font-weight:700; min-height:18px; margin-top:8px; }
+        .au-dots { display:flex; align-items:center; gap:6px; margin-bottom:10px; } .au-dots i { width:26px; height:6px; border-radius:6px; background:#ecd9a8; } .au-dots i.on { background:#e8761a; } .au-dots span { margin-left:6px; font-size:12px; font-weight:800; color:#8b7a5c; }
+        .au-step input { margin-top:16px; }
+        .au-loc { display:flex; align-items:center; gap:8px; margin-top:10px; font-size:14px; font-weight:800; color:#e8761a; }
+        .au-skip2 { display:block; margin:10px auto 0; font-size:13.5px; font-weight:800; color:#8b7a5c; }
     </style>
 <style>
 html,body{height:100%}
@@ -10363,9 +10475,426 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         { const f = znEdit; znEdit = function (id) { const r = f.apply(this, arguments); try { const z = zGet(id); if (z && !z.parent) { const b = document.createElement('button'); b.className = 'w-full mt-2 py-2.5 rounded-xl font-bold text-[13px]'; b.style.color = '#dc2626'; b.textContent = '🗑️ ' + tr('पूरा ज़ोन हटाएँ (हिस्सों समेत)', 'Delete whole zone (with areas)'); b.onclick = () => openPSheet(tr('ज़ोन हटाएँ?', 'Delete zone?'), `<p class="text-[14px]">${esc(z.name)} ${tr('और उसके सारे हिस्से हट जाएँगे। यहाँ ऑर्डर बंद हो जाएँगे।', 'and all its areas will be removed. Orders stop here.')}</p><div class="grid grid-cols-2 gap-2 mt-4"><button class="zn-sm" onclick="znEdit('${id}')">${tr('रहने दें', 'Cancel')}</button><button class="zn-stop" onclick="znRemove('${id}')">🗑️ ${tr('हटाएँ', 'Delete')}</button></div>`); document.getElementById('pSheetBody').appendChild(b); } } catch (e) { } return r; }; }
 
         /* the "closed / outside zone" screen is for customers only — never over the admin / shop / rider panels */
-        { const f = zoneGate; zoneGate = function (z) { if (!z.ok && (PNL.role || (APP.role && APP.role !== 'customer'))) { const el = document.getElementById('zoneGate'); if (el) el.remove(); return; } return f.apply(this, arguments); }; }
+        { const f = zoneGate; zoneGate = function (z) { const authUp = ['auth', 'splash', 'roleGate'].some(i => { const e = document.getElementById(i); return e && e.classList.contains('show'); }); if (!z.ok && (authUp || PNL.role || (APP.role && APP.role !== 'customer'))) { const el = document.getElementById('zoneGate'); if (el) el.remove(); return; } return f.apply(this, arguments); }; }
         { const f = openPanel; openPanel = function () { const el = document.getElementById('zoneGate'); if (el) el.remove(); return f.apply(this, arguments); }; }
         { const f = closePanel; closePanel = function () { const r = f.apply(this, arguments); setTimeout(() => { try { if (!PNL.role) zoneRecheck(false); } catch (e) { } }, 300); return r; }; }
+
+        /* ---------- legal text (one source for the app and the public web pages) ---------- */
+        const LEGAL_UPDATED = '30 Oct 2026';
+        const LEGAL_DEF = { company: '', brand: 'Happy Food', address: '', city: 'नई दिल्ली', email: '', phone: '', whatsapp: '', gstin: '', cin: '', officer: '', web: 'https://filtara9811.github.io/happy-food-market/' };
+        function legalDocs(C) {
+            const co = C.company || '[कंपनी का पूरा नाम] Pvt Ltd', coE = C.company || '[Company legal name] Pvt Ltd';
+            const ph = (v, hi) => v || hi;
+            const addr = ph(C.address, '[पंजीकृत पता]'), addrE = ph(C.address, '[Registered address]');
+            const mail = ph(C.email, '[support ईमेल]'), mailE = ph(C.email, '[support email]');
+            const tel = ph(C.phone, '[सपोर्ट नंबर]'), telE = ph(C.phone, '[support phone]');
+            const off = ph(C.officer, '[शिकायत अधिकारी का नाम]'), offE = ph(C.officer, '[Grievance officer name]');
+            const B = C.brand || 'Happy Food';
+            return {
+                privacy: {
+                    icon: '🔒',
+                    hi: { title: 'प्राइवेसी पॉलिसी', sections: [
+                        ['हम कौन हैं', [`${B} ऐप (ग्राहक, पार्टनर/राइडर और दुकान ऐप) ${co} चलाती है, पता: ${addr}। यह नीति बताती है कि हम आपकी कौन-सी जानकारी लेते हैं, क्यों लेते हैं और आप उस पर क्या नियंत्रण रखते हैं। यह नीति भारत के डिजिटल व्यक्तिगत डेटा संरक्षण अधिनियम, 2023 और IT नियमों के अनुसार है।`]],
+                        ['हम कौन-सी जानकारी लेते हैं', ['• **खाता:** नाम, मोबाइल नंबर (OTP से जाँचा हुआ), ईमेल (अगर दें)।', '• **पता व लोकेशन:** डिलीवरी का पता और फ़ोन की सटीक लोकेशन — ताकि हम बता सकें कि आपके इलाके में सेवा है या नहीं और सामान सही जगह पहुँचे।', '• **ऑर्डर:** क्या मँगाया, कितने का, कब, भुगतान का तरीका, रेटिंग और शिकायतें।', '• **भुगतान:** ऑनलाइन भुगतान हमारे पेमेंट पार्टनर के ज़रिए होता है। आपका कार्ड/UPI PIN हम कभी नहीं देखते या रखते; हमें सिर्फ़ भुगतान सफल/असफल और ट्रांज़ैक्शन ID मिलती है।', '• **डिवाइस:** नोटिफ़िकेशन भेजने का टोकन, ऐप का वर्शन, फ़ोन का मॉडल और क्रैश की जानकारी।', '• **माइक्रोफ़ोन:** सिर्फ़ जब आप 🎤 बोलकर खोज दबाते हैं। आवाज़ फ़ोन की अपनी सेवा से शब्दों में बदलती है — हम आवाज़ रिकॉर्ड या सेव नहीं करते।', '• **राइडर पार्टनर:** ड्यूटी चालू रहने पर लाइव लोकेशन (ऐप बंद या बैकग्राउंड में होने पर भी), गाड़ी, पहचान व बैंक/UPI जानकारी (KYC और भुगतान के लिए)।', '• **दुकान पार्टनर:** दुकान का नाम, पता, GST/FSSAI (अगर हो), बैंक/UPI जानकारी।']],
+                        ['हम इसका इस्तेमाल क्यों करते हैं', ['• ऑर्डर लेना, पास के राइडर/दुकान तक पहुँचाना और डिलीवर करना', '• OTP से लॉग-इन और धोखाधड़ी रोकना', '• ऑर्डर की ख़बर, राइडर को नई रिक्वेस्ट की घंटी जैसी सूचनाएँ भेजना', '• VIP सिक्के, रिफ़ंड और भुगतान का हिसाब रखना', '• ग्राहक सहायता और शिकायतों का निपटारा', '• ऐप को बेहतर और सुरक्षित बनाना, और क़ानूनी ज़रूरतें पूरी करना (जैसे GST बिल)']],
+                        ['किसके साथ साझा होती है', ['• **डिलीवरी के लिए:** आपका नाम, पता, लोकेशन और नंबर सिर्फ़ उस दुकान और राइडर को दिखता है जो आपका ऑर्डर ले रहे हैं, और सिर्फ़ ऑर्डर पूरा होने तक।', '• **सेवा देने वाली कंपनियाँ:** सर्वर व डेटाबेस (Supabase), नोटिफ़िकेशन (Google Firebase), OTP SMS (Fast2SMS), नक्शे और पेमेंट गेटवे — ये सिर्फ़ हमारा काम करने के लिए जानकारी इस्तेमाल करती हैं।', '• **क़ानून:** अगर सरकार/अदालत क़ानूनन माँगे।', '• **हम आपकी जानकारी कभी बेचते नहीं** और विज्ञापन कंपनियों को नहीं देते।']],
+                        ['सुरक्षा', ['जानकारी एन्क्रिप्टेड कनेक्शन (HTTPS) से जाती है। हर व्यक्ति सिर्फ़ अपना डेटा देख सकता है (row-level security)। API चाबियाँ सर्वर पर बंद रहती हैं और कोई ऐप उन्हें पढ़ नहीं सकता।']],
+                        ['कितने समय तक रखते हैं', ['खाता चालू रहने तक। खाता डिलीट करने पर 30 दिन के अंदर आपकी निजी जानकारी मिटा दी जाती है; सिर्फ़ बिल और लेन-देन का रिकॉर्ड उतने समय रखा जाता है जितना टैक्स/GST क़ानून माँगता है।']],
+                        ['आपके अधिकार', ['• अपनी जानकारी देखना और सुधारना (प्रोफ़ाइल में)', '• नोटिफ़िकेशन या लोकेशन की इजाज़त कभी भी फ़ोन की सेटिंग से बंद करना', '• सहमति वापस लेना और **खाता डिलीट करवाना** — ऐप में प्रोफ़ाइल → "खाता डिलीट करें", या हमें ईमेल करें', '• शिकायत अधिकारी से शिकायत करना (नीचे)']],
+                        ['बच्चे', ['यह सेवा 18 साल से ऊपर के लोगों के लिए है। हम जानबूझकर बच्चों की जानकारी नहीं लेते।']],
+                        ['शिकायत अधिकारी', [`${off}, ${co}, ${addr}। ईमेल: ${mail} • फ़ोन: ${tel}। हम 48 घंटे में शिकायत की पावती देंगे और 30 दिन के अंदर निपटारा करेंगे।`]],
+                        ['बदलाव', ['इस नीति में बदलाव होने पर हम ऐप में बताएँगे। ऊपर लिखी "आख़िरी बदलाव" की तारीख़ देखें।']],
+                    ] },
+                    en: { title: 'Privacy Policy', sections: [
+                        ['Who we are', [`The ${B} apps (customer, partner/rider and shop apps) are operated by ${coE}, ${addrE}. This policy explains what information we collect, why, and the choices you have. It follows India's Digital Personal Data Protection Act, 2023 and the IT Rules.`]],
+                        ['Information we collect', ['• **Account:** name, mobile number (verified by OTP), email (optional).', '• **Address & location:** delivery address and precise device location — to check that we serve your area and to deliver to the right place.', '• **Orders:** items, amounts, times, payment method, ratings and complaints.', '• **Payments:** online payments are processed by our payment partner. We never see or store your card details or UPI PIN; we only receive the payment status and transaction ID.', '• **Device:** push-notification token, app version, phone model and crash information.', '• **Microphone:** only when you tap 🎤 voice search. Speech is turned into text by your phone’s own service — we do not record or store audio.', '• **Rider partners:** live location while on duty (including when the app is closed or in the background), vehicle, identity and bank/UPI details (for KYC and payouts).', '• **Shop partners:** shop name, address, GST/FSSAI (if any), bank/UPI details.']],
+                        ['How we use it', ['• To take orders, route them to a nearby rider/shop and deliver them', '• OTP login and fraud prevention', '• Notifications such as order updates and new-request alerts for riders', '• VIP coins, refunds and payment records', '• Customer support and grievance handling', '• Improving and securing the app, and legal compliance (e.g. GST invoices)']],
+                        ['Who we share it with', ['• **For delivery:** your name, address, location and number are visible only to the shop and rider handling your order, and only until it is completed.', '• **Service providers:** hosting & database (Supabase), notifications (Google Firebase), OTP SMS (Fast2SMS), maps and the payment gateway — they use the data only to provide their service to us.', '• **Law:** when required by a lawful government or court request.', '• **We never sell your data** or share it with advertisers.']],
+                        ['Security', ['Data travels over encrypted connections (HTTPS). Each person can only access their own data (row-level security). API keys stay locked on the server and cannot be read by any app.']],
+                        ['Retention', ['As long as your account is active. When you delete your account, your personal data is erased within 30 days; invoices and transaction records are kept only as long as tax/GST law requires.']],
+                        ['Your rights', ['• View and correct your information (in Profile)', '• Turn off notification or location permission at any time in phone settings', '• Withdraw consent and **delete your account** — in the app: Profile → "Delete account", or email us', '• Complain to our Grievance Officer (below)']],
+                        ['Children', ['The service is meant for people aged 18 and above. We do not knowingly collect children’s data.']],
+                        ['Grievance Officer', [`${offE}, ${coE}, ${addrE}. Email: ${mailE} • Phone: ${telE}. We acknowledge complaints within 48 hours and resolve them within 30 days.`]],
+                        ['Changes', ['If this policy changes we will tell you in the app. See the "last updated" date above.']],
+                    ] },
+                },
+                terms: {
+                    icon: '📜',
+                    hi: { title: 'नियम व शर्तें', sections: [
+                        ['समझौता', [`${B} ऐप इस्तेमाल करके आप इन शर्तों को मानते हैं। यह समझौता आपके और ${co} के बीच है।`]],
+                        ['हमारी भूमिका', [`${B} एक मार्केटप्लेस है: स्थानीय दुकानें सामान बेचती हैं और स्वतंत्र डिलीवरी पार्टनर पहुँचाते हैं। सामान की गुणवत्ता, वज़न और ताज़गी की पहली ज़िम्मेदारी उस दुकान/विक्रेता की है; हम ग्राहक की शिकायत पर रिफ़ंड नीति के अनुसार मदद करते हैं।`]],
+                        ['खाता', ['• आपकी उम्र 18 साल या ज़्यादा होनी चाहिए।', '• एक नंबर पर एक खाता; OTP किसी से साझा न करें।', '• ग़लत जानकारी, फ़र्ज़ी ऑर्डर या दुरुपयोग पर खाता बंद किया जा सकता है।']],
+                        ['सेवा का इलाका और समय', ['सेवा सिर्फ़ चालू ज़ोन में और तय समय पर मिलती है (अभी: सदर बाज़ार – बाड़ा हिंदू राव, दिल्ली)। ज़ोन, समय, कम से कम ऑर्डर और डिलीवरी फ़ीस बदल सकते हैं — ऑर्डर से पहले ऐप में दिखते हैं।']],
+                        ['दाम और भुगतान', ['• ऐप में दिखा दाम ही अंतिम है (टैक्स सहित, जहाँ लागू हो)। डिलीवरी फ़ीस/बारिश शुल्क अलग से साफ़ दिखाए जाते हैं।', '• भुगतान: UPI/ऑनलाइन या कैश ऑन डिलीवरी (जहाँ उपलब्ध)।', '• एक ऑर्डर में सिर्फ़ एक दुकान/कैटेगरी का सामान होता है।']],
+                        ['VIP सिक्के', ['• सिक्के सिर्फ़ डिलीवर हुए ऑर्डर पर मिलते हैं; 1 सिक्का = ₹1 की छूट।', '• कितने % मिलेंगे और बिल का कितना हिस्सा सिक्कों से भर सकते हैं, यह कंपनी तय करती है और बदल सकती है।', '• सिक्के नक़द में नहीं बदलते, किसी और को ट्रांसफ़र नहीं होते; दुरुपयोग पर रद्द हो सकते हैं।', '• ऑर्डर कैंसल होने पर इस्तेमाल हुए सिक्के वापस मिलते हैं।']],
+                        ['डिलीवरी', ['• डिलीवरी पर OTP बताना ज़रूरी है — OTP बताने का मतलब है कि सामान मिल गया।', '• पता ग़लत होने, फ़ोन न उठाने या घर पर न मिलने पर ऑर्डर "डिलीवर न हो सका" माना जा सकता है।']],
+                        ['आपकी ज़िम्मेदारी', ['राइडर/दुकानदार के साथ बदतमीज़ी, धमकी, धोखे से रिफ़ंड लेना या ऐप से छेड़छाड़ मना है।']],
+                        ['पार्टनर (राइडर व दुकान)', ['पार्टनर स्वतंत्र हैं, कर्मचारी नहीं। उनके लिए अलग पार्टनर शर्तें लागू हैं: KYC, कैश जमा करने का समय, देर/कैंसल पर पेनल्टी, और साफ़-सुथरा, सही वज़न का सामान।']],
+                        ['ज़िम्मेदारी की सीमा', [`क़ानून जितनी इजाज़त देता है, उस हद तक किसी ऑर्डर पर ${co} की ज़िम्मेदारी उस ऑर्डर की रक़म तक सीमित है। नेटवर्क, मौसम या दूसरी वजहों से देरी हो सकती है।`]],
+                        ['क़ानून और अदालत', ['ये शर्तें भारत के क़ानून के अनुसार हैं। कोई विवाद हो तो नई दिल्ली की अदालतें सुनवाई करेंगी।']],
+                        ['संपर्क', [`${mail} • ${tel}`]],
+                    ] },
+                    en: { title: 'Terms & Conditions', sections: [
+                        ['Agreement', [`By using the ${B} apps you accept these terms. This is an agreement between you and ${coE}.`]],
+                        ['Our role', [`${B} is a marketplace: local shops sell goods and independent delivery partners deliver them. The shop/seller is primarily responsible for quality, weight and freshness; we help customers under our Refund Policy.`]],
+                        ['Your account', ['• You must be 18 or older.', '• One account per mobile number; never share your OTP.', '• We may suspend accounts for false details, fake orders or misuse.']],
+                        ['Service area and hours', ['Service is available only in active zones and hours (currently Sadar Bazaar – Bara Hindu Rao, Delhi). Zones, hours, minimum order and delivery fee may change and are shown in the app before you order.']],
+                        ['Prices and payment', ['• The price shown in the app is final (inclusive of taxes where applicable). Delivery/rain fees are shown separately.', '• Payment: UPI/online or cash on delivery (where available).', '• One order can contain items from one shop/category only.']],
+                        ['VIP coins', ['• Coins are earned only on delivered orders; 1 coin = ₹1 off.', '• The earn rate and the share of a bill payable by coins are set by the company and may change.', '• Coins have no cash value, are not transferable and may be cancelled for misuse.', '• Coins used on a cancelled order are returned.']],
+                        ['Delivery', ['• Sharing the delivery OTP confirms you received the order.', '• Wrong address, unanswered calls or no one at home may mark the order as undeliverable.']],
+                        ['Your conduct', ['Abuse or threats towards riders/shops, refund fraud or tampering with the app are not allowed.']],
+                        ['Partners (riders and shops)', ['Partners are independent, not employees. Separate partner terms apply: KYC, cash deposit deadlines, penalties for delays/cancellations, and clean, correctly weighed goods.']],
+                        ['Limitation of liability', [`To the extent allowed by law, ${coE}'s liability for any order is limited to the value of that order. Delays may happen due to network, weather or other causes.`]],
+                        ['Governing law', ['These terms are governed by Indian law. Courts at New Delhi have jurisdiction.']],
+                        ['Contact', [`${mailE} • ${telE}`]],
+                    ] },
+                },
+                refund: {
+                    icon: '💸',
+                    hi: { title: 'रिफ़ंड व कैंसलेशन नीति', sections: [
+                        ['ऑर्डर कैंसल करना', ['• **दुकान/राइडर के स्वीकार करने से पहले:** मुफ़्त कैंसल, पूरा पैसा वापस।', '• **स्वीकार होने के बाद, पैक होने से पहले:** कैंसल हो सकता है; कोई कटौती नहीं।', '• **पैक होने या राइडर के निकलने के बाद:** कैंसल नहीं होगा (ताज़ा खाना/सामान बर्बाद होता है)।', '• **हम कैंसल करें** (राइडर न मिले, सामान ख़त्म, ज़ोन बंद): पूरा पैसा वापस।']],
+                        ['रिफ़ंड कब मिलेगा', ['• ग़लत सामान, कम सामान, ख़राब/टूटा या एक्सपायरी वाला सामान।', '• ऑर्डर कटा पर डिलीवर नहीं हुआ।', '• पैसे दो बार कट गए।']],
+                        ['शिकायत कैसे करें', ['ऐप में मेरे ऑर्डर → ऑर्डर → मदद, या WhatsApp पर। खाने-पीने और ताज़ा सामान (दूध, सब्ज़ी, फल) की शिकायत **डिलीवरी के 2 घंटे के अंदर**, बाक़ी सामान की **24 घंटे के अंदर** करें। सामान की फ़ोटो भेजें।']],
+                        ['पैसा कैसे और कब', ['• **ऑनलाइन भुगतान:** उसी खाते/UPI में 5–7 कामकाजी दिन में।', '• **VIP सिक्के में (तुरंत):** चाहें तो रिफ़ंड सिक्कों में तुरंत ले सकते हैं।', '• **कैश ऑन डिलीवरी:** UPI पर या सिक्कों में।', '• ऑर्डर में इस्तेमाल हुए सिक्के, सिक्कों के रूप में वापस आते हैं।']],
+                        ['रिफ़ंड नहीं मिलेगा', ['• स्वाद या पसंद न आने पर (जब सामान सही हो)', '• ग़लत पता/फ़ोन न उठाने से डिलीवरी न हो पाने पर', '• समय-सीमा के बाद की शिकायत पर, या फ़ोटो/सबूत न होने पर', '• बार-बार झूठी शिकायत पर खाता रोका जा सकता है']],
+                        ['संपर्क', [`${mail} • ${tel}`]],
+                    ] },
+                    en: { title: 'Refund & Cancellation Policy', sections: [
+                        ['Cancelling an order', ['• **Before a shop/rider accepts:** free, full refund.', '• **After acceptance, before packing:** you can cancel; no deduction.', '• **After packing or once the rider has left:** cannot be cancelled (fresh food/goods would be wasted).', '• **If we cancel** (no rider, item out of stock, zone closed): full refund.']],
+                        ['When you get a refund', ['• Wrong, missing, damaged or expired items.', '• Charged but not delivered.', '• Charged twice.']],
+                        ['How to report', ['In the app: My Orders → the order → Help, or on WhatsApp. Report food and fresh items (milk, vegetables, fruits) **within 2 hours of delivery**, other items **within 24 hours**, with a photo.']],
+                        ['How and when you are paid', ['• **Online payments:** back to the same account/UPI in 5–7 working days.', '• **As VIP coins (instant):** you may choose an instant refund in coins.', '• **Cash on delivery:** by UPI or as coins.', '• Coins used on an order are returned as coins.']],
+                        ['No refund for', ['• Taste or preference when the item is as described', '• Failed delivery due to a wrong address or unanswered calls', '• Complaints after the time limit or without a photo/proof', '• Repeated false complaints may lead to account suspension']],
+                        ['Contact', [`${mailE} • ${telE}`]],
+                    ] },
+                },
+                delivery: {
+                    icon: '🛵',
+                    hi: { title: 'डिलीवरी नीति', sections: [
+                        ['कहाँ और कब', ['सिर्फ़ चालू ज़ोन में (अभी सदर बाज़ार – बाड़ा हिंदू राव, दिल्ली), ऐप में दिखाए समय पर। ज़ोन के बाहर ऐप "जल्द आ रहे हैं" दिखाता है और आप इंतज़ार-सूची में नाम दे सकते हैं।']],
+                        ['कितनी देर में', ['राइडर की टोकरी में सामान हो तो कुछ ही मिनट; दुकान से आए तो आमतौर पर 20–40 मिनट। दिखाया गया समय अंदाज़ा है — ट्रैफ़िक/मौसम से बदल सकता है। डेयरी की सुबह वाली डिलीवरी तय स्लॉट में होती है।']],
+                        ['फ़ीस', ['डिलीवरी फ़ीस और "इतने से ऊपर फ़्री" की सीमा ज़ोन के हिसाब से ऐप में दिखती है। बारिश/भीड़ के समय थोड़ा अतिरिक्त शुल्क लग सकता है — ऑर्डर से पहले दिखाया जाता है।']],
+                        ['सुरक्षा', ['हर ऑर्डर OTP से डिलीवर होता है। राइडर की लाइव लोकेशन ऐप में दिखती है।']],
+                    ] },
+                    en: { title: 'Delivery Policy', sections: [
+                        ['Where and when', ['Only in active zones (currently Sadar Bazaar – Bara Hindu Rao, Delhi), during the hours shown in the app. Outside a zone the app shows "coming soon" and you can join the waitlist.']],
+                        ['How fast', ['Minutes when the rider already carries the item; usually 20–40 minutes from a shop. Times shown are estimates and may vary with traffic/weather. Morning dairy is delivered in fixed slots.']],
+                        ['Fees', ['Delivery fee and the free-delivery threshold are shown in the app per zone. A small rain/rush fee may apply and is shown before you order.']],
+                        ['Safety', ['Every order is handed over with an OTP. The rider’s live location is shown in the app.']],
+                    ] },
+                },
+                deletion: {
+                    icon: '🗑️',
+                    hi: { title: 'खाता डिलीट करना', sections: [
+                        ['ऐप से', ['प्रोफ़ाइल → **खाता डिलीट करें** → पुष्टि करें। आपका अनुरोध तुरंत दर्ज हो जाता है और आप लॉग-आउट हो जाते हैं।']],
+                        ['ऐप के बिना', [`अपने रजिस्टर्ड नंबर से ${mail} पर ईमेल करें, विषय: "Delete my ${B} account"।`]],
+                        ['क्या मिटता है', ['नाम, नंबर, पते, लोकेशन, नोटिफ़िकेशन टोकन, VIP सिक्के और प्रोफ़ाइल — 30 दिन के अंदर।']],
+                        ['क्या रखा जाता है', ['बिल और लेन-देन का रिकॉर्ड, सिर्फ़ उतने समय तक जितना टैक्स/GST क़ानून माँगता है; फिर वह भी मिटा दिया जाता है। चालू ऑर्डर या बाक़ी रक़म हो तो पहले उसका निपटारा होगा।']],
+                    ] },
+                    en: { title: 'Delete your account', sections: [
+                        ['In the app', ['Profile → **Delete account** → confirm. Your request is recorded immediately and you are logged out.']],
+                        ['Without the app', [`Email ${mailE} from your registered number’s account details with the subject "Delete my ${B} account".`]],
+                        ['What is deleted', ['Name, number, addresses, location, notification tokens, VIP coins and profile — within 30 days.']],
+                        ['What is kept', ['Invoices and transaction records, only as long as tax/GST law requires, then deleted. Any active order or pending dues are settled first.']],
+                    ] },
+                },
+                contact: {
+                    icon: '📞',
+                    hi: { title: 'संपर्क व शिकायत', sections: [
+                        ['कंपनी', [`${co}`, `${addr}`, C.gstin ? `GSTIN: ${C.gstin}` : '', C.cin ? `CIN: ${C.cin}` : ''].filter(Boolean)],
+                        ['सहायता', [`ईमेल: ${mail}`, `फ़ोन / WhatsApp: ${tel}`]],
+                        ['शिकायत अधिकारी', [`${off} — ${mail}। 48 घंटे में पावती, 30 दिन में निपटारा।`]],
+                    ] },
+                    en: { title: 'Contact & Grievance', sections: [
+                        ['Company', [`${coE}`, `${addrE}`, C.gstin ? `GSTIN: ${C.gstin}` : '', C.cin ? `CIN: ${C.cin}` : ''].filter(Boolean)],
+                        ['Support', [`Email: ${mailE}`, `Phone / WhatsApp: ${telE}`]],
+                        ['Grievance Officer', [`${offE} — ${mailE}. Acknowledged within 48 hours, resolved within 30 days.`]],
+                    ] },
+                },
+            };
+        }
+        const LEGAL_ORDER = ['privacy', 'terms', 'refund', 'delivery', 'deletion', 'contact'];
+
+        /* ================= legal pages, company info, footer, permissions, intro video + new login ================= */
+        const LG_KEY = 'hf_legal_v1';
+        const LG = Object.assign({}, LEGAL_DEF, { company: 'Filipra Private Limited', address: 'बाड़ा हिंदू राव, दिल्ली', phone: '+91 95400 68380' }, saGet(LG_KEY, {}));
+        const lgSave = () => saPut(LG_KEY, LG);
+        (async () => { try { if (LIVE && window.sb) { const { data } = await sb.rpc('company_info'); if (data && typeof data === 'object') { Object.assign(LG, data); lgSave(); if (data.intro) { INTRO.video = data.intro; saPut('hf_intro_v1', INTRO); } } } } catch (e) { } })();
+        const lgBuild = () => ((window.HF_APP || {}).build ? '1.0.' + window.HF_APP.build : '4.3');
+        const lgEsc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        const lgMd = s => lgEsc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/(\[[^\]]+\])/g, '<mark class="lg-ph">$1</mark>');
+
+        function openLegal(id) {
+            id = LEGAL_ORDER.indexOf(id) > -1 ? id : 'privacy';
+            const D = legalDocs(LG), en = typeof currentLang !== 'undefined' ? currentLang === 'en' : false;
+            let el = document.getElementById('lgView'); if (!el) { el = document.createElement('div'); el.id = 'lgView'; (document.getElementById('appContainer') || document.body).appendChild(el); }
+            const d = D[id], L = en ? d.en : d.hi;
+            el.innerHTML = `<div class="lg-top"><button class="lg-x" onclick="closeLegal()"><i class="fa-solid fa-arrow-left"></i></button><div class="min-w-0"><p class="lg-k">${en ? 'Policies' : 'नीतियाँ'} • ${lgEsc(LG.brand || 'Happy Food')}</p><h2>${d.icon} ${lgEsc(L.title)}</h2></div><button class="lg-lang" onclick="toggleLanguage();openLegal('${id}')">${en ? 'हिंदी' : 'EN'}</button></div>
+                <div class="lg-tabs">${LEGAL_ORDER.map(k => `<button class="${k === id ? 'on' : ''}" onclick="openLegal('${k}')">${D[k].icon} ${lgEsc((en ? D[k].en : D[k].hi).title)}</button>`).join('')}</div>
+                <div class="lg-body" id="lgBody"><p class="lg-upd">${en ? 'Last updated' : 'आख़िरी बदलाव'}: ${LEGAL_UPDATED}</p>
+                ${L.sections.map((s, i) => `<section><h3><span>${i + 1}</span>${lgEsc(s[0])}</h3>${s[1].map(p => `<p>${lgMd(p)}</p>`).join('')}</section>`).join('')}
+                ${id === 'deletion' && (typeof currentUser === 'function' && currentUser()) ? `<button class="lg-del" onclick="closeLegal();acctDelete()">🗑️ ${en ? 'Delete my account' : 'मेरा खाता डिलीट करें'}</button>` : ''}
+                <a class="lg-web" href="${lgEsc(LG.web + id + '.html')}" target="_blank" rel="noopener">🌐 ${en ? 'Open on the web' : 'वेब पर खोलें'}</a>
+                ${lgFooter(true)}</div>`;
+            el.classList.add('show'); vib(8);
+            const b = document.getElementById('lgBody'); if (b) b.scrollTop = 0;
+            const t = el.querySelector('.lg-tabs .on'); if (t) t.scrollIntoView({ inline: 'center', block: 'nearest' });
+        }
+        function closeLegal() { const el = document.getElementById('lgView'); if (el) el.classList.remove('show'); }
+
+        // footer like the design: links • POWERED BY • company • © year · version · Made in India
+        function lgFooter(noLinks) {
+            const en = typeof currentLang !== 'undefined' && currentLang === 'en';
+            return `<div class="lg-foot">${noLinks ? '' : `<div class="lg-links"><button onclick="openLegal('terms')">${en ? 'Terms & Conditions' : 'नियम व शर्तें'}</button><i>·</i><button onclick="openLegal('privacy')">${en ? 'Privacy Policy' : 'प्राइवेसी पॉलिसी'}</button><i>·</i><button onclick="openLegal('refund')">${en ? 'Refund Policy' : 'रिफ़ंड पॉलिसी'}</button></div>`}
+                <p class="lg-pw">POWERED BY</p><p class="lg-co">${lgEsc(LG.company || 'Filipra Private Limited')}</p>
+                <p class="lg-cp">© 2026 ${lgEsc(LG.brand || 'Happy Food')} · v${lgBuild()} · Made in India 🇮🇳</p></div>`;
+        }
+
+        // customer: drawer link + profile sheet (menu cards, policies footer, delete account, permissions)
+        (function () {
+            const acc = document.getElementById('drawerAccount'); const a = acc && acc.closest('a');
+            if (a && !document.getElementById('drawerLegal')) {
+                const n = a.cloneNode(true); n.removeAttribute('onclick'); n.onclick = e => { e.preventDefault(); toggleDrawer(false); openLegal('privacy'); };
+                n.querySelector('i').className = 'fa-solid fa-scale-balanced w-5 text-gray-400'; const s = n.querySelector('span'); s.id = 'drawerLegal'; s.textContent = 'नीतियाँ व शर्तें';
+                a.after(n);
+            }
+            const tag = document.getElementById('drawerTagline'); if (tag) { const f = document.createElement('div'); f.innerHTML = lgFooter(); tag.parentElement.after(f.firstElementChild); }
+        })();
+        { const f = toggleLanguage; toggleLanguage = function () { const r = f.apply(this, arguments); try { const s = document.getElementById('drawerLegal'); if (s) s.textContent = currentLang === 'en' ? 'Policies & terms' : 'नीतियाँ व शर्तें'; } catch (e) { } return r; }; }
+
+        { const f = openProfileSheet; openProfileSheet = function () {
+            const r = f.apply(this, arguments);
+            try {
+                const x = document.getElementById('psExtra'); if (!x) return r;
+                [...x.querySelectorAll('p')].forEach(p => { if (/Happy Food v\d/.test(p.textContent) && !p.closest('.lg-foot')) p.remove(); });
+                const card = (ic, t, click, badge) => `<button class="lg-card" onclick="${click}">${badge || ''}<span class="lg-ci">${ic}</span><b>${t}</b></button>`;
+                const pon = permCount();
+                x.insertAdjacentHTML('afterbegin', `<div class="lg-cards">
+                    ${card('<i class="fa-solid fa-box"></i>', tr('मेरे ऑर्डर', 'My orders'), "closeProfileSheet(true);showTab('orders')")}
+                    ${card('<i class="fa-solid fa-headset"></i>', tr('मदद', 'Support'), "closeProfileSheet(true);openWhatsAppDirect&&openWhatsAppDirect()")}
+                    ${card('<i class="fa-solid fa-shield-halved"></i>', tr('अनुमतियाँ', 'Permissions'), "closeProfileSheet(true);permOpen(true)", `<em class="lg-badge ${pon === 4 ? 'ok' : ''}">${pon === 4 ? '✓' : pon + '/4'}</em>`)}
+                    ${card('<i class="fa-solid fa-scale-balanced"></i>', tr('नीतियाँ', 'Policies'), "closeProfileSheet(true);openLegal('privacy')")}
+                </div>`);
+                x.insertAdjacentHTML('beforeend', `<button class="lg-delrow" onclick="closeProfileSheet(true);acctDelete()"><i class="fa-solid fa-user-xmark"></i> ${tr('खाता डिलीट करें', 'Delete account')}</button>${lgFooter()}`);
+            } catch (e) { }
+            return r;
+        }; }
+
+        // rider menu sheet gets the same footer
+        { const f = rdMenu; rdMenu = function () { const r = f.apply(this, arguments); try { const b = document.getElementById('pSheetBody'); if (b) { const g = b.querySelector('.rd-grid'); if (g) g.insertAdjacentHTML('beforeend', `<button class="rd-tile" onclick="closePSheet();openLegal('privacy')" style="--bg:#fef3c7"><span class="ic">⚖️</span><b>${tr('नीतियाँ', 'Policies')}</b><small>${tr('शर्तें • प्राइवेसी', 'Terms • Privacy')}</small></button><button class="rd-tile" onclick="closePSheet();permOpen(true)" style="--bg:#dbeafe"><span class="ic">🛡️</span><b>${tr('अनुमतियाँ', 'Permissions')}</b><small>${permCount()}/4 ${tr('चालू', 'on')}</small></button>`); b.insertAdjacentHTML('beforeend', lgFooter()); } } catch (e) { } return r; }; }
+
+        /* ---------- account deletion (Play requirement) ---------- */
+        function acctDelete() {
+            const en = currentLang === 'en';
+            let el = document.getElementById('acDel'); if (!el) { el = document.createElement('div'); el.id = 'acDel'; el.className = 'pm-wrap'; (document.getElementById('appContainer') || document.body).appendChild(el); }
+            el.innerHTML = `<div class="pm-card"><div class="pm-head"><div class="pm-ic" style="background:linear-gradient(135deg,#f87171,#dc2626)">🗑️</div><div><h3>${en ? 'Delete account?' : 'खाता डिलीट करें?'}</h3><p>${en ? 'Your profile, addresses, coins and notifications will be removed within 30 days.' : 'आपकी प्रोफ़ाइल, पते, सिक्के और नोटिफ़िकेशन 30 दिन में हट जाएँगे।'}</p></div></div>
+                <textarea id="acWhy" class="pm-in" rows="2" placeholder="${en ? 'Reason (optional)' : 'वजह (ज़रूरी नहीं)'}"></textarea>
+                <button class="pm-all" style="background:linear-gradient(135deg,#ef4444,#b91c1c)" onclick="acctDeleteGo()">${en ? 'Yes, delete' : 'हाँ, डिलीट करें'}</button>
+                <button class="pm-later" onclick="document.getElementById('acDel').classList.remove('show')">${en ? 'Cancel' : 'रहने दें'}</button>
+                <button class="pm-later" style="font-size:11px" onclick="document.getElementById('acDel').classList.remove('show');openLegal('deletion')">${en ? 'What is deleted?' : 'क्या-क्या हटेगा?'}</button></div>`;
+            el.classList.add('show');
+        }
+        async function acctDeleteGo() {
+            const why = (document.getElementById('acWhy') || {}).value || '';
+            if (LIVE && window.sb) { try { const { error } = await sb.rpc('request_account_deletion', { p_reason: why }); if (error) throw error; try { await sb.auth.signOut(); } catch (e) { } } catch (e) { showToast(tr('अभी नहीं हो पाया — दोबारा कोशिश करें', 'Could not send — try again')); return; } }
+            else { try { const us = usersGet(); delete us[lsGet('hf_session')]; lsSet('hf_users', JSON.stringify(us)); } catch (e) { } }
+            document.getElementById('acDel').classList.remove('show');
+            showToast(tr('✅ अनुरोध मिल गया — 30 दिन में खाता हट जाएगा', '✅ Request received — account removed within 30 days'));
+            setTimeout(() => logoutUser(), 900);
+        }
+
+        /* ---------- permission popup (design: "<name> जी, अनुमति दें") ---------- */
+        const PERM_KEY = 'hf_perm_v1';
+        const PERM = Object.assign({ location: false, notif: false, camera: false, mic: false, asked: false }, saGet(PERM_KEY, {}));
+        const permSave = () => saPut(PERM_KEY, PERM);
+        const permCount = () => ['location', 'notif', 'camera', 'mic'].filter(k => PERM[k]).length;
+        const PERM_LIST = [
+            ['location', 'fa-location-dot', '#e8efff', '#3b6fd8', ['लोकेशन', 'Location'], ['आस-पास की दुकानें, राइडर और दूरी', 'Nearby shops, riders and distance']],
+            ['notif', 'fa-bell', '#fff1dc', '#d9822b', ['नोटिफ़िकेशन', 'Notifications'], ['ऑर्डर की ख़बर और रिक्वेस्ट की घंटी', 'Order updates and request alerts']],
+            ['camera', 'fa-camera', '#f1e8ff', '#8b5cf6', ['कैमरा', 'Camera'], ['QR स्कैन और फ़ोटो के लिए', 'QR scan and photos']],
+            ['mic', 'fa-microphone', '#e3f7ee', '#16a34a', ['माइक्रोफ़ोन', 'Microphone'], ['बोलकर खोजें', 'Voice search']],
+        ];
+        async function permAsk(k) {
+            try {
+                const C = window.Capacitor, P = C && C.Plugins;
+                if (k === 'location') {
+                    if (P && P.Geolocation && P.Geolocation.requestPermissions) { const r = await P.Geolocation.requestPermissions(); return /granted/.test(JSON.stringify(r)); }
+                    return await new Promise(res => navigator.geolocation ? navigator.geolocation.getCurrentPosition(() => res(true), e => res(e && e.code !== 1), { timeout: 8000 }) : res(false));
+                }
+                if (k === 'notif') {
+                    if (P && P.PushNotifications) { const r = await P.PushNotifications.requestPermissions(); return r.receive === 'granted'; }
+                    if (window.Notification) { const r = await Notification.requestPermission(); return r === 'granted'; }
+                    return false;
+                }
+                if (k === 'camera' || k === 'mic') {
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return false;
+                    const s = await navigator.mediaDevices.getUserMedia(k === 'camera' ? { video: true } : { audio: true });
+                    s.getTracks().forEach(t => t.stop()); return true;
+                }
+            } catch (e) { return false; }
+            return false;
+        }
+        function permOpen(manual) {
+            const u = typeof currentUser === 'function' ? currentUser() : null, nm = u && u.name ? u.name.split(' ')[0] : '';
+            let el = document.getElementById('permPop'); if (!el) { el = document.createElement('div'); el.id = 'permPop'; el.className = 'pm-wrap'; (document.getElementById('appContainer') || document.body).appendChild(el); }
+            const n = permCount();
+            el.innerHTML = `<div class="pm-card"><div class="pm-head"><div class="pm-ic"><i class="fa-solid fa-shield-halved"></i></div><div><h3>${nm ? tr(`${lgEsc(nm)} जी, अनुमति दें`, `${lgEsc(nm)}, allow access`) : tr('अनुमति दें', 'Allow access')}</h3><p>${tr('ताकि ऐप आपके लिए ठीक से चले', 'So the app works properly for you')}</p></div></div>
+                ${PERM_LIST.map(p => `<div class="pm-row"><span class="pm-ri" style="background:${p[2]};color:${p[3]}"><i class="fa-solid ${p[1]}"></i></span><div class="flex-1 min-w-0"><b>${tr(p[4][0], p[4][1])}</b><small>${tr(p[5][0], p[5][1])}</small></div><button class="pm-sw ${PERM[p[0]] ? 'on' : ''}" onclick="permToggle('${p[0]}')" aria-label="${p[4][1]}"></button></div>`).join('')}
+                <p class="pm-n">${n}/4 ${tr('चालू', 'on')}</p>
+                <button class="pm-all" onclick="permAll()">✓ ${n === 4 ? tr('हो गया', 'Done') : tr('सब Allow करें', 'Allow all')}</button>
+                <button class="pm-later" onclick="permClose()">${n === 4 ? tr('बंद करें', 'Close') : tr('बाद में', 'Later')}</button></div>`;
+            el.classList.add('show'); PERM.asked = true; permSave();
+        }
+        async function permToggle(k) {
+            if (PERM[k]) { showToast(tr('बंद करने के लिए फ़ोन की Settings → Apps → Happy Food में जाएँ', 'To turn off, use phone Settings → Apps → Happy Food')); return; }
+            const ok = await permAsk(k); PERM[k] = ok; permSave(); vib(12);
+            if (!ok) showToast(tr('अनुमति नहीं मिली — फ़ोन की Settings से चालू कर सकते हैं', 'Not allowed — you can enable it in phone Settings'));
+            permOpen(true);
+        }
+        async function permAll() {
+            if (permCount() === 4) return permClose();
+            for (const p of PERM_LIST) if (!PERM[p[0]]) { PERM[p[0]] = await permAsk(p[0]); permSave(); permOpen(true); }
+            if (permCount() === 4) { sfx && sfx('success'); setTimeout(permClose, 700); }
+        }
+        function permClose() { const el = document.getElementById('permPop'); if (el) el.classList.remove('show'); }
+        // ask once, right after the first login
+        { const f = afterAuth; afterAuth = function () { const r = f.apply(this, arguments); try { if (!PERM.asked) setTimeout(() => permOpen(false), 1400); } catch (e) { } return r; }; }
+
+        /* ---------- intro video → mobile number → OTP → (sign-up steps) ---------- */
+        const INTRO = Object.assign({ video: '', sec: 9 }, saGet('hf_intro_v1', {}));
+        function introStage() {
+            const au = document.getElementById('auth'); if (!au) return;
+            au.classList.add('au-v2');
+            if (!document.getElementById('auStage')) {
+                const pics = Object.values(typeof FOODIMG !== 'undefined' ? FOODIMG : {}).slice(0, 6);
+                au.insertAdjacentHTML('afterbegin', `<div id="auStage">${INTRO.video ? `<video id="auVid" src="${lgEsc(INTRO.video)}" autoplay muted playsinline preload="auto"></video>` : `<div class="au-slides">${pics.map((p, i) => `<div class="au-sl" style="background-image:url('${p}');animation-delay:${i * 1.5}s"></div>`).join('')}</div>`}
+                    <div class="au-shade"></div>
+                    <div class="au-brand"><div class="au-logo">😊</div><div><p class="au-t">Happy <em>Food</em></p><p class="au-s">ORDER · DELIVER · SMILE</p></div><button class="au-mute" id="auMute" onclick="introMute()"><i class="fa-solid fa-volume-xmark"></i></button></div>
+                    <div class="au-cap" id="auCap"></div>
+                    <div class="au-bar"><i id="auBar"></i></div></div>`);
+            }
+        }
+        function introMute() { const v = document.getElementById('auVid'), b = document.getElementById('auMute'); if (v) { v.muted = !v.muted; b.innerHTML = `<i class="fa-solid ${v.muted ? 'fa-volume-xmark' : 'fa-volume-high'}"></i>`; } else showToast(tr('इंट्रो वीडियो एडमिन से जोड़ें', 'Add the intro video from admin')); }
+        function introPlay() {
+            const bar = document.getElementById('auBar'), v = document.getElementById('auVid'), cap = document.getElementById('auCap');
+            const lines = [['सदर बाज़ार की दुकानें, आपके फ़ोन में', 'Sadar Bazaar shops, in your phone'], ['मिनटों में डिलीवरी 🛵', 'Delivered in minutes 🛵'], ['हर ऑर्डर पर VIP सिक्के 🪙', 'VIP coins on every order 🪙']];
+            clearInterval(introPlay.t); let t0 = Date.now(), li = -1;
+            const done = () => { clearInterval(introPlay.t); if (bar) bar.style.width = '100%'; if (AUTH.step === 'intro') { document.getElementById('auth').classList.add('au-ready'); } };
+            introPlay.t = setInterval(() => {
+                const dur = v && v.duration && isFinite(v.duration) ? v.duration : INTRO.sec, el = v && v.duration ? v.currentTime : (Date.now() - t0) / 1000;
+                if (bar) bar.style.width = Math.min(100, el / dur * 100) + '%';
+                const i = Math.min(lines.length - 1, Math.floor(el / dur * lines.length)); if (cap && i !== li) { li = i; cap.textContent = tr(lines[i][0], lines[i][1]); cap.classList.remove('in'); void cap.offsetWidth; cap.classList.add('in'); }
+                if (el >= dur - .05 || (v && v.ended)) done();
+            }, 120);
+            if (v) { v.currentTime = 0; v.play().catch(() => { }); v.onended = done; v.onerror = () => { INTRO.sec = 6; }; }
+        }
+        // the splash leads straight into the intro for people who are not logged in
+        splashStart = function () { splashHide(); authOpen('intro'); };
+        { const f = splashShow; splashShow = function () { const r = f.apply(this, arguments); try { if (!currentUser()) { clearTimeout(splashShow.t2); splashShow.t2 = setTimeout(() => { if (document.getElementById('splash').classList.contains('show')) splashStart(); }, 3300); } } catch (e) { } return r; }; }
+        authBack = function () { if (AUTH.step === 'otp') authOpen('phone'); else if (AUTH.step === 'signup') { if ((AUTH.su || 0) > 0) { AUTH.su--; authRender(); } else authOpen('otp'); } else if (AUTH.step === 'phone') authOpen('intro'); };
+        const OTP_TPL = () => `<div class="au-otp" onclick="document.getElementById('otpBox').focus()">${[0, 1, 2, 3].map(i => `<span id="ob${i}"></span>`).join('')}<input id="otpBox" type="tel" inputmode="numeric" autocomplete="one-time-code" maxlength="4" oninput="this.value=this.value.replace(/\\D/g,'');otpPaint();if(this.value.length===4)authVerify()"></div>`;
+        function otpPaint() { const v = (document.getElementById('otpBox') || {}).value || ''; for (let i = 0; i < 4; i++) { const s = document.getElementById('ob' + i); if (s) { s.textContent = v[i] || ''; s.className = v.length === i ? 'cur' : (v[i] ? 'fill' : ''); } } const b = document.querySelector('#auBody .au-go'); if (b) b.classList.toggle('dim', v.length < 4); }
+        const AU_TERMS = () => `<p class="au-terms">${tr('आगे बढ़कर आप हमारी', 'By continuing, you agree to our')} <a onclick="openLegal('terms')">${tr('नियम व शर्तें', 'Terms & Conditions')}</a> ${tr('और', 'and')} <a onclick="openLegal('privacy')">${tr('प्राइवेसी पॉलिसी', 'Privacy Policy')}</a> ${tr('से सहमत होते हैं', '')}</p>`;
+        authRender = function () {
+            introStage();
+            const au = document.getElementById('auth'), b = document.getElementById('auBody'); clearInterval(AUTH.t);
+            au.classList.toggle('au-sheet-on', AUTH.step !== 'intro'); au.classList.remove('au-ready');
+            const back = document.getElementById('auBack'); if (back) back.style.display = 'none';
+            const bk = `<button class="au-bk" onclick="authBack()"><i class="fa-solid fa-chevron-left"></i></button>`;
+            if (AUTH.step === 'intro') {
+                b.innerHTML = `<div class="au-cta"><button class="au-btn" onclick="authOpen('phone')"><i class="fa-solid fa-phone"></i><span>${tr('मोबाइल नंबर से लॉग-इन', 'Login with Mobile Number')}</span><b>→</b></button>
+                    <button class="au-skip" onclick="authOpen('phone')">${tr('वीडियो छोड़ें', 'Skip video')} ›</button></div>`;
+                introPlay(); return;
+            }
+            if (AUTH.step === 'phone') {
+                b.innerHTML = `<div class="au-sh">${bk}<h2>${tr('मोबाइल नंबर डालें', 'Enter Mobile Number')}</h2><p class="au-sub">${tr('हम आपको 4 अंकों का OTP भेजेंगे', "We'll send you a 4-digit OTP")}</p>
+                    <div class="au-row"><div class="au-cc">🇮🇳 +91</div><input id="aPhone" class="au-ph" type="tel" inputmode="numeric" maxlength="10" placeholder="${tr('मोबाइल नंबर डालें', 'Enter mobile number')}" value="${AUTH.phone}" oninput="this.value=this.value.replace(/\\D/g,'');document.querySelector('#auBody .au-go').classList.toggle('dim',this.value.length<10)" onkeydown="if(event.key==='Enter')authSendOtp()"></div>
+                    <div class="au-err" id="auErr"></div>
+                    <button class="gold-btn au-go ${AUTH.phone.length === 10 ? '' : 'dim'}" onclick="authSendOtp()">${tr('OTP भेजें', 'Send OTP')}</button>${AU_TERMS()}</div>`;
+                setTimeout(() => { const i = document.getElementById('aPhone'); i && i.focus(); }, 300); return;
+            }
+            if (AUTH.step === 'otp') {
+                b.innerHTML = `<div class="au-sh">${bk}<h2>${tr('OTP डालें', 'Enter OTP')}</h2><p class="au-sub">${tr('OTP भेजा गया', 'OTP sent to')} <b>+91 ${AUTH.phone.slice(0, 5)} ${AUTH.phone.slice(5)}</b> <a class="au-ed" onclick="authOpen('phone')">${tr('बदलें', 'Edit')}</a></p>
+                    ${OTP_TPL()}<div class="au-err" id="auErr"></div>
+                    <button id="auResend" class="au-rs" disabled></button>
+                    <button class="gold-btn au-go dim" onclick="authVerify()">${tr('वेरिफ़ाई करें और लॉग-इन', 'Verify & Login')}</button>
+                    ${LIVE ? '' : `<p class="au-demo">${tr('डेमो: OTP है', 'Demo: OTP is')} <b>${DEMO_OTP}</b> · ${tr('नया नंबर = साइन-अप, पुराना = सीधा लॉग-इन', 'new number = sign up, existing = straight login')}</p>`}</div>`;
+                let s = 30; const rs = document.getElementById('auResend');
+                const tick = () => { if (s > 0) { rs.textContent = tr('OTP दोबारा भेजें', 'Resend OTP in') + ' 00:' + String(s).padStart(2, '0'); rs.disabled = true; s--; } else { rs.textContent = tr('OTP दोबारा भेजें', 'Resend OTP'); rs.disabled = false; rs.onclick = () => (LIVE && typeof authResend === 'function') ? authResend() : authOpen('otp'); clearInterval(AUTH.t); } };
+                tick(); AUTH.t = setInterval(tick, 1000);
+                setTimeout(() => { const o = document.getElementById('otpBox'); o && o.focus(); otpPaint(); }, 250); return;
+            }
+            // sign-up: 3 short steps, all fields stay in the page so the save code reads them
+            const st = AUTH.su = Math.max(0, Math.min(2, AUTH.su || 0)), keep = AUTH.sv || (AUTH.sv = {});
+            const step = (i, html) => `<div class="au-step ${st === i ? '' : 'hidden'}">${html}</div>`;
+            b.innerHTML = `<div class="au-sh">${bk}<div class="au-dots">${[0, 1, 2].map(i => `<i class="${i <= st ? 'on' : ''}"></i>`).join('')}<span>${st + 1}/3</span></div>
+                <h2>${[tr('आपका नाम क्या है?', "What's your name?"), tr('आप कहाँ रहते हैं?', 'Where do you live?'), tr('ईमेल (ज़रूरी नहीं)', 'Email (optional)')][st]}</h2>
+                <p class="au-sub">${[tr('पहली बार आए हैं — स्वागत है! 🎉', 'First time here — welcome! 🎉'), tr('ताकि हम बता सकें कि आपके इलाके में सेवा है', 'So we can check we serve your area'), tr('बिल और ऑफ़र ईमेल पर पाने के लिए', 'To get bills and offers by email')][st]}</p>
+                ${step(0, `<input id="sName" class="au-ph w-full" placeholder="${tr('जैसे: राहुल शर्मा', 'e.g. Rahul Sharma')}" value="${lgEsc(keep.n || '')}" oninput="AUTH.sv.n=this.value">`)}
+                ${step(1, `<input id="sCity" class="au-ph w-full" placeholder="${tr('जैसे: बाड़ा हिंदू राव, दिल्ली', 'e.g. Bara Hindu Rao, Delhi')}" value="${lgEsc(keep.c || '')}" oninput="AUTH.sv.c=this.value"><button class="au-loc" onclick="suLocate()"><i class="fa-solid fa-location-crosshairs"></i> ${tr('मेरी अभी की जगह लें', 'Use my current location')}</button>`)}
+                ${step(2, `<input id="sEmail" class="au-ph w-full" type="email" placeholder="name@gmail.com" value="${lgEsc(keep.e || '')}" oninput="AUTH.sv.e=this.value">`)}
+                <div class="au-err" id="auErr"></div>
+                <button class="gold-btn au-go" onclick="suNext()">${st < 2 ? tr('आगे', 'Next') + ' →' : tr('खाता बनाएँ', 'Create account')}</button>
+                ${st === 2 ? `<button class="au-skip2" onclick="document.getElementById('sEmail').value='';AUTH.sv.e='';suNext()">${tr('छोड़ें और खाता बनाएँ', 'Skip & create account')}</button>` : ''}</div>`;
+            setTimeout(() => { const i = document.querySelector('#auBody .au-step:not(.hidden) input'); i && i.focus(); }, 250);
+        };
+        function suNext() {
+            const v = id => (document.getElementById(id).value || '').trim();
+            if (AUTH.su === 0) { if (v('sName').length < 2) return authErr(tr('अपना नाम लिखिए', 'Please enter your name')); AUTH.su = 1; return authRender(); }
+            if (AUTH.su === 1) { if (!v('sCity')) return authErr(tr('शहर / इलाका लिखिए', 'Please enter your city / area')); AUTH.su = 2; return authRender(); }
+            authSignup();
+        }
+        function suLocate() {
+            if (!navigator.geolocation) return;
+            navigator.geolocation.getCurrentPosition(p => { const c = document.getElementById('sCity'); c.value = c.value || `📍 ${p.coords.latitude.toFixed(4)}, ${p.coords.longitude.toFixed(4)}`; AUTH.sv.c = c.value; PERM.location = true; permSave(); showToast(tr('📍 जगह मिल गई', '📍 Location found')); }, () => showToast(tr('लोकेशन की अनुमति दें', 'Allow location access')), { timeout: 8000 });
+        }
+        { const f = authOpen; authOpen = function (step) { if (step === 'signup' && AUTH.step !== 'signup') { AUTH.su = 0; AUTH.sv = {}; } return f.apply(this, arguments); }; }
+
+        /* ---------- admin: company & policies ---------- */
+        AMENU.forEach(g => { if (g[0] === 'सिस्टम') g[2].splice(1, 0, ['legal', 'fa-scale-balanced', 'कंपनी व नीतियाँ', 'Company & policies']); });
+        ATITLE.legal = ['कंपनी व नीतियाँ', 'Company & policies'];
+        { const f = aGo; aGo = function (k) { window.__aLegal = k === 'legal'; if (k === 'legal') { window.__aZones = false; window.__aCoins = false; aDrawer(false); setTab('settings'); return; } return f.apply(this, arguments); }; }
+        { const f = adminSettings; adminSettings = function () { if (window.__aLegal) return adminLegal(); return f.apply(this, arguments); }; }
+        { const f = aShell; aShell = function () { const r = f.apply(this, arguments); try { if (window.__aLegal && PNL.tab.admin === 'settings') { const t = document.getElementById('aTitle'); if (t) t.textContent = tr('कंपनी व नीतियाँ', 'Company & policies'); } else if (PNL.tab.admin !== 'settings') window.__aLegal = false; } catch (e) { } return r; }; }
+        async function lgAdminPull() {
+            if (!LIVE || !window.sb || window.__lgPulled) return; window.__lgPulled = true;
+            try { const { data } = await sb.rpc('admin_deletion_requests'); window.__lgDel = data || []; renderPanel(true); } catch (e) { }
+        }
+        function adminLegal() {
+            lgAdminPull();
+            const D = legalDocs(LG), miss = ['company', 'address', 'email', 'phone', 'officer'].filter(k => !LG[k]);
+            const f = (k, l, ph, t) => `<div><label class="plabel">${l}</label><input id="lg_${k}" ${t ? `type="${t}"` : ''} value="${lgEsc(LG[k] || '')}" placeholder="${ph}"></div>`;
+            const dels = window.__lgDel || [];
+            return `<div class="pcard p-4"><p class="pttl text-[16px]">🏢 ${tr('कंपनी की जानकारी', 'Company details')}</p><p class="text-[11.5px] pmut mt-0.5">${tr('यही जानकारी सभी नीतियों, ऐप के नीचे "Powered by" और Play Store वेब पेज पर दिखेगी।', 'Shown in every policy, the "Powered by" footer and the Play Store web pages.')}</p>
+                ${miss.length ? `<div class="zn-alert mt-2">⚠️ ${tr('ये भरना बाकी है', 'Still missing')}: ${miss.map(k => ({ company: tr('कंपनी', 'company'), address: tr('पता', 'address'), email: tr('ईमेल', 'email'), phone: tr('फ़ोन', 'phone'), officer: tr('शिकायत अधिकारी', 'grievance officer') }[k])).join(', ')}</div>` : `<div class="zn-alert mt-2" style="background:rgba(22,163,74,.12);color:#16a34a;border-color:rgba(22,163,74,.35)">✅ ${tr('सब भरा है — Play Store के लिए तैयार', 'All filled — ready for Play Store')}</div>`}
+                <div class="grid gap-2.5 mt-3">${f('company', tr('कंपनी का पूरा नाम', 'Company legal name'), 'Filipra Private Limited')}${f('brand', tr('ऐप/ब्रांड का नाम', 'App / brand'), 'Happy Food')}${f('address', tr('पंजीकृत पता', 'Registered address'), tr('पूरा पता, पिन कोड', 'Full address, PIN'))}
+                <div class="grid grid-cols-2 gap-2.5">${f('email', tr('सपोर्ट ईमेल', 'Support email'), 'support@…', 'email')}${f('phone', tr('सपोर्ट फ़ोन', 'Support phone'), '+91 …', 'tel')}</div>
+                ${f('officer', tr('शिकायत अधिकारी का नाम', 'Grievance officer'), tr('जैसे — आशु क़ुरैशी', 'e.g. Ashu Qureshi'))}
+                <div class="grid grid-cols-2 gap-2.5">${f('gstin', 'GSTIN', tr('अगर है', 'if any'))}${f('cin', 'CIN', tr('कंपनी नंबर', 'company no.'))}</div>
+                ${f('web', tr('नीतियों का वेब पता', 'Policies web address'), 'https://…/')}</div>
+                <button class="pbtn w-full mt-3" onclick="lgSaveForm()"><i class="fa-solid fa-floppy-disk"></i> ${tr('सेव करें', 'Save')}</button></div>
+            ${sectionHead(tr('नीतियाँ (देखें)', 'Policies (preview)'))}
+            <div class="grid grid-cols-2 gap-2.5">${LEGAL_ORDER.map(k => `<button class="pcard p-3 text-left" onclick="openLegal('${k}')"><p class="text-[20px]">${D[k].icon}</p><p class="font-extrabold text-[13px] mt-1">${lgEsc(D[k].hi.title)}</p><p class="text-[10.5px] pmut">${D[k].hi.sections.length} ${tr('हिस्से', 'sections')}</p></button>`).join('')}</div>
+            ${sectionHead(tr('🎬 इंट्रो वीडियो (लॉग-इन से पहले)', '🎬 Intro video (before login)'))}
+            <div class="pcard p-3.5"><label class="plabel">${tr('वीडियो का लिंक (MP4, 10–20 सेकंड, खड़ा 9:16)', 'Video link (MP4, 10–20 s, vertical 9:16)')}</label><input id="lg_video" value="${lgEsc(INTRO.video || '')}" placeholder="https://…/intro.mp4">
+                <p class="text-[11px] pmut mt-1.5">${tr('ख़ाली रहे तो खाने की तस्वीरों वाला स्लाइड-शो चलेगा।', 'Empty = a food photo slideshow plays.')}</p>
+                <button class="zn-sm w-full mt-2" onclick="lgSaveVideo()">💾 ${tr('वीडियो सेव करें', 'Save video')}</button></div>
+            ${sectionHead(tr('🗑️ खाता डिलीट के अनुरोध', '🗑️ Account deletion requests'))}
+            <div class="pcard p-3.5">${dels.length ? dels.slice(0, 20).map(d => `<div class="cr-log"><span>${lgEsc(d.name || '')} ${lgEsc(d.phone || '')}<small>${lgEsc(d.reason || '')} • ${new Date(d.at).toLocaleDateString('en-IN')}</small></span><b class="${d.status === 'done' ? 'p' : 'm'}">${d.status === 'done' ? tr('हो गया', 'done') : tr('बाकी', 'pending')}</b></div>`).join('') : `<p class="pmut text-[12px]">${tr('अभी कोई अनुरोध नहीं', 'No requests yet')}</p>`}<p class="text-[11px] pmut mt-2">${tr('Play Store का नियम: 30 दिन के अंदर खाता हटाना है।', 'Play rule: remove within 30 days.')}</p></div>
+            <div class="h-10"></div>`;
+        }
+        async function lgSaveForm() {
+            ['company', 'brand', 'address', 'email', 'phone', 'officer', 'gstin', 'cin', 'web'].forEach(k => { const e = document.getElementById('lg_' + k); if (e) LG[k] = e.value.trim(); });
+            if (LG.web && !/\/$/.test(LG.web)) LG.web += '/';
+            lgSave(); renderPanel(true); sfx('success');
+            if (LIVE && window.sb) { try { const { error } = await sb.rpc('admin_set_company_info', { p: LG }); pToast(error ? tr('फ़ोन में सेव ✅', 'Saved on phone ✅') : tr('सर्वर पर सेव ✅ — सबके ऐप में लागू', 'Saved on server ✅')); } catch (e) { pToast(tr('फ़ोन में सेव ✅', 'Saved on phone ✅')); } } else pToast(tr('सेव हो गया ✅', 'Saved ✅'));
+        }
+        function lgSaveVideo() { INTRO.video = (document.getElementById('lg_video').value || '').trim(); LG.intro = INTRO.video; saPut('hf_intro_v1', INTRO); lgSave(); const st = document.getElementById('auStage'); if (st) st.remove(); if (LIVE && window.sb) sb.rpc('admin_set_company_info', { p: LG }).then(() => pToast(tr('इंट्रो वीडियो सर्वर पर सेव ✅', 'Intro video saved on server ✅')), () => { }); else pToast(tr('इंट्रो वीडियो सेव ✅', 'Intro video saved ✅')); }
+
+        // after login / role pick, check the zone once the customer screen is really showing
+        { const f = authLogin; authLogin = function () { const r = f.apply(this, arguments); setTimeout(() => { try { zoneRecheck(false); } catch (e) { } }, 1500); return r; }; }
+
+        { const f = enterRole; enterRole = function (r) { const x = f.apply(this, arguments); if (r === 'customer') setTimeout(() => { try { zoneRecheck(false); } catch (e) { } }, 900); return x; }; }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
