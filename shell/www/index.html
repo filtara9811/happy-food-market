@@ -1399,6 +1399,16 @@
         .zg-alt { width:100%; height:44px; margin-top:8px; border-radius:14px; background:var(--sh-card); border:1px solid var(--sh-line); font-weight:800; font-size:13px; color:var(--sh-tx); } .zg-link { margin-top:10px; font-size:12px; font-weight:800; color:#a8741b; }
         #netBar { position:fixed; left:12px; right:12px; top:calc(10px + env(safe-area-inset-top)); z-index:140; padding:10px 14px; border-radius:14px; font-size:12.5px; font-weight:800; text-align:center; transform:translateY(-140%); transition:transform .35s cubic-bezier(.2,1.2,.3,1); box-shadow:0 10px 24px rgba(0,0,0,.25); }
         #netBar.show { transform:none; } #netBar.off { background:#1f2937; color:#fde68a; } #netBar.on { background:#16a34a; color:#fff; }
+        .cr-hero { background:linear-gradient(135deg,color-mix(in srgb,#e2a92c 18%,var(--p-card)),var(--p-card)); border-color:rgba(226,169,44,.45); }
+        .cr-hero.off { filter:saturate(.3); }
+        .cr-coin { width:46px; height:46px; border-radius:50%; display:grid; place-items:center; font-size:24px; background:radial-gradient(circle at 35% 30%,#ffe9a8,#e2a92c 60%,#a8741b); box-shadow:0 6px 16px rgba(226,169,44,.35); }
+        .cr-ic { width:38px; height:38px; border-radius:12px; display:grid; place-items:center; background:var(--p-card2); font-size:18px; }
+        .cr-img { width:38px; height:38px; border-radius:12px; object-fit:contain; background:var(--p-card2); padding:4px; }
+        .cr-tag { font-size:10px; font-weight:900; padding:2px 7px; border-radius:99px; background:rgba(22,163,74,.14); color:#16a34a; margin-left:4px; vertical-align:middle; }
+        .cr-tag.off { background:rgba(239,68,68,.12); color:#dc2626; }
+        .cr-prev { margin-top:12px; padding:10px 12px; border-radius:12px; font-size:12px; background:color-mix(in srgb,#e2a92c 12%,var(--p-card2)); border:1px dashed rgba(226,169,44,.5); }
+        .cr-log { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--p-line); font-size:13px; } .cr-log:last-child { border:0; }
+        .cr-log small { display:block; font-size:11px; color:var(--p-mut); } .cr-log b.p { color:#16a34a; } .cr-log b.m { color:#dc2626; }
     </style>
 <style>
 html,body{height:100%}
@@ -9552,7 +9562,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const l = coinLoc(); if (l) { COIN.bal = l.bal || 0; COIN.hist = l.hist || []; } else { COIN.bal = 0; COIN.hist = []; coinAdd(25, 'bonus'); }
             coinPaint();
         }
-        const coinMax = sub => Math.min(COIN.bal, Math.floor(sub * 0.2));
+        const coinMax = sub => Math.min(COIN.bal, Math.floor(sub * crRedeemPct(window.CART_ST) / 100));
         function coinUseNow() { return COIN.use && (COIN.server || !LIVE) ? coinMax(calculateSubtotal()) : 0; }
         function coinPaint() {
             const cb = document.getElementById('cartCountBadge'); if (!cb) return; const wrap = cb.parentNode.parentNode;
@@ -9577,14 +9587,14 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 hfFreeBar();
                 const tp = document.getElementById('totalPrice'), dr = document.getElementById('discountRow'); if (!tp || !dr) return r;
                 let row = document.getElementById('coinRow');
-                const sub = calculateSubtotal(), can = coinMax(sub), show = cart.length && COIN.bal > 0 && (COIN.server || !LIVE) && !(APP.role && APP.role !== 'customer');
+                const sub = calculateSubtotal(), can = coinMax(sub), show = cart.length && COIN.bal > 0 && crOn(window.CART_ST) && (COIN.server || !LIVE) && !(APP.role && APP.role !== 'customer');
                 if (!row) { row = document.createElement('div'); row.id = 'coinRow'; dr.parentElement.insertBefore(row, dr); }
                 const use = coinUseNow();
                 row.innerHTML = show ? `<label class="cn-row ${COIN.use ? 'on' : ''}"><span>🪙 ${tr(`${COIN.bal} सिक्के — <b>₹${can}</b> बचाएँ`, `${COIN.bal} coins — save <b>₹${can}</b>`)}</span><input type="checkbox" ${COIN.use ? 'checked' : ''} onchange="COIN.use=this.checked;vib(12);renderCartModalItems()"><i></i></label>${use ? `<div class="flex justify-between text-green-500 font-semibold"><span>${tr('VIP सिक्के', 'VIP coins')}</span><span>-₹${use}</span></div>` : ''}` : '';
                 if (use) { const t = Number(String(tp.innerText).replace(/[^\d.]/g, '')) || 0; tp.innerText = '₹' + Math.max(0, t - use); }
                 let earn = document.getElementById('coinEarn'); if (!earn) { earn = document.createElement('p'); earn.id = 'coinEarn'; tp.parentElement.after(earn); }
-                const back = Math.max(1, Math.floor((sub) * 0.05));
-                earn.innerHTML = cart.length && (COIN.server || !LIVE) ? `🪙 ${tr(`इस ऑर्डर पर <b>${back}</b> सिक्के मिलेंगे`, `You’ll earn <b>${back}</b> coins on this order`)}` : '';
+                const back = crEarn(sub, window.CART_ST);
+                earn.innerHTML = cart.length && back > 0 && (COIN.server || !LIVE) ? `🪙 ${tr(`इस ऑर्डर पर <b>${back}</b> सिक्के मिलेंगे`, `You’ll earn <b>${back}</b> coins on this order`)}` : '';
             } catch (e) { }
             return r;
         }; }
@@ -9600,7 +9610,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         }; }
         { const f = setSt; setSt = function (o, st) {
             const was = o && o.status, r = f.apply(this, arguments);
-            try { if (!LIVE && o && st === 'delivered' && was !== 'delivered' && !o.remote && !o.coined && ordersHistory.some(h => h.id === o.id)) { o.coined = true; const c = Math.max(1, Math.floor((o.total || 0) * 0.05)); coinAdd(c, 'earn'); setTimeout(() => showToast(tr(`🪙 ${c} VIP सिक्के मिले!`, `🪙 You earned ${c} coins!`)), 1800); } } catch (e) { }
+            try { if (!LIVE && o && st === 'delivered' && was !== 'delivered' && !o.remote && !o.coined && ordersHistory.some(h => h.id === o.id)) { o.coined = true; const c = crEarn(o.total || 0, o.store || window.CART_ST); if (!c) return r; coinAdd(c, 'earn'); setTimeout(() => showToast(tr(`🪙 ${c} VIP सिक्के मिले!`, `🪙 You earned ${c} coins!`)), 1800); } } catch (e) { }
             return r;
         }; }
 
@@ -10191,7 +10201,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 <div class="grid grid-cols-2 gap-2.5 mt-3">${num('rainFee', tr('बारिश मोड +₹', 'Rain mode +₹'), z.rainFee)}<div><label class="plabel">${tr('रोक का संदेश', 'Pause message')}</label><input id="zn_msg" value="${esc(z.msg || '')}" placeholder="${tr('जैसे — बारिश के कारण 1 घंटा', 'e.g. 1 hour due to rain')}"></div></div>`
                 : `<label class="plabel mt-3">${tr('नोट (राइडर के लिए)', 'Note (for riders)')}</label><input id="zn_note" value="${esc(z.note || '')}">`}
                 <button class="pbtn w-full mt-4" onclick="znSaveEdit('${z.id}')"><i class="fa-solid fa-floppy-disk"></i> ${tr('सेव करें', 'Save')}</button>
-                ${!main ? `<button class="w-full mt-2 py-2.5 rounded-xl font-bold text-[13px]" style="color:#dc2626" onclick="ZN.zones=ZN.zones.filter(x=>x.id!=='${z.id}');znSave();closePSheet();renderPanel(true)">🗑️ ${tr('हिस्सा हटाएँ', 'Delete area')}</button>` : ''}`);
+                ${!main ? `<button class="w-full mt-2 py-2.5 rounded-xl font-bold text-[13px]" style="color:#dc2626" onclick="znRemove('${z.id}')">🗑️ ${tr('हिस्सा हटाएँ', 'Delete area')}</button>` : ''}`);
         }
         function znHere() { try { navigator.geolocation.getCurrentPosition(p => { document.getElementById('zn_lat').value = p.coords.latitude.toFixed(5); document.getElementById('zn_lng').value = p.coords.longitude.toFixed(5); pToast('📍 ' + tr('जगह भर दी', 'Location filled')); }, () => pToast(tr('लोकेशन नहीं मिली — अनुमति दें', 'No location — allow access'))); } catch (e) { } }
         async function znSaveEdit(id) {
@@ -10235,6 +10245,126 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             if (LIVE && window.sb && sec.length) (async () => { let ok = true; for (const s of sec) { try { const { error } = await sb.rpc('admin_set_secret', { p_key: s[0].toLowerCase().replace(/[^a-z0-9_.]/g, '_'), p_value: s[1] }); if (error) ok = false; } catch (e) { ok = false; } } pToast(ok ? tr('🔒 चाबी सर्वर पर सुरक्षित — ऐप में कभी नहीं दिखेगी', '🔒 Key stored on the server — never shown in apps') : tr('चाबी सिर्फ़ फ़ोन में मास्क होकर रखी — सर्वर वाला हिस्सा लगना बाकी', 'Key masked on phone — server part not set up yet')); })();
             return r;
         }; }
+
+        /* ---------- admin: VIP coin rules (per store %, on/off, edit/remove, manual give/take) ---------- */
+        const CR_KEY = 'hf_coinrules_v1';
+        const CR = saGet(CR_KEY, null) || { on: true, rules: { '*': { enabled: true, earn_pct: 5, max_redeem_pct: 20, min_order: 0, max_earn: null } }, log: [] };
+        const crSave = () => saPut(CR_KEY, CR);
+        function crRule(sid) { const r = (sid && CR.rules[sid]) || CR.rules['*'] || { enabled: true, earn_pct: 5, max_redeem_pct: 20, min_order: 0 }; return r; }
+        function crOn(sid) { const r = crRule(sid); return CR.on && r.enabled; }
+        function crEarn(total, sid) { const r = crRule(sid); if (!crOn(sid) || (total || 0) < (r.min_order || 0) || !(r.earn_pct > 0)) return 0; let e = Math.floor((total || 0) * r.earn_pct / 100); if (r.max_earn) e = Math.min(e, r.max_earn); return Math.max(0, e); }
+        function crRedeemPct(sid) { const r = crRule(sid); return crOn(sid) ? (r.max_redeem_pct || 0) : 0; }
+        // customers read the live rules from the server (public read)
+        async function crLoadLive() {
+            if (!LIVE || !window.sb) return;
+            try { const { data } = await sb.from('coin_rules').select('*'); if (data && data.length) { CR.rules = {}; data.forEach(r => CR.rules[r.store] = { enabled: r.enabled, earn_pct: +r.earn_pct, max_redeem_pct: +r.max_redeem_pct, min_order: r.min_order, max_earn: r.max_earn }); crSave(); try { coinPaint(); } catch (e) { } } } catch (e) { }
+            try { const { data } = await sb.from('app_settings').select('value').eq('key', 'coins_enabled').maybeSingle(); if (data) { CR.on = data.value !== false; crSave(); } } catch (e) { }
+        }
+        setTimeout(crLoadLive, 1200);
+        // hide the coin chip when coins are switched off
+        { const f = coinPaint; coinPaint = function () { const r = f.apply(this, arguments); try { const ch = document.getElementById('coinChip'); if (ch && !CR.on) ch.style.display = 'none'; } catch (e) { } return r; }; }
+
+        AMENU.forEach(g => { if (g[0] === 'पैसा') g[2].push(['coins', 'fa-coins', 'VIP सिक्के', 'VIP coins']); });
+        ATITLE.coins = ['VIP सिक्के', 'VIP coins'];
+        { const f = aGo; aGo = function (k) { window.__aCoins = k === 'coins'; if (k === 'coins') { window.__aZones = false; aDrawer(false); setTab('settings'); return; } return f.apply(this, arguments); }; }
+        { const f = adminSettings; adminSettings = function () { if (window.__aCoins) return adminCoins(); return f.apply(this, arguments); }; }
+        { const f = aShell; aShell = function () { const r = f.apply(this, arguments); try { if (window.__aCoins && PNL.tab.admin === 'settings') { const t = document.getElementById('aTitle'); if (t) t.textContent = tr('VIP सिक्के', 'VIP coins'); } else if (PNL.tab.admin !== 'settings') window.__aCoins = false; } catch (e) { } return r; }; }
+
+        async function crAdminPull() {
+            if (!LIVE || !window.sb || window.__crPulled) return; window.__crPulled = true;
+            try { const { data, error } = await sb.rpc('admin_coin_rules'); if (!error && data) { CR.on = !!data.enabled; CR.rules = {}; (data.rules || []).forEach(r => CR.rules[r.store] = { enabled: r.enabled, earn_pct: +r.earn_pct, max_redeem_pct: +r.max_redeem_pct, min_order: r.min_order, max_earn: r.max_earn }); CR.stats = { issued: data.issued, redeemed: data.redeemed, balance: data.balance }; crSave(); renderPanel(true); } } catch (e) { }
+        }
+        function crStats() {
+            if (CR.stats) return CR.stats;
+            const h = (typeof COIN !== 'undefined' && COIN.hist) || [];
+            return { issued: h.filter(x => x.delta > 0).reduce((s, x) => s + x.delta, 0), redeemed: h.filter(x => x.reason === 'redeem').reduce((s, x) => s - x.delta, 0), balance: (typeof COIN !== 'undefined' && COIN.bal) || 0 };
+        }
+        function adminCoins() {
+            crAdminPull();
+            const d = CR.rules['*'], st = crStats();
+            const rTxt = r => `${r.earn_pct}% ${tr('वापस', 'back')} • ${tr('बिल का', 'up to')} ${r.max_redeem_pct}% ${tr('तक सिक्कों से', 'payable')}${r.min_order ? ` • ₹${r.min_order}+` : ''}${r.max_earn ? ` • ${tr('अधिकतम', 'max')} ${r.max_earn}` : ''}`;
+            return `<div class="pcard p-4 cr-hero ${CR.on ? '' : 'off'}"><div class="flex items-center justify-between gap-3"><div class="flex items-center gap-3"><div class="cr-coin">🪙</div><div><p class="pttl text-[17px] leading-tight">${tr('VIP सिक्का सिस्टम', 'VIP coin system')}</p><p class="text-[12px] pmut">${CR.on ? tr('चालू — ग्राहकों को सिक्के मिल रहे हैं', 'On — customers are earning') : tr('बंद — न सिक्के मिलेंगे, न कटेंगे', 'Off — no earning, no spending')}</p></div></div>${sw(CR.on, 'crMaster()')}</div>
+                <div class="grid grid-cols-3 gap-2 mt-3 text-center"><div class="pcard2 p-2"><p class="pnum text-[16px]">${st.issued}</p><p class="text-[10px] pmut">${tr('कुल दिए', 'Issued')}</p></div><div class="pcard2 p-2"><p class="pnum text-[16px]">${st.redeemed}</p><p class="text-[10px] pmut">${tr('इस्तेमाल हुए', 'Redeemed')}</p></div><div class="pcard2 p-2"><p class="pnum text-[16px]">₹${st.balance}</p><p class="text-[10px] pmut">${tr('ग्राहकों के पास', 'Outstanding')}</p></div></div></div>
+            ${sectionHead(tr('सभी दुकानों का नियम (डिफ़ॉल्ट)', 'Default rule (all stores)'))}
+            <button class="pcard p-3.5 w-full text-left flex items-center gap-3" onclick="crEdit('*')"><span class="cr-ic">⭐</span><div class="flex-1 min-w-0"><p class="font-extrabold text-[14px]">${tr('डिफ़ॉल्ट', 'Default')} ${d.enabled ? '' : '— ' + tr('बंद', 'off')}</p><p class="text-[11.5px] pmut">${rTxt(d)}</p></div><i class="fa-solid fa-pen pmut"></i></button>
+            ${sectionHead(tr('कैटेगरी के हिसाब से', 'By category'), `<span class="text-[11px] pmut">${tr('अलग नियम न हो तो डिफ़ॉल्ट लगेगा', 'No rule = default')}</span>`)}
+            <div class="space-y-2.5">${STORES.map(s => { const r = CR.rules[s.id]; return `<div class="pcard p-3 flex items-center gap-3"><img src="${s.img}" class="cr-img" alt=""><div class="flex-1 min-w-0"><p class="font-extrabold text-[14px]">${tr(s.name.hi, s.name.en)} ${r ? (r.enabled ? '<span class="cr-tag">' + tr('अलग नियम', 'Own rule') + '</span>' : '<span class="cr-tag off">' + tr('सिक्के बंद', 'Coins off') + '</span>') : ''}</p><p class="text-[11.5px] pmut truncate">${r ? (r.enabled ? rTxt(r) : tr('इस दुकान पर सिक्के न मिलेंगे न कटेंगे', 'No coins in this store')) : tr('डिफ़ॉल्ट', 'Default') + ' — ' + d.earn_pct + '%'}</p></div>
+                ${r ? `<button class="zn-sm px-3" onclick="crEdit('${s.id}')">✏️</button><button class="zn-sm px-3" style="color:#dc2626" onclick="crRemove('${s.id}')">🗑️</button>` : `<button class="zn-sm px-3" onclick="crEdit('${s.id}')">➕ ${tr('नियम', 'Rule')}</button>`}</div>`; }).join('')}</div>
+            ${sectionHead(tr('ग्राहक को सिक्के दें / काटें', 'Give / take coins'))}
+            <button class="pbtn w-full" onclick="crAdjust()"><i class="fa-solid fa-hand-holding-dollar"></i> ${tr('हाथ से सिक्के दें या काटें', 'Adjust a customer’s coins')}</button>
+            ${(CR.log || []).length ? `<div class="pcard p-3 mt-2.5">${CR.log.slice(0, 8).map(l => `<div class="cr-log"><span>${esc(l.who)}<small>${esc(l.note || '')}</small></span><b class="${l.delta > 0 ? 'p' : 'm'}">${l.delta > 0 ? '+' : ''}${l.delta}</b></div>`).join('')}</div>` : ''}
+            <p class="text-[11px] pmut mt-3 leading-relaxed">💡 ${tr('1 सिक्का = ₹1। सिक्के सिर्फ़ डिलीवर हुए ऑर्डर पर मिलते हैं; ऑर्डर कैंसल हो तो इस्तेमाल हुए सिक्के वापस हो जाते हैं। यहाँ जो बदलेंगे वही सर्वर और सबके ऐप में लागू होगा।', '1 coin = ₹1. Earned only on delivered orders; refunded if cancelled. Changes here apply on the server and in every app.')}</p>
+            <div class="h-10"></div>`;
+        }
+        async function crPush(fn, args, okMsg) {
+            if (!LIVE || !window.sb) { pToast(okMsg || tr('सेव हो गया ✅', 'Saved ✅')); return; }
+            try { const { error } = await sb.rpc(fn, args); pToast(error ? tr('फ़ोन में सेव ✅ — सर्वर से जुड़ना बाकी', 'Saved on phone ✅ — server not reachable') : tr('सर्वर पर सेव ✅ — सबके ऐप में लागू', 'Saved on server ✅ — applies to all apps')); } catch (e) { pToast(tr('फ़ोन में सेव ✅', 'Saved on phone ✅')); }
+        }
+        function crMaster() { CR.on = !CR.on; crSave(); vib(25); renderPanel(true); try { coinPaint(); } catch (e) { } crPush('admin_set_coins_enabled', { p_on: CR.on }, CR.on ? tr('🪙 सिक्के चालू', '🪙 Coins on') : tr('सिक्के बंद', 'Coins off')); }
+        function crEdit(sid) {
+            const base = CR.rules[sid] || CR.rules['*'], s = STORES.find(x => x.id === sid);
+            const name = sid === '*' ? tr('डिफ़ॉल्ट (सभी दुकानें)', 'Default (all stores)') : tr(s.name.hi, s.name.en);
+            const chips = (id, vals, cur) => `<div class="zn-chips" id="${id}c">${vals.map(v => `<button class="${+cur === v ? 'on' : ''}" onclick="document.getElementById('${id}').value=${v};[...this.parentElement.children].forEach(b=>b.classList.remove('on'));this.classList.add('on')">${v}%</button>`).join('')}</div>`;
+            openPSheet('🪙 ' + name, `
+                <label class="plabel flex items-center justify-between">${tr('इस पर सिक्के चालू', 'Coins on here')} ${sw(base.enabled !== false, "this.classList.toggle('on')")}</label>
+                <label class="plabel mt-3">${tr('हर ऑर्डर पर कितने % सिक्के वापस', 'Coins back per order (%)')}</label>
+                ${chips('cr_earn', [0.5, 1, 2, 3, 5, 10], base.earn_pct)}<input id="cr_earn" inputmode="decimal" value="${base.earn_pct}" class="mt-2">
+                <label class="plabel mt-3">${tr('बिल का ज़्यादा से ज़्यादा कितना % सिक्कों से भर सकते हैं', 'Max % of bill payable by coins')}</label>
+                ${chips('cr_red', [5, 10, 20, 30, 50], base.max_redeem_pct)}<input id="cr_red" inputmode="decimal" value="${base.max_redeem_pct}" class="mt-2">
+                <div class="grid grid-cols-2 gap-2.5 mt-3"><div><label class="plabel">${tr('कम से कम ऑर्डर ₹', 'Min order ₹')}</label><input id="cr_min" inputmode="numeric" value="${base.min_order || 0}"></div><div><label class="plabel">${tr('एक ऑर्डर पर अधिकतम सिक्के', 'Max coins / order')}</label><input id="cr_max" inputmode="numeric" value="${base.max_earn || ''}" placeholder="${tr('कोई सीमा नहीं', 'No limit')}"></div></div>
+                <div class="cr-prev" id="crPrev"></div>
+                <button class="pbtn w-full mt-4" onclick="crSaveEdit('${sid}')"><i class="fa-solid fa-floppy-disk"></i> ${tr('सेव करें', 'Save')}</button>
+                ${sid !== '*' && CR.rules[sid] ? `<button class="w-full mt-2 py-2.5 rounded-xl font-bold text-[13px]" style="color:#dc2626" onclick="crRemove('${sid}')">🗑️ ${tr('अलग नियम हटाएँ (डिफ़ॉल्ट लगेगा)', 'Remove rule (use default)')}</button>` : ''}`);
+            const prev = () => { const e = parseFloat(document.getElementById('cr_earn').value) || 0, r = parseFloat(document.getElementById('cr_red').value) || 0; document.getElementById('crPrev').innerHTML = `🧾 ${tr('₹500 के ऑर्डर पर', 'On a ₹500 order')}: <b>${Math.floor(500 * e / 100)}</b> ${tr('सिक्के मिलेंगे', 'coins earned')} • ${tr('अगले ऑर्डर में', 'next order up to')} <b>₹${Math.floor(500 * r / 100)}</b> ${tr('तक सिक्कों से', 'by coins')}`; };
+            ['cr_earn', 'cr_red'].forEach(id => { const el = document.getElementById(id); el.addEventListener('input', prev); document.getElementById(id + 'c').addEventListener('click', prev); }); prev();
+        }
+        function crSaveEdit(sid) {
+            const v = id => document.getElementById(id).value, clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+            const sws = document.querySelector('#pSheetBody .psw');
+            const r = { enabled: sws ? sws.classList.contains('on') : true, earn_pct: clamp(parseFloat(v('cr_earn')) || 0, 0, 50), max_redeem_pct: clamp(parseFloat(v('cr_red')) || 0, 0, 100), min_order: Math.max(0, parseInt(v('cr_min')) || 0), max_earn: parseInt(v('cr_max')) || null };
+            CR.rules[sid] = r; crSave(); closePSheet(); renderPanel(true); sfx('success'); try { coinPaint(); } catch (e) { }
+            crPush('admin_upsert_coin_rule', { p: Object.assign({ store: sid }, r, { max_earn: r.max_earn == null ? '' : r.max_earn }) });
+        }
+        function crRemove(sid) {
+            if (sid === '*') return;
+            const s = STORES.find(x => x.id === sid);
+            openPSheet(tr('नियम हटाएँ?', 'Remove rule?'), `<p class="text-[14px]">${tr(`${s.name.hi} का अलग नियम हटेगा। उसके बाद यहाँ डिफ़ॉल्ट (${CR.rules['*'].earn_pct}%) लगेगा।`, `${s.name.en}'s own rule will be removed; the default (${CR.rules['*'].earn_pct}%) applies.`)}</p>
+                <div class="grid grid-cols-2 gap-2 mt-4"><button class="zn-sm" onclick="closePSheet()">${tr('रहने दें', 'Cancel')}</button><button class="zn-stop" onclick="delete CR.rules['${sid}'];crSave();closePSheet();renderPanel(true);crPush('admin_remove_coin_rule',{p_store:'${sid}'})">🗑️ ${tr('हटाएँ', 'Remove')}</button></div>`);
+        }
+        function crAdjust() {
+            const m = {}; DB.orders.forEach(o => { const k = o.phone || o.customer; if (k && !m[k]) m[k] = { name: o.customer, phone: o.phone, uid: o.customer_id || o.customerId || '' }; });
+            const list = Object.values(m);
+            openPSheet(tr('सिक्के दें / काटें', 'Give / take coins'), `
+                <label class="plabel">${tr('ग्राहक', 'Customer')}</label><select id="cra_who">${list.map((c, i) => `<option value="${i}">${esc(c.name || '')} ${c.phone ? '• ' + esc(c.phone) : ''}</option>`).join('')}</select>
+                <label class="plabel mt-3">${tr('कितने सिक्के', 'How many coins')}</label><div class="pseg" id="cra_sign"><button class="on" data-v="1">➕ ${tr('दें', 'Give')}</button><button data-v="-1">➖ ${tr('काटें', 'Take')}</button></div>
+                <input id="cra_n" inputmode="numeric" placeholder="50" class="mt-2">
+                <label class="plabel mt-3">${tr('वजह', 'Reason')}</label><input id="cra_note" placeholder="${tr('जैसे — देर से डिलीवरी की माफ़ी', 'e.g. sorry for late delivery')}">
+                <button class="pbtn w-full mt-4" onclick="crAdjustSave()">${tr('लागू करें', 'Apply')}</button>`);
+            window.__craList = list;
+            document.querySelectorAll('#cra_sign button').forEach(b => b.onclick = () => { document.querySelectorAll('#cra_sign button').forEach(x => x.classList.remove('on')); b.classList.add('on'); });
+        }
+        async function crAdjustSave() {
+            const c = (window.__craList || [])[+document.getElementById('cra_who').value], n = parseInt(document.getElementById('cra_n').value) || 0, sign = +(document.querySelector('#cra_sign .on') || {}).dataset.v || 1, note = document.getElementById('cra_note').value.trim();
+            if (!c || !n) { pToast(tr('ग्राहक और सिक्के भरें', 'Pick a customer and amount')); return; }
+            const delta = n * sign; CR.log = [{ who: c.name || c.phone, delta, note, at: Date.now() }].concat(CR.log || []).slice(0, 40); crSave();
+            if (!LIVE && typeof coinAdd === 'function') coinAdd(delta, 'bonus');   // demo: the phone's customer is the one adjusted
+            closePSheet(); renderPanel(true);
+            if (LIVE && window.sb) { if (!c.uid) { pToast(tr('इस ग्राहक की सर्वर ID नहीं मिली', 'Customer id not found on server')); return; } crPush('admin_adjust_coins', { p_user: c.uid, p_delta: delta, p_note: note }); }
+            else pToast(`🪙 ${delta > 0 ? '+' : ''}${delta} ${tr('सिक्के', 'coins')} — ${c.name || c.phone}`);
+        }
+
+        /* zones: remove a main zone too (server keeps history as archived) */
+        async function znRemove(id) {
+            const z = zGet(id); if (!z) return;
+            ZN.zones = ZN.zones.filter(x => x.id !== id && x.parent !== id); znSave(); closePSheet(); renderPanel(true);
+            if (LIVE && window.sb) { try { const { error } = await sb.rpc('admin_remove_zone', { p_id: id }); pToast(error ? tr('फ़ोन से हटाया — सर्वर से जुड़ना बाकी', 'Removed on phone') : tr('🗑️ ज़ोन हटाया — सबके ऐप में लागू', '🗑️ Zone removed everywhere')); } catch (e) { } } else pToast(tr('🗑️ हटा दिया', '🗑️ Removed'));
+        }
+        { const f = znEdit; znEdit = function (id) { const r = f.apply(this, arguments); try { const z = zGet(id); if (z && !z.parent) { const b = document.createElement('button'); b.className = 'w-full mt-2 py-2.5 rounded-xl font-bold text-[13px]'; b.style.color = '#dc2626'; b.textContent = '🗑️ ' + tr('पूरा ज़ोन हटाएँ (हिस्सों समेत)', 'Delete whole zone (with areas)'); b.onclick = () => openPSheet(tr('ज़ोन हटाएँ?', 'Delete zone?'), `<p class="text-[14px]">${esc(z.name)} ${tr('और उसके सारे हिस्से हट जाएँगे। यहाँ ऑर्डर बंद हो जाएँगे।', 'and all its areas will be removed. Orders stop here.')}</p><div class="grid grid-cols-2 gap-2 mt-4"><button class="zn-sm" onclick="znEdit('${id}')">${tr('रहने दें', 'Cancel')}</button><button class="zn-stop" onclick="znRemove('${id}')">🗑️ ${tr('हटाएँ', 'Delete')}</button></div>`); document.getElementById('pSheetBody').appendChild(b); } } catch (e) { } return r; }; }
+
+        /* the "closed / outside zone" screen is for customers only — never over the admin / shop / rider panels */
+        { const f = zoneGate; zoneGate = function (z) { if (!z.ok && (PNL.role || (APP.role && APP.role !== 'customer'))) { const el = document.getElementById('zoneGate'); if (el) el.remove(); return; } return f.apply(this, arguments); }; }
+        { const f = openPanel; openPanel = function () { const el = document.getElementById('zoneGate'); if (el) el.remove(); return f.apply(this, arguments); }; }
+        { const f = closePanel; closePanel = function () { const r = f.apply(this, arguments); setTimeout(() => { try { if (!PNL.role) zoneRecheck(false); } catch (e) { } }, 300); return r; }; }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>

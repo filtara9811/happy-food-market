@@ -1,0 +1,4 @@
+-- Applied 2026-10-29: admin-editable coin rules (per store %, on/off, archive), manual give/take,
+-- zone archive instead of delete, Sadar Bazaar zone live with 3 micro-zones.
+-- Functions: coin_rule_for, admin_coin_rules, admin_set_coins_enabled, admin_upsert_coin_rule,
+-- admin_remove_coin_rule, admin_adjust_coins, admin_remove_zone, admin_zones; place_order + coins_on_status read coin_rules.
