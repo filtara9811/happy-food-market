@@ -1380,6 +1380,25 @@
         .wm-card { padding:12px; border-radius:16px; background:var(--p-card); border:1.5px solid var(--p-gold); margin-bottom:10px; } .wm-card.rd { border-color:var(--p-ok); }
         .wm-code { margin-top:8px; padding:8px 10px; border-radius:10px; background:var(--p-card2); font-size:11.5px; font-weight:700; display:flex; justify-content:space-between; align-items:center; } .wm-code b { font:900 20px 'Outfit',sans-serif; letter-spacing:4px; color:var(--p-gold); }
         .wm-shopbox { margin-bottom:12px; } .wm-shopbox .t { font:900 15px 'Outfit',sans-serif; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+        /* ===== patch46 ===== */
+        .zn-map { width:100%; height:auto; margin-top:12px; border-radius:16px; background:var(--p-card2); color:var(--p-tx); }
+        .zn-alert { margin-top:8px; padding:8px 10px; border-radius:10px; font-size:12px; font-weight:800; background:color-mix(in srgb,#ef4444 12%,var(--p-card)); color:#b91c1c; } .zn-alert.rain { background:color-mix(in srgb,#3b82f6 12%,var(--p-card)); color:#1d4ed8; }
+        .zn-stop { border-radius:14px; font-weight:900; font-size:13px; background:color-mix(in srgb,#ef4444 12%,var(--p-card)); color:#dc2626; border:1.5px solid rgba(239,68,68,.4); } .zn-stop.on { background:#16a34a; color:#fff; border-color:#16a34a; }
+        .zn-sm { height:40px; border-radius:12px; font-size:12px; font-weight:800; background:var(--p-card2); border:1px solid var(--p-line); color:var(--p-tx); }
+        .zn-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; } .zn-dot.live { background:#16a34a; box-shadow:0 0 0 4px rgba(22,163,74,.2); } .zn-dot.soon { background:#d97706; } .zn-dot.off { background:#9ca3af; }
+        .zn-wait { display:grid; grid-template-columns:110px 1fr 34px; align-items:center; gap:8px; padding:5px 0; font-size:12.5px; font-weight:700; } .zn-wait i { height:8px; border-radius:4px; background:linear-gradient(90deg,#fde68a,#e2a92c); } .zn-wait b { text-align:right; }
+        .zn-chips { display:flex; flex-wrap:wrap; gap:6px; } .zn-chips button { display:flex; align-items:center; gap:4px; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:800; background:var(--p-card2); border:1.5px solid var(--p-line); color:var(--p-tx); } .zn-chips button img { width:18px; height:18px; object-fit:contain; } .zn-chips button.on { border-color:var(--p-gold); background:color-mix(in srgb,var(--p-gold) 16%,var(--p-card2)); }
+        #zoneGate { position:fixed; inset:0; z-index:125; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(10,8,4,.72); backdrop-filter:blur(4px); }
+        .zg-card { width:100%; max-width:380px; border-radius:28px; background:var(--sh-bg); color:var(--sh-tx); padding:22px 18px 16px; text-align:center; animation:spPop .45s cubic-bezier(.3,1.3,.5,1); }
+        .zg-map { position:relative; width:120px; height:120px; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; } .zg-map b { font-size:52px; position:relative; z-index:1; }
+        .zg-map span { position:absolute; inset:0; border-radius:50%; border:2px solid #e2b04a; animation:zgPulse 2.4s ease-out infinite; } .zg-map .r2 { animation-delay:1.2s; }
+        @keyframes zgPulse { from { transform:scale(.4); opacity:.9; } to { transform:scale(1.15); opacity:0; } }
+        .zg-t { font:900 20px 'Outfit',sans-serif; line-height:1.25; } .zg-s { font-size:12.5px; color:var(--sh-mut); margin-top:6px; }
+        .zg-areas { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin-top:10px; } .zg-areas span { font-size:11.5px; font-weight:800; padding:5px 10px; border-radius:999px; background:var(--sh-card); }
+        .zg-go { width:100%; height:50px; margin-top:16px; border-radius:15px; background:linear-gradient(180deg,#fde68a,#e2a92c); color:#1a1305; font-weight:900; font-size:14.5px; } .zg-go.done { background:#dcfce7; color:#166534; }
+        .zg-alt { width:100%; height:44px; margin-top:8px; border-radius:14px; background:var(--sh-card); border:1px solid var(--sh-line); font-weight:800; font-size:13px; color:var(--sh-tx); } .zg-link { margin-top:10px; font-size:12px; font-weight:800; color:#a8741b; }
+        #netBar { position:fixed; left:12px; right:12px; top:calc(10px + env(safe-area-inset-top)); z-index:140; padding:10px 14px; border-radius:14px; font-size:12.5px; font-weight:800; text-align:center; transform:translateY(-140%); transition:transform .35s cubic-bezier(.2,1.2,.3,1); box-shadow:0 10px 24px rgba(0,0,0,.25); }
+        #netBar.show { transform:none; } #netBar.off { background:#1f2937; color:#fde68a; } #netBar.on { background:#16a34a; color:#fff; }
     </style>
 <style>
 html,body{height:100%}
@@ -10037,6 +10056,185 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 ${o.status === 'paid' ? `<div class="grid gap-2 mt-2.5" style="grid-template-columns:1fr auto"><button class="pbtn" onclick="wmReady('${o.id}')"><i class="fa-solid fa-box"></i> ${tr('माल तैयार है', 'Mark ready')}</button><button class="px-4 rounded-xl font-bold text-[12.5px]" style="background:color-mix(in srgb,#ef4444 12%,var(--p-card));color:#dc2626" onclick="wmReject('${o.id}')">${tr('मना', 'Decline')}</button></div>` : `<p class="text-[12px] font-bold mt-2" style="color:var(--p-ok)">✅ ${tr('तैयार — राइडर के आने का इंतज़ार', 'Ready — waiting for the rider')}</p>`}</div>`).join('')}</div>`;
         }
         { const f = vShopPicker; vShopPicker = function () { return f.apply(this, arguments) + wmShopCard(); }; }
+
+        /* ================= patch46: service zones (city → area → micro-areas), outside-area screen, offline mode, keys go to the server ================= */
+        const ZN_KEY = 'hf_zones_v1';
+        const ZN_SEED = { cities: [{ id: 'delhi', name: 'दिल्ली', on: true }], zones: [
+            { id: 'sadar', city: 'delhi', name: 'सदर बाज़ार – बाड़ा हिंदू राव', parent: '', lat: 28.6620, lng: 77.2080, r: 2300, status: 'live', stores: ['food', 'dairy', 'kirana', 'veg', 'fruits'], min: 99, fee: 25, free: 199, from: '07:00', to: '23:00', closed: [], paused: false, msg: '', rain: false, rainFee: 10, fast: true },
+            { id: 'sadar-mkt', city: 'delhi', name: 'सदर बाज़ार मार्केट', parent: 'sadar', lat: 28.6588, lng: 77.2118, r: 900, status: 'live', fast: true, note: 'तंग गलियाँ — साइकिल / पैदल राइडर' },
+            { id: 'bhr', city: 'delhi', name: 'बाड़ा हिंदू राव / पुल बंगश', parent: 'sadar', lat: 28.6668, lng: 77.2052, r: 800, status: 'live', fast: true, note: 'रिहायशी — सुबह दूध, शाम खाना' },
+            { id: 'kg', city: 'delhi', name: 'किशन गंज / तेलीवाड़ा', parent: 'sadar', lat: 28.6642, lng: 77.1985, r: 800, status: 'soon', fast: false, note: 'बाइक राइडर' }
+        ], demoAt: 'in', wait: [{ area: 'करोल बाग', n: 46 }, { area: 'चाँदनी चौक', n: 31 }, { area: 'शास्त्री नगर', n: 18 }] };
+        const ZN = saGet(ZN_KEY, null) || JSON.parse(JSON.stringify(ZN_SEED));
+        const znSave = () => saPut(ZN_KEY, ZN);
+        const ZA = { city: 'delhi', zone: 'sadar' };
+        const DOW = [['रवि', 'Sun'], ['सोम', 'Mon'], ['मंगल', 'Tue'], ['बुध', 'Wed'], ['गुरु', 'Thu'], ['शुक्र', 'Fri'], ['शनि', 'Sat']];
+        const zGet = id => ZN.zones.find(z => z.id === id);
+        function kmBetween(a, b, c, d) { const R = 6371, x = (c - a) * Math.PI / 180, y = (d - b) * Math.PI / 180, h = Math.sin(x / 2) ** 2 + Math.cos(a * Math.PI / 180) * Math.cos(c * Math.PI / 180) * Math.sin(y / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
+        // same rules as the server function zone_check
+        function zoneCheckLocal(lat, lng) {
+            const mains = ZN.zones.filter(z => !z.parent && z.status !== 'off'); if (!ZN.zones.length) return { ok: true };
+            const z = mains.find(z => kmBetween(lat, lng, z.lat, z.lng) * 1000 <= z.r && z.status === 'live') || mains.find(z => kmBetween(lat, lng, z.lat, z.lng) * 1000 <= z.r);
+            if (!z) return { ok: false, reason: 'outside' };
+            if (z.status === 'soon') return { ok: false, reason: 'soon', zone: z.name };
+            const subs = ZN.zones.filter(x => x.parent === z.id), inn = x => kmBetween(lat, lng, x.lat, x.lng) * 1000 <= x.r;
+            if (subs.length && !subs.some(x => x.status === 'live' && inn(x))) { const sz = subs.find(x => x.status !== 'live' && inn(x)); if (sz) return { ok: false, reason: sz.status === 'soon' ? 'soon' : 'outside', zone: sz.name }; }
+            if (z.paused) return { ok: false, reason: 'paused', zone: z.name, msg: z.msg };
+            const now = new Date(), hm = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            if ((z.closed || []).indexOf(now.getDay()) > -1) return { ok: false, reason: 'closed_day', zone: z.name };
+            if (hm < z.from || hm > z.to) return { ok: false, reason: 'closed_time', zone: z.name, from: z.from, to: z.to };
+            return { ok: true, zone: z.name, id: z.id, stores: z.stores, fee: z.fee + (z.rain ? z.rainFee : 0), min: z.min, free: z.free };
+        }
+        const ZDEMO = { in: [28.6600, 77.2095], out: [28.6400, 77.1850], soon: [28.6630, 77.1940] };
+        const ZST = { res: null, at: 0 };
+        async function zoneNow() {
+            if (APP.role && APP.role !== 'customer') return { ok: true };
+            if (LIVE && window.sb) {
+                if (ZST.res && Date.now() - ZST.at < 5 * 60e3) return ZST.res;
+                const pos = await new Promise(res => { try { navigator.geolocation.getCurrentPosition(p => res([p.coords.latitude, p.coords.longitude]), () => res(null), { timeout: 8000, maximumAge: 300000 }); } catch (e) { res(null); } });
+                if (!pos) return { ok: true };
+                try { const { data, error } = await sb.rpc('zone_check', { p_lat: pos[0], p_lng: pos[1] }); ZST.res = error || !data ? { ok: true } : Object.assign({ lat: pos[0], lng: pos[1] }, data); } catch (e) { ZST.res = { ok: true }; }
+                ZST.at = Date.now(); return ZST.res;
+            }
+            const p = ZDEMO[ZN.demoAt] || ZDEMO.in; return Object.assign({ lat: p[0], lng: p[1] }, zoneCheckLocal(p[0], p[1]));
+        }
+        /* ---------- customer: "not in your area yet" ---------- */
+        function zoneGate(z) {
+            let el = document.getElementById('zoneGate'); if (z.ok) { if (el) el.remove(); document.body.classList.remove('zone-browse'); return; }
+            if (document.body.classList.contains('zone-browse')) return;
+            if (!el) { el = document.createElement('div'); el.id = 'zoneGate'; document.body.appendChild(el); }
+            const live = ZN.zones.filter(x => x.parent && x.status === 'live').map(x => x.name);
+            const T = { outside: ['🗺️', tr('अभी हम आपके इलाके में नहीं पहुँचे', "We're not in your area yet"), tr('अभी हम यहाँ डिलीवरी करते हैं:', 'We currently deliver in:')],
+                soon: ['🚀', tr('आपके इलाके में जल्द आ रहे हैं!', 'Coming soon to your area!'), (z.zone || '') + ' — ' + tr('तैयारी चल रही है', 'getting ready')],
+                paused: ['⏸️', tr('सेवा थोड़ी देर के लिए रुकी है', 'Service paused for a while'), z.msg || tr('जल्द वापस आएँगे', 'Back soon')],
+                closed_day: ['📅', tr('आज छुट्टी है', 'Closed today'), tr('कल फिर मिलते हैं 🙏', 'See you tomorrow 🙏')],
+                closed_time: ['🌙', tr(`हम ${z.from || '7:00'} बजे खुलेंगे`, `We open at ${z.from || '7:00'}`), tr(`सेवा का समय ${z.from} – ${z.to}`, `Hours ${z.from} – ${z.to}`)] }[z.reason] || ['🗺️', tr('सेवा उपलब्ध नहीं', 'Not available'), ''];
+            const waited = saGet('hf_waited_v1', false);
+            el.innerHTML = `<div class="zg-card"><div class="zg-map"><span class="r1"></span><span class="r2"></span><b>${T[0]}</b></div>
+                <p class="zg-t">${T[1]}</p><p class="zg-s">${T[2]}</p>
+                ${z.reason === 'outside' ? `<div class="zg-areas">${live.map(n => `<span>📍 ${esc(n)}</span>`).join('')}</div>` : ''}
+                ${z.reason === 'outside' || z.reason === 'soon' ? `<button class="zg-go ${waited ? 'done' : ''}" onclick="zoneWait(this)">${waited ? '✅ ' + tr('आपको सबसे पहले बताएँगे', "We'll tell you first") : '🔔 ' + tr('जब शुरू हो, मुझे बताएँ', 'Notify me when you launch')}</button>` : ''}
+                <button class="zg-alt" onclick="document.getElementById('zoneGate').remove();document.body.classList.add('zone-browse');showToast(tr('सिर्फ़ मेन्यू देख सकते हैं — ऑर्डर अभी नहीं','Browse only — ordering not available yet'))">👀 ${tr('मेन्यू देखें', 'Browse the menu')}</button>
+                <button class="zg-link" onclick="zoneRecheck(true)">📍 ${tr('दूसरी जगह / फिर से जाँचें', 'Change location / check again')}</button></div>`;
+        }
+        async function zoneWait(b) {
+            if (saGet('hf_waited_v1', false)) return; vib(15); saPut('hf_waited_v1', true);
+            const z = await zoneNow();
+            if (LIVE && window.sb && z.lat) { try { await sb.from('zone_waitlist').insert({ lat: z.lat, lng: z.lng, phone: (currentUser() || {}).phone || null }); } catch (e) { } }
+            else { ZN.wait[0] = ZN.wait[0] || { area: tr('आपका इलाक़ा', 'Your area'), n: 0 }; ZN.wait[0].n++; znSave(); }
+            b.classList.add('done'); b.innerHTML = '✅ ' + tr('आपको सबसे पहले बताएँगे', "We'll tell you first"); sfx('success');
+        }
+        async function zoneRecheck(manual) { ZST.at = 0; const z = await zoneNow(); if (manual) document.body.classList.remove('zone-browse'); zoneGate(z); if (manual && z.ok) showToast(tr('✅ आपके इलाके में सेवा चालू है', '✅ We deliver here')); return z; }
+        { const f = placeOrderNow; placeOrderNow = function () {
+            const self = this, args = arguments;
+            if (LIVE && !navigator.onLine) { showToast(tr('📴 इंटरनेट नहीं है — टोकरी सेव है, नेट आते ही भेजें', '📴 Offline — your basket is saved, send when back online')); window.__offlineOrder = true; return; }
+            if (!LIVE) { const z = zoneCheckLocal(...(ZDEMO[ZN.demoAt] || ZDEMO.in)); if (!z.ok) { try { closeCartModal(); } catch (e) { } document.body.classList.remove('zone-browse'); zoneGate(z); return; } }
+            return f.apply(self, args);
+        }; }
+        { const f = addRecommendedToCart; addRecommendedToCart = function () { if (document.body.classList.contains('zone-browse')) { showToast(tr('आपके इलाके में जल्द — अभी सिर्फ़ मेन्यू देख सकते हैं', 'Coming to your area soon — browse only')); return; } return f.apply(this, arguments); }; }
+        { const f = addCurrentProductToCart; addCurrentProductToCart = function () { if (document.body.classList.contains('zone-browse')) { showToast(tr('आपके इलाके में जल्द — अभी सिर्फ़ मेन्यू देख सकते हैं', 'Coming to your area soon — browse only')); return; } return f.apply(this, arguments); }; }
+        setTimeout(() => zoneRecheck(false), 1500);
+
+        /* ---------- admin: Zones & cities ---------- */
+        AMENU.splice(1, 0, ['ऑपरेशन', 'Operations', [['zones', 'fa-map-location-dot', 'ज़ोन व शहर', 'Zones & cities']]]);
+        ATITLE.zones = ['ज़ोन व शहर', 'Zones & cities'];
+        { const f = aGo; aGo = function (k) { window.__aZones = k === 'zones'; if (k === 'zones') { aDrawer(false); setTab('settings'); return; } return f.apply(this, arguments); }; }
+        { const f = adminSettings; adminSettings = function () { if (window.__aZones) return adminZones(); return f.apply(this, arguments); }; }
+        { const f = aShell; aShell = function () { const r = f.apply(this, arguments); try { if (window.__aZones && PNL.tab.admin === 'settings') { const t = document.getElementById('aTitle'); if (t) t.textContent = tr('ज़ोन व शहर', 'Zones & cities'); } else if (PNL.tab.admin !== 'settings') window.__aZones = false; } catch (e) { } return r; }; }
+        function znMap(main) {
+            const subs = ZN.zones.filter(z => z.parent === main.id), W = 320, H = 240, sc = 110 / (main.r / 1000);   // px per km
+            const P = z => [W / 2 + (z.lng - main.lng) * 111 * Math.cos(main.lat * Math.PI / 180) * sc, H / 2 - (z.lat - main.lat) * 111 * sc];
+            const col = { live: '#16a34a', soon: '#d97706', off: '#9ca3af' };
+            return `<svg viewBox="0 0 ${W} ${H}" class="zn-map"><defs><pattern id="zg" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="currentColor" stroke-opacity=".08"/></pattern></defs>
+                <rect width="${W}" height="${H}" fill="url(#zg)"/>
+                <path d="M0 ${H * .62} C ${W * .3} ${H * .55}, ${W * .55} ${H * .75}, ${W} ${H * .66}" stroke="#94a3b8" stroke-opacity=".35" stroke-width="7" fill="none"/><path d="M${W * .42} 0 L ${W * .5} ${H}" stroke="#94a3b8" stroke-opacity=".3" stroke-width="5" fill="none"/>
+                <circle cx="${W / 2}" cy="${H / 2}" r="${(main.r / 1000) * sc}" fill="${col[main.status]}" fill-opacity=".08" stroke="${col[main.status]}" stroke-width="2" stroke-dasharray="6 5"/>
+                ${subs.map(z => { const [x, y] = P(z); return `<g onclick="znEdit('${z.id}')" style="cursor:pointer"><circle cx="${x}" cy="${y}" r="${(z.r / 1000) * sc}" fill="${col[z.status]}" fill-opacity=".18" stroke="${col[z.status]}" stroke-width="1.5"/><text x="${x}" y="${y + 4}" text-anchor="middle" font-size="10" font-weight="800" fill="currentColor">${esc(z.name.split(' ')[0])}</text></g>`; }).join('')}
+                <g transform="translate(${W / 2},${H / 2})"><circle r="5" fill="#e2a92c" stroke="#fff" stroke-width="2"/></g>
+                <g transform="translate(${W - 74},${H - 16})"><rect width="${sc}" height="4" rx="2" fill="currentColor" opacity=".5" x="${64 - sc}"/><text x="64" y="-4" text-anchor="end" font-size="9" fill="currentColor" opacity=".7">1 km</text></g></svg>`;
+        }
+        function adminZones() {
+            const cities = ZN.cities, main = ZN.zones.find(z => z.city === ZA.city && !z.parent) || null, subs = main ? ZN.zones.filter(z => z.parent === main.id) : [];
+            const chk = main ? zoneCheckLocal(main.lat, main.lng) : { ok: false };
+            const totalWait = ZN.wait.reduce((s, w) => s + w.n, 0);
+            const stIc = { live: ['🟢', tr('चालू', 'Live')], soon: ['🟠', tr('जल्द', 'Soon')], off: ['⚪', tr('बंद', 'Off')] };
+            return `<div class="flex gap-2 overflow-x-auto pb-1">${cities.map(c => `<button class="ph-pill ${ZA.city === c.id ? 'on' : ''}" onclick="ZA.city='${c.id}';renderPanel(true)">🏙️ ${esc(c.name)}</button>`).join('')}<button class="ph-pill" onclick="znNewCity()">➕ ${tr('नया शहर', 'New city')}</button></div>
+            ${main ? `<div class="pcard p-4 mt-3"><div class="flex items-start justify-between gap-2"><div class="min-w-0"><p class="text-[10.5px] pmut font-bold uppercase">${tr('मुख्य ज़ोन', 'Main zone')}</p><p class="pttl text-[17px] leading-tight">${esc(main.name)}</p><p class="text-[11.5px] pmut mt-0.5">${(main.r / 1000).toFixed(1)} km • ${subs.length} ${tr('हिस्से', 'areas')} • ${main.from}–${main.to}</p></div><span class="pill ${main.status === 'live' ? 'ok' : main.status === 'soon' ? 'gold' : 'mut'}">${stIc[main.status][0]} ${stIc[main.status][1]}</span></div>
+                ${znMap(main)}
+                <div class="grid grid-cols-3 gap-2 mt-2 text-center"><div class="pcard2 p-2"><p class="pnum text-[16px]">${DB.riders.filter(r => r.status === 'approved' && r.online).length}</p><p class="text-[10px] pmut">${tr('राइडर ऑनलाइन', 'Riders online')}</p></div><div class="pcard2 p-2"><p class="pnum text-[16px]">${DB.vendors.filter(v => v.status === 'approved' && v.open).length}</p><p class="text-[10px] pmut">${tr('दुकानें खुली', 'Shops open')}</p></div><div class="pcard2 p-2"><p class="pnum text-[16px] pgold">${totalWait}</p><p class="text-[10px] pmut">${tr('इंतज़ार में', 'Waitlist')}</p></div></div>
+                ${main.paused ? `<div class="zn-alert">⏸️ ${tr('ज़ोन रुका है', 'Zone paused')} — “${esc(main.msg || '')}”</div>` : ''}${main.rain ? `<div class="zn-alert rain">🌧️ ${tr('बारिश मोड चालू', 'Rain mode on')} • +₹${main.rainFee} • ${tr('राइडर को बोनस', 'rider bonus')}</div>` : ''}
+                <div class="grid grid-cols-2 gap-2 mt-3"><button class="pbtn" onclick="znEdit('${main.id}')"><i class="fa-solid fa-sliders"></i> ${tr('सेटिंग', 'Settings')}</button><button class="zn-stop ${main.paused ? 'on' : ''}" onclick="znPause('${main.id}')">${main.paused ? '▶️ ' + tr('फिर चालू करें', 'Resume') : '⛔ ' + tr('इमरजेंसी रोक', 'Emergency stop')}</button></div>
+                <div class="grid grid-cols-2 gap-2 mt-2"><button class="zn-sm" onclick="znToggle('${main.id}','rain')">🌧️ ${main.rain ? tr('बारिश मोड बंद', 'Rain mode off') : tr('बारिश / भीड़ मोड', 'Rain / rush mode')}</button><button class="zn-sm" onclick="znCycle('${main.id}')">🔁 ${tr('हालत बदलें', 'Change status')}</button></div></div>
+            ${sectionHead(tr('ज़ोन के हिस्से (माइक्रो-ज़ोन)', 'Micro-zones'), `<button class="text-[12px] pgold font-bold" onclick="znNewSub('${main.id}')">➕ ${tr('हिस्सा जोड़ें', 'Add area')}</button>`)}
+            <div class="space-y-2.5">${subs.map(z => `<button class="pcard p-3 w-full text-left flex items-center gap-3" onclick="znEdit('${z.id}')"><span class="zn-dot ${z.status}"></span><div class="flex-1 min-w-0"><p class="font-extrabold text-[14px] truncate">${esc(z.name)}</p><p class="text-[11px] pmut">${(z.r / 1000).toFixed(1)} km ${z.fast ? '• ⚡ 5 मिनट' : ''} ${z.note ? '• ' + esc(z.note) : ''}</p></div><span class="pill ${z.status === 'live' ? 'ok' : z.status === 'soon' ? 'gold' : 'mut'}">${stIc[z.status][1]}</span></button>`).join('')}</div>`
+            : `<div class="pcard p-6 mt-3 text-center"><div class="text-4xl">🗺️</div><p class="font-bold mt-2">${tr('इस शहर में अभी कोई ज़ोन नहीं', 'No zone in this city yet')}</p><button class="pbtn mt-3" onclick="znNewMain()">➕ ${tr('पहला ज़ोन बनाएँ', 'Create first zone')}</button></div>`}
+            ${sectionHead(tr('🔔 ज़ोन के बाहर से इंतज़ार', '🔔 Waitlist from outside'))}
+            <div class="pcard p-3.5">${ZN.wait.length ? ZN.wait.sort((a, b) => b.n - a.n).map(w => `<div class="zn-wait"><span>📍 ${esc(w.area)}</span><i style="width:${Math.min(100, w.n * 2)}%"></i><b>${w.n}</b></div>`).join('') : `<p class="pmut text-[12px]">${tr('अभी कोई नहीं', 'Nobody yet')}</p>`}<p class="text-[11px] pmut mt-2">💡 ${tr('जहाँ सबसे ज़्यादा लोग इंतज़ार में हैं, अगला ज़ोन वहीं खोलें।', 'Open the next zone where the most people are waiting.')}</p></div>
+            ${sectionHead(tr('🧪 डेमो: ग्राहक कहाँ है?', '🧪 Demo: where is the customer?'))}
+            <div class="pcard p-3"><div class="pseg">${[['in', tr('ज़ोन के अंदर', 'Inside')], ['soon', tr('जल्द वाले हिस्से में', 'Soon area')], ['out', tr('ज़ोन के बाहर', 'Outside')]].map(x => `<button class="${ZN.demoAt === x[0] ? 'on' : ''}" onclick="ZN.demoAt='${x[0]}';znSave();renderPanel(true)">${x[1]}</button>`).join('')}</div><p class="text-[11px] pmut mt-2">${tr('बदलकर ग्राहक ऐप खोलिए — वहाँ की स्क्रीन देखिए। असली ऐप में फ़ोन की GPS लोकेशन से जाँच होगी, और सर्वर भी ज़ोन के बाहर का ऑर्डर मना करेगा।', 'Switch, then open the customer app to see the screen. The real app checks phone GPS, and the server also refuses orders outside a zone.')}</p></div>
+            <div class="h-10"></div>`;
+        }
+        function znEdit(id) {
+            const z = zGet(id); if (!z) return; const main = !z.parent;
+            const num = (k, l, v, u) => `<div><label class="plabel">${l}</label><input id="zn_${k}" inputmode="numeric" value="${v}"${u ? ` placeholder="${u}"` : ''}></div>`;
+            openPSheet(main ? tr('मुख्य ज़ोन की सेटिंग', 'Main zone settings') : tr('हिस्से की सेटिंग', 'Area settings'), `
+                <label class="plabel">${tr('नाम', 'Name')}</label><input id="zn_name" value="${esc(z.name)}">
+                <label class="plabel mt-3">${tr('हालत', 'Status')}</label><div class="pseg" id="zn_status">${[['live', '🟢 ' + tr('चालू', 'Live')], ['soon', '🟠 ' + tr('जल्द', 'Soon')], ['off', '⚪ ' + tr('बंद', 'Off')]].map(x => `<button class="${z.status === x[0] ? 'on' : ''}" data-v="${x[0]}" onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on'));this.classList.add('on')">${x[1]}</button>`).join('')}</div>
+                <label class="plabel mt-3">${tr('दायरा', 'Radius')} — <b id="zn_rv">${(z.r / 1000).toFixed(1)} km</b></label><input id="zn_r" type="range" min="300" max="6000" step="100" value="${z.r}" oninput="document.getElementById('zn_rv').textContent=(this.value/1000).toFixed(1)+' km'" style="width:100%">
+                <div class="grid grid-cols-2 gap-2.5 mt-2">${num('lat', tr('बीच का बिंदु (lat)', 'Centre lat'), z.lat)}${num('lng', tr('बीच का बिंदु (lng)', 'Centre lng'), z.lng)}</div>
+                <button class="vi-link" onclick="znHere()">📍 <span>${tr('मेरी अभी की जगह को बीच का बिंदु बनाएँ', 'Use my current location as centre')}</span></button>
+                <label class="plabel mt-2 flex items-center justify-between">⚡ ${tr('5 मिनट डिलीवरी (राइडर की टोकरी से)', '5-min delivery (rider stock)')} ${sw(!!z.fast, "this.classList.toggle('on')")}</label>
+                ${main ? `<label class="plabel mt-3">${tr('कौन-सी दुकानें चलेंगी', 'Stores available')}</label><div class="zn-chips" id="zn_stores">${STORES.map(s => `<button class="${(z.stores || []).indexOf(s.id) > -1 ? 'on' : ''}" data-v="${s.id}" onclick="this.classList.toggle('on')"><img src="${esc(s.img)}" alt="">${esc(s.name.hi)}</button>`).join('')}</div>
+                <div class="grid grid-cols-2 gap-2.5 mt-3"><div><label class="plabel">${tr('खुलने का समय', 'Opens')}</label><input id="zn_from" type="time" value="${z.from}"></div><div><label class="plabel">${tr('बंद होने का समय', 'Closes')}</label><input id="zn_to" type="time" value="${z.to}"></div></div>
+                <label class="plabel mt-3">${tr('छुट्टी का दिन (बाज़ार बंद)', 'Weekly off day')}</label><div class="zn-chips" id="zn_closed">${DOW.map((d, i) => `<button class="${(z.closed || []).indexOf(i) > -1 ? 'on' : ''}" data-v="${i}" onclick="this.classList.toggle('on')">${tr(d[0], d[1])}</button>`).join('')}</div>
+                <div class="grid grid-cols-3 gap-2.5 mt-3">${num('min', tr('कम से कम ऑर्डर ₹', 'Min order ₹'), z.min)}${num('fee', tr('डिलीवरी ₹', 'Delivery ₹'), z.fee)}${num('free', tr('फ़्री इससे ऊपर ₹', 'Free above ₹'), z.free)}</div>
+                <div class="grid grid-cols-2 gap-2.5 mt-3">${num('rainFee', tr('बारिश मोड +₹', 'Rain mode +₹'), z.rainFee)}<div><label class="plabel">${tr('रोक का संदेश', 'Pause message')}</label><input id="zn_msg" value="${esc(z.msg || '')}" placeholder="${tr('जैसे — बारिश के कारण 1 घंटा', 'e.g. 1 hour due to rain')}"></div></div>`
+                : `<label class="plabel mt-3">${tr('नोट (राइडर के लिए)', 'Note (for riders)')}</label><input id="zn_note" value="${esc(z.note || '')}">`}
+                <button class="pbtn w-full mt-4" onclick="znSaveEdit('${z.id}')"><i class="fa-solid fa-floppy-disk"></i> ${tr('सेव करें', 'Save')}</button>
+                ${!main ? `<button class="w-full mt-2 py-2.5 rounded-xl font-bold text-[13px]" style="color:#dc2626" onclick="ZN.zones=ZN.zones.filter(x=>x.id!=='${z.id}');znSave();closePSheet();renderPanel(true)">🗑️ ${tr('हिस्सा हटाएँ', 'Delete area')}</button>` : ''}`);
+        }
+        function znHere() { try { navigator.geolocation.getCurrentPosition(p => { document.getElementById('zn_lat').value = p.coords.latitude.toFixed(5); document.getElementById('zn_lng').value = p.coords.longitude.toFixed(5); pToast('📍 ' + tr('जगह भर दी', 'Location filled')); }, () => pToast(tr('लोकेशन नहीं मिली — अनुमति दें', 'No location — allow access'))); } catch (e) { } }
+        async function znSaveEdit(id) {
+            const z = zGet(id), v = k => (document.getElementById('zn_' + k) || {}).value, n = (k, d) => { const x = parseFloat(v(k)); return isNaN(x) ? d : x; };
+            const st = document.querySelector('#zn_status .on'); z.name = (v('name') || z.name).trim(); z.status = st ? st.dataset.v : z.status; z.r = +v('r') || z.r; z.lat = n('lat', z.lat); z.lng = n('lng', z.lng);
+            const fs = document.querySelector('#pSheetBody .psw'); if (fs) z.fast = fs.classList.contains('on');
+            if (!z.parent) { z.stores = [...document.querySelectorAll('#zn_stores .on')].map(b => b.dataset.v); z.from = v('from') || z.from; z.to = v('to') || z.to; z.closed = [...document.querySelectorAll('#zn_closed .on')].map(b => +b.dataset.v); z.min = n('min', z.min); z.fee = n('fee', z.fee); z.free = n('free', z.free); z.rainFee = n('rainFee', z.rainFee); z.msg = v('msg') || ''; }
+            else z.note = v('note') || '';
+            znSave(); closePSheet(); renderPanel(true); sfx('success'); await znPush(z);
+        }
+        async function znPush(z) {
+            if (!LIVE || !window.sb) { pToast(tr('सेव हो गया ✅', 'Saved ✅')); return; }
+            const m = z.parent ? zGet(z.parent) || z : z;
+            try {
+                const { error } = await sb.rpc('admin_upsert_zone', { p: { id: z.id, city: z.city, name: z.name, parent: z.parent || '', lat: z.lat, lng: z.lng, radius_m: z.r, status: z.status, stores: m.stores, min_order: m.min, fee: m.fee, free_above: m.free, open_from: m.from, open_to: m.to, closed_dow: m.closed, paused: !!z.paused, pause_msg: z.msg || '', rain_mode: !!z.rain, rain_fee: m.rainFee } });
+                pToast(error ? tr('फ़ोन में सेव ✅ — सर्वर वाला हिस्सा अभी लगना बाकी', 'Saved on phone ✅ — server part not set up yet') : tr('सर्वर पर सेव ✅ — सबके ऐप में लागू', 'Saved on server ✅ — live for everyone'));
+            } catch (e) { pToast(tr('फ़ोन में सेव ✅', 'Saved on phone ✅')); }
+        }
+        function znPause(id) { const z = zGet(id); z.paused = !z.paused; if (z.paused && !z.msg) z.msg = tr('थोड़ी देर में वापस आते हैं 🙏', 'Back in a little while 🙏'); znSave(); vib(30); renderPanel(true); znPush(z); }
+        function znToggle(id, k) { const z = zGet(id); z[k] = !z[k]; znSave(); renderPanel(true); znPush(z); }
+        function znCycle(id) { const z = zGet(id), o = ['live', 'soon', 'off']; z.status = o[(o.indexOf(z.status) + 1) % 3]; znSave(); renderPanel(true); znPush(z); }
+        function znNewSub(pid) { const m = zGet(pid), id = pid + '-' + Date.now().toString(36); ZN.zones.push({ id, city: m.city, name: tr('नया हिस्सा', 'New area'), parent: pid, lat: m.lat, lng: m.lng, r: 600, status: 'soon', fast: false, note: '' }); znSave(); renderPanel(true); znEdit(id); }
+        function znNewMain() { const id = ZA.city + '-' + Date.now().toString(36); ZN.zones.push(Object.assign(JSON.parse(JSON.stringify(ZN_SEED.zones[0])), { id, city: ZA.city, name: tr('नया ज़ोन', 'New zone'), status: 'soon' })); znSave(); renderPanel(true); znEdit(id); }
+        function znNewCity() { openPSheet(tr('नया शहर', 'New city'), `<label class="plabel">${tr('शहर का नाम', 'City name')}</label><input id="znCity" placeholder="${tr('जैसे — जयपुर', 'e.g. Jaipur')}"><button class="pbtn w-full mt-3" onclick="const n=document.getElementById('znCity').value.trim();if(!n)return;const id='c'+Date.now().toString(36);ZN.cities.push({id,name:n,on:true});ZA.city=id;znSave();closePSheet();renderPanel(true)">➕ ${tr('जोड़ें', 'Add')}</button>`); }
+
+        /* ---------- offline → online ---------- */
+        function netBanner(on) {
+            let b = document.getElementById('netBar'); if (!b) { b = document.createElement('div'); b.id = 'netBar'; document.body.appendChild(b); }
+            b.className = on ? 'on' : 'off'; b.innerHTML = on ? '✅ ' + tr('इंटरनेट वापस आ गया — सब सिंक हो रहा है', 'Back online — syncing') : '📴 ' + tr('इंटरनेट नहीं है — ऐप ऑफ़लाइन चल रहा है (बिल, स्टॉक, मेन्यू चलते रहेंगे)', 'Offline — the app keeps working (bills, stock, menu)');
+            b.classList.add('show'); clearTimeout(window.__netT); if (on) window.__netT = setTimeout(() => b.classList.remove('show'), 3500);
+            if (on && window.__offlineOrder) { window.__offlineOrder = false; setTimeout(() => { showToast(tr('नेट आ गया — टोकरी खोलकर ऑर्डर भेजें 🛒', 'Back online — open the basket to send your order 🛒')); try { openCartModal(); } catch (e) { } }, 800); }
+            if (on) { try { if (LIVE && typeof liveLoadMenu === 'function') liveLoadMenu(); } catch (e) { } }
+        }
+        window.addEventListener('offline', () => netBanner(false)); window.addEventListener('online', () => netBanner(true));
+        if (!navigator.onLine) setTimeout(() => netBanner(false), 1200);
+
+        /* ---------- API keys typed in the admin go straight to the server (write-only) ---------- */
+        { const f = hubSaveProv; hubSaveProv = function (k, code) {
+            const sec = [...document.querySelectorAll('#pSheetBody [data-k]')].filter(el => el.dataset.s === '1' && (el.value || '').trim()).map(el => [code + '.' + el.dataset.k, el.value.trim()]);
+            const r = f.apply(this, arguments);
+            if (LIVE && window.sb && sec.length) (async () => { let ok = true; for (const s of sec) { try { const { error } = await sb.rpc('admin_set_secret', { p_key: s[0].toLowerCase().replace(/[^a-z0-9_.]/g, '_'), p_value: s[1] }); if (error) ok = false; } catch (e) { ok = false; } } pToast(ok ? tr('🔒 चाबी सर्वर पर सुरक्षित — ऐप में कभी नहीं दिखेगी', '🔒 Key stored on the server — never shown in apps') : tr('चाबी सिर्फ़ फ़ोन में मास्क होकर रखी — सर्वर वाला हिस्सा लगना बाकी', 'Key masked on phone — server part not set up yet')); })();
+            return r;
+        }; }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
