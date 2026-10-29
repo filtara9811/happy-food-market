@@ -138,6 +138,14 @@ Deno.serve(async (req) => {
         title: "🛎️ नया ऑर्डर आया", body: rec.delivery_address ? `पता: ${rec.delivery_address}` : "ऐप खोलकर देखें",
         channel: "updates", data: { kind: "admin_new", order_id: String(rec.id) },
       });
+    } else if (p.table === "orders" && p.op === "UPDATE" && rec.status === "cancelled") {
+      const byRider = String(rec.cancelled_by ?? "").startsWith("rider_");
+      const outs: unknown[] = [];
+      if (!byRider && p.old?.rider_id) outs.push(await sendTo([p.old.rider_id], { title: "❌ ग्राहक ने ऑर्डर रद्द किया", body: (rec.cancel_reason ? "वजह: " + rec.cancel_reason + " • " : "") + "अगली रिक्वेस्ट का इंतज़ार करें", channel: "updates", data: { kind: "order_cancelled", order_id: String(rec.id) } }, { apps: ["rider"] }));
+      if (byRider) outs.push(await sendTo([rec.customer_id], { title: "😔 पार्टनर आपसे मिल नहीं पाए", body: "ऑर्डर बंद हुआ" + (Number(rec.cancel_fee) > 0 ? ` • ₹${rec.cancel_fee} शुल्क` : "") + " — मदद चाहिए तो ऐप में संपर्क करें", channel: "updates", data: { kind: "order", order_id: String(rec.id), status: "cancelled" } }, { apps: ["customer"] }));
+      out = outs;
+    } else if (p.table === "orders" && p.op === "UPDATE" && rec.status === "searching" && p.old && p.old.status !== "searching") {
+      out = await sendTo([rec.customer_id], { title: "🔄 नया पार्टनर ढूँढ रहे हैं", body: "पिछले पार्टनर को दिक्कत आई — आपका ऑर्डर दूसरे पार्टनर को भेज रहे हैं", channel: "updates", data: { kind: "order", order_id: String(rec.id), status: "searching" } }, { apps: ["customer"] });
     } else if (p.table === "orders" && p.op === "UPDATE" && STATUS[rec.status]) {
       const [title, body] = STATUS[rec.status];
       out = await sendTo([rec.customer_id], { title, body, channel: "updates",

@@ -1,0 +1,3 @@
+-- Applied 2026-10-30: orders.cancelled_at/by, cancel_reason, cancel_fee, arrived_at; app_settings cancel_rules + rider_photo_required;
+-- penalties table; customer_cancel(), rider_arrived(), rider_cancel() (reassign or close), admin_penalties/admin_set_penalty/admin_set_cancel_rules;
+-- order_view + rider_me + rider_history now carry photos, item images, arrival and cancel info; rider_set_online needs a profile photo.

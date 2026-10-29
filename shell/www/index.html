@@ -1539,6 +1539,33 @@
         body.light-mode .ab-it { background:#fff; border-color:#eadfc8; } body.light-mode .ab-l { color:#2a2115; } body.light-mode .ab-t { color:#6f6250; }
         body.light-mode .ab-in { background:#fff; border-color:#e6d6b4; color:#2a2115; } body.light-mode .ab-chips button, body.light-mode .ab-cancel { color:#5a4a33; border-color:#e6d6b4; }
         .zc-off { border-color:rgba(239,68,68,.45) !important; background:color-mix(in srgb,#ef4444 7%,var(--p-card)) !important; }
+        .lv-cx { height:36px; padding:0 12px; margin-left:auto; margin-right:8px; border-radius:99px; font-size:12px; font-weight:800; color:#dc2626; background:rgba(239,68,68,.1); border:1.5px solid rgba(239,68,68,.35); display:flex; align-items:center; gap:6px; }
+        .lv-it { margin-top:12px; border-radius:20px; border:1.5px solid var(--sh-line,rgba(226,176,74,.35)); background:var(--sh-card,rgba(255,255,255,.04)); overflow:hidden; }
+        .lv-ih { width:100%; display:flex; align-items:center; gap:12px; padding:10px 14px; }
+        .lv-ih b { display:block; font-size:14px; font-weight:900; } .lv-ih small { display:block; font-size:11.5px; opacity:.65; }
+        .lv-th { display:flex; flex:none; } .lv-th img { width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid var(--sh-bg,#fff); margin-left:-12px; box-shadow:0 2px 6px rgba(0,0,0,.15); } .lv-th img:first-child { margin-left:0; }
+        .lv-ch { transition:transform .25s; opacity:.7; } .lv-it.open .lv-ch { transform:rotate(180deg); }
+        .lv-il { display:none; padding:0 14px 12px; } .lv-it.open .lv-il { display:block; animation:lgIn .25s ease; }
+        .lv-il > div { display:flex; align-items:center; gap:10px; padding:7px 0; border-top:1px dashed var(--sh-line,rgba(0,0,0,.1)); font-size:13px; } .lv-il img { width:38px; height:38px; border-radius:12px; object-fit:cover; } .lv-il b { font-size:12.5px; white-space:nowrap; }
+        .cx-list { display:grid; gap:7px; } .cx-r, .rc-r { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:14px; background:#fff; border:1.5px solid #f1e3c4; font-size:14px; font-weight:700; cursor:pointer; }
+        .cx-r input, .rc-r input { width:18px; height:18px; accent-color:#e8761a; } .rc-r small { display:block; font-size:11px; font-weight:600; opacity:.6; } .rc-r.off { opacity:.5; }
+        #pnlBody .rc-r, #pSheetBody .rc-r { background:var(--p-card2); border-color:var(--p-line); color:var(--p-tx); }
+        .cx-fee { margin:10px 0 12px; padding:10px 12px; border-radius:14px; font-size:12.5px; font-weight:700; background:rgba(22,163,74,.1); color:#15803d; } .cx-fee.bad { background:rgba(234,88,12,.1); color:#c2410c; }
+        .ra-card { border:2px solid var(--p-gold) !important; }
+        .ra-more { width:34px; height:34px; border-radius:50%; background:var(--p-card2); display:grid; place-items:center; color:var(--p-mut); }
+        .ra-items { display:grid; gap:8px; } .ra-it { display:flex; align-items:center; gap:10px; font-size:13px; } .ra-it img { width:44px; height:44px; border-radius:14px; object-fit:cover; flex:none; border:1px solid var(--p-line); } .ra-it b { font-weight:800; } .ra-it small { display:block; font-size:11px; color:var(--p-mut); }
+        .ra-cust { display:flex; align-items:center; gap:11px; padding:10px; border-radius:16px; background:var(--p-card2); }
+        .ra-av { width:46px; height:46px; flex:none; border-radius:50%; object-fit:cover; border:2px solid var(--p-gold); }
+        .av-i { display:grid; place-items:center; font-weight:900; color:#1d1609; background:linear-gradient(135deg,#f6d27a,#d99a1e); font-size:15px; }
+        .ra-wait { margin-top:10px; padding:9px 12px; border-radius:12px; font-size:12.5px; font-weight:700; background:rgba(59,130,246,.12); color:#1d4ed8; }
+        .ra-cx { width:100%; margin-top:10px; padding:10px; border-radius:12px; font-size:12.5px; font-weight:800; color:#dc2626; background:rgba(239,68,68,.08); border:1px dashed rgba(239,68,68,.4); }
+        .ph-st { position:relative; } .ph-chev { position:absolute; right:-6px; top:2px; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; background:var(--p-card2); color:var(--p-mut); font-size:11px; transition:transform .25s; } .ph-chev.up { transform:rotate(180deg); }
+        .rx-more { margin-top:12px; padding-top:12px; border-top:1px solid var(--p-line); animation:lgIn .25s ease; cursor:default; }
+        .rx-tl { position:relative; display:grid; gap:10px; } .rx-tl > div { display:flex; align-items:flex-start; gap:10px; font-size:13px; } .rx-tl i { width:26px; height:26px; flex:none; border-radius:50%; display:grid; place-items:center; font-style:normal; font-size:12px; background:var(--p-card2); border:2px solid var(--p-line); }
+        .rx-tl > div.d i { background:#dcfce7; border-color:#22c55e; color:#15803d; font-weight:900; } .rx-tl > div.x i { background:#fee2e2; border-color:#ef4444; color:#dc2626; }
+        .rx-tl b { display:block; font-weight:800; } .rx-tl small { display:block; font-size:11px; color:var(--p-mut); } .rx-tl span { flex:1; } .rx-tl em { font-style:normal; font-size:11px; font-weight:800; color:var(--p-gold); white-space:nowrap; }
+        #pSheetBody .rc-r { justify-content:flex-start; text-align:left; } #pSheetBody .rc-r span { flex:1; text-align:left; }
+        #pSheetBody .rc-r input, .cx-r input { width:18px !important; height:18px !important; min-width:18px; flex:none; padding:0 !important; margin:0; border:0; box-shadow:none; }
     </style>
 <style>
 html,body{height:100%}
@@ -6575,7 +6602,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             if (st === 'no_rider' && now - RM.t0 < 6000) st = 'searching';      // let the radar spin at least a few seconds
             let rl = null; if (v.rider) {
                 const r = v.rider;
-                if (!RM.rider || RM.rider.id !== 'rr_' + d.serverId) RM.rider = { id: 'rr_' + d.serverId, name: r.name || 'डिलीवरी पार्टनर', rating: 5, trips: 0, bike: r.vehicle || '', phone: r.phone || '', photo: '', stock: {}, dist: 0 };
+                if (!RM.rider || RM.rider.id !== 'rr_' + d.serverId) RM.rider = { id: 'rr_' + d.serverId, name: r.name || 'डिलीवरी पार्टनर', rating: 5, trips: 0, bike: r.vehicle || '', phone: r.phone || '', photo: r.avatar || '', stock: {}, dist: 0 };
                 d.riderId = RM.rider.id;
                 if (r.lat != null && r.lng != null && v.lat != null && v.lng != null) rl = rmHav(r.lat, r.lng, v.lat, v.lng);
             }
@@ -7297,7 +7324,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const card = it => `<div class="ph-card" ${it.onclick ? `onclick="${it.onclick}"` : ''}><div class="flex items-start gap-3"><div class="relative"><img class="ph-img" src="${esc(it.img)}" alt="">${it.badge ? `<span style="position:absolute;right:-4px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:#e2b04a;display:flex;align-items:center;justify-content:center;font-size:11px">${it.badge}</span>` : ''}</div>
                 <div class="min-w-0 flex-1"><p class="font-outfit font-black text-[17px] leading-tight truncate">${esc(it.title)}</p><span class="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[11.5px] font-bold" style="background:${it.chipBg};color:${it.chipFg}">${it.chip}</span><p class="text-[11px] pmut mt-1 truncate">${esc(it.sub || '')}</p></div>
                 <div class="text-right flex-shrink-0"><p class="font-outfit font-black text-[20px]" style="color:${it.amtColor || 'var(--p-gold)'}">${money ? '₹' + Math.round(it.amt) : ''}</p><p class="text-[10px] font-black uppercase pmut" style="letter-spacing:.6px">${it.amtSub || ''}</p></div></div>
-                <div class="ph-st">${it.steps.map(s => `<div class="s ${s[1] ? 'done' : (s[2] ? 'cur' : '')}"><span class="dot">${s[1] ? '<i class="fa-solid fa-check"></i>' : (s[3] || '')}</span>${s[0]}</div>`).join('')}</div></div>`;
+                <div class="ph-st">${it.steps.map(s => `<div class="s ${s[1] ? 'done' : (s[2] ? 'cur' : '')}"><span class="dot">${s[1] ? '<i class="fa-solid fa-check"></i>' : (s[3] || '')}</span>${s[0]}</div>`).join('')}${it.chev ? `<span class="ph-chev ${it.more ? 'up' : ''}"><i class="fa-solid fa-chevron-down"></i></span>` : ''}</div>${it.more || ''}</div>`;
             (window.PH_LAST = window.PH_LAST || {})[role] = { c: c, per: per, amt: amt, items: c.items };
             return `
             <div class="ph-hero">
@@ -7381,7 +7408,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const units = ((me.stock) || []).reduce((s, x) => s + x.qty, 0);
             const stLbl = { accepted: [tr('स्वीकार किया', 'Accepted'), '#fef3c7', '#92400e'], on_the_way: [tr('🛵 रास्ते में', '🛵 On the way'), '#dbeafe', '#1e40af'], delivered: [tr('✅ डिलीवर', '✅ Delivered'), '#dcfce7', '#166534'], cancelled: [tr('रद्द', 'Cancelled'), '#fee2e2', '#991b1b'], no_rider: [tr('रद्द', 'Cancelled'), '#fee2e2', '#991b1b'], searching: [tr('खोज', 'Searching'), '#f3f4f6', '#374151'] };
             const items = orders.map(o => { const s = stLbl[o.status] || [o.status, '#f3f4f6', '#374151'], cur = !o.picked_at ? 1 : (!o.delivered_at ? 2 : 4);
-                return { ts: o.ts, state: o.status === 'delivered' ? 'done' : 'pending', img: rmImg(o.image_url), badge: o.status === 'delivered' ? '✓' : '🛵', title: o.customer || tr('ग्राहक', 'Customer'), sub: (o.items || '') + ' • ' + fmtT(o.ts), chip: s[0], chipBg: s[1], chipFg: s[2], amt: Number(o.total), amtSub: o.status === 'delivered' ? tr('कलेक्शन', 'Collected') : 'COD',
+                return { onclick: `rxTog('${o.id}')`, chev: true, more: RX.has(o.id) ? rxMore(o) : '', ts: o.ts, state: o.status === 'delivered' ? 'done' : 'pending', img: rmImg(o.image_url), badge: o.status === 'delivered' ? '✓' : '🛵', title: o.customer || tr('ग्राहक', 'Customer'), sub: (o.items || '') + ' • ' + fmtT(o.ts), chip: s[0], chipBg: s[1], chipFg: s[2], amt: Number(o.total), amtSub: o.status === 'delivered' ? tr('कलेक्शन', 'Collected') : 'COD',
                     steps: [[tr('स्वीकार', 'Accepted'), !!o.accepted_at, false], [tr('रास्ते में', 'On the way'), !!o.picked_at, cur === 1, '🛵'], [tr('डिलीवर', 'Delivered'), !!o.delivered_at, cur === 2, '🏠'], [tr('₹ कलेक्शन', '₹ Collected'), !!o.delivered_at, false, '₹']] }; });
             const av = RL.avatar ? `<img src="${esc(RL.avatar)}" alt="">` : initials(nm);
             return phView('rider', {
@@ -11093,6 +11120,171 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 A.getLaunchUrl && A.getLaunchUrl().then(r => { if (r && r.url) setTimeout(() => ringHandleUrl(r.url), 1200); }).catch(() => { });
             } catch (e) { }
         })();
+
+
+        /* ================= cancel with reason (customer + rider), photos, expandable rider cards, fines ================= */
+        const CXR = Object.assign({ free_secs: 60, fee_accepted: 20, fee_onway: 30, fee_no_customer: 30, rider_fine: 10, rider_daily_limit: 3, wait_minutes: 5, customer_can_cancel_onway: true }, saGet('hf_cxr_v1', {}));
+        (async () => { try { if (LIVE && window.sb) { const { data } = await sb.rpc('cancel_rules'); if (data) { Object.assign(CXR, data); saPut('hf_cxr_v1', CXR); } } } catch (e) { } })();
+        const imgOf = u => (typeof rmImg === 'function' ? rmImg(u) : u) || FOODIMG.thali;
+        const nm2 = i => esc(currentLang === 'hi' ? (i.name_hi || i.name) : i.name);
+
+        /* ---------- customer: live sheet ---------- */
+        (function () {
+            const t = document.getElementById('liveTitle'); if (!t) return;
+            const head = t.parentElement.parentElement, minBtn = head.querySelector('button');
+            const b = document.createElement('button'); b.id = 'liveCancelBtn'; b.className = 'lv-cx hidden'; b.innerHTML = '<i class="fa-solid fa-xmark"></i> ' + tr('रद्द', 'Cancel');
+            b.onclick = () => cxOpen(); head.insertBefore(b, minBtn);
+        })();
+        function cxFee(d) {
+            if (!d) return 0;
+            if (d.status === 'on_the_way') return Number(CXR.fee_onway) || 0;
+            if (d.status === 'accepted') { const acc = d.acceptedAt || (d.accepted_at ? Date.parse(d.accepted_at) : 0); if (acc && Date.now() - acc > (CXR.free_secs || 60) * 1000) return Number(CXR.fee_accepted) || 0; }
+            return 0;
+        }
+        { const f = renderLive; renderLive = function () {
+            const r = f.apply(this, arguments);
+            try {
+                const d = live && live.dbo, p = live && live.phase, btn = document.getElementById('liveCancelBtn');
+                const can = d && ['search', 'vwait', 'accepted', 'cook', 'onway'].indexOf(p) > -1 && !(d.status === 'on_the_way' && CXR.customer_can_cancel_onway === false) && !d.arrivedAt;
+                if (btn) btn.classList.toggle('hidden', !can);
+                const body = document.getElementById('liveBody');
+                if (d && body && ['accepted', 'cook', 'onway', 'search', 'vwait'].indexOf(p) > -1 && (d.items || []).length && !document.getElementById('lvItems') && !body.querySelector('.rz-bag')) {
+                    const its = d.items.map(i => { const pi = (typeof prodInfo === 'function' && (prodInfo(i.pid) || (allProductsMaster.find(m => m.p.dbId === i.pid) || {}).p)) || {}; return { name: i.name, hi: i.hi || pi.title && pi.title.hi, qty: i.qty, price: i.price, img: i.img || pi.image || FOODIMG.thali }; });
+                    const n = its.reduce((s, i) => s + i.qty, 0);
+                    const html = `<div id="lvItems" class="lv-it ${window.__lvOpen ? 'open' : ''}"><button class="lv-ih" onclick="window.__lvOpen=!window.__lvOpen;this.parentElement.classList.toggle('open')">
+                        <span class="lv-th">${its.slice(0, 3).map(i => `<img src="${esc(i.img)}" alt="">`).join('')}</span>
+                        <span class="flex-1 min-w-0 text-left"><b>${tr('आपका ऑर्डर', 'Your order')}</b><small>${its.length} ${tr('प्रोडक्ट', 'items')} • ${n} ${tr('नग', 'pcs')} • ₹${Math.round(d.total || 0)}</small></span><i class="fa-solid fa-chevron-down lv-ch"></i></button>
+                        <div class="lv-il">${its.map(i => `<div><img src="${esc(i.img)}" alt=""><span class="flex-1 min-w-0">${esc(currentLang === 'hi' ? (i.hi || i.name) : i.name)}</span><b>${i.qty} × ₹${Math.round(i.price)}</b></div>`).join('')}</div></div>`;
+                    body.insertAdjacentHTML('beforeend', html);
+                }
+            } catch (e) { }
+            return r;
+        }; }
+        // the old red "cancel" button also opens the reason sheet
+        { const f = cancelLiveOrder; cancelLiveOrder = function () { if (live && live.dbo && live.dbo.remote && !window.__cxGo) return cxOpen(); return f.apply(this, arguments); }; }
+        const CX_REASONS = [['mistake', '🙈', 'गलती से ऑर्डर हो गया', 'Ordered by mistake'], ['late', '⏰', 'बहुत देर हो रही है', 'Taking too long'], ['address', '📍', 'पता बदलना है', 'Need to change address'], ['change', '🛒', 'कुछ और मँगाना है', 'Want to change items'], ['price', '💸', 'दाम ज़्यादा लगा', 'Price too high'], ['other', '✍️', 'कोई और वजह', 'Other reason']];
+        function cxOpen() {
+            const d = live && live.dbo; if (!d) return;
+            const fee = cxFee(d);
+            let el = document.getElementById('cxPop'); if (!el) { el = document.createElement('div'); el.id = 'cxPop'; el.className = 'pm-wrap'; (document.getElementById('appContainer') || document.body).appendChild(el); }
+            el.innerHTML = `<div class="pm-card"><div class="pm-head"><div class="pm-ic" style="background:linear-gradient(135deg,#f87171,#dc2626)">✕</div><div><h3>${tr('ऑर्डर रद्द करें?', 'Cancel order?')}</h3><p>${tr('वजह बताएँ — इससे हम सेवा बेहतर करेंगे', 'Tell us why — it helps us improve')}</p></div></div>
+                <div class="cx-list">${CX_REASONS.map((x, i) => `<label class="cx-r"><input type="radio" name="cxr" value="${x[0]}" ${i === 0 ? 'checked' : ''}><span>${x[1]} ${tr(x[2], x[3])}</span></label>`).join('')}</div>
+                <textarea id="cxNote" class="pm-in mt-2" rows="2" placeholder="${tr('कुछ और लिखना हो तो (ज़रूरी नहीं)', 'Anything else (optional)')}"></textarea>
+                <div class="cx-fee ${fee ? 'bad' : ''}">${fee ? `⚠️ ${tr(`पार्टनर निकल चुका है — ₹${fee} रद्द शुल्क लगेगा (पार्टनर को मिलेगा)`, `Partner already assigned — ₹${fee} cancellation fee (goes to the partner)`)}` : `✅ ${tr('अभी रद्द करना मुफ़्त है', 'Cancelling now is free')}`}</div>
+                <button class="pm-all" style="background:linear-gradient(135deg,#ef4444,#b91c1c)" onclick="cxGo()">${tr('हाँ, रद्द करें', 'Yes, cancel')}</button>
+                <button class="pm-later" onclick="document.getElementById('cxPop').classList.remove('show')">${tr('नहीं, ऑर्डर चालू रखें', 'No, keep my order')}</button>
+                <button class="pm-later" style="font-size:11.5px" onclick="document.getElementById('cxPop').classList.remove('show');openLegal('refund')">${tr('रद्द और रिफ़ंड के नियम', 'Cancellation & refund rules')}</button></div>`;
+            el.classList.add('show'); vib(10);
+        }
+        async function cxGo() {
+            const d = live && live.dbo; if (!d) return;
+            const why = (document.querySelector('input[name=cxr]:checked') || {}).value || 'other', note = (document.getElementById('cxNote').value || '').trim();
+            const reason = why + (note ? ': ' + note : '');
+            document.getElementById('cxPop').classList.remove('show');
+            if (!(LIVE && d.remote)) { window.__cxGo = true; try { cancelLiveOrder(); } finally { window.__cxGo = false; } cxAfter(d, cxFee(d)); return; }
+            try {
+                const { data, error } = await sb.rpc('customer_cancel', { p_order_id: d.serverId, p_reason: reason }); if (error) throw error;
+                if (!data || !data.ok) { const m = { too_late: tr('अब रद्द नहीं हो सकता', 'Too late to cancel'), arrived: tr('पार्टनर पहुँच गया है — उनसे बात करें', 'Partner has arrived — talk to them'), on_the_way: tr('पार्टनर रास्ते में है — अब रद्द नहीं हो सकता', 'Partner is on the way — cannot cancel') }; showToast(m[data && data.code] || tr('रद्द नहीं हो पाया', 'Could not cancel')); return; }
+                d.status = 'cancelled'; try { liveTick(); } catch (e) { } sfx('remove'); cxAfter(d, Number(data.fee) || 0);
+            } catch (e) { showToast(rmOrderErr ? rmOrderErr(e) : String(e)); }
+        }
+        function cxAfter(d, fee) {
+            showToast(fee ? tr(`ऑर्डर रद्द — ₹${fee} शुल्क लगा`, `Order cancelled — ₹${fee} fee`) : tr('ऑर्डर रद्द — कोई शुल्क नहीं ✅', 'Order cancelled — no charge ✅'));
+            let el = document.getElementById('cxPop'); el.innerHTML = `<div class="pm-card text-center"><div class="text-5xl">🙏</div><h3 class="font-outfit font-black text-[20px] mt-2">${tr('ऑर्डर रद्द हो गया', 'Order cancelled')}</h3><p class="text-[13px] mt-1" style="color:#7a6a4e">${fee ? tr(`₹${fee} रद्द शुल्क — अगले ऑर्डर में जुड़ेगा`, `₹${fee} fee — added to your next order`) : tr('कोई पैसा नहीं कटा', 'Nothing was charged')}</p>
+                <button class="pm-all mt-4" onclick="document.getElementById('cxPop').classList.remove('show');cxReorder()">🔁 ${tr('फिर से ऑर्डर करें', 'Order again')}</button>
+                <button class="pm-later" onclick="document.getElementById('cxPop').classList.remove('show');try{closeLive&&closeLive()}catch(e){}">${tr('बंद करें', 'Close')}</button></div>`;
+            el.classList.add('show'); window.__cxLast = d;
+        }
+        function cxReorder() {
+            const d = window.__cxLast; if (!d) return;
+            try { (d.items || []).forEach(i => { const m = allProductsMaster.find(x => x.p.dbId === i.pid || x.p.id === i.pid); if (m) { const c = cart.find(x => x.productId === m.p.id); if (c) c.quantity += i.qty; else cart.push({ productId: m.p.id, quantity: i.qty, addons: [] }); } }); updateCartUI(); try { minimizeLive(); } catch (e) { } openCartModal(); } catch (e) { }
+        }
+
+        /* ---------- rider: active delivery card with photos, arrival timer and "can't deliver" ---------- */
+        const RX = new Set();
+        const CXR_RIDER = [['vehicle', '🛵', 'गाड़ी ख़राब हो गई', 'Vehicle broke down'], ['accident', '🤕', 'दुर्घटना / तबियत', 'Accident / unwell'], ['item', '📦', 'सामान ख़राब / ख़त्म', 'Item damaged / out'], ['no_customer', '🚪', 'ग्राहक नहीं मिला', 'Customer not found'], ['refused', '🙅', 'ग्राहक ने लेने से मना किया', 'Customer refused'], ['other', '✍️', 'कोई और वजह', 'Other reason']];
+        const avHtml = (src, name, cls) => src && String(src).length > 50 ? `<img class="${cls}" src="${esc(src)}" alt="">` : `<span class="${cls} av-i">${esc(initials(name || 'G'))}</span>`;
+        rlActiveCard = function () {
+            const a = RL.me && RL.me.active; if (!a) return '';
+            const waitS = a.arrived_at ? Math.max(0, Math.round((Date.parse(a.arrived_at) + (CXR.wait_minutes || 5) * 60e3 - Date.now()) / 1000)) : null;
+            const its = a.items || [];
+            return `<div class="ph-card mt-4 ra-card"><div class="flex items-center justify-between"><p class="font-outfit font-black text-[16px]">🛵 ${tr('चालू डिलीवरी', 'Current delivery')}</p><div class="flex items-center gap-2">${statusPill(a.status)}<button class="ra-more" onclick="rcOpen('${a.id}')" aria-label="problem"><i class="fa-solid fa-ellipsis-vertical"></i></button></div></div>
+                <div class="ra-items mt-3">${its.map(i => `<div class="ra-it"><img src="${esc(imgOf(i.image_url))}" alt=""><span class="flex-1 min-w-0"><b>${nm2(i)}</b><small>${i.qty} × ${money(i.price)}</small></span><b class="pnum">${money(i.qty * i.price)}</b></div>`).join('')}</div>
+                <div class="flex justify-between mt-2 pt-2 border-t pline"><span class="text-[12px] pmut">${tr('ग्राहक से लेना (COD)', 'Collect (COD)')}</span><b class="pnum pgold text-[18px]">${money(a.total)}</b></div>
+                <div class="ra-cust mt-3">${avHtml(a.customer_avatar, a.customer, 'ra-av')}<div class="min-w-0 flex-1"><p class="font-black text-[14.5px] truncate">${esc(a.customer || tr('ग्राहक', 'Customer'))}</p><p class="text-[12px] pmut leading-snug">📍 ${esc(a.address || '')}</p></div></div>
+                <div class="grid grid-cols-2 gap-2.5 mt-3">${a.customer_phone ? `<a class="pbtn-g text-center" href="tel:+${esc(a.customer_phone)}"><i class="fa-solid fa-phone"></i> ${tr('कॉल करें', 'Call')}</a>` : '<span></span>'}<a class="pbtn-g text-center" href="https://www.google.com/maps/dir/?api=1&destination=${a.lat},${a.lng}" target="_blank"><i class="fa-solid fa-diamond-turn-right"></i> ${tr('रास्ता', 'Route')}</a></div>
+                ${a.status === 'accepted' ? `<button class="pbtn w-full mt-3" onclick="rlStartTrip('${a.id}')"><i class="fa-solid fa-motorcycle"></i> ${tr('निकल गया — रास्ते में', 'Start — on the way')}</button>` : ''}
+                ${a.status === 'on_the_way' && !a.arrived_at ? `<button class="pbtn-g w-full mt-3" onclick="rcArrived('${a.id}')">📍 ${tr('ग्राहक के पास पहुँच गया', 'I have arrived')}</button>` : ''}
+                ${a.arrived_at ? `<div class="ra-wait">🚪 ${tr('ग्राहक का इंतज़ार', 'Waiting for customer')} — <b id="raWait" data-end="${Date.parse(a.arrived_at) + (CXR.wait_minutes || 5) * 60e3}">${waitS > 0 ? Math.floor(waitS / 60) + ':' + String(waitS % 60).padStart(2, '0') : tr('पूरा', 'done')}</b></div>` : ''}
+                ${a.status === 'on_the_way' ? `<label class="plabel mt-4">${tr('ग्राहक से 4 अंक का OTP लीजिए', 'Ask the customer for the 4-digit OTP')}</label><div class="flex gap-2.5"><input id="rlOtp" maxlength="4" inputmode="numeric" placeholder="••••" style="text-align:center;font-weight:900;font-size:20px;letter-spacing:8px;flex:1"><button class="pbtn" style="flex:1" onclick="rlDeliver('${a.id}')"><i class="fa-solid fa-check"></i> ${tr('डिलीवर', 'Delivered')}</button></div>` : ''}
+                <button class="ra-cx" onclick="rcOpen('${a.id}')">⚠️ ${tr('डिलीवर नहीं हो पा रहा? कैंसल / वजह बताएँ', "Can't deliver? Cancel with a reason")}</button></div>`;
+        };
+        setInterval(() => { const w = document.getElementById('raWait'); if (!w) return; const s = Math.max(0, Math.round((+w.dataset.end - Date.now()) / 1000)); w.textContent = s > 0 ? Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0') : tr('पूरा — अब "ग्राहक नहीं मिला" चुन सकते हैं', 'done — you can mark "customer not found"'); }, 1000);
+        async function rcArrived(id) {
+            try { const { data, error } = await sb.rpc('rider_arrived', { p_order_id: id }); if (error) throw error; sfx('success'); pToast(tr(`📍 पहुँच गए — ग्राहक को कॉल करें। ${CXR.wait_minutes || 5} मिनट बाद "ग्राहक नहीं मिला" चुन सकते हैं`, `📍 Arrived — call the customer`)); await rlRefresh(true); } catch (e) { pToast(rmOrderErr(e)); }
+        }
+        function rcOpen(id) {
+            const a = RL.me && RL.me.active; if (!a) return;
+            openPSheet(tr('डिलीवर नहीं हो पा रहा?', "Can't deliver?"), `<p class="text-[12px] pmut mb-3">${tr('वजह चुनें। ग्राहक न मिले या मना करे तो ऑर्डर बंद होगा; बाकी वजहों में ऑर्डर अगले राइडर को चला जाएगा।', 'Pick a reason. Not found / refused closes the order; other reasons pass it to the next rider.')}</p>
+                <div class="space-y-2">${CXR_RIDER.map((x, i) => { const needArr = (x[0] === 'no_customer' || x[0] === 'refused') && !a.arrived_at; return `<label class="rc-r ${needArr ? 'off' : ''}"><input type="radio" name="rcr" value="${x[0]}" ${needArr ? 'disabled' : ''} ${i === 0 ? 'checked' : ''}><span>${x[1]} ${tr(x[2], x[3])}${needArr ? `<small>${tr('पहले "पहुँच गया" दबाएँ', 'Tap "arrived" first')}</small>` : ''}</span></label>`; }).join('')}</div>
+                <textarea id="rcNote" class="mt-3" rows="2" placeholder="${tr('थोड़ा लिखें (जैसे — दरवाज़ा बंद, फ़ोन बंद)', 'A short note (e.g. door locked, phone off)')}" style="width:100%"></textarea>
+                <p class="text-[11.5px] pmut mt-2">${tr(`बिना ठोस वजह कैंसल करने पर ₹${CXR.rider_fine} फ़ाइन; दिन में ${CXR.rider_daily_limit} बार पर आप ऑफ़लाइन हो जाएँगे। दुर्घटना पर कोई फ़ाइन नहीं।`, `₹${CXR.rider_fine} fine without a valid reason; ${CXR.rider_daily_limit} a day takes you offline. No fine for accidents.`)}</p>
+                <button class="pbtn-bad w-full mt-3" onclick="rcGo('${id}')">${tr('कैंसल भेजें', 'Send')}</button>`);
+        }
+        async function rcGo(id) {
+            const r = (document.querySelector('input[name=rcr]:checked') || {}).value, note = (document.getElementById('rcNote').value || '').trim();
+            if (!r) return;
+            try {
+                const { data, error } = await sb.rpc('rider_cancel', { p_order_id: id, p_reason: r, p_note: note }); if (error) throw error;
+                if (!data || !data.ok) { const m = { wait: tr(`अभी ${Math.ceil((data.seconds_left || 0) / 60)} मिनट और इंतज़ार करें`, `Wait ${Math.ceil((data.seconds_left || 0) / 60)} more min`), not_arrived: tr('पहले "पहुँच गया" दबाएँ', 'Tap "arrived" first'), not_active: tr('यह ऑर्डर अब चालू नहीं', 'Order is no longer active') }; pToast(m[data && data.code] || tr('नहीं हो पाया', 'Failed')); return; }
+                closePSheet(); sfx('remove');
+                pToast(data.result === 'closed' ? tr('ऑर्डर बंद किया — ग्राहक को सूचना गई', 'Order closed — customer informed') : (data.offline ? tr('ऑर्डर अगले राइडर को गया — आज की सीमा पूरी, आप ऑफ़लाइन', 'Passed on — daily limit reached, you are offline') : tr('ऑर्डर अगले राइडर को भेज दिया', 'Passed to the next rider')));
+                await rlRefresh(true); RL.hist = null; rlLoadHist();
+            } catch (e) { pToast(rmOrderErr(e)); }
+        }
+        // a profile photo is required before going on duty
+        { const f = rlToggleOnline; rlToggleOnline = async function () {
+            if (LIVE && RL.me && !RL.me.online && RL.me.has_avatar === false && !RL.avatar) { pToast(tr('📸 पहले अपनी प्रोफ़ाइल फ़ोटो लगाएँ — ग्राहक को दिखती है', '📸 Add your profile photo first — customers see it')); rlPickAvatar(); return; }
+            return f.apply(this, arguments);
+        }; }
+        function rxTog(id) { RX.has(id) ? RX.delete(id) : RX.add(id); vib(8); renderPanel(true); }
+        function rxMore(o) {
+            const T = x => x ? new Date(x).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }) : '';
+            const cx = o.status === 'cancelled';
+            const rows = [['🔔', tr('स्वीकार', 'Accepted'), tr('आपने रिक्वेस्ट ली', 'You took the request'), o.accepted_at], ['🛵', tr('रास्ते में', 'On the way'), tr('ग्राहक की ओर निकले', 'Heading to customer'), o.picked_at], ['🚪', tr('पहुँचे', 'Arrived'), '', o.arrived_at],
+                cx ? ['✕', tr('रद्द', 'Cancelled'), ({ customer: tr('ग्राहक ने रद्द किया', 'Cancelled by customer'), rider_no_customer: tr('ग्राहक नहीं मिला', 'Customer not found'), rider_refused: tr('ग्राहक ने मना किया', 'Customer refused') }[o.cancelled_by] || o.cancelled_by || '') + (o.cancel_reason ? ' — ' + o.cancel_reason : ''), o.cancelled_at] : ['🏠', tr('डिलीवर', 'Delivered'), tr('OTP से पूरा', 'Completed with OTP'), o.delivered_at]].filter(r => r[3] || r[0] !== '🚪');
+            return `<div class="rx-more" onclick="event.stopPropagation()"><div class="rx-tl">${rows.map(r => `<div class="${r[3] ? 'd' : ''} ${r[0] === '✕' ? 'x' : ''}"><i>${r[3] ? (r[0] === '✕' ? '✕' : '✓') : r[0]}</i><span><b>${r[1]}</b>${r[2] ? `<small>${esc(r[2])}</small>` : ''}</span><em>${T(r[3])}</em></div>`).join('')}</div>
+                <div class="ra-items mt-2">${(o.lines || []).map(i => `<div class="ra-it"><img src="${esc(imgOf(i.image_url))}" alt=""><span class="flex-1 min-w-0"><b>${nm2(i)}</b><small>${i.qty} × ${money(i.price)}</small></span><b class="pnum">${money(i.qty * i.price)}</b></div>`).join('')}</div>
+                <div class="ra-cust mt-2">${avHtml(o.customer_avatar, o.customer, 'ra-av')}<div class="min-w-0 flex-1"><p class="font-black text-[13.5px]">${esc(o.customer || tr('ग्राहक', 'Customer'))}</p><p class="text-[11.5px] pmut">📍 ${esc(o.address || '')}</p></div></div></div>`;
+        }
+
+        /* ---------- admin: cancellations & fines ---------- */
+        AMENU.forEach(g => { if (g[0] === 'पैसा') g[2].push(['fines', 'fa-scale-unbalanced', 'कैंसल व फ़ाइन', 'Cancels & fines']); });
+        ATITLE.fines = ['कैंसल व फ़ाइन', 'Cancels & fines'];
+        { const f = aGo; aGo = function (k) { window.__aFines = k === 'fines'; if (k === 'fines') { window.__aZones = window.__aCoins = window.__aLegal = false; aDrawer(false); setTab('settings'); return; } return f.apply(this, arguments); }; }
+        { const f = adminSettings; adminSettings = function () { if (window.__aFines) return adminFines(); return f.apply(this, arguments); }; }
+        { const f = aShell; aShell = function () { const r = f.apply(this, arguments); try { if (window.__aFines && PNL.tab.admin === 'settings') { const t = document.getElementById('aTitle'); if (t) t.textContent = tr('कैंसल व फ़ाइन', 'Cancels & fines'); } else if (PNL.tab.admin !== 'settings') window.__aFines = false; } catch (e) { } return r; }; }
+        async function finesPull(force) { if (!LIVE || !window.sb || (window.__fnPulled && !force)) return; window.__fnPulled = true; try { const { data } = await sb.rpc('admin_penalties'); window.__fines = data || []; renderPanel(true); } catch (e) { } }
+        function adminFines() {
+            finesPull();
+            const L = window.__fines || [], open = L.filter(x => x.status === 'open'), sum = open.reduce((s, x) => s + Number(x.amount || 0), 0);
+            const n = (k, l) => `<div><label class="plabel">${l}</label><input id="cx_${k}" inputmode="numeric" value="${CXR[k]}"></div>`;
+            return `<div class="grid grid-cols-3 gap-2 text-center"><div class="pcard p-3"><p class="pnum text-[18px]">${L.length}</p><p class="text-[10.5px] pmut">${tr('कुल मामले', 'Cases')}</p></div><div class="pcard p-3"><p class="pnum text-[18px]">${open.length}</p><p class="text-[10.5px] pmut">${tr('बाकी', 'Open')}</p></div><div class="pcard p-3"><p class="pnum text-[18px]">₹${Math.round(sum)}</p><p class="text-[10.5px] pmut">${tr('वसूली बाकी', 'To collect')}</p></div></div>
+                ${sectionHead('⚙️ ' + tr('नियम', 'Rules'))}
+                <div class="pcard p-4"><div class="grid grid-cols-2 gap-2.5">${n('free_secs', tr('स्वीकार के बाद मुफ़्त रद्द (सेकंड)', 'Free cancel after accept (sec)'))}${n('fee_accepted', tr('राइडर तय होने पर रद्द ₹', 'Fee after accept ₹'))}${n('fee_onway', tr('रास्ते में रद्द ₹', 'Fee on the way ₹'))}${n('fee_no_customer', tr('ग्राहक न मिले ₹', 'Customer not found ₹'))}${n('rider_fine', tr('राइडर कैंसल फ़ाइन ₹', 'Rider cancel fine ₹'))}${n('rider_daily_limit', tr('राइडर कैंसल/दिन सीमा', 'Rider cancels / day'))}${n('wait_minutes', tr('दरवाज़े पर इंतज़ार (मिनट)', 'Wait at door (min)'))}</div>
+                <label class="plabel mt-3 flex items-center justify-between">${tr('राइडर रास्ते में हो तब भी ग्राहक रद्द कर सके', 'Customer may cancel while rider is on the way')} ${sw(CXR.customer_can_cancel_onway !== false, "this.classList.toggle('on')")}</label>
+                <button class="pbtn w-full mt-3" onclick="finesSaveRules()"><i class="fa-solid fa-floppy-disk"></i> ${tr('सेव करें', 'Save')}</button></div>
+                ${sectionHead('📋 ' + tr('फ़ाइन / शुल्क', 'Fines & fees'), `<button class="text-[12px] pgold font-bold" onclick="finesPull(true)">↻ ${tr('ताज़ा', 'Refresh')}</button>`)}
+                <div class="space-y-2.5">${L.length ? L.map(x => `<div class="pcard p-3"><div class="flex items-center justify-between gap-2"><div class="min-w-0"><p class="font-extrabold text-[13.5px] truncate">${x.role === 'rider' ? '🛵' : '👤'} ${esc(x.name || x.phone || '')}</p><p class="text-[11.5px] pmut truncate">${esc(x.reason || '')} • ${new Date(x.at).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}</p></div><b class="pnum ${x.status === 'open' ? '' : 'pmut'}">₹${Math.round(x.amount)}</b></div>
+                    ${x.status === 'open' ? `<div class="grid grid-cols-2 gap-2 mt-2"><button class="zn-sm" onclick="finesSet(${x.id},'waived')">🤝 ${tr('माफ़ करें', 'Waive')}</button><button class="zn-sm" onclick="finesSet(${x.id},'paid')">✅ ${tr('वसूल हुआ', 'Collected')}</button></div>` : `<p class="text-[11px] mt-1 ${x.status === 'paid' ? 'text-green-600' : 'pmut'} font-bold">${x.status === 'paid' ? tr('वसूल हुआ', 'Collected') : tr('माफ़ किया', 'Waived')}</p>`}</div>`).join('') : `<div class="pcard p-5 text-center pmut text-[12.5px]">${tr('अभी कोई फ़ाइन नहीं', 'No fines yet')}</div>`}</div><div class="h-10"></div>`;
+        }
+        async function finesSet(id, st) { try { await sb.rpc('admin_set_penalty', { p_id: id, p_status: st }); const x = (window.__fines || []).find(y => y.id === id); if (x) x.status = st; renderPanel(true); pToast(st === 'paid' ? tr('✅ वसूल दर्ज', '✅ Marked collected') : tr('🤝 माफ़ किया', '🤝 Waived')); } catch (e) { pToast(rmMsg(e)); } }
+        async function finesSaveRules() {
+            ['free_secs', 'fee_accepted', 'fee_onway', 'fee_no_customer', 'rider_fine', 'rider_daily_limit', 'wait_minutes'].forEach(k => { const v = parseFloat(document.getElementById('cx_' + k).value); if (!isNaN(v)) CXR[k] = v; });
+            const s = document.querySelector('#pnlBody .psw'); if (s) CXR.customer_can_cancel_onway = s.classList.contains('on');
+            saPut('hf_cxr_v1', CXR); sfx('success');
+            if (LIVE && window.sb) { try { const { error } = await sb.rpc('admin_set_cancel_rules', { p: CXR }); pToast(error ? tr('फ़ोन में सेव ✅', 'Saved on phone ✅') : tr('सर्वर पर सेव ✅ — सबके ऐप में लागू', 'Saved on server ✅')); } catch (e) { pToast(tr('फ़ोन में सेव ✅', 'Saved on phone ✅')); } } else pToast(tr('सेव हो गया ✅', 'Saved ✅'));
+        }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
