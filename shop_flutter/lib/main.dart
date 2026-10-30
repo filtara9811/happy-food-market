@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'api.dart';
+import 'push.dart';
 import 'theme.dart';
 import 'screens/login.dart';
 import 'screens/home.dart';
@@ -18,6 +19,7 @@ Future<void> main() async {
     await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
     Api.markReady();
   } catch (_) {}
+  await Push.init();
   runApp(const ShopApp());
 }
 

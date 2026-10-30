@@ -8,6 +8,7 @@ import '../theme.dart';
 import '../widgets/common.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../printer.dart';
+import '../push.dart';
 import '../widgets/shop_ui.dart';
 import 'inventory.dart';
 import 'shop_page.dart';
@@ -34,6 +35,17 @@ class _ShopHomeState extends State<ShopHome> {
   Timer? poll;
   final sc = ScrollController();
   final seen = <String>{};
+  StreamSubscription? actSub;
+
+  Future<void> _pushAct(String act, String saleId) async {
+    if (orders.every((o) => o['id'].toString() != saleId)) await load(quiet: true);
+    if (!mounted) return;
+    final o = orders.where((o) => o['id'].toString() == saleId).toList();
+    setState(() { nav = 0; seg = 0; filter = 'live'; dayIdx = 0; open.add(saleId); });
+    if (o.isEmpty) return;
+    if (act == 'accept') await _act(o.first, 'accept');
+    if (act == 'reject') await _act(o.first, 'reject');
+  }
   final player = AudioPlayer();
 
   Future<void> _ring(List<Map<String, dynamic>> fresh) async {
@@ -51,12 +63,16 @@ class _ShopHomeState extends State<ShopHome> {
     super.initState();
     load();
     poll = Timer.periodic(const Duration(seconds: 12), (_) => load(quiet: true));
+    Push.register();
+    actSub = Push.actions.stream.listen((a) => _pushAct(a.$1, a.$2));
+    if (Push.launch != null) { final l = Push.launch!; Push.launch = null; Future.delayed(const Duration(milliseconds: 1500), () => _pushAct(l.$1, l.$2)); }
     sc.addListener(() { final m = sc.offset > 250; if (m != mini) setState(() => mini = m); });
   }
 
   @override
   void dispose() {
     poll?.cancel();
+    actSub?.cancel();
     sc.dispose();
     player.dispose();
     super.dispose();
