@@ -56,7 +56,8 @@ jobs:
           PY
           # app icon + ring sound from the Shop app
           for d in ../shell/res-shop/mipmap-*; do mkdir -p android/app/src/main/res/$(basename $d); cp $d/ic_launcher.png android/app/src/main/res/$(basename $d)/ic_launcher.png || true; done
-          mkdir -p android/app/src/main/res/raw && cp ../shell/res-shop/raw/ring.wav android/app/src/main/res/raw/ring.wav
+          mkdir -p android/app/src/main/res/raw && printf '<?xml version="1.0" encoding="utf-8"?>\n<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@raw/ring" />\n' > android/app/src/main/res/raw/keep.xml
+          cp ../shell/res-shop/raw/ring.wav android/app/src/main/res/raw/ring.wav
           # Firebase (push) settings for com.happyfood.shop from the GOOGLE_SERVICES_JSON secret
           python3 - <<'PY'
           import json, os
