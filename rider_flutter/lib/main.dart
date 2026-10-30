@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'api.dart';
+import 'push.dart';
 import 'theme.dart';
-import 'screens/home.dart';
+import 'screens/login.dart';
+import 'screens/live.dart';
+import 'screens/join.dart';
 
 const supabaseUrl = 'https://pboelnbjgyllqqlkqaqm.supabase.co';
 // publishable (public) key — safe to ship in the app
@@ -13,9 +17,9 @@ Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.light));
   try {
     await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
-  } catch (_) {
-    // offline start is fine — the app works on cached / demo data
-  }
+    Api.markReady();
+  } catch (_) {}
+  await Push.init();
   runApp(const RiderApp());
 }
 
@@ -32,6 +36,23 @@ class RiderApp extends StatelessWidget {
   }
 }
 
+/// login → (become a partner) → live rider screen
+Future<void> goNext(BuildContext context) async {
+  Widget next;
+  if (!Api.signedIn) {
+    next = const LoginScreen();
+  } else {
+    try {
+      final me = await Api.me();
+      next = me['registered'] == true ? const RiderLive() : JoinScreen(name: '${me['name'] ?? ''}');
+    } catch (_) {
+      next = const RiderLive();
+    }
+  }
+  if (!context.mounted) return;
+  Navigator.of(context).pushAndRemoveUntil(PageRouteBuilder(pageBuilder: (_, __, ___) => next, transitionsBuilder: (_, a, __, w) => FadeTransition(opacity: a, child: w)), (_) => false);
+}
+
 class Splash extends StatefulWidget {
   const Splash({super.key});
   @override
@@ -45,7 +66,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     super.initState();
     Future.delayed(const Duration(milliseconds: 1800), () {
       if (!mounted) return;
-      Navigator.of(context).pushReplacement(PageRouteBuilder(pageBuilder: (_, __, ___) => const RiderHome(), transitionsBuilder: (_, a, __, w) => FadeTransition(opacity: a, child: w)));
+      goNext(context);
     });
   }
 

@@ -31,13 +31,45 @@ jobs:
           cache: true
 
       - name: Create the platform folders (keeps our lib/ and pubspec)
+        env:
+          GSJ: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: |
-          flutter create --org com.happyfood --project-name hf_rider --platforms android,web .
+          flutter create --org com.happyfood --project-name hf_rider --platforms android .
           rm -rf test
           M=android/app/src/main/AndroidManifest.xml
-          sed -i 's#android:label="hf_rider"#android:label="Happy Food Rider"#' $M
-          sed -i 's#<application#<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <application#' $M
-          grep -n "label\|permission" $M
+          sed -i 's#android:label="hf_rider"#android:label="Happy Food Partner"#' $M
+          sed -i 's#<application#<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>\n    <uses-permission android:name="android.permission.WAKE_LOCK"/>\n    <uses-permission android:name="android.permission.CAMERA"/>\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n    <application#' $M
+          # the request screen may open over the lock screen like a phone call
+          sed -i '0,/<activity/s//<activity android:showWhenLocked="true" android:turnScreenOn="true"/' $M
+          sed -i 's#</manifest>#  <queries>\n    <intent><action android:name="android.intent.action.VIEW"/><data android:scheme="https"/></intent>\n    <intent><action android:name="android.intent.action.DIAL"/><data android:scheme="tel"/></intent>\n  </queries>\n</manifest>#' $M
+          grep -n "label\|permission\|activity" $M | head -20
+          # same app id as the Partner app (push + Play Store listing), newer phones API 24+, desugaring for notifications
+          python3 - <<'PY'
+          import os, re
+          f = next(p for p in ['android/app/build.gradle.kts', 'android/app/build.gradle'] if os.path.exists(p))
+          t = open(f).read(); kts = f.endswith('.kts')
+          t = re.sub(r'applicationId\s*=?\s*"[^"]+"', 'applicationId = "com.happyfood.partner"' if kts else 'applicationId "com.happyfood.partner"', t)
+          t = re.sub(r'minSdk(Version)?\s*=?\s*flutter\.minSdkVersion', 'minSdk = 24' if kts else 'minSdkVersion 24', t)
+          t = t.replace('compileOptions {', 'compileOptions {\n        isCoreLibraryDesugaringEnabled = true' if kts else 'compileOptions {\n        coreLibraryDesugaringEnabled true', 1)
+          t += ('\ndependencies {\n    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")\n}\n' if kts else "\ndependencies {\n    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'\n}\n")
+          open(f, 'w').write(t); print(f); print(t)
+          PY
+          # app icon + ring sound from the Partner app
+          for d in ../shell/res-partner/mipmap-*; do mkdir -p android/app/src/main/res/$(basename $d); cp $d/ic_launcher.png android/app/src/main/res/$(basename $d)/ic_launcher.png || true; done
+          mkdir -p android/app/src/main/res/raw && cp ../shell/res-partner/raw/ring.wav android/app/src/main/res/raw/ring.wav
+          # Firebase (push) settings for com.happyfood.partner from the GOOGLE_SERVICES_JSON secret
+          python3 - <<'PY'
+          import json, os
+          s = os.environ.get('GSJ', ''); out = None
+          try:
+              d = json.loads(s); p = d['project_info']
+              c = [x for x in d['client'] if x['client_info']['android_client_info']['package_name'] == 'com.happyfood.partner'][0]
+              out = "const fbOk = true;\nconst fbApiKey = '%s';\nconst fbAppId = '%s';\nconst fbSender = '%s';\nconst fbProject = '%s';\n" % (c['api_key'][0]['current_key'], c['client_info']['mobilesdk_app_id'], p['project_number'], p['project_id'])
+          except Exception as e:
+              print('push off:', type(e).__name__)
+          if out:
+              open('lib/fb_opts.dart', 'w').write('// generated in CI\n' + out); print('push on')
+          PY
 
       - name: Bundle fonts (Hindi + numbers) so the app works offline
         run: |
@@ -58,8 +90,7 @@ jobs:
         run: |
           set -o pipefail
           ok=1
-          flutter build apk --release 2>&1 | tee ../build.log || ok=0
-          if [ $ok = 1 ]; then flutter build web --release --no-web-resources-cdn --base-href / 2>&1 | tee -a ../build.log || ok=0; fi
+          flutter build apk --release --build-number=$((2000 + ${{ github.run_number }})) 2>&1 | tee ../build.log || ok=0
           if [ $ok = 0 ]; then
             # logs are not readable from the agent sandbox, so surface the errors as annotations
             msg=$( (grep -E -A8 "rror|lib/.*dart:[0-9]+|wrong" ../build.log || tail -40 ../build.log) | head -90 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}' || true)
@@ -71,7 +102,6 @@ jobs:
         run: |
           mkdir -p ../out
           cp build/app/outputs/flutter-apk/app-release.apk ../out/HappyFood-Rider-Flutter.apk
-          cd build/web && zip -qr ../../../out/rider-web.zip .
 
       - uses: actions/upload-artifact@v4
         with:
@@ -87,4 +117,3 @@ jobs:
           target_commitish: ${{ github.sha }}
           files: |
             out/HappyFood-Rider-Flutter.apk
-            out/rider-web.zip
