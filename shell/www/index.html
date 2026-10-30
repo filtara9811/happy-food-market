@@ -1649,6 +1649,12 @@
         #pkScan .pk-bot { position: absolute; left: 0; right: 0; bottom: 0; padding: 16px 16px 34px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; background: linear-gradient(transparent, #000c); }
         #pkScan .pk-bot p { width: 100%; text-align: center; color: #fff; font-size: 13.5px; font-weight: 700; }
         #pkScan .pk-bot button { padding: 11px 16px; border-radius: 14px; background: rgba(255, 255, 255, .16); color: #fff; font-size: 13.5px; font-weight: 800; }
+        #panelRoot .pp-search input { border: 0 !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; height: auto !important; }
+        #panelRoot .pp-auto { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 8px 8px 8px 12px; border-radius: 16px; background: var(--p-card); border: 1px solid var(--p-line); }
+        #panelRoot .pp-auto-l { flex: 1; min-width: 0; font-size: 12.5px; font-weight: 800; }
+        #panelRoot .pp-auto-s { display: flex; gap: 3px; padding: 3px; border-radius: 12px; background: var(--p-card2); }
+        #panelRoot .pp-auto-s button { padding: 7px 10px; border-radius: 10px; font-size: 11.5px; font-weight: 800; color: var(--p-mut); white-space: nowrap; }
+        #panelRoot .pp-auto-s button.on { background: linear-gradient(180deg, #fde68a, #e2a92c); color: #2a1a00; }
     </style>
 <style>
 html,body{height:100%}
@@ -11830,6 +11836,40 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const put = () => { try { document.querySelectorAll('#panelRoot .ph-av').forEach(a => { const p = a.parentElement; if (!p || p.querySelector('.tech-b') || a.offsetWidth < 50) return; p.style.position = 'relative'; p.insertAdjacentHTML('beforeend', tag); }); } catch (e) { } };
             const f = renderPanel; renderPanel = function () { const r = f.apply(this, arguments); put(); return r; };
         })();
+
+        /* ---- auto / manual approval of new shops and riders — people2.js ---- */
+        PP.auto = null;
+        async function ppAutoLoad() {
+            if (!LIVE) { PP.auto = PP.auto || { vendors: false, riders: false }; return; }
+            try { const { data, error } = await sb.rpc('admin_approval_settings'); if (error) throw error; PP.auto = data || { vendors: false, riders: false }; } catch (e) { PP.auto = { vendors: false, riders: false, err: rmMsg(e) }; }
+            if (PNL.role === 'admin' && PNL.tab.admin === 'partners') renderPanel(true);
+        }
+        function ppAutoBar(k) {
+            if (k === 'customers') return '';
+            if (!PP.auto) { ppAutoLoad(); if (!PP.auto) return ''; }
+            const on = !!PP.auto[k], what = k === 'vendors' ? tr('नई दुकानें', 'New shops') : tr('नए राइडर', 'New riders');
+            return `<div class="pp-auto"><span class="pp-auto-l">🤖 ${what}</span><div class="pp-auto-s"><button class="${!on ? 'on' : ''}" onclick="ppAutoSet('${k}', false)">✋ ${tr('मैनुअल', 'Manual')}</button><button class="${on ? 'on' : ''}" onclick="ppAutoSet('${k}', true)">⚡ ${tr('ऑटो अप्रूव', 'Auto approve')}</button></div></div>
+                <p class="text-[10.5px] pmut mt-1 px-1">${on ? tr('नया पार्टनर जुड़ते ही अपने-आप चालू हो जाएगा', 'New partners go live as soon as they join') : tr('हर नए पार्टनर को आप कार्ड पर "अप्रूव करें" से चालू करेंगे', 'You approve each new partner from its card')}</p>`;
+        }
+        function ppAutoSet(k, on) {
+            if (!PP.auto || !!PP.auto[k] === on) return;
+            const pend = ppPending(k);
+            if (on && pend) {
+                openPSheet(tr('ऑटो अप्रूव चालू करें?', 'Turn on auto approve?'), `<p class="text-[13.5px]">${tr(`अभी ${pend} पार्टनर अप्रूवल का इंतज़ार कर रहे हैं। उन्हें भी अभी अप्रूव कर दें?`, `${pend} partners are waiting. Approve them too?`)}</p>
+                    <div class="flex gap-2 mt-5"><button class="pbtn-g flex-1" onclick="ppAutoGo('${k}', true, false)">${tr('सिर्फ़ नए वाले', 'Only new ones')}</button><button class="pbtn flex-1" onclick="ppAutoGo('${k}', true, true)">${tr('हाँ, सबको अभी', 'Yes, all now')}</button></div>`);
+                return;
+            }
+            ppAutoGo(k, on, false);
+        }
+        async function ppAutoGo(k, on, all) {
+            closePSheet();
+            if (LIVE) { try { const { data, error } = await sb.rpc('admin_set_auto_approve', { p_kind: k, p_on: on, p_approve_pending: all }); if (error) throw error; if (data && data.approved_now) pToast(tr(`${data.approved_now} अप्रूव किए ✅`, `${data.approved_now} approved ✅`)); } catch (e) { pToast('⚠️ ' + rmMsg(e).slice(0, 80)); return; } }
+            else if (all) ppList(k).forEach(x => { if (x.status === 'pending') { x.approved = true; ppSt(x); } });
+            PP.auto[k] = on; sfx('success'); pToast(on ? tr('ऑटो अप्रूव चालू ⚡', 'Auto approve on ⚡') : tr('अब मैनुअल अप्रूवल ✋', 'Manual approval now ✋'));
+            if (LIVE && all) { PP.data[k] = null; ppLoad(k); } else renderPanel(true);
+        }
+        { const f = adminPeople; adminPeople = function () { const h = f.apply(this, arguments), k = ppKind(), i = h.indexOf('<div class="pp-tools">'); if (i < 0 || !PP.data[k]) return h; return h.slice(0, i) + ppAutoBar(k) + h.slice(i); }; }
+        adminPartners = adminPeople;
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
