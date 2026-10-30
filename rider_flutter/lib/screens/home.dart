@@ -106,7 +106,9 @@ class _RiderHomeState extends State<RiderHome> {
     );
   }
 
-  Widget _avatar(double s) => Container(
+  Widget _avatar(double s) => withFlutterBadge(_avatarCore(s), s);
+
+  Widget _avatarCore(double s) => Container(
         width: s,
         height: s,
         alignment: Alignment.center,
