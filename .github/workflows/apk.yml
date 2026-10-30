@@ -58,6 +58,7 @@ jobs:
           test -s www/supabase.js
           cp node_modules/maplibre-gl/dist/maplibre-gl.js node_modules/maplibre-gl/dist/maplibre-gl.css www/
           cp node_modules/qrcode-generator/qrcode.js www/qrcode.js
+          cp node_modules/jsqr/dist/jsQR.js www/jsqr.js || echo "jsqr missing — app falls back to the CDN"
           node -e "const fs=require('fs'),f='capacitor.config.json',c=JSON.parse(fs.readFileSync(f));c.appId=process.env.APP_ID;c.appName=process.env.APP_NAME;fs.writeFileSync(f,JSON.stringify(c,null,2))"
           printf 'window.HF_APP={role:"%s",name:"%s",build:%s};\n' "$FLAVOR" "$APP_NAME" "${{ github.run_number }}" > www/app-config.js
           # push is switched on only when the Firebase file contains this app's package name
