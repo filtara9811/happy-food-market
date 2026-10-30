@@ -1655,6 +1655,18 @@
         #panelRoot .pp-auto-s { display: flex; gap: 3px; padding: 3px; border-radius: 12px; background: var(--p-card2); }
         #panelRoot .pp-auto-s button { padding: 7px 10px; border-radius: 10px; font-size: 11.5px; font-weight: 800; color: var(--p-mut); white-space: nowrap; }
         #panelRoot .pp-auto-s button.on { background: linear-gradient(180deg, #fde68a, #e2a92c); color: #2a1a00; }
+        .radar-dot.shop { box-shadow: 0 0 0 2px #16a34a, 0 0 14px rgba(34, 197, 94, .8); }
+        #rjPop { position: absolute; inset: 0; z-index: 9999; display: none; align-items: flex-end; }
+        #rjPop.show { display: flex; }
+        #rjPop .rj-bg { position: absolute; inset: 0; background: rgba(0, 0, 0, .6); }
+        #rjPop .rj-card { position: relative; width: 100%; padding: 20px 16px 26px; border-radius: 28px 28px 0 0; background: var(--p-card, #fff); color: var(--p-tx, #1a1a24); animation: rjUp .25s ease-out; }
+        @keyframes rjUp { from { transform: translateY(40%); opacity: .4 } to { transform: none; opacity: 1 } }
+        #rjPop .rj-t { font: 900 19px Outfit, Mukta, sans-serif; }
+        #rjPop .rj-s { font-size: 12.5px; opacity: .65; margin-top: 2px; }
+        #rjPop .rj-l { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+        #rjPop .rj-l button { display: flex; align-items: center; gap: 8px; padding: 13px 12px; border-radius: 16px; background: var(--p-card2, #efe8d6); font-size: 13.5px; font-weight: 800; text-align: left; }
+        #rjPop .rj-l button span { font-size: 18px; }
+        #rjPop .rj-back { width: 100%; margin-top: 12px; padding: 14px; border-radius: 16px; background: #16a34a; color: #fff; font-size: 15px; font-weight: 800; }
     </style>
 <style>
 html,body{height:100%}
@@ -11827,15 +11839,6 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         }
         { const f = closePanel; closePanel = function () { puClose(); return f.apply(this, arguments); }; }
 
-        /* tiny "Web" badge on the shop / rider avatar so you can tell this panel is the web app (Flutter apps show a Flutter badge) */
-        (function () {
-            const st = document.createElement('style');
-            st.textContent = `#panelRoot .ph-av{position:relative}#panelRoot .tech-b{position:absolute;left:-4px;top:-4px;height:18px;padding:0 5px;border-radius:99px;background:#fff;color:#2563eb;font:900 8.5px/18px Outfit,sans-serif;letter-spacing:.3px;box-shadow:0 2px 6px rgba(0,0,0,.3);display:flex;align-items:center;gap:2px;z-index:2;overflow:visible}#panelRoot .tech-b i{font-size:9px}`;
-            document.head.appendChild(st);
-            const tag = `<span class="tech-b" title="Web app"><i class="fa-solid fa-globe"></i>WEB</span>`;
-            const put = () => { try { document.querySelectorAll('#panelRoot .ph-av').forEach(a => { const p = a.parentElement; if (!p || p.querySelector('.tech-b') || a.offsetWidth < 50) return; p.style.position = 'relative'; p.insertAdjacentHTML('beforeend', tag); }); } catch (e) { } };
-            const f = renderPanel; renderPanel = function () { const r = f.apply(this, arguments); put(); return r; };
-        })();
 
         /* ---- auto / manual approval of new shops and riders — people2.js ---- */
         PP.auto = null;
@@ -11870,6 +11873,92 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         }
         { const f = adminPeople; adminPeople = function () { const h = f.apply(this, arguments), k = ppKind(), i = h.indexOf('<div class="pp-tools">'); if (i < 0 || !PP.data[k]) return h; return h.slice(0, i) + ppAutoBar(k) + h.slice(i); }; }
         adminPartners = adminPeople;
+
+        /* ================= customer live sheet: who confirmed (rider / shop), radar shows riders + shops, last step stays "delivery pending" — live2.js ================= */
+        const LV2 = { ri: null, at: 0, sid: null };
+        async function lv2Load() {
+            if (!LIVE || !live || !live.dbo || !live.dbo.remote || !live.dbo.serverId) return;
+            if (LV2.sid !== live.dbo.serverId) { LV2.sid = live.dbo.serverId; LV2.ri = null; LV2.at = 0; }
+            if (Date.now() - LV2.at < 4000) return; LV2.at = Date.now();
+            try { const { data } = await sb.rpc('order_route_info', { p_order_id: live.dbo.serverId }); const ch = JSON.stringify(data) !== JSON.stringify(LV2.ri); LV2.ri = data; if (ch && live) renderLive(); } catch (e) { }
+        }
+        { const f = rmPoll; rmPoll = async function () { const r = await f.apply(this, arguments); lv2Load(); return r; }; }
+        { const f = renderLive; renderLive = function () {
+            const r = f.apply(this, arguments);
+            try {
+                if (!live) return r;
+                const ri = live.dbo && live.dbo.remote && LV2.sid === live.dbo.serverId ? LV2.ri : null;
+                const p = live.phase, shop = !!(ri && ri.route === 'shop'), ss = ri && ri.shop_status, sname = ri && ri.shop ? ri.shop.name : '';
+                const title = document.getElementById('liveTitle'), sub = document.getElementById('liveSub'), stepsEl = document.getElementById('liveSteps'), body = document.getElementById('liveBody');
+                const oid = live.ord.id;
+                if (p === 'search') {
+                    // radar: riders 🛵 and shops 🏪 around the order
+                    const box = body && body.querySelector('.radar-box');
+                    if (box) {
+                        const nR = ri ? Number(ri.riders_near) || 0 : Math.max(1, (live.eligible || []).length), nS = ri ? Number(ri.shops_near) || 0 : 2;
+                        const icons = []; for (let i = 0; i < Math.min(nR, 3); i++) icons.push('🛵'); for (let i = 0; i < Math.min(nS, 3); i++) icons.push('🏪');
+                        if (!icons.length) icons.push('🛵', '🏪');
+                        box.querySelectorAll('.radar-dot').forEach(d => d.remove());
+                        icons.forEach((ic, i) => { const d = RADAR_DOTS[i % RADAR_DOTS.length]; box.insertAdjacentHTML('beforeend', `<div class="radar-dot ${ic === '🏪' ? 'shop' : ''}" style="left:${d[0]}%;top:${d[1]}%;animation-delay:${i * 0.37}s">${ic}</div>`); });
+                        const nt = document.getElementById('liveNearTxt'); if (nt && ri) nt.textContent = tr(`पास में ${nR} राइडर • ${nS} दुकानें`, `${nR} riders • ${nS} shops nearby`);
+                    }
+                    if (shop) {
+                        if (ss === 'new') { title.textContent = tr('दुकान को ऑर्डर भेजा 🏪', 'Order sent to the shop 🏪'); sub.textContent = tr(`ऑर्डर ${oid} • ${sname} स्वीकार कर रही है`, `Order ${oid} • ${sname} is accepting`); }
+                        else if (ss === 'packing') { title.textContent = tr('दुकान ने स्वीकार किया — पैक हो रहा 📦', 'Shop accepted — packing 📦'); sub.textContent = tr(`ऑर्डर ${oid} • ${sname}`, `Order ${oid} • ${sname}`); }
+                        else if (ss === 'ready') { title.textContent = tr('पैक हो गया — राइडर ढूँढ रहे हैं 🛵', 'Packed — finding a rider 🛵'); sub.textContent = tr(`ऑर्डर ${oid} • ${sname} से उठेगा`, `Order ${oid} • pickup from ${sname}`); }
+                    }
+                }
+                if (p === 'accepted' && shop) {
+                    title.textContent = tr('राइडर मिल गया! 🎉', 'Rider found! 🎉');
+                    const ps = body ? body.querySelectorAll('p.text-center') : []; const last = ps[ps.length - 1];
+                    if (last) last.textContent = ri.picked ? tr('राइडर ने दुकान से पैकेट उठा लिया — आपकी ओर आ रहे हैं', 'The rider picked up your packet and is coming') : tr(`राइडर ${sname} से आपका पैकेट लेने जा रहा है`, `The rider is going to ${sname} for your packet`);
+                }
+                if (stepsEl && (p === 'search' || p === 'accepted')) {
+                    let st, act;
+                    if (shop) {
+                        const shopOk = ss === 'packing' || ss === 'ready' || ss === 'done';
+                        st = [[tr('ऑर्डर भेजा', 'Order sent'), 'fa-paper-plane'], [shopOk ? tr('🏪 दुकान कन्फ़र्म', '🏪 Shop confirmed') : tr('दुकान को भेजा', 'Sent to shop'), 'fa-store'], [p === 'accepted' ? tr('🛵 राइडर कन्फ़र्म', '🛵 Rider confirmed') : tr('राइडर', 'Rider'), 'fa-motorcycle'], [tr('डिलीवरी बाकी', 'Delivery pending'), 'fa-house-chimney']];
+                        act = p === 'accepted' ? 3 : (shopOk ? 2 : 1);
+                    } else {
+                        st = [[tr('ऑर्डर भेजा', 'Order sent'), 'fa-paper-plane'], [p === 'accepted' ? tr('🛵 राइडर कन्फ़र्म', '🛵 Rider confirmed') : tr('पार्टनर ढूँढना', 'Finding partner'), p === 'accepted' ? 'fa-motorcycle' : 'fa-satellite-dish'], [tr('डिलीवरी बाकी', 'Delivery pending'), 'fa-house-chimney']];
+                        act = p === 'accepted' ? 2 : 1;
+                    }
+                    stepsEl.innerHTML = stepper(st, act, false);
+                }
+            } catch (e) { }
+            return r;
+        }; }
+
+        /* ---------- microphone permission: use the speech plugin on the phone (the web route needs extra Android permissions) ---------- */
+        { const f = permAsk; permAsk = async function (k) {
+            if (k === 'mic') {
+                try { const P = window.Capacitor && Capacitor.Plugins; const S = P && P.SpeechRecognition; if (S && S.requestPermissions) { const r = await S.requestPermissions(); if (/granted/.test(JSON.stringify(r))) return true; } } catch (e) { }
+            }
+            return f.apply(this, arguments);
+        }; }
+
+        /* ---------- rider: reason when declining a request; after accepting go straight to the delivery card ---------- */
+        const RJ_REASONS = [['far', '📍', 'बहुत दूर है', 'Too far'], ['vehicle', '🛵', 'गाड़ी में दिक्कत', 'Vehicle problem'], ['busy', '📦', 'दूसरा ऑर्डर चल रहा है', 'On another order'], ['break', '☕', 'अभी ब्रेक पर हूँ', 'On a break'], ['stock', '🍱', 'यह सामान मेरे पास नहीं', 'I do not have this item'], ['other', '✍️', 'कुछ और', 'Something else']];
+        function rjAsk(id) {
+            let el = document.getElementById('rjPop'); if (!el) { el = document.createElement('div'); el.id = 'rjPop'; (document.getElementById('appContainer') || document.body).appendChild(el); }
+            el.innerHTML = `<div class="rj-bg" onclick="rjClose()"></div><div class="rj-card"><p class="rj-t">${tr('रिक्वेस्ट क्यों छोड़ रहे हैं?', 'Why are you declining?')}</p><p class="rj-s">${tr('वजह चुनें — ऑर्डर तुरंत अगले पार्टनर को चला जाएगा', 'Pick a reason — the order goes to the next partner')}</p>
+                <div class="rj-l">${RJ_REASONS.map(x => `<button onclick="rjGo('${id}','${x[0]}')"><span>${x[1]}</span>${tr(x[2], x[3])}</button>`).join('')}</div>
+                <button class="rj-back" onclick="rjClose()">${tr('वापस — स्वीकार करना है', 'Back — I will accept')}</button></div>`;
+            el.classList.add('show'); try { vib(15); } catch (e) { }
+        }
+        function rjClose() { const el = document.getElementById('rjPop'); if (el) el.classList.remove('show'); }
+        async function rjGo(id, why) {
+            rjClose(); try { ringStop(); } catch (e) { }
+            try { const { error } = await sb.rpc('reject_offer', { p_offer_id: id, p_reason: why }); if (error) throw error; RL.offerSeen[id] = 1; sfx('remove'); pToast(tr('रिक्वेस्ट छोड़ी', 'Request declined')); }
+            catch (e) { pToast(rmOrderErr(e)); }
+            try { ringClear(id); } catch (e) { } rlCloseOffer(); await rlRefresh(true);
+        }
+        { const f = rlRespond; rlRespond = async function (id, ok, direct) {
+            if (!ok && !direct && LIVE) { rjAsk(id); return; }
+            const r = await f.apply(this, arguments);
+            if (ok) { try { if (PNL.role !== 'rider') openPanel('rider'); } catch (e) { } setTimeout(() => { const c = document.querySelector('#panelRoot .ra-card'); if (c) c.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 700); }
+            return r;
+        }; }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>

@@ -1,0 +1,2 @@
+-- 027 (applied 2026-10-30): order_route_info(p_order_id) for the customer's live sheet (route, shop, shop_status,
+-- riders_near, shops_near); order_offers.reject_reason + reject_offer(p_offer_id, p_reason).

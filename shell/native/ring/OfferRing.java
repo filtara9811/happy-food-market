@@ -10,6 +10,8 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.Person;
+import androidx.core.graphics.drawable.IconCompat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,11 +66,12 @@ public class OfferRing {
         String body = d.get("body") != null ? d.get("body") : "जल्दी स्वीकार करें";
 
         PendingIntent open = link(c, offerId, "open", id);
+        PendingIntent accept = link(c, offerId, "accept", id + 1);
+        PendingIntent reject = link(c, offerId, "reject", id + 2);   // opens the app and asks for a reason
         NotificationCompat.Builder b = new NotificationCompat.Builder(c, quiet ? CH_QUIET : CH_RING)
                 .setSmallIcon(c.getApplicationInfo().icon)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setCategory(NotificationCompat.CATEGORY_CALL)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -79,17 +82,30 @@ public class OfferRing {
                 .setContentIntent(open)
                 .setFullScreenIntent(open, true)
                 .setWhen(exp).setShowWhen(true).setUsesChronometer(true).setChronometerCountDown(true)
-                .setTimeoutAfter(exp - now)
-                .addAction(0, "✅ स्वीकार करें", link(c, offerId, "accept", id + 1))
-                .addAction(0, "❌ मना करें", link(c, offerId, "reject", id + 2));
-        if (quiet) b.setSilent(true);
-        else {
-            Intent m = new Intent(c, MuteReceiver.class);
-            HashMap<String, String> copy = new HashMap<>(d);
-            m.putExtra("data", copy);
-            b.addAction(0, "🔕 आवाज़ बंद", PendingIntent.getBroadcast(c, id + 3, m, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+                .setTimeoutAfter(exp - now);
+        boolean styled = false;
+        try {
+            // phone-call look: big round green "Accept" and red "Reject" buttons
+            Person caller = new Person.Builder().setName(title).setImportant(true)
+                    .setIcon(IconCompat.createWithResource(c, c.getApplicationInfo().icon)).build();
+            b.setStyle(NotificationCompat.CallStyle.forIncomingCall(caller, reject, accept)
+                    .setAnswerButtonColorHint(0xFF16A34A).setDeclineButtonColorHint(0xFFDC2626));
+            styled = true;
+        } catch (Throwable e) { styled = false; }
+        if (!styled) {
+            b.setStyle(new NotificationCompat.BigTextStyle().bigText(body))
+             .addAction(0, "✅ स्वीकार करें", accept)
+             .addAction(0, "❌ मना करें", reject);
         }
-        Notification n = b.build();
+        if (quiet) b.setSilent(true);
+        Notification n;
+        try { n = b.build(); }
+        catch (Throwable e) {
+            b.setStyle(new NotificationCompat.BigTextStyle().bigText(body))
+             .addAction(0, "✅ स्वीकार करें", accept)
+             .addAction(0, "❌ मना करें", reject);
+            n = b.build();
+        }
         if (!quiet) n.flags |= Notification.FLAG_INSISTENT; // keeps ringing until answered, muted or timed out
         nm.notify(id, n);
     }
