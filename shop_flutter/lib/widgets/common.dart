@@ -200,3 +200,22 @@ void hfToast(BuildContext context, String msg) {
       duration: const Duration(milliseconds: 2200),
     ));
 }
+
+
+/// Tiny Flutter logo on the profile picture — shows this screen is the Flutter (native) app.
+class FlutterBadge extends StatelessWidget {
+  final double size;
+  const FlutterBadge({super.key, this.size = 18});
+  @override
+  Widget build(BuildContext context) => Tooltip(
+        message: 'Flutter ऐप',
+        child: Container(
+          width: size, height: size, padding: EdgeInsets.all(size * .17),
+          decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle, boxShadow: [BoxShadow(color: Color(0x40000000), blurRadius: 4, offset: Offset(0, 1))]),
+          child: const FlutterLogo(),
+        ),
+      );
+}
+
+/// Puts the Flutter badge on the top-left of an avatar.
+Widget withFlutterBadge(Widget avatar, double s) => Stack(clipBehavior: Clip.none, children: [avatar, Positioned(left: -2, top: -2, child: FlutterBadge(size: (s * .34).clamp(14, 26).toDouble()))]);

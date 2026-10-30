@@ -3,6 +3,7 @@ import '../api.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
 import '../widgets/shop_ui.dart';
+import '../printer.dart';
 
 /// "नया बिल" sheet (counter bill) and the "बिल बन गया" receipt — same as the web shop panel.
 /// [bill] is product_id → count, shared with the inventory sheet so changes show up there too.
@@ -154,6 +155,22 @@ class _BillSheetState extends State<BillSheet> {
     return b.toString();
   }
 
+  Receipt _slip() {
+    final r = receipt!, items = (r['items'] as List?)?.whereType<Map>().toList() ?? [];
+    return Receipt(
+      shop: '${widget.me['shop_name']}', billNo: billNo(r['bill_no']), at: DateTime.now(),
+      items: [for (final i in items) ('${i['name_hi'] ?? i['name']}', (i['price'] ?? 0) as num, (i['qty'] ?? 0) as num)],
+      subtotal: (r['subtotal'] ?? r['total'] ?? 0) as num, discount: (r['discount'] ?? 0) as num, total: (r['total'] ?? 0) as num,
+      payLabel: pay == 'cash' ? 'कैश' : (pay == 'upi' ? 'UPI' : 'उधार'), customer: name.text.trim(), phone: phone.text.trim(),
+    );
+  }
+
+  Future<void> _quick() async {
+    final e = await Printer.quickPrint(_slip());
+    if (!mounted) return;
+    if (e == null) { hfToast(context, 'प्रिंट हो गया 🖨️'); } else { showPrinter(context, _slip()); }
+  }
+
   Widget _receipt() {
     final r = receipt!, items = (r['items'] as List?)?.whereType<Map>().toList() ?? [];
     final now = DateTime.now();
@@ -196,9 +213,9 @@ class _BillSheetState extends State<BillSheet> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
         child: Row(children: [
-          Expanded(child: _greenBtn('🖨️ प्रिंट करें', () => hfToast(context, 'Bluetooth प्रिंटर अगले अपडेट में — अभी WhatsApp/शेयर से भेजें'), c: const Color(0xFF16120B))),
+          Expanded(child: _greenBtn('🖨️ प्रिंट करें', _quick, c: const Color(0xFF16120B))),
           const SizedBox(width: 10),
-          GestureDetector(onTap: () => hfToast(context, 'प्रिंटर सेटिंग अगले अपडेट में'), child: Container(width: 56, height: 56, decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(18), border: Border.all(color: HF.line)), child: const Icon(Icons.settings))),
+          GestureDetector(onTap: () => showPrinter(context, _slip()), child: Container(width: 56, height: 56, decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(18), border: Border.all(color: HF.line)), child: const Icon(Icons.settings))),
         ]),
       ),
       Padding(padding: const EdgeInsets.fromLTRB(16, 10, 16, 0), child: _greenBtn('＋ नया बिल', () { widget.bill.clear(); Navigator.pop(context, true); })),

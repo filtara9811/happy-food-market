@@ -6,6 +6,9 @@ import '../api.dart';
 import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import '../printer.dart';
+import '../widgets/shop_ui.dart';
 import 'inventory.dart';
 import 'shop_page.dart';
 
@@ -32,11 +35,13 @@ class _ShopHomeState extends State<ShopHome> {
   final seen = <String>{};
   final player = AudioPlayer();
 
-  Future<void> _ring(int n) async {
+  Future<void> _ring(List<Map<String, dynamic>> fresh) async {
+    final n = fresh.length;
     try { await player.play(AssetSource('sounds/ring3.wav')); } catch (_) {}
     HapticFeedback.heavyImpact();
     if (!mounted) return;
     setState(() { nav = 0; seg = 0; filter = 'live'; dayIdx = 0; });
+    for (final x in fresh) { open.add(x['id'].toString()); }
     hfToast(context, '🔔 $n नया ऑर्डर आया!');
   }
 
@@ -44,7 +49,7 @@ class _ShopHomeState extends State<ShopHome> {
   void initState() {
     super.initState();
     load();
-    poll = Timer.periodic(const Duration(seconds: 25), (_) => load(quiet: true));
+    poll = Timer.periodic(const Duration(seconds: 12), (_) => load(quiet: true));
     sc.addListener(() { final m = sc.offset > 250; if (m != mini) setState(() => mini = m); });
   }
 
@@ -63,7 +68,7 @@ class _ShopHomeState extends State<ShopHome> {
       final o = await Api.orders();
       if (!mounted) return;
       final fresh = o.where((x) => x['source'] != 'pos' && !['done', 'cancelled'].contains(x['status']) && !seen.contains(x['id'].toString())).toList();
-      if (seen.isNotEmpty && fresh.isNotEmpty) _ring(fresh.length);
+      if (seen.isNotEmpty && fresh.isNotEmpty) _ring(fresh);
       for (final x in o) { seen.add(x['id'].toString()); }
       if (seen.isEmpty) seen.add('-');
       setState(() { me = m; orders = o; err = ''; });
@@ -130,7 +135,9 @@ class _ShopHomeState extends State<ShopHome> {
   String get _name => (me['shop_name'] ?? 'मेरी दुकान').toString();
   String get _initials { final p = _name.trim().split(RegExp(r'\s+')); return p.isEmpty || p.first.isEmpty ? 'HF' : (p.length > 1 ? p[0].characters.first + p[1].characters.first : p[0].characters.take(2).toString()).toUpperCase(); }
 
-  Widget _av(double s, {double border = 3, double font = 20}) => Container(
+  Widget _av(double s, {double border = 3, double font = 20}) => withFlutterBadge(_avCore(s, border: border, font: font), s);
+
+  Widget _avCore(double s, {double border = 3, double font = 20}) => Container(
         width: s, height: s, alignment: Alignment.center,
         decoration: BoxDecoration(shape: BoxShape.circle, gradient: HF.avGrad, border: Border.all(color: Colors.white.withValues(alpha: .85), width: border)),
         child: Text(_initials, style: HF.num(font, color: HF.ink)),
@@ -364,11 +371,15 @@ class _ShopHomeState extends State<ShopHome> {
     final first = items.isNotEmpty ? items.first : {};
     final cx = o['status'] == 'cancelled', done = o['status'] == 'done';
     final pos = o['source'] == 'pos';
-    final title = (o['customer_phone'] ?? '').toString().isNotEmpty ? '+91 ${o['customer_phone']}' : (pos ? 'काउंटर ग्राहक' : 'ग्राहक');
-    final chip = cx ? ['रद्द', const Color(0xFFFEE2E2), const Color(0xFFB91C1C)] : (done ? ['✅ डिलीवर', const Color(0xFFDCFCE7), const Color(0xFF166534)] : ['⏳ चालू', const Color(0xFFFEF3C7), const Color(0xFF92400E)]);
+    final cname = (o['customer_name'] ?? '').toString();
+    final title = cname.isNotEmpty ? cname : ((o['customer_phone'] ?? '').toString().isNotEmpty ? '+91 ${o['customer_phone']}' : (pos ? 'काउंटर ग्राहक' : 'ग्राहक'));
+    final st = o['status'];
+    final chip = cx ? ['रद्द', const Color(0xFFFEE2E2), const Color(0xFFB91C1C)] : (done ? [pos ? '✅ बिल' : '✅ डिलीवर', const Color(0xFFDCFCE7), const Color(0xFF166534)]
+        : (st == 'new' ? ['🔔 नया ऑर्डर', const Color(0xFFFEE2E2), const Color(0xFFB91C1C)] : (st == 'packing' ? ['📦 पैक हो रहा', const Color(0xFFFEF3C7), const Color(0xFF92400E)]
+        : (o['picked_at'] != null ? ['🛵 राइडर ले गया', const Color(0xFFDBEAFE), const Color(0xFF1E40AF)] : ['🛵 राइडर का इंतज़ार', const Color(0xFFFEF3C7), const Color(0xFF92400E)]))));
     final steps = pos
         ? [('स्वीकार', '', true, false), ('पैकिंग', '📦', _t(o, 'packed_at') != null || done, false), ('बिल', '🧾', done, false), ('पैसा', '₹', done, false), ('रेटिंग', '⭐', false, false)]
-        : [('स्वीकार', '', _t(o, 'accepted_at') != null, false), ('पैकिंग', '📦', _t(o, 'packed_at') != null, false), ('पिकअप', '🛵', done, false), ('डिलीवर', '🏠', done, false), ('रेटिंग', '⭐', false, false)];
+        : [('स्वीकार', '', _t(o, 'accepted_at') != null, false), ('पैकिंग', '📦', _t(o, 'packed_at') != null, false), ('पिकअप', '🛵', _t(o, 'picked_at') != null || done, false), ('डिलीवर', '🏠', done, false), ('रेटिंग', '⭐', false, false)];
     // the first step that is not done is "current" (unless cancelled)
     final cur = cx ? -1 : steps.indexWhere((s) => !s.$3);
     return Container(
@@ -404,6 +415,7 @@ class _ShopHomeState extends State<ShopHome> {
             Padding(padding: const EdgeInsets.only(top: 2), child: AnimatedRotation(turns: isOpen ? .5 : 0, duration: const Duration(milliseconds: 220), child: Container(width: 26, height: 26, decoration: const BoxDecoration(color: HF.card2, shape: BoxShape.circle), child: const Icon(Icons.keyboard_arrow_down, size: 16, color: HF.mut)))),
           ]),
         ),
+        if (!pos && !cx && !done) _appActions(o),
         AnimatedSize(duration: const Duration(milliseconds: 260), curve: Curves.easeOut, child: isOpen ? _expanded(o, items, cx) : const SizedBox(width: double.infinity)),
       ]),
     );
@@ -458,9 +470,116 @@ class _ShopHomeState extends State<ShopHome> {
             Text(r.$4 != null ? hm(r.$4!) : '', style: HF.hi(12.5, color: HF.goldDeep, w: FontWeight.w800)),
           ]),
         ),
+      if (!cx)
+        Align(alignment: Alignment.centerLeft, child: TextButton.icon(onPressed: () => _printOrder(o), icon: const Icon(Icons.print, size: 18, color: HF.goldDeep), label: Text(o['source'] == 'pos' ? 'बिल प्रिंट करें' : 'स्लिप प्रिंट करें', style: HF.hi(13, color: HF.goldDeep)))),
       if (!cx && o['source'] == 'pos')
         Align(alignment: Alignment.centerRight, child: TextButton.icon(onPressed: () => _cancelBill(o['id'].toString()), icon: const Icon(Icons.undo, size: 16, color: HF.bad), label: Text('बिल रद्द करें (स्टॉक वापस)', style: HF.hi(12.5, color: HF.bad)))),
     ]);
+  }
+
+  // ---------- app orders: accept → pack → ready (QR slip) → rider scans ----------
+  final busyAct = <String>{};
+
+  Future<void> _act(Map<String, dynamic> o, String act) async {
+    final id = o['id'].toString();
+    if (busyAct.contains(id)) return;
+    setState(() => busyAct.add(id));
+    try {
+      final r = await Api.rpc('vendor_order_act', {'p_sale': id, 'p_act': act});
+      final ok = r is Map && r['ok'] == true;
+      if (!mounted) return;
+      if (!ok) {
+        final code = r is Map ? r['code'] : '';
+        hfToast(context, code == 'gone' ? 'ग्राहक ने ऑर्डर रद्द कर दिया' : (code == 'too_late' ? 'अब मना नहीं कर सकते — राइडर आ रहा है' : 'नहीं हो पाया ($code)'));
+      } else if (act == 'accept') {
+        HapticFeedback.mediumImpact();
+        hfToast(context, '✅ स्वीकार — पैक करके "पैक हो गया" दबाएँ');
+      } else if (act == 'reject') {
+        hfToast(context, 'मना किया — ऑर्डर दूसरी जगह चला गया');
+      } else if (act == 'ready') {
+        o['pickup_code'] = r['code']; o['status'] = 'ready'; o['packed_at'] = DateTime.now().toIso8601String();
+        hfToast(context, '📦 पैक — राइडर बुला रहे हैं। स्लिप प्रिंट करके पैकेट पर लगाएँ');
+        final e = await Printer.quickPrint(_receiptOf(o));
+        if (e != null && mounted) showPrinter(context, _receiptOf(o));
+      }
+      await load(quiet: true);
+    } catch (e) {
+      if (mounted) hfToast(context, errText(e));
+    } finally {
+      if (mounted) setState(() => busyAct.remove(id));
+    }
+  }
+
+  String _qrOf(Map o) => 'HFPICK:${o['order_id']}:${o['pickup_code']}';
+
+  Receipt _receiptOf(Map o) {
+    final items = (o['items'] as List?)?.whereType<Map>().toList() ?? [];
+    final pos = o['source'] == 'pos', code = o['pickup_code']?.toString();
+    final sub = items.fold<num>(0, (s, i) => s + ((i['price'] ?? 0) as num) * ((i['qty'] ?? 0) as num));
+    return Receipt(
+      heading: pos ? null : 'HAPPY FOOD — पिकअप स्लिप',
+      shop: (me['shop_name'] ?? '').toString(), billNo: 'HFB-${o['bill_no'].toString().padLeft(4, '0')}', at: _t(o, 'created_at') ?? DateTime.now(),
+      items: [for (final i in items) ('${i['name_hi'] ?? i['name']}', (i['price'] ?? 0) as num, (i['qty'] ?? 0) as num)],
+      subtotal: sub, discount: ((o['discount'] ?? 0) as num), total: _amt(o),
+      payLabel: pos ? ((o['pay_mode'] ?? 'cash') == 'cash' ? 'कैश' : (o['pay_mode'] == 'upi' ? 'UPI' : 'उधार')) : 'COD — राइडर लेगा',
+      customer: (o['customer_name'] ?? '').toString(), phone: (o['customer_phone'] ?? '').toString(), address: pos ? null : (o['customer_address'] ?? '').toString(),
+      qr: !pos && code != null ? _qrOf(o) : null, code: code,
+      note: !pos && code != null ? 'राइडर यह QR स्कैन करेगा, तभी पिकअप होगा' : null,
+    );
+  }
+
+  Future<void> _printOrder(Map<String, dynamic> o) async {
+    final e = await Printer.quickPrint(_receiptOf(o));
+    if (!mounted) return;
+    if (e == null) { hfToast(context, 'प्रिंट हो गया 🖨️'); } else { showPrinter(context, _receiptOf(o)); }
+  }
+
+  Widget _actBtn(String t, Color bg, Color fg, VoidCallback? f, {bool outline = false}) => Expanded(
+        child: GestureDetector(
+          onTap: f,
+          child: Opacity(opacity: f == null ? .5 : 1, child: Container(height: 46, alignment: Alignment.center, decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(14), border: outline ? Border.all(color: fg.withValues(alpha: .4), width: 1.5) : null), child: Text(t, style: HF.hi(14, color: fg, w: FontWeight.w800)))),
+        ),
+      );
+
+  Widget _appActions(Map<String, dynamic> o) {
+    final id = o['id'].toString(), b = busyAct.contains(id), st = o['status'];
+    if (st == 'new') {
+      return Padding(padding: const EdgeInsets.only(top: 12), child: Row(children: [
+        _actBtn('मना करें', HF.card, HF.bad, b ? null : () => _act(o, 'reject'), outline: true),
+        const SizedBox(width: 8),
+        Expanded(flex: 2, child: Row(children: [_actBtn(b ? '…' : '✅ स्वीकार करें', const Color(0xFF16A34A), Colors.white, b ? null : () => _act(o, 'accept'))])),
+      ]));
+    }
+    if (st == 'packing') {
+      return Padding(padding: const EdgeInsets.only(top: 12), child: Row(children: [
+        _actBtn('मना करें', HF.card, HF.bad, b ? null : () => _act(o, 'reject'), outline: true),
+        const SizedBox(width: 8),
+        Expanded(flex: 2, child: Row(children: [_actBtn(b ? '…' : '📦 पैक हो गया — राइडर बुलाएँ', const Color(0xFF16120B), HF.goldLight, b ? null : () => _act(o, 'ready'))])),
+      ]));
+    }
+    if (st == 'ready') {
+      final picked = o['picked_at'] != null, code = o['pickup_code']?.toString();
+      return Container(
+        margin: const EdgeInsets.only(top: 12), padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(color: picked ? const Color(0xFFEFF6FF) : const Color(0xFFFDF8EC), borderRadius: BorderRadius.circular(18), border: Border.all(color: picked ? const Color(0xFF93C5FD) : HF.gold.withValues(alpha: .5))),
+        child: Row(children: [
+          if (!picked && code != null) Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)), child: QrImageView(data: _qrOf(o), size: 84, padding: EdgeInsets.zero)),
+          if (!picked && code != null) const SizedBox(width: 12),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(picked ? '🛵 राइडर पैकेट ले गया' : '🛵 राइडर का इंतज़ार', style: HF.hi(14.5, w: FontWeight.w800)),
+            if ((o['rider_name'] ?? '').toString().isNotEmpty) Text('राइडर: ${o['rider_name']}', style: HF.hi(12.5, color: HF.mut, w: FontWeight.w600)) else Text('राइडर ढूँढ रहे हैं…', style: HF.hi(12.5, color: HF.mut, w: FontWeight.w600)),
+            if (!picked && code != null) Text('पिकअप कोड: $code', style: HF.num(15, color: HF.goldDeep, w: FontWeight.w800)),
+            if (!picked) Text('राइडर यह QR (स्लिप या इस स्क्रीन से) स्कैन करेगा — तभी पिकअप होगा', style: HF.hi(11.5, color: HF.mut)),
+            const SizedBox(height: 4),
+            Row(children: [
+              GestureDetector(onTap: () => _printOrder(o), child: Text('🖨️ स्लिप प्रिंट', style: HF.hi(13, color: HF.goldDeep, w: FontWeight.w800))),
+              if ((o['rider_phone'] ?? '').toString().isNotEmpty) ...[const SizedBox(width: 14), GestureDetector(onTap: () => openUrl(context, 'tel:+${o['rider_phone']}'), child: Text('📞 राइडर को कॉल', style: HF.hi(13, color: const Color(0xFF16A34A), w: FontWeight.w800)))],
+            ]),
+          ])),
+        ]),
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   Future<void> _cancelBill(String id) async {

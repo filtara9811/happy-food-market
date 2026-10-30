@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import '../api.dart';
 import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
 import '../widgets/shop_ui.dart';
+import '../printer.dart';
 
 /// "दुकान" tab — same as the web shop panel: dark profile card, 3 numbers, open / auto-accept switches,
 /// 8 tiles, shop details form with fold-out sections, support / language / logout, footer.
@@ -45,6 +47,21 @@ class _ShopPageState extends State<ShopPage> {
     }
   }
 
+  Future<void> setLocation() async {
+    try {
+      if (!await Geolocator.isLocationServiceEnabled()) { if (mounted) hfToast(context, 'फ़ोन की लोकेशन (GPS) चालू करें'); return; }
+      var p = await Geolocator.checkPermission();
+      if (p == LocationPermission.denied) p = await Geolocator.requestPermission();
+      if (p == LocationPermission.denied || p == LocationPermission.deniedForever) { if (mounted) hfToast(context, 'लोकेशन की अनुमति दीजिए'); return; }
+      if (mounted) hfToast(context, '📍 लोकेशन ले रहे हैं… दुकान के अंदर ही रहें');
+      final pos = await Geolocator.getCurrentPosition(locationSettings: const LocationSettings(accuracy: LocationAccuracy.high));
+      await Api.rpc('vendor_set_location', {'p_lat': pos.latitude, 'p_lng': pos.longitude});
+      if (mounted) hfToast(context, '📍 दुकान की लोकेशन सेव — अब पास के ग्राहकों के ऑर्डर आएँगे');
+    } catch (e) {
+      if (mounted) hfToast(context, errText(e));
+    }
+  }
+
   Future<void> autoAccept(bool v) async {
     try { await Api.rpc('vendor_update', {'p': {'auto_accept': v}}); await widget.reload(); if (mounted) hfToast(context, v ? 'ऑर्डर अपने-आप स्वीकार होंगे ⚡' : 'ऑर्डर ख़ुद स्वीकार करेंगे'); }
     catch (e) { if (mounted) hfToast(context, errText(e)); }
@@ -67,6 +84,7 @@ class _ShopPageState extends State<ShopPage> {
           Stack(clipBehavior: Clip.none, children: [
             Container(width: 72, height: 72, alignment: Alignment.center, decoration: BoxDecoration(gradient: HF.avGrad, borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.white.withValues(alpha: .85), width: 2)), child: Text(_initials, style: HF.num(26, color: HF.ink))),
             Positioned(right: -4, bottom: -4, child: Container(width: 26, height: 26, decoration: BoxDecoration(color: HF.ink, shape: BoxShape.circle, border: Border.all(color: HF.gold, width: 2)), child: const Icon(Icons.photo_camera, size: 13, color: HF.goldLight))),
+            const Positioned(left: -5, top: -5, child: FlutterBadge(size: 22)),
           ]),
           const SizedBox(width: 14),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -149,6 +167,10 @@ class _ShopPageState extends State<ShopPage> {
         margin: const EdgeInsets.fromLTRB(16, 14, 16, 0),
         decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(22), border: Border.all(color: HF.line)),
         child: Column(children: [
+          _row('📍', 'दुकान की लोकेशन (GPS) सेट करें', setLocation),
+          const Divider(height: 1, indent: 50),
+          _row('🖨️', 'प्रिंटर सेटिंग / टेस्ट प्रिंट', () => showPrinter(context, Receipt(shop: '${me['shop_name'] ?? ''}', billNo: 'TEST', at: DateTime.now(), items: const [('टेस्ट प्रिंट — हिंदी ठीक दिख रही है?', 1, 1)], subtotal: 1, total: 1, payLabel: 'टेस्ट'))),
+          const Divider(height: 1, indent: 50),
           _row('💬', 'Happy Food सपोर्ट (WhatsApp)', () => whatsApp(context, 'नमस्ते, मैं ${me['shop_name']} से बात कर रहा हूँ।', phone: '919540068380')),
           const Divider(height: 1, indent: 50),
           _row('🌐', 'भाषा: हिंदी → English', () => hfToast(context, 'English जल्द आएगी')),
