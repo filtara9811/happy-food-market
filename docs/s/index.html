@@ -65,6 +65,7 @@ const SB = 'https://pboelnbjgyllqqlkqaqm.supabase.co', KEY = 'sb_publishable_v7q
 const q = new URLSearchParams(location.search), id = q.get('v') || q.get('shop');
 const cart = {}; let S = null, filt = '';
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const imgOf = u => !u ? '' : (String(u).startsWith('asset:') ? '../img/' + String(u).slice(6) + '.webp' : u);
 const rs = n => '₹' + Math.round(Number(n) || 0).toLocaleString('en-IN');
 try { const s = JSON.parse(localStorage.getItem('hf_shop_cust') || '{}'); document.getElementById('cn').value = s.n || ''; document.getElementById('ca').value = s.a || ''; } catch (e) { }
 function msg(ic, t) { document.getElementById('body').innerHTML = `<div class="msg"><div>${ic}</div>${t}</div>`; }
@@ -82,7 +83,7 @@ async function load() {
 }
 function paint() {
   const items = (S.items || []).filter(i => !filt || (i.name + ' ' + (i.name_hi || '')).toLowerCase().includes(filt));
-  const list = items.length ? `<div class="grid">${items.map(i => { const n = cart[i.id] || 0; return `<div class="it"><div class="im">${i.image_url ? `<img src="${esc(i.image_url)}" alt="" loading="lazy">` : '🍛'}</div><b>${esc(i.name_hi || i.name)}</b><div class="pr"><span>${rs(i.price)}</span>${i.mrp && Number(i.mrp) > Number(i.price) ? `<s>${rs(i.mrp)}</s>` : ''}</div><p class="left">${i.qty <= 5 ? 'सिर्फ़ ' + i.qty + ' बचे' : 'स्टॉक में'}</p><div class="add">${n ? `<div class="qty"><button onclick="add('${i.id}',-1)">−</button><span>${n}</span><button onclick="add('${i.id}',1)">+</button></div>` : `<button onclick="add('${i.id}',1)">+ जोड़ें</button>`}</div></div>`; }).join('')}</div>`
+  const list = items.length ? `<div class="grid">${items.map(i => { const n = cart[i.id] || 0; return `<div class="it"><div class="im">${i.image_url ? `<img src="${esc(imgOf(i.image_url))}" alt="" loading="lazy">` : '🍛'}</div><b>${esc(i.name_hi || i.name)}</b><div class="pr"><span>${rs(i.price)}</span>${i.mrp && Number(i.mrp) > Number(i.price) ? `<s>${rs(i.mrp)}</s>` : ''}</div><p class="left">${i.qty <= 5 ? 'सिर्फ़ ' + i.qty + ' बचे' : 'स्टॉक में'}</p><div class="add">${n ? `<div class="qty"><button onclick="add('${i.id}',-1)">−</button><span>${n}</span><button onclick="add('${i.id}',1)">+</button></div>` : `<button onclick="add('${i.id}',1)">+ जोड़ें</button>`}</div></div>`; }).join('')}</div>`
     : `<div class="msg"><div>📦</div>${(S.items || []).length ? 'इस खोज में कुछ नहीं मिला' : 'अभी कोई सामान स्टॉक में नहीं'}</div>`;
   document.getElementById('body').innerHTML = (S.items || []).length > 4 ? `<label class="search">🔍<input id="q" value="${esc(filt)}" placeholder="सामान खोजें" oninput="filt=this.value.toLowerCase();paint();document.getElementById('q').focus()"></label>` + list : list;
   const cnt = Object.values(cart).reduce((a, b) => a + b, 0), tot = (S.items || []).reduce((s, i) => s + (cart[i.id] || 0) * Number(i.price), 0);
