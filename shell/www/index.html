@@ -1566,6 +1566,67 @@
         .rx-tl b { display:block; font-weight:800; } .rx-tl small { display:block; font-size:11px; color:var(--p-mut); } .rx-tl span { flex:1; } .rx-tl em { font-style:normal; font-size:11px; font-weight:800; color:var(--p-gold); white-space:nowrap; }
         #pSheetBody .rc-r { justify-content:flex-start; text-align:left; } #pSheetBody .rc-r span { flex:1; text-align:left; }
         #pSheetBody .rc-r input, .cx-r input { width:18px !important; height:18px !important; min-width:18px; flex:none; padding:0 !important; margin:0; border:0; box-shadow:none; }
+        /* ===== admin people console (shops / riders / customers) — people.css ===== */
+        #panelRoot .pp-seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border-radius: 18px; background: color-mix(in srgb, var(--p-gold) 10%, var(--p-card2)); }
+        #panelRoot .pp-seg button { padding: 10px 4px; border-radius: 14px; font-size: 13px; font-weight: 800; color: var(--p-mut); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #panelRoot .pp-seg button.on { color: #2a1a00; background: linear-gradient(180deg, #fde68a, #e2a92c); box-shadow: 0 6px 16px rgba(226, 169, 44, .35); }
+        #panelRoot .pp-seg button b { display: inline-grid; place-items: center; min-width: 19px; height: 19px; padding: 0 5px; margin-left: 5px; border-radius: 99px; font-size: 10.5px; background: var(--p-bad); color: #fff; }
+        #panelRoot .pp-tools { display: flex; gap: 8px; margin-top: 12px; }
+        #panelRoot .pp-search { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; padding: 0 12px; height: 42px; border-radius: 14px; background: var(--p-card); border: 1px solid var(--p-line); }
+        #panelRoot .pp-search input { flex: 1; min-width: 0; background: transparent; outline: none; font-size: 13.5px; color: var(--p-tx); }
+        #panelRoot .pp-xl { height: 42px; padding: 0 13px; border-radius: 14px; font-size: 12.5px; font-weight: 800; color: #166534; background: #dcfce7; border: 1px solid #86efac; white-space: nowrap; }
+        #panelRoot .pp-chips { display: flex; gap: 7px; overflow-x: auto; margin-top: 10px; padding-bottom: 2px; }
+        #panelRoot .pp-chips::-webkit-scrollbar { display: none; }
+        #panelRoot .pp-chips button { flex-shrink: 0; padding: 7px 13px; border-radius: 99px; font-size: 12px; font-weight: 800; border: 1.5px solid var(--p-line); background: var(--p-card); color: var(--p-mut); }
+        #panelRoot .pp-chips button.on { background: var(--p-tx); color: var(--p-card); border-color: var(--p-tx); }
+        #panelRoot .pp-card { perspective: 1200px; }
+        #panelRoot .pp-in.pp-out { animation: ppOut .19s ease-in forwards; }
+        #panelRoot .pp-in.pp-back { animation: ppIn .26s ease-out; }
+        @keyframes ppOut { from { transform: none; opacity: 1 } to { transform: rotateY(90deg); opacity: .3 } }
+        @keyframes ppIn { from { transform: rotateY(-90deg); opacity: .3 } to { transform: none; opacity: 1 } }
+        #panelRoot .pp-av { width: 54px; height: 54px; border-radius: 17px; flex-shrink: 0; display: grid; place-items: center; overflow: hidden; font-family: Outfit, sans-serif; font-weight: 900; font-size: 18px; color: #2a1a00; background: linear-gradient(135deg, #fce49d, #b88222); border: 2px solid color-mix(in srgb, var(--p-gold) 40%, transparent); position: relative; }
+        #panelRoot .pp-av img { width: 100%; height: 100%; object-fit: cover; }
+        #panelRoot .pp-av.round { border-radius: 50%; }
+        #panelRoot .pp-dot { position: absolute; right: 2px; bottom: 2px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--p-card); }
+        #panelRoot .pp-gear { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; background: var(--p-card2); color: var(--p-gold); font-size: 15px; border: 1px solid var(--p-line); }
+        #panelRoot .pp-mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 12px; }
+        #panelRoot .pp-mini div { padding: 8px 6px; border-radius: 12px; text-align: center; background: var(--p-card2); }
+        #panelRoot .pp-mini b { display: block; font-family: Outfit, sans-serif; font-weight: 800; font-size: 14px; }
+        #panelRoot .pp-mini span { display: block; font-size: 10px; color: var(--p-mut); font-weight: 700; }
+        #panelRoot .pp-money { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+        #panelRoot .pp-money div { padding: 11px 12px; border-radius: 14px; background: var(--p-card2); }
+        #panelRoot .pp-money div.dk { background: linear-gradient(165deg, #2a2112, #0b0d14); color: #fff; }
+        #panelRoot .pp-money div.dk span { color: rgba(255, 255, 255, .65); }
+        #panelRoot .pp-money b { display: block; font-family: Outfit, sans-serif; font-weight: 800; font-size: 18px; line-height: 1.15; }
+        #panelRoot .pp-money span { display: block; font-size: 10.5px; color: var(--p-mut); font-weight: 700; }
+        #panelRoot .pp-sec { margin-top: 14px; font-size: 11px; font-weight: 900; letter-spacing: .6px; text-transform: uppercase; color: var(--p-gold); }
+        #panelRoot .pp-rows { margin-top: 6px; border-radius: 14px; background: var(--p-card2); padding: 4px 12px; }
+        #panelRoot .pp-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; font-size: 12.5px; border-bottom: 1px dashed var(--p-line); }
+        #panelRoot .pp-row:last-child { border-bottom: 0; }
+        #panelRoot .pp-row > i { width: 18px; text-align: center; color: var(--p-gold); }
+        #panelRoot .pp-row .k { color: var(--p-mut); font-weight: 700; min-width: 74px; }
+        #panelRoot .pp-row .v { flex: 1; min-width: 0; font-weight: 700; word-break: break-word; }
+        #panelRoot .pp-row .pp-step { display: flex; align-items: center; gap: 6px; }
+        #panelRoot .pp-row .pp-step button { width: 28px; height: 28px; border-radius: 9px; background: var(--p-card); border: 1px solid var(--p-line); font-weight: 900; }
+        #panelRoot .pp-row .pp-step b { min-width: 46px; text-align: center; font-family: Outfit, sans-serif; }
+        #panelRoot .pp-cats { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 0; }
+        #panelRoot .pp-cats button { padding: 6px 10px; border-radius: 99px; font-size: 12px; font-weight: 800; background: var(--p-card); border: 1.5px solid var(--p-line); color: var(--p-mut); }
+        #panelRoot .pp-cats button.on { background: #fde68a; border-color: #e2a92c; color: #2a1a00; }
+        #panelRoot .pp-cats button.main { background: linear-gradient(180deg, #fde68a, #e2a92c); border-color: #b88222; color: #2a1a00; }
+        #panelRoot .pp-acts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-top: 12px; }
+        #panelRoot .pp-acts button { padding: 9px 2px; border-radius: 13px; font-size: 10.5px; font-weight: 800; background: var(--p-card2); border: 1px solid var(--p-line); color: var(--p-tx); display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        #panelRoot .pp-acts button i { font-size: 15px; color: var(--p-gold); }
+        #panelRoot .pp-acts button.bad i, #panelRoot .pp-acts button.bad { color: var(--p-bad); }
+        #panelRoot .pp-acts button.ok i, #panelRoot .pp-acts button.ok { color: var(--p-ok); }
+        #panelRoot .pp-hist { display: flex; justify-content: space-between; font-size: 12px; padding: 7px 0; border-bottom: 1px dashed var(--p-line); }
+        #panelRoot .pp-hist:last-child { border-bottom: 0; }
+        #pSheetBody .pp-f label { display: block; font-size: 11.5px; font-weight: 800; color: var(--p-mut); margin: 10px 0 4px; }
+        #pSheetBody .pp-f input, #pSheetBody .pp-f textarea { width: 100%; padding: 11px 12px; border-radius: 13px; background: var(--p-card2); border: 1px solid var(--p-line); font-size: 14px; color: var(--p-tx); outline: none; }
+        /* language + theme buttons in admin drawer header */
+        .a-lt { display: flex; gap: 6px; margin-left: auto; flex-shrink: 0; }
+        .a-lt button { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: var(--p-card2); border: 1px solid var(--p-line); color: var(--p-tx); font-size: 13px; font-weight: 900; }
+        .a-lt button b { font-family: Outfit, Mukta, sans-serif; font-size: 12.5px; }
+        #panelRoot .pbad { color: var(--p-bad); }
     </style>
 <style>
 html,body{height:100%}
@@ -11285,6 +11346,363 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             saPut('hf_cxr_v1', CXR); sfx('success');
             if (LIVE && window.sb) { try { const { error } = await sb.rpc('admin_set_cancel_rules', { p: CXR }); pToast(error ? tr('फ़ोन में सेव ✅', 'Saved on phone ✅') : tr('सर्वर पर सेव ✅ — सबके ऐप में लागू', 'Saved on server ✅')); } catch (e) { pToast(tr('फ़ोन में सेव ✅', 'Saved on phone ✅')); } } else pToast(tr('सेव हो गया ✅', 'Saved ✅'));
         }
+
+        /* ================= ADMIN PEOPLE CONSOLE — shops / riders / customers, flip cards, Excel, payouts — people.js ================= */
+        const PP = { data: { vendors: null, riders: null, customers: null }, err: {}, loading: {}, q: '', f: 'all', flip: {}, prevLang: null };
+        const PP_ST = [['food', '🍛', 'फ़ूड', 'Food'], ['fruits', '🍎', 'फल', 'Fruits'], ['veg', '🥦', 'सब्ज़ी', 'Vegetables'], ['kirana', '🛒', 'किराना', 'Grocery'], ['dairy', '🥛', 'डेयरी', 'Dairy'], ['dry', '🥜', 'ड्राई फ्रूट', 'Dry fruits'], ['meat', '🍗', 'मीट', 'Meat']];
+        function ppStore(k) { const s = PP_ST.find(x => x[0] === k); return s ? s[1] + ' ' + tr(s[2], s[3]) : (k || '—'); }
+        function ppKind() { const p = PNL.partner; return p === 'riders' || p === 'customers' ? p : 'vendors'; }
+        function ppList(k) { return PP.data[k || ppKind()] || []; }
+        function ppFind(id) { return ppList().find(x => String(x.id) === String(id)); }
+        function ppPending(k) { return (PP.data[k] || []).filter(x => x.status === 'pending').length; }
+        function ppPhone(p) { const d = String(p || '').replace(/\D/g, ''); if (!d) return '—'; const n = d.length > 10 ? d.slice(-10) : d; return '+91 ' + n.slice(0, 5) + ' ' + n.slice(5); }
+        function ppTel(p) { const d = String(p || '').replace(/\D/g, ''); return d.length > 10 ? d.slice(-10) : d; }
+        function ppDate(j) { if (!j) return '—'; const d = new Date(j); return isNaN(d) ? String(j) : d.toLocaleDateString(currentLang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); }
+        function ppWhen(j) { if (!j) return '—'; const d = new Date(j); return isNaN(d) ? String(j) : d.toLocaleString(currentLang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }); }
+        function ppM(n) { return money(Number(n) || 0); }
+        function ppSeed(s, a, b) { let h = 0; String(s).split('').forEach(c => h = (h * 31 + c.charCodeAt(0)) >>> 0); return a + h % (b - a); }
+        function ppDue(k, x) {
+            if (k === 'vendors') return Math.max(0, Math.round((Number(x.app_sales) || 0) * (1 - (Number(x.commission_pct) || 0) / 100) - (Number(x.paid) || 0)));
+            if (k === 'riders') return Math.round((Number(x.earned) || 0) - (Number(x.fines) || 0) - (Number(x.paid) || 0));
+            return 0;
+        }
+        function ppSt(x) { x.status = x.suspended ? 'suspended' : (x.approved === false ? 'pending' : 'approved'); return x; }
+
+        /* ---- demo data (prototype without server) in the same shape as admin_people() ---- */
+        function ppDemo(k) {
+            if (k === 'vendors') return (DB.vendors || []).map(v => {
+                const tot = ppSeed(v.id, 4000, 60000);
+                return ppSt({ id: v.id, name: v.name, owner: v.owner, phone: v.phone, avatar: v.photo || null, address: v.address, store: v.store || 'food', extra_stores: [], multi_cat: false, radius_km: 3, commission_pct: 10, perms: { pos: true, app_orders: true, qr: true, wholesale: false }, hours: v.hours, upi: v.upi, fssai: v.fssai, gstin: '', open: v.open, approved: v.status === 'approved', suspended: v.status === 'suspended' || v.status === 'rejected', joined: v.joined, rating: v.rating, sales_total: tot, sales_month: Math.round(tot * .4), sales_today: Math.round(tot * .03), bills: ppSeed(v.id + 'b', 20, 400), app_orders: ppSeed(v.id + 'a', 5, 120), app_sales: Math.round(tot * .55), products: ppSeed(v.id + 'p', 4, 30), stock_units: ppSeed(v.id + 's', 10, 200), paid: Math.round(tot * .3), payouts: [] });
+            });
+            if (k === 'riders') return (DB.riders || []).map(r => {
+                const n = Number(r.trips) || 0;
+                return ppSt({ id: r.id, name: r.name, phone: r.phone, avatar: null, vehicle: r.bike, approved: r.status === 'approved', suspended: r.status === 'suspended' || r.status === 'rejected', online: !!r.online, loc_fresh: !!r.online, loc_at: new Date().toISOString(), joined: r.joined || '', stock_units: Object.values(r.stock || {}).reduce((a, b) => a + b, 0), delivered: n, delivered_month: Math.round(n * .4), cancels: ppSeed(r.id, 0, 4), fines: 0, rate: 30, earned: n * 30, paid: Math.round(n * 30 * .6), cash_collected: n * 260, payouts: [] });
+            });
+            const m = {};
+            (DB.orders || []).forEach(o => {
+                const key = o.phone || o.customer; if (!m[key]) m[key] = { id: 'c' + Object.keys(m).length, name: o.customer, phone: o.phone, orders: 0, delivered: 0, cancelled: 0, spent: 0, spent_month: 0, items: 0, coins: 0, cancel_fees: 0, last_order: null, last_address: o.address, recent: [], approved: true, suspended: false, joined: '' };
+                const c = m[key]; c.orders++; if (o.status === 'delivered') { c.delivered++; c.spent += o.total; c.spent_month += o.total; c.items += (o.items || []).reduce((s, i) => s + (i.qty || 1), 0) || 1; }
+                if (o.status === 'cancelled') c.cancelled++;
+                const t = new Date(o.ts || Date.now()).toISOString(); if (!c.last_order || t > c.last_order) { c.last_order = t; c.last_address = o.address; }
+                c.recent.push({ id: o.id, total: o.total, status: o.status, at: t });
+            });
+            return Object.values(m).map(c => { c.coins = Math.round(c.spent * .02); return ppSt(c); });
+        }
+
+        async function ppLoad(k, quiet) {
+            if (!LIVE) { if (!PP.data[k]) PP.data[k] = ppDemo(k); return; }
+            if (PP.loading[k]) return; PP.loading[k] = true;
+            try { const { data, error } = await sb.rpc('admin_people', { p_kind: k }); if (error) throw error; PP.data[k] = data || []; PP.err[k] = ''; }
+            catch (e) { PP.err[k] = rmMsg(e) || 'error'; }
+            finally { PP.loading[k] = false; }
+            if (PNL.role === 'admin' && (!quiet || (PNL.tab.admin === 'partners' && ppKind() === k))) renderPanel(true);
+        }
+        function ppReload() { ['vendors', 'riders', 'customers'].forEach(k => { PP.err[k] = ''; ppLoad(k); }); }
+
+        /* ---- page ---- */
+        function adminPeople() {
+            const k = ppKind();
+            ['vendors', 'riders', 'customers'].forEach(x => { if (!PP.data[x] && !PP.err[x]) ppLoad(x, true); });
+            const cnt = x => PP.data[x] ? PP.data[x].length : '';
+            const seg = `<div class="pp-seg">
+                <button class="${k === 'vendors' ? 'on' : ''}" onclick="ppTab('vendors')">🏪 ${tr('दुकानें', 'Shops')}${ppPending('vendors') ? `<b>${ppPending('vendors')}</b>` : ''}</button>
+                <button class="${k === 'riders' ? 'on' : ''}" onclick="ppTab('riders')">🛵 ${tr('राइडर', 'Riders')}${ppPending('riders') ? `<b>${ppPending('riders')}</b>` : ''}</button>
+                <button class="${k === 'customers' ? 'on' : ''}" onclick="ppTab('customers')">👥 ${tr('ग्राहक', 'Customers')}</button></div>`;
+            if (!PP.data[k]) {
+                return seg + `<div class="pcard p-6 mt-3 text-center text-[13px] pmut">${PP.err[k] ? `⚠️ ${esc(PP.err[k].slice(0, 100))}<br><button class="pbtn mt-3" onclick="ppReload()">${tr('फिर से कोशिश', 'Retry')}</button>` : `<i class="fa-solid fa-spinner fa-spin"></i> ${tr('लोड हो रहा है…', 'Loading…')}`}</div>`;
+            }
+            const all = ppList(k), n = s => all.filter(x => s === 'all' || x.status === s).length;
+            const chips = (k === 'customers' ? [['all', 'सब', 'All'], ['approved', 'चालू', 'Active'], ['suspended', 'सस्पेंड', 'Suspended']] : [['all', 'सब', 'All'], ['pending', 'अप्रूवल बाकी', 'Pending'], ['approved', 'अप्रूव्ड', 'Approved'], ['suspended', 'सस्पेंड', 'Suspended']]);
+            if (!chips.some(c => c[0] === PP.f)) PP.f = 'all';
+            return seg + `<div class="pp-tools"><label class="pp-search"><i class="fa-solid fa-magnifying-glass pmut text-[13px]"></i><input id="ppQ" value="${esc(PP.q)}" oninput="PP.q=this.value;ppPaintList()" placeholder="${tr('नाम, फ़ोन या पता खोजें', 'Search name, phone, address')}"></label><button class="pp-xl" onclick="ppExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button></div>
+                <div class="pp-chips">${chips.map(c => `<button class="${PP.f === c[0] ? 'on' : ''}" onclick="PP.f='${c[0]}';renderPanel(true)">${tr(c[1], c[2])} ${n(c[0])}</button>`).join('')}<button onclick="ppReload()" aria-label="refresh"><i class="fa-solid fa-rotate"></i></button></div>
+                <div id="ppList" class="space-y-3 mt-3">${ppListHTML()}</div>`;
+        }
+        function ppTab(k) { PNL.partner = k; PP.q = ''; PP.f = 'all'; renderPanel(); }
+        function ppFiltered() {
+            const q = PP.q.trim().toLowerCase();
+            return ppList().filter(x => (PP.f === 'all' || x.status === PP.f) && (!q || [x.name, x.owner, x.phone, x.address, x.last_address, x.vehicle].join(' ').toLowerCase().indexOf(q) > -1));
+        }
+        function ppListHTML() {
+            const k = ppKind(), l = ppFiltered();
+            if (!l.length) return `<div class="pcard p-6 text-center"><div class="text-4xl">${k === 'vendors' ? '🏪' : (k === 'riders' ? '🛵' : '👥')}</div><p class="text-[13px] font-bold mt-2">${ppList().length ? tr('इस खोज में कोई नहीं मिला', 'Nobody matches') : (k === 'vendors' ? tr('अभी कोई दुकान नहीं जुड़ी', 'No shops yet') : (k === 'riders' ? tr('अभी कोई राइडर नहीं', 'No riders yet') : tr('अभी कोई ग्राहक नहीं', 'No customers yet')))}</p></div>`;
+            return l.map(x => `<div class="pp-card" id="ppc-${x.id}"><div class="pcard p-4 pp-in">${PP.flip[x.id] ? ppBack(k, x) : ppFront(k, x)}</div></div>`).join('');
+        }
+        function ppPaintList() { const el = document.getElementById('ppList'); if (el) el.innerHTML = ppListHTML(); }
+        function ppRepaint(id) {
+            const x = ppFind(id), el = document.querySelector('#ppc-' + id + ' .pp-in'); if (!x) return;
+            if (el) el.innerHTML = PP.flip[id] ? ppBack(ppKind(), x) : ppFront(ppKind(), x);
+            const sh = document.getElementById('ppSheetBody'); if (sh && sh.dataset.id === String(id)) sh.innerHTML = ppBack(ppKind(), x, true);
+            try { aShell(); } catch (e) { }
+        }
+        function ppFlip(id) {
+            const el = document.querySelector('#ppc-' + id + ' .pp-in'); if (!el) return;
+            try { sfx('tap'); } catch (e) { }
+            el.classList.add('pp-out');
+            setTimeout(() => {
+                PP.flip[id] = !PP.flip[id]; const x = ppFind(id); if (!x) return;
+                el.innerHTML = PP.flip[id] ? ppBack(ppKind(), x) : ppFront(ppKind(), x);
+                el.classList.remove('pp-out'); el.classList.add('pp-back'); setTimeout(() => el.classList.remove('pp-back'), 300);
+                if (!PP.flip[id]) { const c = document.getElementById('ppc-' + id); if (c && c.getBoundingClientRect().top < 60) c.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+            }, 190);
+        }
+
+        /* ---- pieces ---- */
+        function ppAv(k, x, sz) {
+            sz = sz || 54; const round = k !== 'vendors';
+            const im = x.avatar && String(x.avatar).length > 30 ? `<img src="${esc(x.avatar)}" alt="">` : esc(initials(x.name || x.owner || '?'));
+            const dot = k === 'riders' && x.status === 'approved' ? `<span class="pp-dot" style="background:${x.online && x.loc_fresh ? 'var(--p-ok)' : (x.online ? '#f59e0b' : 'var(--p-mut)')}"></span>` : '';
+            return `<div class="pp-av ${round ? 'round' : ''}" style="width:${sz}px;height:${sz}px;font-size:${Math.round(sz * .34)}px">${im}${dot}</div>`;
+        }
+        function ppPill(k, s) {
+            const t = { approved: k === 'customers' ? ['चालू', 'Active'] : ['अप्रूव्ड', 'Approved'], pending: ['अप्रूवल बाकी', 'Pending'], suspended: ['सस्पेंड', 'Suspended'] }[s] || ['—', '—'];
+            return `<span class="pill ${s === 'approved' ? 'ok' : (s === 'pending' ? 'warn' : 'bad')}">${tr(t[0], t[1])}</span>`;
+        }
+        function ppMini(a) { return `<div class="pp-mini">${a.map(c => `<div><b class="${c[2] || ''}">${c[0]}</b><span>${c[1]}</span></div>`).join('')}</div>`; }
+        function ppMainBtns(k, x) {
+            const id = x.id;
+            if (x.status === 'pending') return `<div class="flex gap-2 mt-3.5"><button class="pbtn-bad flex-1" onclick="ppAsk('${id}','reject')">${tr('रिजेक्ट', 'Reject')}</button><button class="pbtn flex-1" onclick="ppSet('${id}',{approved:true,suspended:false},'${tr('अप्रूव हो गया ✅', 'Approved ✅')}')"><i class="fa-solid fa-check"></i> ${tr('अप्रूव करें', 'Approve')}</button></div>`;
+            if (x.status === 'suspended') return `<div class="flex gap-2 mt-3.5"><button class="pbtn-g flex-1" onclick="ppFlip('${id}')"><i class="fa-solid fa-gear"></i> ${tr('पूरी डिटेल', 'Full details')}</button><button class="pbtn-ok flex-1" onclick="ppSet('${id}',{suspended:false,approved:true},'${tr('फिर से चालू ✅', 'Reactivated ✅')}')">${tr('फिर से चालू', 'Reactivate')}</button></div>`;
+            return `<div class="flex gap-2 mt-3.5"><button class="pbtn-g flex-1" onclick="ppFlip('${id}')"><i class="fa-solid fa-gear"></i> ${tr('पूरी डिटेल', 'Full details')}</button><button class="pbtn-bad flex-1" onclick="ppAsk('${id}','suspend')">${tr('सस्पेंड करें', 'Suspend')}</button></div>`;
+        }
+        function ppFront(k, x) {
+            const id = x.id;
+            const head = (sub1, sub2) => `<div class="flex items-start gap-3"><button onclick="ppProfile('${id}')" aria-label="profile" style="flex-shrink:0">${ppAv(k, x)}</button>
+                <div class="min-w-0 flex-1"><p class="pttl text-[15px] leading-tight">${esc(x.name || tr('बिना नाम', 'No name'))}</p><p class="text-[11.5px] pmut mt-0.5 truncate">${sub1}</p>${sub2 ? `<p class="text-[11.5px] pmut truncate">${sub2}</p>` : ''}</div>
+                <button class="pp-gear" onclick="ppFlip('${id}')" aria-label="settings"><i class="fa-solid fa-gear"></i></button></div>`;
+            if (k === 'vendors') {
+                const extra = x.multi_cat && (x.extra_stores || []).length ? ` +${x.extra_stores.length}` : '';
+                return head(`${esc(x.owner || '—')} • ${ppPhone(x.phone)}`, esc(x.address || '—')) +
+                    `<div class="flex flex-wrap gap-1.5 mt-3 text-[11px]">${ppPill(k, x.status)}<span class="pill gold">${ppStore(x.store)}${extra}</span><span class="pill ${x.open && x.status === 'approved' ? 'ok' : 'mut'}">${x.open && x.status === 'approved' ? tr('खुला', 'Open') : tr('बंद', 'Closed')}</span>${x.rating ? `<span class="pill gold"><i class="fa-solid fa-star"></i> ${x.rating}</span>` : ''}<span class="pill mut">${tr('जुड़ा', 'Joined')} ${ppDate(x.joined)}</span></div>` +
+                    ppMini([[ppM(x.sales_today), tr('आज की बिक्री', 'Today')], [ppM(x.sales_month), tr('इस महीने', 'This month')], [x.bills || 0, tr('बिल', 'Bills')]]) + ppMainBtns(k, x);
+            }
+            if (k === 'riders') {
+                const due = ppDue(k, x);
+                return head(`${esc(x.vehicle || '—')} • ${ppPhone(x.phone)}`, x.loc_at ? tr('आख़िरी GPS ', 'Last GPS ') + ppWhen(x.loc_at) : '') +
+                    `<div class="flex flex-wrap gap-1.5 mt-3 text-[11px]">${ppPill(k, x.status)}<span class="pill ${x.online && x.loc_fresh ? 'ok' : 'mut'}">${x.online ? (x.loc_fresh ? tr('ऑनलाइन', 'Online') : tr('GPS नहीं', 'No GPS')) : tr('ऑफ़लाइन', 'Offline')}</span>${x.joined ? `<span class="pill mut">${tr('जुड़ा', 'Joined')} ${ppDate(x.joined)}</span>` : ''}</div>` +
+                    ppMini([[x.stock_units || 0, tr('स्टॉक नग', 'Stock')], [x.delivered || 0, tr('डिलीवरी', 'Deliveries')], [ppM(due), tr('बाकी पे-आउट', 'Payout due'), due > 0 ? 'pgold' : '']]) + ppMainBtns(k, x);
+            }
+            return head(ppPhone(x.phone), esc(x.last_address || '—')) +
+                `<div class="flex flex-wrap gap-1.5 mt-3 text-[11px]">${ppPill(k, x.status)}${(x.roles || []).filter(r => r !== 'customer').map(r => `<span class="pill gold">${esc(r)}</span>`).join('')}${x.last_order ? `<span class="pill mut">${tr('आख़िरी ऑर्डर', 'Last order')} ${ppDate(x.last_order)}</span>` : `<span class="pill mut">${tr('अभी कोई ऑर्डर नहीं', 'No orders yet')}</span>`}</div>` +
+                ppMini([[x.orders || 0, tr('ऑर्डर', 'Orders')], [ppM(x.spent), tr('कुल ख़रीद', 'Spent')], ['🪙 ' + (x.coins || 0), tr('सिक्के', 'Coins')]]) +
+                `<div class="flex gap-2 mt-3.5"><button class="pbtn-g flex-1" onclick="ppFlip('${x.id}')"><i class="fa-solid fa-gear"></i> ${tr('पूरी डिटेल', 'Full details')}</button>${x.suspended ? `<button class="pbtn-ok flex-1" onclick="ppSet('${x.id}',{suspended:false},'${tr('फिर से चालू ✅', 'Reactivated ✅')}')">${tr('फिर से चालू', 'Reactivate')}</button>` : `<button class="pbtn-bad flex-1" onclick="ppAsk('${x.id}','suspend')">${tr('सस्पेंड करें', 'Suspend')}</button>`}</div>`;
+        }
+        function ppRow(ic, k, v, extra) { return `<div class="pp-row"><i class="fa-solid ${ic}"></i><span class="k">${k}</span><span class="v">${v}</span>${extra || ''}</div>`; }
+        function ppStep(id, field, val, step, unit) {
+            return `<span class="pp-step"><button onclick="ppNum('${id}','${field}',${-step})">−</button><b>${val}${unit}</b><button onclick="ppNum('${id}','${field}',${step})">+</button></span>`;
+        }
+        function ppBack(k, x, inSheet) {
+            const id = x.id, due = ppDue(k, x);
+            const top = `<div class="flex items-center gap-3">${ppAv(k, x, 44)}<div class="min-w-0 flex-1"><p class="pttl text-[15px] leading-tight truncate">${esc(x.name || '—')}</p><p class="text-[11px] pmut truncate">${k === 'vendors' ? esc(x.owner || '') + ' • ' : ''}${tr('जुड़ा', 'Joined')} ${ppDate(x.joined)}</p></div>${ppPill(k, x.status)}${inSheet ? '' : `<button class="pp-gear" onclick="ppFlip('${id}')" aria-label="back"><i class="fa-solid fa-rotate-left"></i></button>`}</div>`;
+            const contact = ppRow('fa-phone', tr('फ़ोन', 'Phone'), ppPhone(x.phone), x.phone ? `<a class="pill ok" href="tel:${ppTel(x.phone)}"><i class="fa-solid fa-phone"></i></a><a class="pill ok" href="https://wa.me/91${ppTel(x.phone)}" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>` : '');
+            let body = '';
+            if (k === 'vendors') {
+                const p = Object.assign({ pos: true, app_orders: true, qr: true, wholesale: false }, x.perms || {});
+                const cats = PP_ST.map(s => { const main = s[0] === x.store, on = (x.extra_stores || []).indexOf(s[0]) > -1; return `<button class="${main ? 'main' : (on ? 'on' : '')}" onclick="ppCat('${id}','${s[0]}')">${s[1]} ${tr(s[2], s[3])}${main ? ' ★' : ''}</button>`; }).join('');
+                body = `<div class="pp-money"><div class="dk"><span>${tr('कुल बिक्री', 'Total sales')}</span><b>${ppM(x.sales_total)}</b></div><div><span>${tr('इस महीने', 'This month')}</span><b>${ppM(x.sales_month)}</b></div><div><span>${tr('पे-आउट दिया', 'Paid out')}</span><b>${ppM(x.paid)}</b></div><div><span>${tr('बाकी देना', 'Payout due')}</span><b class="${due > 0 ? 'pgold' : ''}">${ppM(due)}</b></div></div>
+                    <p class="text-[10.5px] pmut mt-1.5">${tr('ऐप ऑर्डर', 'App orders')} ${x.app_orders || 0} (${ppM(x.app_sales)}) • ${tr('काउंटर बिल', 'Counter bills')} ${x.bills || 0} • ${tr('काउंटर का पैसा दुकान के पास रहता है', 'counter cash stays with the shop')}</p>
+                    <p class="pp-sec">${tr('संपर्क व पता', 'Contact & address')}</p><div class="pp-rows">${contact}
+                        ${ppRow('fa-location-dot', tr('पता', 'Address'), esc(x.address || '—'), x.lat ? `<a class="pill gold" href="https://maps.google.com/?q=${x.lat},${x.lng}" target="_blank"><i class="fa-solid fa-map"></i></a>` : '')}
+                        ${ppRow('fa-indian-rupee-sign', 'UPI', esc(x.upi || '—'))}${ppRow('fa-certificate', 'FSSAI', esc(x.fssai || '—'))}${ppRow('fa-file-invoice', 'GSTIN', esc(x.gstin || '—'))}${ppRow('fa-clock', tr('समय', 'Hours'), esc(x.hours || '—'))}
+                        ${ppRow('fa-box', tr('स्टॉक', 'Stock'), `${x.products || 0} ${tr('प्रोडक्ट', 'products')} • ${x.stock_units || 0} ${tr('नग', 'units')}`)}</div>
+                    <p class="pp-sec">${tr('कैटेगरी', 'Categories')}</p><div class="pp-rows">
+                        <div class="pp-row"><i class="fa-solid fa-layer-group"></i><span class="v">${x.multi_cat ? tr('मल्टी कैटेगरी — कई कैटेगरी बेच सकता है', 'Multi category — can sell many') : tr('सिंगल कैटेगरी — सिर्फ़ एक', 'Single category only')}</span>${sw(!!x.multi_cat, `ppSet('${id}',{multi_cat:${!x.multi_cat}})`)}</div>
+                        <div class="pp-cats">${cats}</div><p class="text-[10.5px] pmut pb-2">${x.multi_cat ? tr('★ = मुख्य • दबाकर और कैटेगरी जोड़ें/हटाएँ', '★ = main • tap to add/remove more') : tr('दबाकर मुख्य कैटेगरी बदलें', 'Tap to change the category')}</p></div>
+                    <p class="pp-sec">${tr('इलाका व कमीशन', 'Area & commission')}</p><div class="pp-rows">
+                        ${ppRow('fa-bullseye', tr('डिलीवरी दायरा', 'Delivery radius'), '', ppStep(id, 'radius_km', Number(x.radius_km) || 0, 0.5, ' km'))}
+                        ${ppRow('fa-percent', tr('कमीशन', 'Commission'), '', ppStep(id, 'commission_pct', Number(x.commission_pct) || 0, 1, '%'))}</div>
+                    <p class="pp-sec">${tr('परमिशन', 'Permissions')}</p><div class="pp-rows">
+                        ${[['pos', 'fa-cash-register', 'काउंटर बिलिंग (POS)', 'Counter billing (POS)'], ['app_orders', 'fa-mobile-screen', 'ऐप के ऑर्डर लेना', 'Take app orders'], ['qr', 'fa-qrcode', 'QR / डिजिटल दुकान', 'QR / digital shop'], ['wholesale', 'fa-truck-ramp-box', 'होलसेल', 'Wholesale']].map(r => `<div class="pp-row"><i class="fa-solid ${r[1]}"></i><span class="v">${tr(r[2], r[3])}</span>${sw(!!p[r[0]], `ppPerm('${id}','${r[0]}')`)}</div>`).join('')}</div>`;
+            } else if (k === 'riders') {
+                body = `<div class="pp-money"><div class="dk"><span>${tr('कुल कमाई', 'Earned')}</span><b>${ppM(x.earned)}</b></div><div><span>${tr('पे-आउट दिया', 'Paid out')}</span><b>${ppM(x.paid)}</b></div><div><span>${tr('जुर्माना', 'Fines')}</span><b class="${x.fines ? 'pbad' : ''}">${ppM(x.fines)}</b></div><div><span>${tr('बाकी देना', 'Payout due')}</span><b class="${due > 0 ? 'pgold' : ''}">${ppM(due)}</b></div></div>
+                    <p class="text-[10.5px] pmut mt-1.5">${tr('हर डिलीवरी', 'Per delivery')} ${ppM(x.rate)} • ${tr('ग्राहक से लिया कैश', 'cash collected')} ${ppM(x.cash_collected)}</p>
+                    <p class="pp-sec">${tr('जानकारी', 'Details')}</p><div class="pp-rows">${contact}
+                        ${ppRow('fa-motorcycle', tr('गाड़ी', 'Vehicle'), esc(x.vehicle || '—'))}
+                        ${ppRow('fa-location-crosshairs', 'GPS', x.loc_at ? ppWhen(x.loc_at) : '—')}
+                        ${ppRow('fa-box', tr('स्टॉक', 'Stock'), `${x.stock_units || 0} ${tr('नग', 'units')}`)}
+                        ${ppRow('fa-route', tr('डिलीवरी', 'Deliveries'), `${x.delivered || 0} • ${tr('इस महीने', 'this month')} ${x.delivered_month || 0}`)}
+                        ${ppRow('fa-ban', tr('कैंसल किए', 'Cancelled'), String(x.cancels || 0))}
+                        ${ppRow('fa-indian-rupee-sign', tr('रेट / डिलीवरी', 'Rate / delivery'), tr('सभी राइडर', 'all riders'), ppStep(id, 'rate', Number(x.rate) || 0, 5, ''))}</div>`;
+            } else {
+                body = `<div class="pp-money"><div class="dk"><span>${tr('कुल ख़रीद', 'Total spent')}</span><b>${ppM(x.spent)}</b></div><div><span>${tr('इस महीने', 'This month')}</span><b>${ppM(x.spent_month)}</b></div><div><span>${tr('सिक्के', 'Coins')}</span><b>🪙 ${x.coins || 0}</b></div><div><span>${tr('कैंसल फ़ीस', 'Cancel fees')}</span><b>${ppM(x.cancel_fees)}</b></div></div>
+                    <p class="pp-sec">${tr('जानकारी', 'Details')}</p><div class="pp-rows">${contact}
+                        ${ppRow('fa-location-dot', tr('आख़िरी पता', 'Last address'), esc(x.last_address || '—'))}
+                        ${ppRow('fa-receipt', tr('ऑर्डर', 'Orders'), `${x.orders || 0} • ${tr('पहुँचे', 'delivered')} ${x.delivered || 0} • ${tr('रद्द', 'cancelled')} ${x.cancelled || 0}`)}
+                        ${ppRow('fa-basket-shopping', tr('सामान', 'Items'), String(x.items || 0))}
+                        ${ppRow('fa-clock', tr('आख़िरी ऑर्डर', 'Last order'), x.last_order ? ppWhen(x.last_order) : '—')}</div>
+                    ${(x.recent || []).length ? `<p class="pp-sec">${tr('हाल के ऑर्डर', 'Recent orders')}</p><div class="pp-rows">${x.recent.map(o => `<div class="pp-hist"><span>${ppWhen(o.at)}</span><span class="pmut">${esc(String(o.status))}</span><b class="pnum">${ppM(o.total)}</b></div>`).join('')}</div>` : ''}`;
+            }
+            const pays = (x.payouts || []);
+            const hist = k !== 'customers' && pays.length ? `<p class="pp-sec">${tr('पे-आउट इतिहास', 'Payout history')}</p><div class="pp-rows">${pays.map(y => `<div class="pp-hist"><span>${ppWhen(y.at)}</span><span class="pmut truncate" style="max-width:40%">${esc(y.note || '')}</span><b class="pnum pok">${ppM(y.amount)}</b></div>`).join('')}</div>` : '';
+            const note = x.note ? `<p class="pp-sec">${tr('एडमिन नोट', 'Admin note')}</p><div class="pp-rows"><p class="text-[12.5px] py-2">${esc(x.note)}</p></div>` : '';
+            const acts = [
+                ['fa-pen-to-square', tr('एडिट', 'Edit'), `ppEdit('${id}')`, ''],
+                k === 'customers' ? ['fa-coins', tr('सिक्के', 'Coins'), `ppCoins('${id}')`, ''] : ['fa-money-bill-transfer', tr('पे-आउट', 'Payout'), `ppPayout('${id}')`, ''],
+                ['fa-file-excel', 'Excel', `ppExcel('${id}')`, ''],
+                x.suspended ? ['fa-circle-check', tr('चालू करें', 'Activate'), `ppSet('${id}',{suspended:false,approved:true},'${tr('फिर से चालू ✅', 'Reactivated ✅')}')`, 'ok'] : ['fa-ban', tr('सस्पेंड', 'Suspend'), `ppAsk('${id}','suspend')`, 'bad']
+            ];
+            if (k !== 'customers') acts.push(x.status === 'pending' ? ['fa-user-check', tr('अप्रूव', 'Approve'), `ppSet('${id}',{approved:true,suspended:false},'${tr('अप्रूव हो गया ✅', 'Approved ✅')}')`, 'ok'] : ['fa-user-clock', tr('अप्रूवल हटाएँ', 'Unapprove'), `ppSet('${id}',{approved:false},'${tr('अप्रूवल हटाया', 'Approval removed')}')`, '']);
+            if (x.phone) { acts.push(['fa-phone', tr('कॉल', 'Call'), `location.href='tel:${ppTel(x.phone)}'`, '']); acts.push(['fa-brands fa-whatsapp', 'WhatsApp', `window.open('https://wa.me/91${ppTel(x.phone)}','_blank')`, 'ok']); }
+            if (!inSheet) acts.push(['fa-id-card', tr('प्रोफ़ाइल', 'Profile'), `ppProfile('${id}')`, '']);
+            return top + body + hist + note + `<div class="pp-acts">${acts.map(a => `<button class="${a[3]}" onclick="${a[2]}"><i class="${a[0].indexOf('fa-brands') === 0 ? a[0] : 'fa-solid ' + a[0]}"></i>${a[1]}</button>`).join('')}</div>`;
+        }
+        function ppProfile(id) {
+            const x = ppFind(id), k = ppKind(); if (!x) return;
+            openPSheet(k === 'vendors' ? tr('दुकान प्रोफ़ाइल', 'Shop profile') : (k === 'riders' ? tr('राइडर प्रोफ़ाइल', 'Rider profile') : tr('ग्राहक प्रोफ़ाइल', 'Customer profile')),
+                `<div class="text-center mb-3"><div class="inline-block">${ppAv(k, x, 96)}</div></div><div id="ppSheetBody" data-id="${esc(String(id))}">${ppBack(k, x, true)}</div>`);
+        }
+
+        /* ---- actions ---- */
+        function ppLocal(k, x, p) {
+            const q = Object.assign({}, p);
+            if ('person_name' in q) { if (k === 'vendors') x.owner = q.person_name; else x.name = q.person_name; delete q.person_name; }
+            Object.assign(x, q);
+            if (k === 'vendors' && x.approved === false) x.open = false;
+            ppSt(x);
+        }
+        async function ppSet(id, patch, msg) {
+            const k = ppKind(), x = ppFind(id); if (!x) return;
+            if (LIVE) {
+                try { const { error } = await sb.rpc('admin_person_update', { p_kind: k, p_id: id, p: patch }); if (error) throw error; }
+                catch (e) { pToast('⚠️ ' + rmMsg(e).slice(0, 80)); return; }
+            }
+            ppLocal(k, x, patch);
+            try { sfx(patch.suspended === true ? 'remove' : 'success'); } catch (e) { }
+            if (msg) pToast(msg);
+            if ('approved' in patch || 'suspended' in patch) { closePSheet(); renderPanel(true); } else ppRepaint(id);
+        }
+        function ppAsk(id, what) {
+            const x = ppFind(id), k = ppKind(); if (!x) return;
+            const rej = what === 'reject';
+            const txt = rej ? tr('यह पार्टनर काम शुरू नहीं कर पाएगा। बाद में "फिर से चालू" से वापस ला सकते हैं।', 'They will not be able to start. You can reactivate later.')
+                : (k === 'vendors' ? tr('दुकान तुरंत बंद हो जाएगी और नए ऑर्डर/बिल नहीं ले पाएगी।', 'The shop closes now and cannot take orders.') : (k === 'riders' ? tr('राइडर तुरंत ऑफ़लाइन हो जाएगा और ऑफ़र नहीं आएँगे।', 'Rider goes offline and gets no offers.') : tr('यह ग्राहक नया ऑर्डर नहीं कर पाएगा।', 'This customer cannot place new orders.')));
+            openPSheet(rej ? tr('रिजेक्ट करें?', 'Reject?') : tr('सस्पेंड करें?', 'Suspend?'), `<div class="text-center"><div class="inline-block">${ppAv(k, x, 64)}</div><p class="pttl text-[16px] mt-2">${esc(x.name || '—')}</p><p class="text-[13px] pmut mt-2">${txt}</p></div>
+                <div class="flex gap-2 mt-5"><button class="pbtn-g flex-1" onclick="closePSheet()">${tr('रहने दें', 'Cancel')}</button><button class="pbtn-bad flex-1" onclick="ppSet('${id}',{suspended:true},'${rej ? tr('रिजेक्ट किया', 'Rejected') : tr('सस्पेंड किया', 'Suspended')}')">${rej ? tr('हाँ, रिजेक्ट', 'Yes, reject') : tr('हाँ, सस्पेंड', 'Yes, suspend')}</button></div>`);
+        }
+        function ppPerm(id, key) { const x = ppFind(id); if (!x) return; const p = Object.assign({ pos: true, app_orders: true, qr: true, wholesale: false }, x.perms || {}); p[key] = !p[key]; ppSet(id, { perms: p }, tr('परमिशन सेव ✅', 'Permission saved ✅')); }
+        function ppCat(id, s) {
+            const x = ppFind(id); if (!x) return;
+            if (!x.multi_cat) { if (s !== x.store) ppSet(id, { store: s, extra_stores: (x.extra_stores || []).filter(e => e !== s) }, tr('कैटेगरी बदली ✅', 'Category changed ✅')); return; }
+            if (s === x.store) { pToast(tr('मुख्य कैटेगरी बदलने के लिए पहले सिंगल करें', 'Switch to single to change the main category')); return; }
+            const ex = (x.extra_stores || []).slice(), i = ex.indexOf(s); if (i > -1) ex.splice(i, 1); else ex.push(s);
+            ppSet(id, { extra_stores: ex });
+        }
+        function ppNum(id, field, d) {
+            const x = ppFind(id); if (!x) return;
+            const v = Math.max(0, Math.round(((Number(x[field]) || 0) + d) * 10) / 10);
+            if (field === 'rate') {
+                const go = async () => { if (LIVE) { const { error } = await sb.rpc('admin_set_rider_rate', { p_rate: v }); if (error) throw error; } ppList('riders').forEach(r => { r.rate = v; r.earned = v * (Number(r.delivered) || 0); }); ppRepaint(id); };
+                clearTimeout(ppNum._t); x.rate = v; x.earned = v * (Number(x.delivered) || 0); ppRepaint(id);
+                ppNum._t = setTimeout(() => go().then(() => pToast(tr('रेट सेव ✅', 'Rate saved ✅'))).catch(e => pToast('⚠️ ' + rmMsg(e).slice(0, 70))), 700);
+                return;
+            }
+            if (field === 'commission_pct' && v > 50) return;
+            x[field] = v; ppRepaint(id);
+            clearTimeout(ppNum['_' + field]); ppNum['_' + field] = setTimeout(() => ppSet(id, { [field]: v }, tr('सेव ✅', 'Saved ✅')), 700);
+        }
+        function ppField(lbl, id, val, type) { return `<label>${lbl}</label>${type === 'area' ? `<textarea id="${id}" rows="2">${esc(val || '')}</textarea>` : `<input id="${id}" type="${type || 'text'}" value="${esc(val == null ? '' : String(val))}">`}`; }
+        function ppEdit(id) {
+            const x = ppFind(id), k = ppKind(); if (!x) return;
+            const f = k === 'vendors' ? [['name', 'दुकान का नाम', 'Shop name', x.name], ['person_name', 'मालिक का नाम', 'Owner name', x.owner], ['address', 'पता', 'Address', x.address, 'area'], ['hours', 'खुलने का समय', 'Opening hours', x.hours], ['upi', 'UPI ID', 'UPI ID', x.upi], ['fssai', 'FSSAI नंबर', 'FSSAI no.', x.fssai], ['gstin', 'GSTIN', 'GSTIN', x.gstin], ['note', 'एडमिन नोट (सिर्फ़ आपको दिखेगा)', 'Admin note (only you see it)', x.note, 'area']]
+                : (k === 'riders' ? [['person_name', 'नाम', 'Name', x.name], ['vehicle', 'गाड़ी / नंबर', 'Vehicle / number', x.vehicle], ['note', 'एडमिन नोट', 'Admin note', x.note, 'area']]
+                    : [['person_name', 'नाम', 'Name', x.name], ['note', 'एडमिन नोट', 'Admin note', x.note, 'area']]);
+            PP.editF = f.map(a => a[0]);
+            openPSheet(tr('एडिट करें', 'Edit'), `<div class="pp-f">${f.map(a => ppField(tr(a[1], a[2]), 'ppE_' + a[0], a[3], a[4])).join('')}</div><button class="pbtn w-full mt-4" onclick="ppEditSave('${id}')"><i class="fa-solid fa-check"></i> ${tr('सेव करें', 'Save')}</button>`);
+        }
+        function ppEditSave(id) {
+            const x = ppFind(id); if (!x) return; const p = {};
+            (PP.editF || []).forEach(f => { const el = document.getElementById('ppE_' + f); if (!el) return; const v = el.value.trim(); const cur = f === 'person_name' ? (ppKind() === 'vendors' ? x.owner : x.name) : x[f]; if (v !== (cur || '')) p[f] = v; });
+            if (!Object.keys(p).length) { closePSheet(); return; }
+            ppSet(id, p, tr('सेव हो गया ✅', 'Saved ✅')).then(() => { closePSheet(); ppProfileRefresh(); });
+        }
+        function ppProfileRefresh() { renderPanel(true); }
+        function ppPayout(id) {
+            const x = ppFind(id), k = ppKind(); if (!x) return; const due = ppDue(k, x);
+            openPSheet(tr('पे-आउट दर्ज करें', 'Record payout'), `<div class="text-center"><div class="inline-block">${ppAv(k, x, 56)}</div><p class="pttl text-[15px] mt-2">${esc(x.name || '')}</p><p class="text-[12px] pmut">${tr('बाकी', 'Due')} <b class="pgold">${ppM(due)}</b> • ${tr('दिया', 'Paid')} ${ppM(x.paid)}</p></div>
+                <div class="pp-f">${ppField(tr('रकम ₹', 'Amount ₹'), 'ppPayAmt', due > 0 ? due : '', 'number')}${ppField(tr('नोट (UPI ref, कैश वगैरह)', 'Note (UPI ref, cash…)'), 'ppPayNote', '')}</div>
+                <p class="text-[11px] pmut mt-2">${tr('यह सिर्फ़ हिसाब में दर्ज होता है — पैसा आप UPI/बैंक से खुद भेजें। ग़लती हो तो माइनस रकम डालकर ठीक करें।', 'This only records it — send the money yourself by UPI/bank. Use a minus amount to correct a mistake.')}</p>
+                <button class="pbtn w-full mt-4" onclick="ppPayoutSave('${id}')"><i class="fa-solid fa-money-bill-transfer"></i> ${tr('पे-आउट सेव करें', 'Save payout')}</button>`);
+        }
+        async function ppPayoutSave(id) {
+            const x = ppFind(id), k = ppKind(); if (!x) return;
+            const amt = Number(document.getElementById('ppPayAmt').value), note = document.getElementById('ppPayNote').value.trim();
+            if (!amt) { pToast(tr('रकम डालें', 'Enter an amount')); return; }
+            if (LIVE) { try { const { error } = await sb.rpc('admin_add_payout', { p_kind: k, p_id: id, p_amount: amt, p_note: note }); if (error) throw error; } catch (e) { pToast('⚠️ ' + rmMsg(e).slice(0, 80)); return; } }
+            x.paid = (Number(x.paid) || 0) + amt; x.payouts = [{ amount: amt, note: note, at: new Date().toISOString() }].concat(x.payouts || []);
+            try { sfx('success'); } catch (e) { } closePSheet(); pToast(tr('पे-आउट दर्ज ✅', 'Payout recorded ✅')); ppRepaint(id);
+        }
+        function ppCoins(id) {
+            const x = ppFind(id); if (!x) return;
+            openPSheet(tr('सिक्के दें / वापस लें', 'Give / take coins'), `<p class="text-[13px] text-center">${esc(x.name || '')} • 🪙 <b>${x.coins || 0}</b></p><div class="pp-f">${ppField(tr('सिक्के (+ दें, − वापस लें)', 'Coins (+ give, − take)'), 'ppCoAmt', '', 'number')}${ppField(tr('कारण', 'Reason'), 'ppCoNote', '')}</div><button class="pbtn w-full mt-4" onclick="ppCoinsSave('${id}')">🪙 ${tr('सेव करें', 'Save')}</button>`);
+        }
+        async function ppCoinsSave(id) {
+            const x = ppFind(id); if (!x) return; const d = Math.round(Number(document.getElementById('ppCoAmt').value)), note = document.getElementById('ppCoNote').value.trim();
+            if (!d) { pToast(tr('सिक्के डालें', 'Enter coins')); return; }
+            if (LIVE) { try { const { error } = await sb.rpc('admin_adjust_coins', { p_user: id, p_delta: d, p_note: note || 'admin' }); if (error) throw error; } catch (e) { pToast('⚠️ ' + rmMsg(e).slice(0, 80)); return; } }
+            x.coins = (Number(x.coins) || 0) + d; closePSheet(); pToast(tr('सिक्के अपडेट ✅', 'Coins updated ✅')); ppRepaint(id);
+        }
+
+        /* ---- Excel ---- */
+        function ppRows(k, list) {
+            return list.map(x => k === 'vendors' ? { Shop: x.name, Owner: x.owner, Phone: ppPhone(x.phone), Status: x.status, Open: x.open ? 'yes' : 'no', Category: x.store, 'Multi category': x.multi_cat ? 'yes' : 'no', 'Extra categories': (x.extra_stores || []).join(', '), Address: x.address, 'Radius km': x.radius_km, 'Commission %': x.commission_pct, UPI: x.upi, FSSAI: x.fssai, GSTIN: x.gstin, Hours: x.hours, 'Sales total': Number(x.sales_total) || 0, 'Sales this month': Number(x.sales_month) || 0, 'Sales today': Number(x.sales_today) || 0, Bills: x.bills || 0, 'App orders': x.app_orders || 0, 'App sales': Number(x.app_sales) || 0, 'Paid out': Number(x.paid) || 0, 'Payout due': ppDue(k, x), Products: x.products || 0, 'Stock units': x.stock_units || 0, Joined: ppDate(x.joined), Note: x.note || '' }
+                : (k === 'riders' ? { Name: x.name, Phone: ppPhone(x.phone), Vehicle: x.vehicle, Status: x.status, Online: x.online ? 'yes' : 'no', Deliveries: x.delivered || 0, 'Deliveries this month': x.delivered_month || 0, Cancels: x.cancels || 0, 'Rate per delivery': Number(x.rate) || 0, Earned: Number(x.earned) || 0, Fines: Number(x.fines) || 0, 'Paid out': Number(x.paid) || 0, 'Payout due': ppDue(k, x), 'Cash collected': Number(x.cash_collected) || 0, 'Stock units': x.stock_units || 0, 'Last GPS': x.loc_at ? ppWhen(x.loc_at) : '', Joined: ppDate(x.joined), Note: x.note || '' }
+                    : { Name: x.name, Phone: ppPhone(x.phone), Status: x.status, Orders: x.orders || 0, Delivered: x.delivered || 0, Cancelled: x.cancelled || 0, 'Total spent': Number(x.spent) || 0, 'Spent this month': Number(x.spent_month) || 0, Items: x.items || 0, Coins: x.coins || 0, 'Cancel fees': Number(x.cancel_fees) || 0, 'Last order': x.last_order ? ppWhen(x.last_order) : '', 'Last address': x.last_address || '', Joined: ppDate(x.joined), Note: x.note || '' }));
+        }
+        function ppXLSX() {
+            if (window.XLSX) return Promise.resolve(window.XLSX);
+            return new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload = () => res(window.XLSX); s.onerror = rej; document.head.appendChild(s); });
+        }
+        async function ppSaveFile(name, b64, mime) {
+            const C = window.Capacitor, P = (C && C.Plugins) || {};
+            if (C && C.isNativePlatform && C.isNativePlatform() && P.Filesystem) {
+                const r = await P.Filesystem.writeFile({ path: name, data: b64, directory: 'CACHE' });
+                if (P.Share) { await P.Share.share({ title: name, url: r.uri, dialogTitle: name }); return; }
+                if (P.FileOpener) { await P.FileOpener.open({ filePath: r.uri, contentType: mime, openWithDefault: true }); return; }
+            }
+            const a = document.createElement('a'); a.href = 'data:' + mime + ';base64,' + b64; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+        }
+        async function ppExcel(id) {
+            const k = ppKind(), list = id ? [ppFind(id)].filter(Boolean) : ppFiltered(); if (!list.length) { pToast(tr('कोई डेटा नहीं', 'Nothing to export')); return; }
+            const rows = ppRows(k, list), day = new Date().toISOString().slice(0, 10);
+            const base = (id ? String(list[0].name || k).replace(/[^\wऀ-ॿ]+/g, '-') : 'HappyFood-' + k) + '-' + day;
+            pToast(tr('Excel बन रही है…', 'Making Excel…'));
+            try {
+                const X = await ppXLSX(), wb = X.utils.book_new();
+                X.utils.book_append_sheet(wb, X.utils.json_to_sheet(rows), k);
+                if (id && (list[0].payouts || []).length) X.utils.book_append_sheet(wb, X.utils.json_to_sheet(list[0].payouts.map(y => ({ Date: ppWhen(y.at), Amount: Number(y.amount), Note: y.note || '' }))), 'payouts');
+                if (id && (list[0].recent || []).length) X.utils.book_append_sheet(wb, X.utils.json_to_sheet(list[0].recent.map(o => ({ Date: ppWhen(o.at), Status: o.status, Total: Number(o.total) }))), 'orders');
+                await ppSaveFile(base + '.xlsx', X.write(wb, { bookType: 'xlsx', type: 'base64' }), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            } catch (e) {
+                const h = Object.keys(rows[0]), q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+                const csv = '﻿' + [h.map(q).join(',')].concat(rows.map(r => h.map(c => q(r[c])).join(','))).join('\r\n');
+                await ppSaveFile(base + '.csv', btoa(unescape(encodeURIComponent(csv))), 'text/csv').catch(() => pToast(tr('फ़ाइल सेव नहीं हुई', 'Could not save the file')));
+            }
+        }
+
+        /* ---- hook into the admin panel ---- */
+        adminPartners = adminPeople;
+        { const f = aGo; aGo = function (k) { if (k === 'customers' || k === 'vendors' || k === 'riders') { aDrawer(false); PNL.partner = k; setTab('partners'); return; } return f.apply(this, arguments); }; }
+        { const f = aKey; aKey = function () { if (PNL.tab.admin === 'partners') return ppKind(); return f.apply(this, arguments); }; }
+        { const f = aBadges; aBadges = function () { const b = f.apply(this, arguments); if (PP.data.vendors) b.vendors = ppPending('vendors'); if (PP.data.riders) b.riders = ppPending('riders'); return b; }; }
+        function aLang() { toggleLanguage(); lsSet('hf_admin_lang', currentLang); renderPanel(true); aDrawer(true); }
+        function aTheme() { toggleTheme(); renderPanel(true); aDrawer(true); }
+        { const f = aDrawerHTML; aDrawerHTML = function () {
+            const h = f.apply(this, arguments), i = h.indexOf('</p></div></div>'); if (i < 0) return h;
+            const btns = `<div class="a-lt"><button onclick="aLang()" aria-label="language"><b>${currentLang === 'hi' ? 'EN' : 'हिं'}</b></button><button onclick="aTheme()" aria-label="theme"><i class="fa-solid ${isDarkMode ? 'fa-sun' : 'fa-moon'}"></i></button></div>`;
+            return h.slice(0, i) + '</p></div>' + btns + '</div>' + h.slice(i + '</p></div></div>'.length);
+        }; }
+        // the admin panel opens in English by default; the language you pick there is remembered just for the admin panel
+        { const f = openPanel; openPanel = function (role) {
+            if (role === 'admin') {
+                if (PP.prevLang == null) PP.prevLang = currentLang;
+                const want = lsGet('hf_admin_lang') || 'en'; if (currentLang !== want) toggleLanguage();
+                if (LIVE) { ppLoad('vendors', true); ppLoad('riders', true); }
+            } else if (PP.prevLang != null) { if (currentLang !== PP.prevLang) toggleLanguage(); PP.prevLang = null; }
+            return f.apply(this, arguments);
+        }; }
+        { const f = closePanel; closePanel = function () { const r = f.apply(this, arguments); if (PP.prevLang != null) { if (currentLang !== PP.prevLang) toggleLanguage(); PP.prevLang = null; } return r; }; }
+        // keep pending approvals fresh while the admin panel is open
+        setInterval(() => { if (LIVE && PNL.role === 'admin' && !document.hidden) { const sheet = !document.getElementById('pSheet').classList.contains('hidden'); if (!sheet && !(PNL.tab.admin === 'partners' && (document.activeElement || {}).id === 'ppQ') && !Object.values(PP.flip).some(Boolean)) { ppLoad('vendors', true); ppLoad('riders', true); if (PNL.tab.admin === 'partners' && ppKind() === 'customers') ppLoad('customers', true); } } }, 45000);
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
