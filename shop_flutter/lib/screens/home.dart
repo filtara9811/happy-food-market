@@ -11,6 +11,7 @@ import '../printer.dart';
 import '../widgets/shop_ui.dart';
 import 'inventory.dart';
 import 'shop_page.dart';
+import 'pos_quick.dart';
 
 /// Shop home — a copy of the prototype's shop panel: dark gold hero, earnings card, days row,
 /// order / POS tabs, filters, order cards with step dots that open in place, bottom bar with ➕.
@@ -126,6 +127,7 @@ class _ShopHomeState extends State<ShopHome> {
           left: 0, right: 0, top: mini ? 0 : -140,
           child: _miniHeader(pad.top),
         ),
+        if (nav == 0 && seg == 1 && posCount > 0) Positioned(left: 0, right: 0, bottom: 0, child: _posBar(pad.bottom)),
         Positioned(left: 0, right: 0, bottom: 0, child: _nav(pad.bottom)),
       ]),
     );
@@ -596,12 +598,32 @@ class _ShopHomeState extends State<ShopHome> {
   Widget _ph(double s) => Container(width: s, height: s, color: const Color(0xFFFFF3D6), alignment: Alignment.center, child: Text('🍛', style: TextStyle(fontSize: s * .42)));
 
   // ---------- POS tab (part 2 will match the prototype's inventory screen exactly) ----------
+  final posKey = GlobalKey<PosQuickState>();
+  int posCount = 0;
+  num posTotal = 0;
+
   List<Widget> _posTab() => [
-        const SizedBox(height: 14),
-        Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: _bigBtn('🧾', 'नया बिल (POS)', 'काउंटर पर बिक्री — कैश / UPI / उधार', newBill)),
-        const SizedBox(height: 10),
-        Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: _bigBtn('📦', 'मेरी इन्वेंट्री', 'स्टॉक की गिनती और अपना दाम', openInventory)),
+        PosQuick(
+          key: posKey, me: me, reload: () => load(quiet: true),
+          openInventory: () async { await openInventory(); posKey.currentState?.load(); },
+          onBill: (c, t) { if (c != posCount || t != posTotal) setState(() { posCount = c; posTotal = t; }); },
+        ),
       ];
+
+  Widget _posBar(double bottom) => GestureDetector(
+        onTap: () => posKey.currentState?.openBill(),
+        child: Container(
+          margin: EdgeInsets.fromLTRB(16, 0, 16, 96 + bottom),
+          height: 58, padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(color: const Color(0xFF16A34A), borderRadius: BorderRadius.circular(20), boxShadow: const [BoxShadow(color: Color(0x6616A34A), blurRadius: 20, offset: Offset(0, 8))]),
+          child: Row(children: [
+            const Text('🧺', style: TextStyle(fontSize: 24)),
+            const SizedBox(width: 10),
+            Expanded(child: Text('$posCount सामान • ${rupee(posTotal)}', style: HF.num(17, color: Colors.white, w: FontWeight.w800))),
+            Text('बिल बनाएँ ›', style: HF.hi(15.5, color: Colors.white, w: FontWeight.w800)),
+          ]),
+        ),
+      );
 
   Widget _bigBtn(String ic, String t, String s, VoidCallback f) => GestureDetector(
         onTap: f,
