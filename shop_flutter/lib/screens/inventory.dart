@@ -335,7 +335,7 @@ class _InventorySheetState extends State<InventorySheet> {
       );
 
   /// Long-press editor: stock count with quick +5 +10…, on/off, my price, remove from shop.
-  void _editor(Map<String, dynamic> p) {
+  void _editor(Map p) {
     num qty = _qty(p);
     bool on = _on(p);
     final pc = TextEditingController(text: p['shop_price'] == null ? '' : '${p['shop_price']}');
