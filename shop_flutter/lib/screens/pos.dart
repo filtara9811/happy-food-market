@@ -2,129 +2,206 @@ import 'package:flutter/material.dart';
 import '../api.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
+import '../widgets/shop_ui.dart';
 
-/// Counter bill: tap items, pick cash / UPI, save. Uses the shop's own price when set.
-Future<bool?> showPos(BuildContext context) => Navigator.of(context).push<bool>(MaterialPageRoute(builder: (_) => const PosPage()));
+/// "नया बिल" sheet (counter bill) and the "बिल बन गया" receipt — same as the web shop panel.
+/// [bill] is product_id → count, shared with the inventory sheet so changes show up there too.
+Future<bool?> showBill(BuildContext context, Map<String, dynamic> me, List<Map<String, dynamic>> cat, Map<String, int> bill) =>
+    hfSheet<bool>(context, (c, ctl) => BillSheet(me: me, cat: cat, bill: bill, ctl: ctl), size: .92);
 
-class PosPage extends StatefulWidget {
-  const PosPage({super.key});
+class BillSheet extends StatefulWidget {
+  final Map<String, dynamic> me;
+  final List<Map<String, dynamic>> cat;
+  final Map<String, int> bill;
+  final ScrollController ctl;
+  const BillSheet({super.key, required this.me, required this.cat, required this.bill, required this.ctl});
   @override
-  State<PosPage> createState() => _PosPageState();
+  State<BillSheet> createState() => _BillSheetState();
 }
 
-class _PosPageState extends State<PosPage> {
-  List<Map<String, dynamic>> cat = [];
-  final qty = <String, int>{};
-  String pay = 'cash', q = '';
-  final phone = TextEditingController();
-  bool loading = true, busy = false;
+class _BillSheetState extends State<BillSheet> {
+  String pay = 'cash';
+  final name = TextEditingController(), phone = TextEditingController(), disc = TextEditingController();
+  bool busy = false;
   Map<String, dynamic>? receipt;
 
-  @override
-  void initState() {
-    super.initState();
-    Api.catalog().then((c) { if (mounted) setState(() { cat = c; loading = false; }); }).catchError((e) { if (mounted) { setState(() => loading = false); hfToast(context, errText(e)); } });
-  }
+  num price(Map p) => (p['shop_price'] ?? p['price'] ?? 0) as num;
+  List<Map<String, dynamic>> get lines => [for (final p in widget.cat) if ((widget.bill[p['product_id'].toString()] ?? 0) > 0) p];
+  num get sub => lines.fold<num>(0, (s, p) => s + price(p) * widget.bill[p['product_id'].toString()]!);
+  num get discount { final d = num.tryParse(disc.text.trim()) ?? 0; return d < 0 ? 0 : (d > sub ? sub : d); }
+  int get nextNo => ((widget.me['total_bills'] ?? 0) as num).toInt() + 1;
+  String billNo(dynamic n) => 'HFB-${n.toString().padLeft(4, '0')}';
 
-  num priceOf(Map p) => (p['shop_price'] ?? p['price'] ?? 0) as num;
-  num get total => cat.fold<num>(0, (s, p) => s + priceOf(p) * (qty[p['product_id']] ?? 0));
-  int get count => qty.values.fold(0, (a, b) => a + b);
-
-  Future<void> save() async {
-    if (count == 0) return hfToast(context, 'पहले सामान चुनें');
+  Future<void> make() async {
+    if (lines.isEmpty) return;
+    final ph = phone.text.replaceAll(RegExp(r'\D'), '');
+    if (ph.isNotEmpty && ph.length != 10) { hfToast(context, 'मोबाइल नंबर 10 अंक का हो'); return; }
     setState(() => busy = true);
     try {
-      final items = [for (final p in cat) if ((qty[p['product_id']] ?? 0) > 0) {'product_id': p['product_id'], 'qty': qty[p['product_id']], 'price': priceOf(p)}];
-      final r = await Api.rpc('vendor_sale', {'p_items': items, 'p_pay': pay, 'p_phone': phone.text.trim().isEmpty ? null : phone.text.trim()});
-      if (r is Map) setState(() => receipt = Map<String, dynamic>.from(r));
+      final items = [for (final p in lines) {'product_id': p['product_id'], 'qty': widget.bill[p['product_id'].toString()], 'price': price(p)}];
+      final r = await Api.rpc('vendor_bill', {'p_items': items, 'p_pay': pay, 'p_phone': ph.isEmpty ? null : ph, 'p_name': name.text.trim(), 'p_discount': discount});
+      if (r is Map) setState(() { receipt = Map<String, dynamic>.from(r); widget.bill.clear(); });
+      widget.me['total_bills'] = nextNo;
     } catch (e) {
-      if (mounted) hfToast(context, errText(e));
+      final s = e.toString();
+      if (mounted) hfToast(context, s.contains('pos_not_allowed') ? 'एडमिन ने काउंटर बिलिंग बंद की है' : (s.contains('shop_suspended') ? 'दुकान सस्पेंड है — एडमिन से बात करें' : errText(e)));
     } finally {
       if (mounted) setState(() => busy = false);
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (receipt != null) return _receipt();
-    final list = cat.where((p) => q.isEmpty || '${p['name']} ${p['name_hi']}'.toLowerCase().contains(q.toLowerCase())).toList();
-    return Scaffold(
-      backgroundColor: HF.bg,
-      appBar: AppBar(backgroundColor: HF.bg, title: Text('🧾 नया बिल', style: HF.num(20)), elevation: 0),
-      body: loading
-          ? const Center(child: CircularProgressIndicator(color: HF.goldDeep))
-          : ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 140), children: [
-              TextField(onChanged: (v) => setState(() => q = v), decoration: InputDecoration(prefixIcon: const Icon(Icons.search), hintText: 'सामान खोजें', filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none))),
-              const SizedBox(height: 10),
-              if (list.isEmpty) Padding(padding: const EdgeInsets.all(30), child: Text('आपकी कैटेगरी में अभी कोई सामान नहीं — एडमिन से प्रोडक्ट जुड़वाएँ', textAlign: TextAlign.center, style: HF.hi(14, color: HF.mut))),
-              for (final p in list) Padding(padding: const EdgeInsets.only(bottom: 8), child: _item(p)),
-            ]),
-      bottomSheet: Container(
-        padding: EdgeInsets.fromLTRB(16, 12, 16, MediaQuery.of(context).padding.bottom + 12),
-        decoration: const BoxDecoration(color: HF.card, borderRadius: BorderRadius.vertical(top: Radius.circular(24)), boxShadow: [BoxShadow(color: Color(0x22000000), blurRadius: 20)]),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Row(children: [
-            for (final m in [['cash', '💵 कैश'], ['upi', '📱 UPI'], ['credit', '📒 उधार']])
-              Expanded(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 3), child: GestureDetector(onTap: () => setState(() => pay = m[0]), child: Container(padding: const EdgeInsets.symmetric(vertical: 9), alignment: Alignment.center, decoration: BoxDecoration(color: pay == m[0] ? HF.goldLight : HF.card2, borderRadius: BorderRadius.circular(12), border: Border.all(color: pay == m[0] ? HF.goldDeep : Colors.transparent, width: 1.5)), child: Text(m[1], style: HF.hi(13.5, w: FontWeight.w800)))))),
+  Widget build(BuildContext context) => receipt != null ? _receipt() : _bill();
+
+  Widget _bill() {
+    final shop = (widget.me['shop_name'] ?? '').toString();
+    return Stack(children: [
+      ListView(controller: widget.ctl, padding: const EdgeInsets.only(bottom: 130), children: [
+        sheetHead(context, '🧾 नया बिल', sub: '$shop • बिल नंबर ${billNo(nextNo)}'),
+        if (lines.isEmpty) Padding(padding: const EdgeInsets.all(30), child: Text('बिल ख़ाली है', textAlign: TextAlign.center, style: HF.hi(15, color: HF.mut))),
+        for (final p in lines) _line(p),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+          child: Row(children: [
+            Expanded(child: _input(name, 'ग्राहक का नाम (ज़रूरी नहीं)')),
+            const SizedBox(width: 8),
+            Expanded(child: _input(phone, 'मोबाइल (WhatsApp बिल)', num: true)),
           ]),
-          const SizedBox(height: 8),
-          TextField(controller: phone, keyboardType: TextInputType.phone, decoration: InputDecoration(isDense: true, hintText: 'ग्राहक का नंबर (ज़रूरी नहीं)', filled: true, fillColor: HF.card2, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none))),
-          const SizedBox(height: 10),
-          GoldButton(busy ? 'सेव हो रहा…' : '$count सामान • ${rupee(total)} — बिल बनाएँ', onTap: busy || count == 0 ? null : save),
-        ]),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+          child: Row(children: [
+            for (final m in [['cash', '💵 कैश'], ['upi', '📱 UPI'], ['credit', '📒 उधार']])
+              Expanded(child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3),
+                child: GestureDetector(
+                  onTap: () => setState(() => pay = m[0]),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 160), height: 50, alignment: Alignment.center,
+                    decoration: BoxDecoration(color: pay == m[0] ? const Color(0xFFDCFCE7) : HF.card, borderRadius: BorderRadius.circular(16), border: Border.all(color: pay == m[0] ? const Color(0xFF16A34A) : HF.line, width: pay == m[0] ? 2 : 1)),
+                    child: Text(m[1], style: HF.hi(15, color: pay == m[0] ? const Color(0xFF166534) : HF.tx, w: FontWeight.w800)),
+                  ),
+                ),
+              )),
+          ]),
+        ),
+        Container(
+          margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(color: HF.card2, borderRadius: BorderRadius.circular(20)),
+          child: Column(children: [
+            Row(children: [Text('जोड़', style: HF.hi(14, w: FontWeight.w700)), const Spacer(), Text(rupee(sub), style: HF.num(15, w: FontWeight.w700))]),
+            const SizedBox(height: 8),
+            Row(children: [
+              Text('छूट ', style: HF.hi(14, w: FontWeight.w700)), Text('(ज़्यादा से ज़्यादा ${rupee(sub)})', style: HF.hi(11, color: HF.mut)), const Spacer(),
+              SizedBox(width: 90, height: 40, child: TextField(controller: disc, onChanged: (_) => setState(() {}), keyboardType: TextInputType.number, textAlign: TextAlign.right, style: HF.num(15), decoration: InputDecoration(hintText: '0', filled: true, fillColor: HF.card, contentPadding: const EdgeInsets.symmetric(horizontal: 10), border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: HF.line))))),
+            ]),
+            const Divider(height: 22),
+            Row(children: [Text('कुल', style: HF.hi(16, w: FontWeight.w800)), const Spacer(), Text(rupee(sub - discount), style: HF.num(24, color: const Color(0xFF16A34A)))]),
+          ]),
+        ),
+        Padding(padding: const EdgeInsets.only(top: 12), child: Center(child: TextButton(onPressed: () { widget.bill.clear(); Navigator.pop(context, false); }, child: Text('बिल ख़ाली करें', style: HF.hi(13.5, color: HF.mut, w: FontWeight.w700))))),
+      ]),
+      Positioned(
+        left: 16, right: 16, bottom: 16 + MediaQuery.of(context).padding.bottom,
+        child: _greenBtn(busy ? 'बन रहा है…' : '🧾 बिल बनाएँ • ${rupee(sub - discount)}', busy || lines.isEmpty ? null : make),
       ),
-    );
+    ]);
   }
 
-  Widget _item(Map<String, dynamic> p) {
-    final id = p['product_id'].toString(), n = qty[id] ?? 0, stock = (p['qty'] ?? 0) as num;
-    return HFCard(
+  Widget _input(TextEditingController c, String hint, {bool num = false}) => TextField(
+        controller: c, keyboardType: num ? TextInputType.phone : TextInputType.name, style: HF.hi(14),
+        decoration: InputDecoration(hintText: hint, hintStyle: HF.hi(12.5, color: HF.mut, w: FontWeight.w500), filled: true, fillColor: HF.card, contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14), border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: HF.line)), enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: HF.line))),
+      );
+
+  Widget _line(Map<String, dynamic> p) {
+    final id = p['product_id'].toString(), n = widget.bill[id] ?? 0, stock = (p['qty'] ?? 0) as num;
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 6, 16, 0),
       padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(20), border: Border.all(color: HF.line)),
       child: Row(children: [
-        ClipRRect(borderRadius: BorderRadius.circular(14), child: (p['image_url'] ?? '').toString().startsWith('http') ? Image.network(p['image_url'], width: 52, height: 52, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const SizedBox(width: 52, height: 52, child: Center(child: Text('🍛')))) : const SizedBox(width: 52, height: 52, child: Center(child: Text('🍛', style: TextStyle(fontSize: 24))))),
+        ClipOval(child: prodImg(p['image_url'], 48, 48, r: 0)),
         const SizedBox(width: 10),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('${p['name_hi'] ?? p['name']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(14.5, w: FontWeight.w800)),
-          Text('${rupee(priceOf(p))}  •  स्टॉक $stock', style: HF.hi(12, color: stock > 0 ? HF.mut : HF.bad)),
+          Text('${rupee(price(p))} × $n = ${rupee(price(p) * n)}', style: HF.hi(12.5, color: HF.mut, w: FontWeight.w600)),
         ])),
-        if (n == 0)
-          GestureDetector(onTap: () => setState(() => qty[id] = 1), child: Container(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), decoration: BoxDecoration(color: HF.goldLight, borderRadius: BorderRadius.circular(12)), child: Text('+ जोड़ें', style: HF.hi(13.5, w: FontWeight.w800))))
-        else
-          Row(children: [
-            _sq(Icons.remove, () => setState(() { qty[id] = n - 1; if (qty[id]! <= 0) qty.remove(id); })),
-            SizedBox(width: 34, child: Text('$n', textAlign: TextAlign.center, style: HF.num(18))),
-            _sq(Icons.add, () => setState(() => qty[id] = n + 1)),
+        Container(
+          height: 40, decoration: BoxDecoration(color: const Color(0xFF16A34A), borderRadius: BorderRadius.circular(14)),
+          child: Row(children: [
+            IconButton(visualDensity: VisualDensity.compact, onPressed: () => setState(() { if (n <= 1) { widget.bill.remove(id); } else { widget.bill[id] = n - 1; } }), icon: const Icon(Icons.remove, size: 18, color: Colors.white)),
+            Text('$n', style: HF.num(15, color: Colors.white)),
+            IconButton(visualDensity: VisualDensity.compact, onPressed: () { if (n >= stock) { hfToast(context, 'इतना ही स्टॉक है ($stock नग)'); return; } setState(() => widget.bill[id] = n + 1); }, icon: const Icon(Icons.add, size: 18, color: Colors.white)),
           ]),
+        ),
       ]),
     );
   }
 
-  Widget _sq(IconData i, VoidCallback f) => GestureDetector(onTap: f, child: Container(width: 34, height: 34, decoration: BoxDecoration(color: HF.card2, borderRadius: BorderRadius.circular(10)), child: Icon(i, size: 18)));
+  Widget _greenBtn(String t, VoidCallback? f, {Color c = const Color(0xFF16A34A)}) => Opacity(
+        opacity: f == null ? .55 : 1,
+        child: GestureDetector(onTap: f, child: Container(height: 56, alignment: Alignment.center, decoration: BoxDecoration(color: c, borderRadius: BorderRadius.circular(18), boxShadow: [BoxShadow(color: c.withValues(alpha: .35), blurRadius: 18, offset: const Offset(0, 8))]), child: Text(t, style: HF.hi(16.5, color: Colors.white, w: FontWeight.w800)))),
+      );
+
+  String _text() {
+    final r = receipt!, items = (r['items'] as List?) ?? [];
+    final b = StringBuffer('🧾 ${widget.me['shop_name']}\nबिल: ${billNo(r['bill_no'])} • ${hm(DateTime.now())}\n\n');
+    for (final i in items) { b.writeln('${i['name_hi'] ?? i['name']} × ${i['qty']} = ${rupee(((i['price'] ?? 0) as num) * ((i['qty'] ?? 0) as num))}'); }
+    if (((r['discount'] ?? 0) as num) > 0) b.writeln('छूट: −${rupee((r['discount'] ?? 0) as num)}');
+    b.writeln('\nकुल: ${rupee((r['total'] ?? 0) as num)} (${pay == 'cash' ? 'कैश' : (pay == 'upi' ? 'UPI' : 'उधार')})');
+    b.writeln('\nधन्यवाद 🙏 घर बैठे मँगाने के लिए: ${shopLink(widget.me['id'])}');
+    return b.toString();
+  }
 
   Widget _receipt() {
     final r = receipt!, items = (r['items'] as List?)?.whereType<Map>().toList() ?? [];
-    return Scaffold(
-      backgroundColor: HF.bg,
-      body: SafeArea(
-        child: ListView(padding: const EdgeInsets.all(20), children: [
-          const SizedBox(height: 10),
-          const Center(child: Text('✅', style: TextStyle(fontSize: 56))),
-          Center(child: Text('बिल #${r['bill_no']} बन गया', style: HF.num(24))),
-          const SizedBox(height: 16),
-          HFCard(child: Column(children: [
-            for (final i in items)
-              Padding(padding: const EdgeInsets.only(bottom: 6), child: Row(children: [Expanded(child: Text('${i['qty']}× ${i['name_hi'] ?? i['name']}', style: HF.hi(14.5, w: FontWeight.w700))), Text(rupee(((i['price'] ?? 0) as num) * ((i['qty'] ?? 0) as num)), style: HF.hi(14.5, w: FontWeight.w800))])),
-            const Divider(),
-            Row(children: [Expanded(child: Text('कुल (${pay.toUpperCase()})', style: HF.hi(16, w: FontWeight.w800))), Text(rupee((r['total'] ?? 0) as num), style: HF.num(22, color: HF.goldDeep))]),
-          ])),
-          const SizedBox(height: 16),
-          Text('🖨️ Bluetooth प्रिंटर अगले अपडेट में', textAlign: TextAlign.center, style: HF.hi(13, color: HF.mut)),
-          const SizedBox(height: 16),
-          GoldButton('➕ अगला बिल', onTap: () => setState(() { receipt = null; qty.clear(); phone.clear(); Api.catalog().then((c) { if (mounted) setState(() => cat = c); }); })),
-          const SizedBox(height: 10),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: Text('होम पर जाएँ', style: HF.hi(15, color: HF.goldDeep))),
+    final now = DateTime.now();
+    final payL = pay == 'cash' ? '💵 कैश' : (pay == 'upi' ? '📱 UPI' : '📒 उधार');
+    return ListView(controller: widget.ctl, padding: const EdgeInsets.only(bottom: 30), children: [
+      sheetHead(context, '✅ बिल बन गया', sub: 'स्टॉक अपने-आप घट गया'),
+      Container(
+        margin: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(20), border: Border.all(color: HF.gold.withValues(alpha: .5), width: 1.2)),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Text('${widget.me['shop_name']}', textAlign: TextAlign.center, style: HF.num(19, w: FontWeight.w800)),
+          Text('Happy Food पार्टनर', textAlign: TextAlign.center, style: HF.hi(12, color: HF.mut)),
+          const SizedBox(height: 12),
+          Row(children: [Text('बिल: ${billNo(r['bill_no'])}', style: HF.hi(12.5, w: FontWeight.w700)), const Spacer(), Text('${now.day}/${now.month}/${now.year}, ${hm(now)}', style: HF.hi(12, color: HF.mut))]),
+          if (name.text.trim().isNotEmpty || phone.text.trim().isNotEmpty) Text('ग्राहक: ${name.text.trim()} ${phone.text.trim()}', style: HF.hi(12, color: HF.mut)),
+          const Divider(height: 20),
+          for (final i in items)
+            Padding(padding: const EdgeInsets.only(bottom: 8), child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${i['name_hi'] ?? i['name']}', style: HF.hi(14, w: FontWeight.w700)), Text('${rupee((i['price'] ?? 0) as num)} × ${i['qty']}', style: HF.hi(11.5, color: HF.mut))])),
+              Text(rupee(((i['price'] ?? 0) as num) * ((i['qty'] ?? 0) as num)), style: HF.num(14, w: FontWeight.w700)),
+            ])),
+          const Divider(height: 16),
+          Row(children: [Text('जोड़', style: HF.hi(13.5)), const Spacer(), Text(rupee((r['subtotal'] ?? r['total'] ?? 0) as num), style: HF.num(14, w: FontWeight.w700))]),
+          if (((r['discount'] ?? 0) as num) > 0) Row(children: [Text('छूट', style: HF.hi(13.5)), const Spacer(), Text('−${rupee((r['discount'] ?? 0) as num)}', style: HF.num(14, color: HF.bad, w: FontWeight.w700))]),
+          const SizedBox(height: 6),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('कुल', style: HF.hi(15, w: FontWeight.w800)), const Spacer(), Column(crossAxisAlignment: CrossAxisAlignment.end, children: [Text(rupee((r['total'] ?? 0) as num), style: HF.num(26)), Text(payL, style: HF.hi(12, color: const Color(0xFF166534), w: FontWeight.w800))])]),
+          const SizedBox(height: 12),
+          Text('धन्यवाद 🙏 घर बैठे मँगाने के लिए Happy Food ऐप', textAlign: TextAlign.center, style: HF.hi(11.5, color: HF.mut)),
         ]),
       ),
-    );
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+        child: Row(children: [
+          Expanded(child: pillBtn('WhatsApp', const Color(0xFF16A34A), Colors.white, Icons.chat, () => whatsApp(context, _text(), phone: phone.text))),
+          const SizedBox(width: 10),
+          Expanded(child: pillBtn('शेयर', HF.card, HF.tx, Icons.share, () => shareText(_text()))),
+        ]),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+        child: Row(children: [
+          Expanded(child: _greenBtn('🖨️ प्रिंट करें', () => hfToast(context, 'Bluetooth प्रिंटर अगले अपडेट में — अभी WhatsApp/शेयर से भेजें'), c: const Color(0xFF16120B))),
+          const SizedBox(width: 10),
+          GestureDetector(onTap: () => hfToast(context, 'प्रिंटर सेटिंग अगले अपडेट में'), child: Container(width: 56, height: 56, decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(18), border: Border.all(color: HF.line)), child: const Icon(Icons.settings))),
+        ]),
+      ),
+      Padding(padding: const EdgeInsets.fromLTRB(16, 10, 16, 0), child: _greenBtn('＋ नया बिल', () { widget.bill.clear(); Navigator.pop(context, true); })),
+    ]);
   }
 }

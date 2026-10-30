@@ -1,11 +1,13 @@
 import 'dart:async';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../api.dart';
 import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
-import 'pos.dart';
 import 'inventory.dart';
+import 'shop_page.dart';
 
 /// Shop home — a copy of the prototype's shop panel: dark gold hero, earnings card, days row,
 /// order / POS tabs, filters, order cards with step dots that open in place, bottom bar with ➕.
@@ -27,6 +29,16 @@ class _ShopHomeState extends State<ShopHome> {
   String err = '';
   Timer? poll;
   final sc = ScrollController();
+  final seen = <String>{};
+  final player = AudioPlayer();
+
+  Future<void> _ring(int n) async {
+    try { await player.play(AssetSource('sounds/ring3.wav')); } catch (_) {}
+    HapticFeedback.heavyImpact();
+    if (!mounted) return;
+    setState(() { nav = 0; seg = 0; filter = 'live'; dayIdx = 0; });
+    hfToast(context, '🔔 $n नया ऑर्डर आया!');
+  }
 
   @override
   void initState() {
@@ -40,6 +52,7 @@ class _ShopHomeState extends State<ShopHome> {
   void dispose() {
     poll?.cancel();
     sc.dispose();
+    player.dispose();
     super.dispose();
   }
 
@@ -49,6 +62,10 @@ class _ShopHomeState extends State<ShopHome> {
       final m = await Api.me();
       final o = await Api.orders();
       if (!mounted) return;
+      final fresh = o.where((x) => x['source'] != 'pos' && !['done', 'cancelled'].contains(x['status']) && !seen.contains(x['id'].toString())).toList();
+      if (seen.isNotEmpty && fresh.isNotEmpty) _ring(fresh.length);
+      for (final x in o) { seen.add(x['id'].toString()); }
+      if (seen.isEmpty) seen.add('-');
       setState(() { me = m; orders = o; err = ''; });
     } catch (e) {
       if (mounted) setState(() => err = errText(e));
@@ -71,6 +88,7 @@ class _ShopHomeState extends State<ShopHome> {
   }
 
   Future<void> toggleOpen() async {
+    if (me['suspended'] == true) { hfToast(context, '🚫 दुकान सस्पेंड है — एडमिन से बात करें'); return; }
     try {
       final r = await Api.rpc('vendor_set_open', {'p_open': !(me['open'] == true)});
       if (r is Map && r['ok'] == false) { if (mounted) hfToast(context, 'एडमिन की मंज़ूरी बाकी है'); return; }
@@ -81,8 +99,8 @@ class _ShopHomeState extends State<ShopHome> {
     }
   }
 
-  Future<void> openInventory() async { await Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InventoryPage())); load(quiet: true); }
-  Future<void> newBill() async { final d = await showPos(context); if (d == true) load(quiet: true); }
+  Future<void> openInventory() async { await showInventory(context, me, orders); load(quiet: true); }
+  Future<void> newBill() => openInventory();
 
   // ---------- build ----------
   @override
@@ -314,7 +332,8 @@ class _ShopHomeState extends State<ShopHome> {
     final list = _period.where((o) => filter == 'all' || (filter == 'live' ? !['done', 'cancelled'].contains(o['status']) : ['done', 'cancelled'].contains(o['status']))).toList();
     return [
       _hero(top),
-      if (me['approved'] == false) Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 0), child: HFCard(color: const Color(0xFFFFF7E6), border: const Color(0xFFFDBA74), child: Text('⏳ आपकी दुकान एडमिन की मंज़ूरी का इंतज़ार कर रही है। तब तक आप इन्वेंट्री भर सकते हैं और बिल बना सकते हैं।', style: HF.hi(13.5, w: FontWeight.w700)))),
+      if (me['suspended'] == true) Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 0), child: HFCard(color: const Color(0xFFFEE2E2), border: const Color(0xFFFCA5A5), child: Text('🚫 आपकी दुकान एडमिन ने सस्पेंड की है। ग्राहक आपकी दुकान नहीं देख पाएँगे — सपोर्ट से बात करें।', style: HF.hi(13.5, color: HF.bad, w: FontWeight.w700)))),
+      if (me['approved'] == false && me['suspended'] != true) Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 0), child: HFCard(color: const Color(0xFFFFF7E6), border: const Color(0xFFFDBA74), child: Text('⏳ आपकी दुकान एडमिन की मंज़ूरी का इंतज़ार कर रही है। तब तक आप इन्वेंट्री भर सकते हैं और बिल बना सकते हैं।', style: HF.hi(13.5, w: FontWeight.w700)))),
       if (err.isNotEmpty) Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 0), child: Text('⚠️ $err', style: HF.hi(13, color: HF.bad))),
       const SizedBox(height: 16),
       _days(),
@@ -548,37 +567,15 @@ class _ShopHomeState extends State<ShopHome> {
     );
   }
 
-  // ---------- shop page (part 2 will match the prototype's shop screen exactly) ----------
-  List<Widget> _shopPage() {
-    final top = MediaQuery.of(context).padding.top;
-    return [
-      Padding(
-        padding: EdgeInsets.fromLTRB(16, top + 16, 16, 0),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(gradient: HF.heroGrad, borderRadius: BorderRadius.circular(24)),
-          child: Row(children: [
-            Container(width: 72, height: 72, alignment: Alignment.center, decoration: BoxDecoration(gradient: HF.avGrad, borderRadius: BorderRadius.circular(20)), child: Text(_initials, style: HF.num(26, color: HF.ink))),
-            const SizedBox(width: 14),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(_name, style: HF.num(20, color: Colors.white, w: FontWeight.w800)),
-              Text('${me['owner'] ?? ''} • ${me['approved'] == true ? '✅ वेरिफ़ाइड' : '⏳ मंज़ूरी बाकी'}', style: HF.hi(13, color: Colors.white70, w: FontWeight.w600)),
-              Text('📍 ${me['address'] ?? ''}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(12.5, color: Colors.white60, w: FontWeight.w600)),
-            ])),
-          ]),
+  // ---------- shop page ----------
+  List<Widget> _shopPage() => [
+        ShopPage(
+          key: ValueKey('shop-${me['id']}'),
+          me: me, orders: orders, reload: () => load(quiet: true), toggleOpen: toggleOpen, openInventory: openInventory,
+          openEarnings: _earnSheet,
+          openBills: () { setState(() { nav = 0; seg = 0; filter = 'all'; dayIdx = 7; }); if (sc.hasClients) sc.jumpTo(0); },
         ),
-      ),
-      Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 0), child: _bigBtn('📦', 'इन्वेंट्री व अपना दाम', 'कितना माल है, POS का दाम', openInventory)),
-      Padding(padding: const EdgeInsets.fromLTRB(16, 10, 16, 0), child: _bigBtn('🧾', 'नया बिल (POS)', 'काउंटर पर बिक्री', newBill)),
-      Padding(padding: const EdgeInsets.fromLTRB(16, 10, 16, 0), child: _bigBtn('🚪', 'लॉग-आउट', 'इस फ़ोन से बाहर निकलें', () async { await Api.signOut(); if (mounted) goNext(context); })),
-      const SizedBox(height: 24),
-      Center(child: Text('नियम व शर्तें  ·  प्राइवेसी पॉलिसी  ·  रिफ़ंड पॉलिसी', style: HF.hi(13, color: HF.mut, w: FontWeight.w700))),
-      const SizedBox(height: 12),
-      Center(child: Text('P O W E R E D   B Y', style: HF.hi(11, color: const Color(0xFFB98A2C), w: FontWeight.w800))),
-      Center(child: Text('Filipra Private Limited', style: const TextStyle(fontFamily: 'serif', fontSize: 22, fontWeight: FontWeight.w700, color: HF.tx))),
-      Center(child: Text('© 2026 Happy Food · Made in India 🇮🇳', style: HF.hi(12, color: HF.mut))),
-    ];
-  }
+      ];
 
   // ---------- bottom bar (#phNav) ----------
   Widget _nav(double bottom) => SizedBox(

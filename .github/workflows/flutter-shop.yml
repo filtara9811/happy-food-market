@@ -37,7 +37,9 @@ jobs:
           M=android/app/src/main/AndroidManifest.xml
           sed -i 's#android:label="hf_shop"#android:label="Happy Food Shop"#' $M
           sed -i 's#<application#<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <application#' $M
-          grep -n "label\|permission" $M
+          # let url_launcher open WhatsApp / browser / phone on Android 11+
+          sed -i 's#</manifest>#  <queries>\n    <intent><action android:name="android.intent.action.VIEW"/><data android:scheme="https"/></intent>\n    <intent><action android:name="android.intent.action.DIAL"/><data android:scheme="tel"/></intent>\n    <package android:name="com.whatsapp"/>\n  </queries>\n</manifest>#' $M
+          grep -n "label\|permission\|queries" $M
 
       - name: Bundle fonts (Hindi + numbers) so the app works offline
         run: |
