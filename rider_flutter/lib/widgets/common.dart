@@ -219,3 +219,18 @@ class FlutterBadge extends StatelessWidget {
 
 /// Puts the Flutter badge on the top-left of an avatar.
 Widget withFlutterBadge(Widget avatar, double s) => Stack(clipBehavior: Clip.none, children: [avatar, Positioned(left: -2, top: -2, child: FlutterBadge(size: (s * .34).clamp(14, 26).toDouble()))]);
+
+/// Product picture: "asset:momos" keys are bundled in the app (assets/food), http links load from the web.
+Widget foodImg(dynamic url, double w, double h, {double r = 14}) {
+  final u = (url ?? '').toString();
+  final ph = Container(width: w, height: h, color: const Color(0xFFFFF3D6), alignment: Alignment.center, child: Text('🍛', style: TextStyle(fontSize: (w.isFinite ? w : 60) * .4)));
+  Widget img;
+  if (u.startsWith('asset:')) {
+    img = Image.asset('assets/food/${u.substring(6)}.webp', width: w, height: h, fit: BoxFit.cover, errorBuilder: (_, __, ___) => ph);
+  } else if (u.startsWith('http')) {
+    img = Image.network(u, width: w, height: h, fit: BoxFit.cover, errorBuilder: (_, __, ___) => ph);
+  } else {
+    img = ph;
+  }
+  return ClipRRect(borderRadius: BorderRadius.circular(r), child: img);
+}

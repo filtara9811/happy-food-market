@@ -74,7 +74,7 @@ class _RiderLiveState extends State<RiderLive> with WidgetsBindingObserver {
   }
 
   Future<void> loadHist() async {
-    try { final h = await Api.history(7); final l = (h['orders'] as List?)?.whereType<Map>().map((e) => Map<String, dynamic>.from(e)).toList() ?? []; if (mounted) setState(() => hist = l); } catch (_) {}
+    try { final h = await Api.history(31); final l = (h['orders'] as List?)?.whereType<Map>().map((e) => Map<String, dynamic>.from(e)).toList() ?? []; if (mounted) setState(() => hist = l); } catch (_) {}
   }
 
   Future<void> loadAvatar() async {
@@ -152,8 +152,10 @@ class _RiderLiveState extends State<RiderLive> with WidgetsBindingObserver {
     Push.clear(o['id'].toString());
     var ringing = true;
     () async { while (ringing && mounted) { await Sound.ring3(); await Future.delayed(const Duration(milliseconds: 600)); } }();
-    final shop = task['offer'] is Map && task['offer']['order_id'] == o['order_id'] ? Map<String, dynamic>.from(task['offer']['shop'] ?? {}) : null;
-    final res = await Navigator.of(context).push<String>(PageRouteBuilder(opaque: false, pageBuilder: (_, __, ___) => OfferScreen(offer: o, shop: shop), transitionsBuilder: (_, a, __, w) => SlideTransition(position: Tween(begin: const Offset(0, 1), end: Offset.zero).animate(CurvedAnimation(parent: a, curve: Curves.easeOutCubic)), child: w)));
+    Map<String, dynamic>? route;
+    try { final r = await Api.rpc('offer_route', {'p_offer_id': o['id']}).timeout(const Duration(seconds: 4)); if (r is Map) route = Map<String, dynamic>.from(r); } catch (_) {}
+    if (!mounted) return;
+    final res = await Navigator.of(context).push<String>(PageRouteBuilder(opaque: false, pageBuilder: (_, __, ___) => OfferScreen(offer: o, route: route), transitionsBuilder: (_, a, __, w) => SlideTransition(position: Tween(begin: const Offset(0, 1), end: Offset.zero).animate(CurvedAnimation(parent: a, curve: Curves.easeOutCubic)), child: w)));
     ringing = false;
     Sound.stop();
     offerOpen = false;
@@ -292,7 +294,27 @@ class _RiderLiveState extends State<RiderLive> with WidgetsBindingObserver {
     } catch (e) { if (mounted) hfToast(context, errText(e)); }
   }
 
-  // ---------- UI ----------
+  // ---------- UI (same layout as the prototype's partner panel) ----------
+  int dayIdx = 0, seg = 0;
+  String filter = 'all';
+  final openCards = <String>{};
+  final sc = ScrollController();
+  bool mini = false;
+
+  DateTime? _t(Map o, String k) => o[k] == null ? null : DateTime.tryParse(o[k].toString())?.toLocal();
+  DateTime _d0(DateTime d) => DateTime(d.year, d.month, d.day);
+  num _amt(Map o) => (o['total'] ?? 0) as num;
+  bool _done(Map o) => o['status'] == 'delivered';
+
+  List<Map<String, dynamic>> get _period {
+    final now = DateTime.now();
+    if (dayIdx == 7) return hist.where((o) { final t = _t(o, 'created_at'); return t != null && t.year == now.year && t.month == now.month; }).toList();
+    final d0 = _d0(now).subtract(Duration(days: dayIdx));
+    return hist.where((o) { final t = _t(o, 'created_at'); return t != null && _d0(t) == d0; }).toList();
+  }
+
+  String _dayLabel(int i) { final d = DateTime.now().subtract(Duration(days: i)); return i == 0 ? 'आज ${d.day}' : '${hiDays[d.weekday - 1]} ${d.day}'; }
+
   @override
   Widget build(BuildContext context) {
     final pad = MediaQuery.of(context).padding;
@@ -302,115 +324,421 @@ class _RiderLiveState extends State<RiderLive> with WidgetsBindingObserver {
         RefreshIndicator(
           color: HF.goldDeep,
           onRefresh: () async { await load(); await loadHist(); },
-          child: ListView(padding: EdgeInsets.only(bottom: 110 + pad.bottom), children: [
-            _hero(pad.top),
-            if (loading) const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator(color: HF.goldDeep))),
-            if (err.isNotEmpty) Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 0), child: Text('⚠️ $err', style: HF.hi(13, color: HF.bad))),
-            if (!loading && me['approved'] == false) _banner('⏳ एडमिन की मंज़ूरी का इंतज़ार है। मंज़ूरी मिलते ही ऑनलाइन हो सकेंगे।', const Color(0xFFFFF7E6), const Color(0xFFFDBA74)),
-            if (!loading && me['has_avatar'] == false && avatar.length < 50) GestureDetector(onTap: pickPhoto, child: _banner('📸 अपनी प्रोफ़ाइल फ़ोटो लगाएँ — इसके बिना ऑनलाइन नहीं हो सकते। यहाँ दबाएँ।', const Color(0xFFFEF2F2), const Color(0xFFFCA5A5))),
-            if (me['online'] == true && locMsg.isNotEmpty) _banner('📍 $locMsg', const Color(0xFFFEF2F2), const Color(0xFFFCA5A5)),
-            if (nav == 0) ..._deliveries() else if (nav == 1) ..._stock() else ..._profile(),
-          ]),
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (n) { final m = n.metrics.pixels > 260; if (m != mini) setState(() => mini = m); return false; },
+            child: ListView(controller: sc, padding: EdgeInsets.only(bottom: 110 + pad.bottom), children: nav == 2 ? _profile(pad.top) : _main(pad.top)),
+          ),
         ),
-        Positioned(left: 0, right: 0, bottom: 0, child: _bottom(pad.bottom)),
+        AnimatedPositioned(duration: const Duration(milliseconds: 260), left: 0, right: 0, top: mini && nav != 2 ? 0 : -140, child: _miniHeader(pad.top)),
+        Positioned(left: 0, right: 0, bottom: 0, child: _nav(pad.bottom)),
       ]),
     );
   }
 
+  List<Widget> _main(double top) {
+    final a = me['active'] is Map ? Map<String, dynamic>.from(me['active']) : null;
+    final stockLines = ((me['stock'] as List?) ?? []).whereType<Map>().where((x) => ((x['qty'] ?? 0) as num) > 0).toList();
+    return [
+      _hero(top),
+      if (loading) const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator(color: HF.goldDeep))),
+      if (err.isNotEmpty) Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 0), child: Text('⚠️ $err', style: HF.hi(13, color: HF.bad))),
+      if (!loading && me['approved'] == false) _banner('⏳ एडमिन की मंज़ूरी का इंतज़ार है। मंज़ूरी मिलते ही ऑनलाइन हो सकेंगे।', const Color(0xFFFFF7E6), const Color(0xFFFDBA74)),
+      if (!loading && me['has_avatar'] == false && avatar.length < 50) GestureDetector(onTap: pickPhoto, child: _banner('📸 अपनी प्रोफ़ाइल फ़ोटो लगाएँ — इसके बिना ऑनलाइन नहीं हो सकते। यहाँ दबाएँ।', const Color(0xFFFEF2F2), const Color(0xFFFCA5A5))),
+      if (me['online'] == true && locMsg.isNotEmpty) _banner('📍 $locMsg', const Color(0xFFFEF2F2), const Color(0xFFFCA5A5)),
+      if (a != null) Padding(padding: const EdgeInsets.fromLTRB(16, 16, 16, 0), child: _active(a)),
+      if (a == null && !loading && me['online'] == true)
+        Padding(padding: const EdgeInsets.fromLTRB(16, 14, 16, 0), child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(color: const Color(0xFFE9F7EE), borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFF86EFAC))),
+          child: Row(children: [const Text('📡', style: TextStyle(fontSize: 22)), const SizedBox(width: 10), Expanded(child: Text('नई रिक्वेस्ट का इंतज़ार — आते ही घंटी बजेगी, फ़ोन लॉक हो तब भी', style: HF.hi(12.5, color: const Color(0xFF166534), w: FontWeight.w700)))]),
+        )),
+      const SizedBox(height: 16),
+      _days(),
+      const SizedBox(height: 12),
+      _tabs(stockLines.length),
+      if (seg == 1) ..._stockList(stockLines) else ..._orderList(),
+    ];
+  }
+
   Widget _banner(String t, Color bg, Color br) => Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 0), child: HFCard(color: bg, border: br, child: Text(t, style: HF.hi(13.5, w: FontWeight.w700))));
 
-  Widget _av(double s) {
-    Widget img;
+  Widget _avImg(double s) {
     if (avatar.startsWith('data:image')) {
-      try { img = Image.memory(base64Decode(avatar.split(',').last), width: s, height: s, fit: BoxFit.cover); } catch (_) { img = const SizedBox(); }
-    } else {
-      final n = '${me['name'] ?? 'R'}'.trim();
-      img = Center(child: Text(n.isEmpty ? 'R' : n.characters.first.toUpperCase(), style: HF.num(s * .4, color: HF.ink)));
+      try { return Image.memory(base64Decode(avatar.split(',').last), width: s, height: s, fit: BoxFit.cover); } catch (_) {}
     }
+    final n = '${me['name'] ?? 'R'}'.trim();
+    return Center(child: Text(n.isEmpty ? 'R' : n.characters.first.toUpperCase(), style: HF.num(s * .38, color: HF.ink)));
+  }
+
+  Widget _av(double s, {bool badge = true}) {
+    final c = Container(width: s, height: s, decoration: BoxDecoration(shape: BoxShape.circle, gradient: HF.avGrad, border: Border.all(color: Colors.white.withValues(alpha: .85), width: s > 44 ? 3 : 2)), child: ClipOval(child: _avImg(s)));
+    return GestureDetector(onTap: pickPhoto, child: badge ? withFlutterBadge(Stack(clipBehavior: Clip.none, children: [c, Positioned(right: -2, bottom: -2, child: Container(width: 20, height: 20, decoration: const BoxDecoration(color: HF.gold, shape: BoxShape.circle), child: const Icon(Icons.photo_camera, size: 11, color: HF.ink)))]), s) : c);
+  }
+
+  Widget _duty({bool compact = false}) {
+    final on = me['online'] == true;
     return GestureDetector(
-      onTap: pickPhoto,
-      child: withFlutterBadge(Container(width: s, height: s, decoration: BoxDecoration(shape: BoxShape.circle, gradient: const LinearGradient(colors: [Color(0xFFF6D27A), Color(0xFFC8912A)]), border: Border.all(color: const Color(0xFFFDE68A), width: 3)), child: ClipOval(child: img)), s),
+      onTap: busy ? null : toggleOnline,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
+        decoration: BoxDecoration(color: Colors.white.withValues(alpha: .08), borderRadius: BorderRadius.circular(99), border: Border.all(color: Colors.white.withValues(alpha: .18))),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          AnimatedContainer(duration: const Duration(milliseconds: 250), width: 42, height: 24, padding: const EdgeInsets.all(3), alignment: on ? Alignment.centerRight : Alignment.centerLeft, decoration: BoxDecoration(color: on ? HF.okBright : Colors.white24, borderRadius: BorderRadius.circular(99)), child: Container(width: 18, height: 18, decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle))),
+          const SizedBox(width: 8),
+          if (compact) Text(on ? 'ऑनलाइन' : 'ऑफ़', style: HF.hi(13, color: Colors.white, w: FontWeight.w800))
+          else Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+            Text(busy ? '…' : (on ? 'ऑनलाइन' : 'ऑफ़लाइन'), style: HF.hi(13, color: Colors.white, w: FontWeight.w800)),
+            Text(on ? (lastLoc.year > 2000 ? 'लोकेशन ${DateTime.now().difference(lastLoc).inSeconds} सेकंड पहले भेजी' : 'लोकेशन भेज रहे…') : 'ऑनलाइन होने को दबाएँ', style: HF.hi(10, color: Colors.white60, w: FontWeight.w600)),
+          ]),
+        ]),
+      ),
     );
   }
 
   Widget _hero(double top) {
-    final on = me['online'] == true, today = (me['today'] as Map?) ?? {};
+    final p = _period, del = p.where(_done).toList();
+    final coll = del.fold<num>(0, (s, o) => s + _amt(o));
     final stock = ((me['stock'] as List?) ?? []).fold<num>(0, (s, x) => s + ((x['qty'] ?? 0) as num));
+    final todayCash = hist.where((o) { final t = _t(o, 'delivered_at'); return _done(o) && t != null && _d0(t) == _d0(DateTime.now()); }).fold<num>(0, (s, o) => s + _amt(o));
+    final label = dayIdx == 0 ? 'आज' : (dayIdx == 7 ? 'इस महीने' : _dayLabel(dayIdx));
     return Container(
-      padding: EdgeInsets.fromLTRB(16, top + 14, 16, 18),
-      decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [HF.heroTop, HF.heroBottom]), borderRadius: BorderRadius.vertical(bottom: Radius.circular(32))),
+      padding: EdgeInsets.fromLTRB(16, top + 18, 16, 18),
+      decoration: const BoxDecoration(borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)), gradient: HF.heroGrad, boxShadow: [BoxShadow(color: Color(0x2E000000), blurRadius: 30, offset: Offset(0, 14))]),
+      foregroundDecoration: BoxDecoration(borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)), gradient: RadialGradient(center: const Alignment(.6, -1), radius: 1.2, colors: [HF.gold.withValues(alpha: .16), Colors.transparent], stops: const [0, .6])),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Row(children: [
           _av(56),
           const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('${me['name'] ?? ''}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.num(19, color: Colors.white)),
-            Text('डिलीवरी पार्टनर · ${me['vehicle'] ?? ''}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(12, color: Colors.white60, w: FontWeight.w500)),
+            Text('${me['name'] ?? ''}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.num(18, color: Colors.white, w: FontWeight.w800)),
+            Text('डिलीवरी पार्टनर · ${me['vehicle'] ?? ''}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(12, color: Colors.white60, w: FontWeight.w600)),
           ])),
-          GestureDetector(
-            onTap: busy ? null : toggleOnline,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
-              decoration: BoxDecoration(color: Colors.white.withValues(alpha: .08), borderRadius: BorderRadius.circular(99), border: Border.all(color: Colors.white.withValues(alpha: .18))),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                AnimatedContainer(duration: const Duration(milliseconds: 250), width: 42, height: 24, padding: const EdgeInsets.all(3), alignment: on ? Alignment.centerRight : Alignment.centerLeft, decoration: BoxDecoration(color: on ? const Color(0xFF22C55E) : Colors.white24, borderRadius: BorderRadius.circular(99)), child: Container(width: 18, height: 18, decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle))),
-                const SizedBox(width: 8),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                  Text(busy ? '…' : (on ? 'ऑनलाइन' : 'ऑफ़लाइन'), style: HF.hi(13, color: Colors.white, w: FontWeight.w800)),
-                  Text(on ? (lastLoc.year > 2000 ? 'लोकेशन ${DateTime.now().difference(lastLoc).inSeconds} से. पहले' : 'लोकेशन भेज रहे…') : 'ऑनलाइन होने को दबाएँ', style: HF.hi(10, color: Colors.white60, w: FontWeight.w600)),
-                ]),
-              ]),
-            ),
-          ),
+          const SizedBox(width: 8),
+          _duty(),
         ]),
         Container(
           margin: const EdgeInsets.only(top: 14),
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white.withValues(alpha: .07), border: Border.all(color: Colors.white.withValues(alpha: .14))),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('💰 आज का कलेक्शन', style: HF.hi(12.5, color: Colors.white70, w: FontWeight.w600)),
-            Text(rupee((today['total'] ?? 0) as num), style: HF.num(32, color: Colors.white, w: FontWeight.w700)),
-            Text('${today['count'] ?? 0} डिलीवरी आज', style: HF.hi(11.5, color: Colors.white60, w: FontWeight.w500)),
-            const Divider(color: Colors.white12, height: 20),
             Row(children: [
-              _hs('डिलीवरी', '${today['count'] ?? 0}'),
-              _hs('कलेक्शन', rupee((today['total'] ?? 0) as num)),
-              _hs('स्टॉक बचा', '$stock नग'),
+              Expanded(child: Text('💰 मेरी कमाई · $label', style: HF.hi(12.5, color: Colors.white.withValues(alpha: .85), w: FontWeight.w600))),
+              GestureDetector(onTap: _earnSheet, child: Container(padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5), decoration: BoxDecoration(color: Colors.white.withValues(alpha: .1), borderRadius: BorderRadius.circular(99)), child: Text('हिसाब ›', style: HF.hi(12, color: const Color(0xFF86EFAC), w: FontWeight.w600)))),
             ]),
+            const SizedBox(height: 4),
+            Row(children: [
+              Expanded(child: GestureDetector(onTap: _earnSheet, child: Row(children: [
+                Flexible(child: Text(rupee(coll), maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.num(32, color: Colors.white, w: FontWeight.w700))),
+                const SizedBox(width: 8),
+                Container(width: 22, height: 22, decoration: BoxDecoration(color: Colors.white.withValues(alpha: .12), shape: BoxShape.circle), child: const Icon(Icons.chevron_right, size: 14, color: Colors.white70)),
+              ]))),
+              GestureDetector(
+                onTap: () => hfToast(context, 'पैसे निकालना जल्द आएगा — अभी कैश एडमिन के पास जमा करें'),
+                child: Container(padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8), decoration: BoxDecoration(gradient: HF.goldGrad, borderRadius: BorderRadius.circular(14), boxShadow: const [BoxShadow(color: Color(0x4DF2B632), blurRadius: 14, offset: Offset(0, 6))]),
+                    child: Row(children: [const Icon(Icons.arrow_downward, size: 14, color: HF.ink), const SizedBox(width: 6), Text('निकालें', style: HF.hi(12.5, color: HF.ink, w: FontWeight.w800))])),
+              ),
+            ]),
+            Text('${del.length} डिलीवरी · ${p.length} ऑर्डर', style: HF.hi(11.5, color: Colors.white.withValues(alpha: .62), w: FontWeight.w500)),
+            Container(
+              margin: const EdgeInsets.only(top: 12), padding: const EdgeInsets.only(top: 10),
+              decoration: BoxDecoration(border: Border(top: BorderSide(color: Colors.white.withValues(alpha: .12)))),
+              child: Row(children: [_stat('डिलीवरी', '${del.length}', first: true), _stat('कलेक्शन', rupee(coll)), _stat('स्टॉक बचा', '$stock नग')]),
+            ),
           ]),
         ),
+        if (todayCash > 0)
+          Container(
+            margin: const EdgeInsets.only(top: 10), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+            decoration: BoxDecoration(color: Colors.black.withValues(alpha: .25), borderRadius: BorderRadius.circular(16)),
+            child: Text('💵 ${rupee(todayCash)} कैश आपके पास · जमा करना है', style: HF.hi(13, color: Colors.white, w: FontWeight.w700)),
+          ),
       ]),
     );
   }
 
-  Widget _hs(String l, String v) => Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(l, style: HF.hi(10.5, color: Colors.white54, w: FontWeight.w500)), Text(v, style: HF.num(14.5, color: Colors.white, w: FontWeight.w600))]));
+  Widget _stat(String l, String v, {bool first = false}) => Expanded(
+        child: Container(
+          padding: EdgeInsets.only(left: first ? 0 : 6, right: 6),
+          decoration: BoxDecoration(border: first ? null : Border(left: BorderSide(color: Colors.white.withValues(alpha: .12)))),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(l, style: HF.hi(10.5, color: Colors.white.withValues(alpha: .6), w: FontWeight.w500)), Text(v, maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.num(14.5, color: Colors.white, w: FontWeight.w600))]),
+        ),
+      );
 
-  String _nm(Map i) => '${i['name_hi'] ?? i['name'] ?? Api.products[i['product_id']]?['name_hi'] ?? Api.products[i['product_id']]?['name'] ?? ''}';
+  Widget _miniHeader(double top) => Container(
+        padding: EdgeInsets.fromLTRB(14, top + 10, 14, 12),
+        decoration: const BoxDecoration(gradient: HF.heroGrad, borderRadius: BorderRadius.vertical(bottom: Radius.circular(26)), boxShadow: [BoxShadow(color: Color(0x40000000), blurRadius: 24, offset: Offset(0, 10))]),
+        child: Row(children: [
+          _av(40, badge: false),
+          const SizedBox(width: 12),
+          const Text('💰', style: TextStyle(fontSize: 18)),
+          const SizedBox(width: 6),
+          Text(rupee(_period.where(_done).fold<num>(0, (s, o) => s + _amt(o))), style: HF.num(19, color: Colors.white, w: FontWeight.w800)),
+          const SizedBox(width: 6),
+          Text(dayIdx == 0 ? 'आज की कमाई' : 'कमाई', style: HF.hi(11.5, color: Colors.white70, w: FontWeight.w600)),
+          const Spacer(),
+          _duty(compact: true),
+        ]),
+      );
 
-  Widget _img(dynamic url, double s) {
-    final u = (url ?? '').toString();
-    final ph = Container(width: s, height: s, color: const Color(0xFFFFF3D6), alignment: Alignment.center, child: Text('🍛', style: TextStyle(fontSize: s * .45)));
-    return ClipRRect(borderRadius: BorderRadius.circular(12), child: u.startsWith('http') ? Image.network(u, width: s, height: s, fit: BoxFit.cover, errorBuilder: (_, __, ___) => ph) : ph);
+  Widget _days() {
+    final now = DateTime.now();
+    final vals = List.generate(7, (i) { final d0 = _d0(now).subtract(Duration(days: i)); return hist.where((o) { final t = _t(o, 'created_at'); return t != null && _d0(t) == d0 && _done(o); }).fold<num>(0, (s, o) => s + _amt(o)); });
+    final cnt = List.generate(7, (i) { final d0 = _d0(now).subtract(Duration(days: i)); return hist.where((o) { final t = _t(o, 'created_at'); return t != null && _d0(t) == d0 && _done(o); }).length; });
+    final topv = vals.fold<num>(1, (a, b) => b > a ? b : a);
+    Widget chip(int i, Widget child, {double pct = 0}) {
+      final on = dayIdx == i;
+      return GestureDetector(
+        onTap: () => setState(() => dayIdx = i),
+        child: Container(
+          width: 62, margin: const EdgeInsets.only(right: 6), padding: const EdgeInsets.fromLTRB(3, 6, 3, 8),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: on ? null : HF.card, gradient: on ? const LinearGradient(begin: Alignment(-0.27, -1), end: Alignment(0.27, 1), colors: [HF.heroTop, HF.heroBottom]) : null, border: Border.all(color: on ? Colors.transparent : HF.line)),
+          child: Stack(clipBehavior: Clip.none, children: [
+            child,
+            if (i < 7) Positioned(left: 5, right: 5, bottom: -5, child: Container(height: 2, decoration: BoxDecoration(color: HF.line, borderRadius: BorderRadius.circular(3)), alignment: Alignment.centerLeft, child: FractionallySizedBox(widthFactor: pct.clamp(0, 1).toDouble(), child: Container(decoration: BoxDecoration(color: HF.ok, borderRadius: BorderRadius.circular(3)))))),
+          ]),
+        ),
+      );
+    }
+    return SizedBox(
+      height: 70,
+      child: ListView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.symmetric(horizontal: 16), children: [
+        for (var i = 0; i < 7; i++)
+          chip(i, Column(mainAxisSize: MainAxisSize.min, children: [
+            Text(_dayLabel(i), style: HF.hi(11, color: dayIdx == i ? Colors.white : HF.tx, w: FontWeight.w800)),
+            Text(shortRupee(vals[i]), style: HF.num(11, color: dayIdx == i ? const Color(0xFF86EFAC) : HF.ok, w: FontWeight.w900)),
+            Text(cnt[i] == 0 ? '—' : '${cnt[i]} डिलीवरी', style: HF.hi(10.5, color: dayIdx == i ? Colors.white70 : HF.mut, w: FontWeight.w700)),
+          ]), pct: vals[i] / topv),
+        chip(7, Column(mainAxisSize: MainAxisSize.min, children: [const Text('🗓️', style: TextStyle(fontSize: 18)), Text('महीना', style: HF.hi(11, color: dayIdx == 7 ? Colors.white : HF.tx, w: FontWeight.w800))])),
+      ]),
+    );
   }
 
-  List<Widget> _deliveries() {
-    final a = me['active'] is Map ? Map<String, dynamic>.from(me['active']) : null;
+  Widget _tabs(int stockN) {
+    Widget b(int i, String t, int n) => Expanded(
+          child: GestureDetector(
+            onTap: () => setState(() => seg = i),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200), padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 6),
+              decoration: BoxDecoration(color: seg == i ? HF.card : Colors.transparent, borderRadius: BorderRadius.circular(16), boxShadow: seg == i ? const [BoxShadow(color: Color(0x14000000), blurRadius: 12, offset: Offset(0, 4))] : null),
+              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Flexible(child: Text(t, maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(13, color: seg == i ? HF.tx : HF.mut, w: FontWeight.w800))),
+                const SizedBox(width: 6),
+                Container(constraints: const BoxConstraints(minWidth: 22), height: 22, padding: const EdgeInsets.symmetric(horizontal: 6), alignment: Alignment.center, decoration: BoxDecoration(color: const Color(0xFF16A34A), borderRadius: BorderRadius.circular(99)), child: Text('$n', style: HF.num(11.5, color: Colors.white, w: FontWeight.w800))),
+              ]),
+            ),
+          ),
+        );
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16), padding: const EdgeInsets.all(5),
+      decoration: BoxDecoration(color: Color.alphaBlend(HF.goldDeep.withValues(alpha: .12), HF.card2), borderRadius: BorderRadius.circular(20)),
+      child: Row(children: [b(0, '🛵 डिलीवरी', _period.length), b(1, '📦 स्टॉक', stockN)]),
+    );
+  }
+
+  List<Widget> _orderList() {
+    final p = _period;
+    final list = p.where((o) => filter == 'all' || (filter == 'live' ? !['delivered', 'cancelled', 'no_rider'].contains(o['status']) : ['delivered', 'cancelled', 'no_rider'].contains(o['status']))).toList();
     return [
-      if (a != null) Padding(padding: const EdgeInsets.fromLTRB(16, 16, 16, 0), child: _active(a)),
-      if (a == null && !loading)
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: HFCard(child: Column(children: [
-            Text(me['online'] == true ? '📡' : '😴', style: const TextStyle(fontSize: 40)),
-            Text(me['online'] == true ? 'नई रिक्वेस्ट का इंतज़ार…' : 'आप ऑफ़लाइन हैं', style: HF.hi(16, w: FontWeight.w800)),
-            Text(me['online'] == true ? 'रिक्वेस्ट आते ही घंटी बजेगी — फ़ोन लॉक हो तब भी' : 'ऊपर "ऑफ़लाइन" दबाकर ऑनलाइन हों', textAlign: TextAlign.center, style: HF.hi(12.5, color: HF.mut)),
-          ])),
-        ),
-      Padding(padding: const EdgeInsets.fromLTRB(18, 18, 18, 6), child: Row(children: [Text('🧾 पिछली डिलीवरी', style: HF.hi(15, w: FontWeight.w800)), const Spacer(), Text('7 दिन • ${hist.length}', style: HF.hi(12, color: HF.mut))])),
-      if (hist.isEmpty) Padding(padding: const EdgeInsets.all(20), child: Center(child: Text('अभी कोई डिलीवरी नहीं', style: HF.hi(13.5, color: HF.mut)))),
-      for (final o in hist) Padding(padding: const EdgeInsets.fromLTRB(16, 6, 16, 6), child: _histCard(o)),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+        child: Row(children: [
+          for (final f in [['all', 'सब'], ['live', 'चालू'], ['done', 'पूरे']])
+            Padding(padding: const EdgeInsets.only(right: 8), child: GestureDetector(onTap: () => setState(() => filter = f[0]), child: Container(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), decoration: BoxDecoration(color: filter == f[0] ? const Color(0xFF111111) : HF.card, borderRadius: BorderRadius.circular(999), border: Border.all(color: filter == f[0] ? const Color(0xFF111111) : HF.line, width: 1.5)), child: Text(f[1], style: HF.hi(13, color: filter == f[0] ? Colors.white : HF.mut, w: FontWeight.w800))))),
+          const Spacer(),
+          Text('${list.length} / ${p.length}', style: HF.num(13, color: HF.mut, w: FontWeight.w700)),
+        ]),
+      ),
+      if (list.isEmpty) Padding(padding: const EdgeInsets.all(30), child: Column(children: [const Text('🛵', style: TextStyle(fontSize: 42)), Text('इस दिन कोई डिलीवरी नहीं', style: HF.hi(15, w: FontWeight.w800))])),
+      for (final o in list) Padding(padding: const EdgeInsets.fromLTRB(16, 6, 16, 6), child: _card(o)),
     ];
   }
+
+  Widget _card(Map<String, dynamic> o) {
+    final id = o['id'].toString(), isOpen = openCards.contains(id);
+    final lines = (o['lines'] as List?)?.whereType<Map>().toList() ?? [];
+    final st = o['status'], done = st == 'delivered', cx = st == 'cancelled' || st == 'no_rider';
+    final chip = cx ? ['✖ रद्द', const Color(0xFFFEE2E2), const Color(0xFFB91C1C)] : (done ? ['✅ डिलीवर', const Color(0xFFDCFCE7), const Color(0xFF166534)] : (st == 'on_the_way' ? ['🛵 रास्ते में', const Color(0xFFDBEAFE), const Color(0xFF1E40AF)] : ['⏳ स्वीकार', const Color(0xFFFEF3C7), const Color(0xFF92400E)]));
+    final steps = [('स्वीकार', '🔔', _t(o, 'accepted_at') != null), ('पिकअप', '📦', _t(o, 'picked_at') != null || done), ('रास्ते में', '🛵', _t(o, 'picked_at') != null || done), ('पहुँचे', '🚪', _t(o, 'arrived_at') != null || done), ('डिलीवर', '🏠', done)];
+    final cur = cx ? -1 : steps.indexWhere((s) => !s.$3);
+    final when = _t(o, 'created_at');
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(24), border: Border.all(color: HF.line)),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          GestureDetector(
+            onTap: () => _zoom(lines, 0),
+            child: SizedBox(width: 62, height: 60, child: Stack(clipBehavior: Clip.none, children: [
+              Container(width: 56, height: 56, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Color.alphaBlend(HF.goldDeep.withValues(alpha: .35), Colors.white), width: 3)), child: ClipOval(child: foodImg(o['image_url'], 50, 50, r: 0))),
+              Positioned(right: 2, bottom: 0, child: Container(width: 22, height: 22, alignment: Alignment.center, decoration: const BoxDecoration(color: HF.gold, shape: BoxShape.circle), child: Text(cx ? '✕' : (done ? '✓' : '⏳'), style: const TextStyle(fontSize: 11)))),
+            ])),
+          ),
+          const SizedBox(width: 10),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('${o['customer'] ?? 'ग्राहक'}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.num(17, w: FontWeight.w800)),
+            const SizedBox(height: 4),
+            Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2), decoration: BoxDecoration(color: chip[1] as Color, borderRadius: BorderRadius.circular(999)), child: Text(chip[0] as String, style: HF.hi(11.5, color: chip[2] as Color, w: FontWeight.w800))),
+            const SizedBox(height: 4),
+            Text('${o['items'] ?? ''} • ${when == null ? '' : hm(when).toUpperCase()}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(11, color: HF.mut, w: FontWeight.w600)),
+          ])),
+          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [Text(cx ? '' : rupee(_amt(o)), style: HF.num(20, color: HF.goldDeep, w: FontWeight.w800)), Text(cx ? '—' : 'कलेक्शन', style: HF.hi(10, color: HF.mut, w: FontWeight.w900))]),
+        ]),
+        const SizedBox(height: 12),
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => setState(() => isOpen ? openCards.remove(id) : openCards.add(id)),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Expanded(child: _steps(steps, cur)),
+            const SizedBox(width: 4),
+            Padding(padding: const EdgeInsets.only(top: 2), child: AnimatedRotation(turns: isOpen ? .5 : 0, duration: const Duration(milliseconds: 220), child: Container(width: 26, height: 26, decoration: const BoxDecoration(color: HF.card2, shape: BoxShape.circle), child: const Icon(Icons.keyboard_arrow_down, size: 16, color: HF.mut)))),
+          ]),
+        ),
+        AnimatedSize(duration: const Duration(milliseconds: 260), curve: Curves.easeOut, child: isOpen ? _expanded(o, lines, cx) : const SizedBox(width: double.infinity)),
+      ]),
+    );
+  }
+
+  Widget _steps(List<(String, String, bool)> s, int cur) => Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        for (var i = 0; i < s.length; i++)
+          Expanded(child: Stack(clipBehavior: Clip.none, alignment: Alignment.topCenter, children: [
+            if (i > 0) Positioned(top: 12.5, left: 0, right: 0, child: FractionallySizedBox(alignment: Alignment.centerLeft, widthFactor: .5, child: Container(height: 3, decoration: BoxDecoration(gradient: s[i].$3 || i == cur ? const LinearGradient(colors: [HF.okBright, HF.gold]) : null, color: s[i].$3 || i == cur ? null : HF.line)))),
+            if (i < s.length - 1) Positioned(top: 12.5, left: 0, right: 0, child: FractionallySizedBox(alignment: Alignment.centerRight, widthFactor: .5, child: Container(height: 3, decoration: BoxDecoration(gradient: s[i + 1].$3 || i + 1 == cur ? const LinearGradient(colors: [HF.okBright, HF.gold]) : null, color: s[i + 1].$3 || i + 1 == cur ? null : HF.line)))),
+            Column(children: [
+              Container(
+                width: 28, height: 28, alignment: Alignment.center,
+                decoration: BoxDecoration(shape: BoxShape.circle, color: s[i].$3 ? Color.alphaBlend(HF.okBright.withValues(alpha: .15), HF.card) : (i == cur ? const Color(0xFFFDE68A) : HF.card2), border: Border.all(color: s[i].$3 ? HF.okBright : (i == cur ? HF.gold : HF.line), width: 2), boxShadow: i == cur ? [BoxShadow(color: HF.gold.withValues(alpha: .25), spreadRadius: 5)] : null),
+                child: s[i].$3 ? const Icon(Icons.check, size: 14, color: Color(0xFF16A34A)) : Text(s[i].$2, style: const TextStyle(fontSize: 11)),
+              ),
+              const SizedBox(height: 4),
+              Text(s[i].$1, maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(10.5, color: s[i].$3 ? HF.ok : (i == cur ? HF.goldDeep : HF.mut), w: FontWeight.w800)),
+            ]),
+          ])),
+      ]);
+
+  Widget _expanded(Map<String, dynamic> o, List<Map> lines, bool cx) {
+    final rows = <(String, String, String, DateTime?, Widget?)>[
+      ('🔔', 'स्वीकार', 'आपने रिक्वेस्ट ली', _t(o, 'accepted_at'), null),
+      ('📦', 'पिकअप', 'सामान लिया', _t(o, 'picked_at'), Wrap(children: [for (var k = 0; k < lines.length && k < 6; k++) GestureDetector(onTap: () => _zoom(lines, k), child: Padding(padding: const EdgeInsets.only(right: 8, top: 6), child: Stack(clipBehavior: Clip.none, children: [ClipOval(child: foodImg(lines[k]['image_url'], 44, 44, r: 0)), Positioned(right: -4, bottom: -2, child: Container(width: 20, height: 20, alignment: Alignment.center, decoration: BoxDecoration(color: HF.tx, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2)), child: Text('${lines[k]['qty']}', style: HF.num(10, color: Colors.white))))])))])),
+      ('🚪', 'पहुँचे', '', _t(o, 'arrived_at'), null),
+      (cx ? '✕' : '🏠', cx ? 'रद्द' : 'डिलीवर', cx ? '${o['cancel_reason'] ?? ''}' : 'OTP से पूरा • 📍 ${o['address'] ?? ''}', cx ? _t(o, 'cancelled_at') : _t(o, 'delivered_at'), null),
+    ].where((r) => r.$4 != null || r.$1 != '🚪').toList();
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const SizedBox(height: 14),
+      Container(height: 4, decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), gradient: const LinearGradient(colors: [HF.okBright, HF.gold]))),
+      const SizedBox(height: 14),
+      for (final r in rows)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 14),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(width: 30, height: 30, alignment: Alignment.center, decoration: BoxDecoration(shape: BoxShape.circle, color: r.$4 != null || r.$1 == '✕' ? Colors.white : HF.card2, border: Border.all(color: r.$1 == '✕' ? const Color(0xFFEF4444) : (r.$4 != null ? HF.okBright : HF.line), width: 2)),
+                child: r.$4 != null && r.$1 != '✕' ? const Icon(Icons.check, size: 16, color: Color(0xFF16A34A)) : Text(r.$1, style: TextStyle(fontSize: 12, color: r.$1 == '✕' ? const Color(0xFFDC2626) : HF.mut))),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(r.$2, style: HF.hi(14.5, w: FontWeight.w800)), if (r.$3.isNotEmpty) Text(r.$3, style: HF.hi(12.5, color: HF.mut, w: FontWeight.w600)), if (r.$5 != null) r.$5!])),
+            Text(r.$4 != null ? hm(r.$4!) : '', style: HF.hi(12.5, color: HF.goldDeep, w: FontWeight.w800)),
+          ]),
+        ),
+    ]);
+  }
+
+  /// Tap a product picture: big view with name, qty and price.
+  void _zoom(List<Map> lines, int start) {
+    if (lines.isEmpty) return;
+    showDialog(context: context, builder: (c) => Dialog(
+          backgroundColor: Colors.transparent, insetPadding: const EdgeInsets.all(18),
+          child: Container(
+            decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(26)),
+            padding: const EdgeInsets.all(14),
+            child: SizedBox(height: 420, child: PageView(controller: PageController(initialPage: start), children: [
+              for (final l in lines)
+                Column(children: [
+                  Expanded(child: foodImg(l['image_url'], double.infinity, double.infinity, r: 20)),
+                  const SizedBox(height: 10),
+                  Text('${l['name_hi'] ?? l['name'] ?? ''}', textAlign: TextAlign.center, style: HF.hi(18, w: FontWeight.w800)),
+                  Text('${l['qty']} × ${rupee((l['price'] ?? 0) as num)} = ${rupee(((l['price'] ?? 0) as num) * ((l['qty'] ?? 0) as num))}', style: HF.num(16, color: HF.goldDeep)),
+                  if (lines.length > 1) Text('← खिसकाकर अगला सामान →', style: HF.hi(11.5, color: HF.mut)),
+                ]),
+            ])),
+          ),
+        ));
+  }
+
+  List<Widget> _stockList(List<Map> s) => [
+        Padding(padding: const EdgeInsets.fromLTRB(18, 14, 18, 4), child: Text('जो सामान आपकी डिलीवरी-बैग में है। स्टॉक एडमिन / दुकान से भरा जाता है।', style: HF.hi(12, color: HF.mut, w: FontWeight.w600))),
+        if (s.isEmpty) Padding(padding: const EdgeInsets.all(30), child: Center(child: Text('📦 अभी कोई स्टॉक नहीं', style: HF.hi(14.5, color: HF.mut, w: FontWeight.w700)))),
+        if (s.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: GridView.count(crossAxisCount: 2, shrinkWrap: true, physics: const NeverScrollableScrollPhysics(), mainAxisSpacing: 12, crossAxisSpacing: 12, childAspectRatio: .78, children: [
+              for (final x in s)
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(22), border: Border.all(color: HF.line)),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Expanded(child: Stack(children: [
+                      Positioned.fill(child: foodImg(Api.products[x['product_id']]?['image_url'], double.infinity, double.infinity, r: 16)),
+                      Positioned(left: 6, top: 6, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: ((x['qty'] ?? 0) as num) <= 2 ? const Color(0xFFD97706) : const Color(0xFF16A34A), borderRadius: BorderRadius.circular(99)), child: Text('${x['qty']} नग', style: HF.hi(11, color: Colors.white, w: FontWeight.w800)))),
+                    ])),
+                    const SizedBox(height: 6),
+                    Text(_nm(x), maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(14, w: FontWeight.w800)),
+                    Row(children: [Text(rupee((Api.products[x['product_id']]?['price'] ?? 0) as num), style: HF.num(14, color: HF.goldDeep, w: FontWeight.w800)), const Spacer(), if (((x['reserved'] ?? 0) as num) > 0) Text('${x['reserved']} आरक्षित', style: HF.hi(10.5, color: HF.mut))]),
+                  ]),
+                ),
+            ]),
+          ),
+      ];
+
+  void _earnSheet() {
+    final now = DateTime.now();
+    final week = List.generate(7, (k) { final i = 6 - k, d0 = _d0(now).subtract(Duration(days: i)); final v = hist.where((o) { final t = _t(o, 'created_at'); return t != null && _d0(t) == d0 && _done(o); }).fold<num>(0, (s, o) => s + _amt(o)); return (i == 0 ? 'आज' : hiDays[d0.weekday - 1], v); });
+    final topv = week.fold<num>(1, (a, b) => b.$2 > a ? b.$2 : a);
+    final todays = hist.where((o) { final t = _t(o, 'created_at'); return t != null && _d0(t) == _d0(now); }).toList();
+    final del = todays.where(_done).toList(), sum = del.fold<num>(0, (s, o) => s + _amt(o));
+    showModalBottomSheet(
+      context: context, isScrollControlled: true, backgroundColor: Colors.transparent,
+      builder: (c) => DraggableScrollableSheet(
+        initialChildSize: .86, maxChildSize: .95, expand: false,
+        builder: (_, ctl) => Container(
+          decoration: const BoxDecoration(color: HF.card, borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+          child: ListView(controller: ctl, padding: const EdgeInsets.fromLTRB(20, 18, 20, 30), children: [
+            Row(children: [Expanded(child: Text('आज की कमाई', style: HF.hi(19, w: FontWeight.w800))), GestureDetector(onTap: () => Navigator.pop(c), child: Container(width: 40, height: 40, decoration: const BoxDecoration(color: HF.card2, shape: BoxShape.circle), child: const Icon(Icons.close, size: 20)))]),
+            const SizedBox(height: 14),
+            Text('${del.length} डिलीवरी · ${todays.length} ऑर्डर', style: HF.hi(13, color: HF.mut, w: FontWeight.w600)),
+            Text(rupee(sum), style: HF.num(34)),
+            const SizedBox(height: 20),
+            Row(children: [Expanded(child: Text('पिछले 7 दिन', style: HF.hi(14.5, w: FontWeight.w800))), Text(rupee(week.fold<num>(0, (s, w) => s + w.$2)), style: HF.num(15, color: HF.goldDeep, w: FontWeight.w800))]),
+            const SizedBox(height: 10),
+            Container(
+              height: 140, padding: const EdgeInsets.fromLTRB(10, 12, 10, 8), decoration: BoxDecoration(color: HF.card2, borderRadius: BorderRadius.circular(18)),
+              child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                for (var i = 0; i < 7; i++)
+                  Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    Text(week[i].$2 >= 1000 ? '${(week[i].$2 / 1000).toStringAsFixed(1)}k' : '${week[i].$2.round()}', style: HF.num(10.5, color: HF.mut, w: FontWeight.w700)),
+                    const SizedBox(height: 3),
+                    Container(height: 4 + 70 * (week[i].$2 / topv).toDouble(), margin: const EdgeInsets.symmetric(horizontal: 6), decoration: BoxDecoration(color: i == 6 ? const Color(0xFFB07A12) : const Color(0xFFE6D3A8), borderRadius: BorderRadius.circular(5))),
+                    const SizedBox(height: 4),
+                    Text(week[i].$1, style: HF.hi(10.5, color: i == 6 ? HF.tx : HF.mut, w: FontWeight.w800)),
+                  ])),
+              ]),
+            ),
+            const SizedBox(height: 20),
+            Text('आज की डिलीवरी (${todays.length})', style: HF.hi(14.5, w: FontWeight.w800)),
+            for (final o in todays)
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 10), decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: HF.line))),
+                child: Row(children: [
+                  ClipOval(child: foodImg(o['image_url'], 44, 44, r: 0)),
+                  const SizedBox(width: 10),
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${o['customer'] ?? 'ग्राहक'}', style: HF.hi(14.5, w: FontWeight.w800)), Text('${o['items'] ?? ''}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(12, color: HF.mut, w: FontWeight.w600))])),
+                  Text(_done(o) ? '+${rupee(_amt(o))}' : rupee(_amt(o)), style: HF.num(15, color: _done(o) ? HF.ok : HF.mut, w: FontWeight.w800)),
+                ]),
+              ),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  String _nm(Map i) => '${i['name_hi'] ?? i['name'] ?? Api.products[i['product_id']]?['name_hi'] ?? Api.products[i['product_id']]?['name'] ?? ''}';
 
   Widget _active(Map<String, dynamic> a) {
     final t = task['active'] is Map && task['active']['order_id'] == a['id'] ? Map<String, dynamic>.from(task['active']) : null;
@@ -421,22 +749,19 @@ class _RiderLiveState extends State<RiderLive> with WidgetsBindingObserver {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(24), border: Border.all(color: HF.gold, width: 1.5), boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 14, offset: Offset(0, 6))]),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Row(children: [
-          Text('🛵 चालू डिलीवरी', style: HF.num(17)),
-          const Spacer(),
-          Pill(st == 'on_the_way' ? 'रास्ते में' : 'स्वीकार', bg: const Color(0xFFDBEAFE), fg: const Color(0xFF1E40AF)),
-        ]),
+        Row(children: [Text('🛵 चालू डिलीवरी', style: HF.num(17)), const Spacer(), Pill(st == 'on_the_way' ? 'रास्ते में' : 'स्वीकार', bg: const Color(0xFFDBEAFE), fg: const Color(0xFF1E40AF))]),
+        const SizedBox(height: 10),
+        _routeRow('📦', 'पिकअप', t == null ? 'आपके स्टॉक / बैग से' : '${t['shop']?['name'] ?? 'दुकान'} — ${t['shop']?['address'] ?? ''}'),
+        _routeRow('🏠', 'डिलीवरी', '${a['customer'] ?? 'ग्राहक'} — ${a['address'] ?? ''}'),
         if (t != null) ...[
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(color: shopNeed ? const Color(0xFFFDF8EC) : const Color(0xFFECFDF3), borderRadius: BorderRadius.circular(18), border: Border.all(color: shopNeed ? HF.gold : const Color(0xFF86EFAC), width: 1.3)),
             child: shopNeed
                 ? Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                     Text('🏪 पहले दुकान से पैकेट उठाएँ', style: HF.hi(12, color: HF.goldDeep, w: FontWeight.w900)),
-                    Text('${t['shop']?['name'] ?? ''}', style: HF.hi(16, w: FontWeight.w800)),
-                    Text('📍 ${t['shop']?['address'] ?? ''}', style: HF.hi(12.5, color: HF.mut)),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Row(children: [
                       if ((t['shop']?['phone'] ?? '').toString().isNotEmpty) Expanded(child: _soft('📞 दुकान', () => _open('tel:+${t['shop']['phone']}'))),
                       if (t['shop']?['lat'] != null) ...[const SizedBox(width: 8), Expanded(child: _soft('🧭 रास्ता', () => _open('https://www.google.com/maps/dir/?api=1&destination=${t['shop']['lat']},${t['shop']['lng']}')))],
@@ -451,27 +776,21 @@ class _RiderLiveState extends State<RiderLive> with WidgetsBindingObserver {
           ),
         ],
         const SizedBox(height: 12),
-        for (final i in items)
-          Padding(padding: const EdgeInsets.only(bottom: 8), child: Row(children: [
-            _img(i['image_url'], 44),
-            const SizedBox(width: 10),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(_nm(i), style: HF.hi(14, w: FontWeight.w800)), Text('${i['qty']} × ${rupee((i['price'] ?? 0) as num)}', style: HF.hi(12, color: HF.mut))])),
-            Text(rupee(((i['price'] ?? 0) as num) * ((i['qty'] ?? 0) as num)), style: HF.num(14)),
-          ])),
+        for (var k = 0; k < items.length; k++)
+          Padding(padding: const EdgeInsets.only(bottom: 8), child: GestureDetector(
+            onTap: () => _zoom(items, k),
+            child: Row(children: [
+              Stack(clipBehavior: Clip.none, children: [foodImg(items[k]['image_url'], 50, 50, r: 14), Positioned(right: -5, top: -5, child: Container(width: 22, height: 22, alignment: Alignment.center, decoration: BoxDecoration(color: HF.tx, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2)), child: Text('${items[k]['qty']}', style: HF.num(10.5, color: Colors.white))))]),
+              const SizedBox(width: 12),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(_nm(items[k]), style: HF.hi(14.5, w: FontWeight.w800)), Text('${items[k]['qty']} × ${rupee((items[k]['price'] ?? 0) as num)}', style: HF.hi(12, color: HF.mut))])),
+              Text(rupee(((items[k]['price'] ?? 0) as num) * ((items[k]['qty'] ?? 0) as num)), style: HF.num(14)),
+            ]),
+          )),
         const Divider(),
         Row(children: [Text('ग्राहक से लेना (COD)', style: HF.hi(13, color: HF.mut)), const Spacer(), Text(rupee((a['total'] ?? 0) as num), style: HF.num(20, color: HF.goldDeep))]),
         const SizedBox(height: 10),
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(color: HF.card2, borderRadius: BorderRadius.circular(18)),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('${a['customer'] ?? 'ग्राहक'}', style: HF.hi(15, w: FontWeight.w800)),
-            Text('📍 ${a['address'] ?? ''}', style: HF.hi(12.5, color: HF.mut)),
-          ]),
-        ),
-        const SizedBox(height: 8),
         Row(children: [
-          if ((a['customer_phone'] ?? '').toString().isNotEmpty) Expanded(child: _soft('📞 कॉल करें', () => _open('tel:+${a['customer_phone']}'))),
+          if ((a['customer_phone'] ?? '').toString().isNotEmpty) Expanded(child: _soft('📞 ग्राहक को कॉल', () => _open('tel:+${a['customer_phone']}'))),
           const SizedBox(width: 8),
           Expanded(child: _soft('🧭 रास्ता', () => _open('https://www.google.com/maps/dir/?api=1&destination=${a['lat']},${a['lng']}'))),
         ]),
@@ -496,49 +815,21 @@ class _RiderLiveState extends State<RiderLive> with WidgetsBindingObserver {
     );
   }
 
+  Widget _routeRow(String ic, String l, String v) => Padding(
+        padding: const EdgeInsets.only(bottom: 6),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(width: 30, height: 30, alignment: Alignment.center, decoration: const BoxDecoration(color: HF.card2, shape: BoxShape.circle), child: Text(ic, style: const TextStyle(fontSize: 14))),
+          const SizedBox(width: 10),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(l, style: HF.hi(11, color: HF.mut, w: FontWeight.w800)), Text(v, style: HF.hi(13.5, w: FontWeight.w700))])),
+        ]),
+      );
+
   Widget _soft(String t, VoidCallback f) => GestureDetector(onTap: f, child: Container(height: 44, alignment: Alignment.center, decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: HF.line)), child: Text(t, style: HF.hi(13.5, w: FontWeight.w800))));
 
   Future<void> _open(String u) async { try { await launchUrl(Uri.parse(u), mode: LaunchMode.externalApplication); } catch (_) {} }
 
-  Widget _histCard(Map<String, dynamic> o) {
-    final done = o['status'] == 'delivered', cx = o['status'] == 'cancelled';
-    final t = DateTime.tryParse('${o['created_at']}')?.toLocal();
-    return HFCard(
-      padding: const EdgeInsets.all(12),
-      child: Row(children: [
-        _img(o['image_url'], 52),
-        const SizedBox(width: 10),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('${o['customer'] ?? 'ग्राहक'}', style: HF.hi(15, w: FontWeight.w800)),
-          Text('${o['items'] ?? ''}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(12, color: HF.mut)),
-          Text('${t == null ? '' : '${t.day}/${t.month} ${hm(t)}'} • ${done ? '✅ डिलीवर' : (cx ? '✖ रद्द' : '${o['status']}')}', style: HF.hi(11.5, color: done ? HF.ok : (cx ? HF.bad : HF.mut))),
-        ])),
-        Text(rupee((o['total'] ?? 0) as num), style: HF.num(16, color: HF.goldDeep)),
-      ]),
-    );
-  }
-
-  List<Widget> _stock() {
-    final s = ((me['stock'] as List?) ?? []).whereType<Map>().toList();
-    return [
-      Padding(padding: const EdgeInsets.fromLTRB(18, 18, 18, 6), child: Text('📦 मेरा स्टॉक', style: HF.hi(16, w: FontWeight.w800))),
-      Padding(padding: const EdgeInsets.symmetric(horizontal: 18), child: Text('जो सामान आपकी डिलीवरी-बैग में है। स्टॉक एडमिन / दुकान से भरा जाता है।', style: HF.hi(12.5, color: HF.mut))),
-      if (s.isEmpty) Padding(padding: const EdgeInsets.all(30), child: Center(child: Text('अभी कोई स्टॉक नहीं', style: HF.hi(14, color: HF.mut)))),
-      for (final x in s)
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: HFCard(padding: const EdgeInsets.all(12), child: Row(children: [
-            _img(Api.products[x['product_id']]?['image_url'], 48),
-            const SizedBox(width: 10),
-            Expanded(child: Text(_nm(x), style: HF.hi(15, w: FontWeight.w800))),
-            Column(crossAxisAlignment: CrossAxisAlignment.end, children: [Text('${x['qty']} नग', style: HF.num(17)), if (((x['reserved'] ?? 0) as num) > 0) Text('${x['reserved']} आरक्षित', style: HF.hi(11, color: HF.mut))]),
-          ])),
-        ),
-    ];
-  }
-
-  List<Widget> _profile() => [
-        const SizedBox(height: 18),
+  List<Widget> _profile(double top) => [
+        SizedBox(height: top + 18),
         Center(child: _av(96)),
         const SizedBox(height: 10),
         Center(child: Text('${me['name'] ?? ''}', style: HF.num(22))),
@@ -562,39 +853,59 @@ class _RiderLiveState extends State<RiderLive> with WidgetsBindingObserver {
 
   Widget _row(String ic, String t, VoidCallback f) => ListTile(leading: Text(ic, style: const TextStyle(fontSize: 20)), title: Text(t, style: HF.hi(14.5, w: FontWeight.w700)), trailing: const Icon(Icons.chevron_right), onTap: f);
 
-  Widget _bottom(double b) {
-    Widget nb(int i, IconData ic, String l) => Expanded(
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () { setState(() => nav = i); if (i == 0) loadHist(); },
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Container(width: 28, height: 3, margin: const EdgeInsets.only(bottom: 8), decoration: BoxDecoration(color: nav == i ? HF.goldDeep : Colors.transparent, borderRadius: BorderRadius.circular(3))),
-              Icon(ic, color: nav == i ? HF.goldDeep : HF.mut),
-              const SizedBox(height: 3),
-              Text(l, style: HF.hi(12, color: nav == i ? HF.goldDeep : HF.mut)),
-            ]),
+  // bottom bar: डिलीवरी | ➕ मेरा स्टॉक | प्रोफ़ाइल
+  Widget _nav(double bottom) => SizedBox(
+        height: 72 + bottom + 24,
+        child: Stack(clipBehavior: Clip.none, alignment: Alignment.bottomCenter, children: [
+          Container(
+            height: 72 + bottom, padding: EdgeInsets.fromLTRB(22, 0, 22, 10 + bottom),
+            decoration: const BoxDecoration(color: HF.card, border: Border(top: BorderSide(color: HF.line)), boxShadow: [BoxShadow(color: Color(0x14000000), blurRadius: 24, offset: Offset(0, -8))]),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [_nb(0, Icons.two_wheeler, 'डिलीवरी'), _nb(2, Icons.person_outline, 'प्रोफ़ाइल')]),
           ),
-        );
-    return Container(
-      padding: EdgeInsets.only(bottom: 10 + b, top: 0),
-      decoration: const BoxDecoration(color: HF.card, border: Border(top: BorderSide(color: HF.line)), boxShadow: [BoxShadow(color: Color(0x14000000), blurRadius: 20, offset: Offset(0, -6))]),
-      child: Row(children: [nb(0, Icons.two_wheeler, 'डिलीवरी'), nb(1, Icons.inventory_2_outlined, 'मेरा स्टॉक'), nb(2, Icons.person_outline, 'प्रोफ़ाइल')]),
+          Positioned(
+            bottom: 12 + bottom,
+            child: GestureDetector(
+              onTap: () { setState(() { nav = 0; seg = 1; }); if (sc.hasClients) sc.animateTo(320, duration: const Duration(milliseconds: 300), curve: Curves.easeOut); },
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                Container(width: 54, height: 54, decoration: BoxDecoration(shape: BoxShape.circle, gradient: HF.navGrad, border: Border.all(color: HF.card, width: 4), boxShadow: const [BoxShadow(color: Color(0x73E2A92C), blurRadius: 18, offset: Offset(0, 8))]), child: const Icon(Icons.add, size: 28, color: HF.ink)),
+                const SizedBox(height: 4),
+                Text('मेरा स्टॉक', style: HF.hi(11, color: HF.goldDeep, w: FontWeight.w800)),
+              ]),
+            ),
+          ),
+        ]),
+      );
+
+  Widget _nb(int i, IconData ic, String l) {
+    final on = nav == i;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () { setState(() { nav = i; mini = false; if (i == 0) seg = 0; }); if (sc.hasClients) sc.jumpTo(0); if (i == 0) loadHist(); },
+      child: SizedBox(
+        width: 96,
+        child: Stack(clipBehavior: Clip.none, alignment: Alignment.topCenter, children: [
+          if (on) Positioned(top: -12, child: Container(width: 28, height: 3, decoration: BoxDecoration(color: HF.goldDeep, borderRadius: BorderRadius.circular(3)))),
+          Column(mainAxisSize: MainAxisSize.min, children: [Icon(ic, size: 24, color: on ? HF.goldDeep : HF.mut), const SizedBox(height: 4), Text(l, style: HF.hi(11.5, color: on ? HF.goldDeep : HF.mut, w: FontWeight.w700))]),
+        ]),
+      ),
     );
   }
 }
 
-/// Big in-app request screen (when the app is open): items, money, shop, countdown, red / green buttons.
+/// Big in-app request screen: picture of every item (tap to enlarge), pickup + drop, money, countdown,
+/// one big green Accept button and a small red ✕ in the corner.
 class OfferScreen extends StatefulWidget {
   final Map<String, dynamic> offer;
-  final Map<String, dynamic>? shop;
-  const OfferScreen({super.key, required this.offer, this.shop});
+  final Map<String, dynamic>? route;
+  const OfferScreen({super.key, required this.offer, this.route});
   @override
   State<OfferScreen> createState() => _OfferScreenState();
 }
 
-class _OfferScreenState extends State<OfferScreen> {
+class _OfferScreenState extends State<OfferScreen> with SingleTickerProviderStateMixin {
   late int left = (widget.offer['seconds_left'] ?? 60) as int;
   late final int total = left < 1 ? 60 : left;
+  late final AnimationController pulse = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..repeat(reverse: true);
   Timer? t;
 
   @override
@@ -608,68 +919,115 @@ class _OfferScreenState extends State<OfferScreen> {
   }
 
   @override
-  void dispose() { t?.cancel(); super.dispose(); }
+  void dispose() { t?.cancel(); pulse.dispose(); super.dispose(); }
+
+  void _zoom(List<Map> items, int k) {
+    showDialog(context: context, builder: (c) => Dialog(
+          backgroundColor: Colors.transparent, insetPadding: const EdgeInsets.all(18),
+          child: Container(
+            decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(26)), padding: const EdgeInsets.all(14),
+            child: SizedBox(height: 400, child: PageView(controller: PageController(initialPage: k), children: [
+              for (final l in items) Column(children: [
+                Expanded(child: foodImg(l['image_url'], double.infinity, double.infinity, r: 20)),
+                const SizedBox(height: 10),
+                Text('${l['name_hi'] ?? l['name'] ?? ''}', textAlign: TextAlign.center, style: HF.hi(18, w: FontWeight.w800)),
+                Text('${l['qty']} × ${rupee((l['price'] ?? 0) as num)}', style: HF.num(16, color: HF.goldDeep)),
+              ]),
+            ])),
+          ),
+        ));
+  }
+
+  Widget _leg(String ic, String l, String v, String? km) => Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(width: 34, height: 34, alignment: Alignment.center, decoration: const BoxDecoration(color: HF.card2, shape: BoxShape.circle), child: Text(ic, style: const TextStyle(fontSize: 16))),
+        const SizedBox(width: 10),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(l, style: HF.hi(11, color: HF.mut, w: FontWeight.w800)), Text(v, maxLines: 2, overflow: TextOverflow.ellipsis, style: HF.hi(13.5, w: FontWeight.w700))])),
+        if (km != null) Text('$km km', style: HF.num(13, color: HF.goldDeep, w: FontWeight.w800)),
+      ]);
 
   @override
   Widget build(BuildContext context) {
     final o = widget.offer, items = (o['items'] as List?)?.whereType<Map>().toList() ?? [];
+    final r = widget.route ?? {}, shop = r['shop'] is Map ? r['shop'] as Map : null;
+    final n = items.fold<num>(0, (s, i) => s + ((i['qty'] ?? 0) as num));
     return Scaffold(
-      backgroundColor: Colors.black.withValues(alpha: .78),
+      backgroundColor: Colors.black.withValues(alpha: .8),
       body: SafeArea(
         child: Column(children: [
           const Spacer(),
           Container(
             margin: const EdgeInsets.all(12),
-            padding: const EdgeInsets.fromLTRB(18, 20, 18, 18),
-            decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(30), border: Border.all(color: HF.gold, width: 2)),
+            padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+            decoration: BoxDecoration(color: HF.card, borderRadius: BorderRadius.circular(30), border: Border.all(color: HF.gold, width: 2), boxShadow: const [BoxShadow(color: Color(0x66E2A92C), blurRadius: 40)]),
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Row(children: [
-                Container(width: 56, height: 56, alignment: Alignment.center, decoration: const BoxDecoration(shape: BoxShape.circle, gradient: LinearGradient(colors: [Color(0xFFFDE68A), Color(0xFFE2A92C)])), child: const Text('🔔', style: TextStyle(fontSize: 28))),
+                ScaleTransition(scale: Tween(begin: .92, end: 1.08).animate(pulse), child: Container(width: 52, height: 52, alignment: Alignment.center, decoration: const BoxDecoration(shape: BoxShape.circle, gradient: LinearGradient(colors: [Color(0xFFFDE68A), Color(0xFFE2A92C)])), child: const Text('🔔', style: TextStyle(fontSize: 26)))),
                 const SizedBox(width: 12),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('नई डिलीवरी!', style: HF.num(24)),
-                  Text('${(((o['distance_m'] ?? 0) as num) / 1000).toStringAsFixed(1)} km दूर', style: HF.hi(13, color: HF.mut)),
+                  Text('नई डिलीवरी!', style: HF.num(23)),
+                  Text('$n सामान • ${(((o['distance_m'] ?? 0) as num) / 1000).toStringAsFixed(1)} km दूर', style: HF.hi(12.5, color: HF.mut)),
                 ])),
-                SizedBox(width: 56, height: 56, child: Stack(alignment: Alignment.center, children: [
+                SizedBox(width: 50, height: 50, child: Stack(alignment: Alignment.center, children: [
                   CircularProgressIndicator(value: left / total, strokeWidth: 5, color: left <= 10 ? HF.bad : HF.gold, backgroundColor: HF.card2),
-                  Text('$left', style: HF.num(18)),
+                  Text('$left', style: HF.num(16)),
                 ])),
+                const SizedBox(width: 8),
+                // small red ✕ (decline) in the corner
+                GestureDetector(onTap: () => Navigator.pop(context, 'reject'), child: Container(width: 40, height: 40, alignment: Alignment.center, decoration: BoxDecoration(color: const Color(0xFFFEE2E2), shape: BoxShape.circle, border: Border.all(color: const Color(0xFFFCA5A5))), child: const Icon(Icons.close, color: HF.bad, size: 22))),
               ]),
-              if (widget.shop != null) ...[
-                const SizedBox(height: 12),
-                Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: const Color(0xFFFDF8EC), borderRadius: BorderRadius.circular(16), border: Border.all(color: HF.gold)), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('🏪 दुकान से उठाना है', style: HF.hi(12, color: HF.goldDeep, w: FontWeight.w900)),
-                  Text('${widget.shop!['name'] ?? ''}', style: HF.hi(15, w: FontWeight.w800)),
-                  Text('📍 ${widget.shop!['address'] ?? ''}', style: HF.hi(12, color: HF.mut)),
-                ])),
-              ],
-              const SizedBox(height: 12),
-              for (final i in items)
-                Padding(padding: const EdgeInsets.only(bottom: 6), child: Row(children: [
-                  Expanded(child: Text('${i['qty']}× ${i['name_hi'] ?? i['name']}', style: HF.hi(15, w: FontWeight.w800))),
-                  Text(rupee(((i['price'] ?? 0) as num) * ((i['qty'] ?? 0) as num)), style: HF.num(15)),
-                ])),
-              Container(margin: const EdgeInsets.only(top: 6), padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: HF.card2, borderRadius: BorderRadius.circular(16)), child: Row(children: [Text('ग्राहक से लेना (COD)', style: HF.hi(13, color: HF.mut)), const Spacer(), Text(rupee((o['total'] ?? 0) as num), style: HF.num(22, color: HF.goldDeep))])),
-              const SizedBox(height: 16),
-              Row(children: [
-                Expanded(child: _round('✖  मना करें', HF.bad, () => Navigator.pop(context, 'reject'))),
-                const SizedBox(width: 12),
-                Expanded(flex: 2, child: _round('✔  स्वीकार करें', HF.ok, () => Navigator.pop(context, 'accept'))),
-              ]),
+              const SizedBox(height: 14),
+              SizedBox(
+                height: 92,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal, itemCount: items.length, separatorBuilder: (_, __) => const SizedBox(width: 10),
+                  itemBuilder: (_, k) => GestureDetector(
+                    onTap: () => _zoom(items, k),
+                    child: SizedBox(width: 74, child: Column(children: [
+                      Stack(clipBehavior: Clip.none, children: [
+                        foodImg(items[k]['image_url'], 64, 64, r: 18),
+                        Positioned(right: -6, top: -6, child: Container(constraints: const BoxConstraints(minWidth: 24), height: 24, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 5), decoration: BoxDecoration(color: HF.tx, borderRadius: BorderRadius.circular(99), border: Border.all(color: Colors.white, width: 2)), child: Text('×${items[k]['qty']}', style: HF.num(10.5, color: Colors.white)))),
+                      ]),
+                      const SizedBox(height: 4),
+                      Text('${items[k]['name_hi'] ?? items[k]['name']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(11, w: FontWeight.w700)),
+                    ])),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(color: const Color(0xFFFDF8EC), borderRadius: BorderRadius.circular(18)),
+                child: Column(children: [
+                  _leg(shop != null ? '🏪' : '📦', 'पिकअप', shop != null ? '${shop['name'] ?? ''} — ${shop['address'] ?? ''}' : 'आपके स्टॉक / बैग से', shop?['km']?.toString()),
+                  Padding(padding: const EdgeInsets.only(left: 16), child: Container(width: 2, height: 12, color: HF.gold)),
+                  _leg('🏠', 'डिलीवरी', '${r['drop_address'] ?? 'ग्राहक का पता स्वीकार करने पर'}', r['drop_km']?.toString()),
+                ]),
+              ),
+              const SizedBox(height: 10),
+              Row(children: [Text('ग्राहक से लेना (COD)', style: HF.hi(13, color: HF.mut)), const Spacer(), Text(rupee((o['total'] ?? 0) as num), style: HF.num(24, color: HF.goldDeep))]),
+              const SizedBox(height: 14),
+              GestureDetector(
+                onTap: () => Navigator.pop(context, 'accept'),
+                child: Container(
+                  height: 64, alignment: Alignment.center,
+                  decoration: BoxDecoration(gradient: const LinearGradient(colors: [Color(0xFF22C55E), Color(0xFF15803D)]), borderRadius: BorderRadius.circular(22), boxShadow: const [BoxShadow(color: Color(0x6616A34A), blurRadius: 22, offset: Offset(0, 10))]),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Container(width: 34, height: 34, decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle), child: const Icon(Icons.check, color: Colors.white)),
+                    const SizedBox(width: 12),
+                    Text('Accept', style: HF.num(22, color: Colors.white, w: FontWeight.w800)),
+                    const SizedBox(width: 8),
+                    Text('• स्वीकार करें', style: HF.hi(15, color: Colors.white70, w: FontWeight.w700)),
+                  ]),
+                ),
+              ),
             ]),
           ),
         ]),
       ),
     );
   }
-
-  Widget _round(String t, Color c, VoidCallback f) => GestureDetector(
-        onTap: f,
-        child: Container(height: 62, alignment: Alignment.center, decoration: BoxDecoration(color: c, borderRadius: BorderRadius.circular(31), boxShadow: [BoxShadow(color: c.withValues(alpha: .4), blurRadius: 18, offset: const Offset(0, 8))]), child: Text(t, style: HF.hi(17, color: Colors.white, w: FontWeight.w800))),
-      );
 }
 
-/// Camera QR scanner for the shop's pickup slip.
 class ScanPage extends StatefulWidget {
   const ScanPage({super.key});
   @override
