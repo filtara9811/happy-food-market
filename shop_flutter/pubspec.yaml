@@ -31,6 +31,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/sounds/
+    - assets/food/
   # downloaded by CI from github.com/google/fonts (see workflow) — bundled so the app works offline
   fonts:
     - family: Mukta

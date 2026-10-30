@@ -608,6 +608,7 @@ class _ShopHomeState extends State<ShopHome> {
 
   Widget _img(dynamic url, double s) {
     final u = (url ?? '').toString();
+    if (u.startsWith('asset:')) return Image.asset('assets/food/${u.substring(6)}.webp', width: s, height: s, fit: BoxFit.cover, errorBuilder: (_, __, ___) => _ph(s));
     return u.startsWith('http') ? Image.network(u, width: s, height: s, fit: BoxFit.cover, errorBuilder: (_, __, ___) => _ph(s)) : _ph(s);
   }
 

@@ -93,5 +93,5 @@ Widget pillBtn(String t, Color bg, Color fg, IconData ic, VoidCallback f) => _pi
 Widget prodImg(dynamic url, double w, double h, {double r = 14}) {
   final u = (url ?? '').toString();
   final ph = Container(width: w, height: h, color: const Color(0xFFFFF3D6), alignment: Alignment.center, child: Text('🍛', style: TextStyle(fontSize: (w < h ? w : h) * .4)));
-  return ClipRRect(borderRadius: BorderRadius.circular(r), child: u.startsWith('http') ? Image.network(u, width: w, height: h, fit: BoxFit.cover, errorBuilder: (_, __, ___) => ph) : ph);
+  return ClipRRect(borderRadius: BorderRadius.circular(r), child: u.startsWith('asset:') ? Image.asset('assets/food/${u.substring(6)}.webp', width: w, height: h, fit: BoxFit.cover, errorBuilder: (_, __, ___) => ph) : (u.startsWith('http') ? Image.network(u, width: w, height: h, fit: BoxFit.cover, errorBuilder: (_, __, ___) => ph) : ph));
 }
