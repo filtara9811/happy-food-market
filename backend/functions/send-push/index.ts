@@ -132,6 +132,16 @@ Deno.serve(async (req) => {
       // request taken / declined / timed out: stop the ring on the rider's phone
       out = await sendTo([rec.rider_id], { title: "", body: "", channel: "updates", ttl: "60s",
         data: { kind: "offer_gone", offer_id: String(rec.id) } }, { apps: ["rider"], dataOnly: true });
+    } else if (p.table === "shop_sales" && p.op === "INSERT" && rec.source === "app") {
+      // a customer's app order was routed to this shop: ring the shop app like a call
+      const { data: v } = await SB.from("vendors").select("owner_id").eq("id", rec.vendor_id).single();
+      const n = Array.isArray(rec.items) ? rec.items.reduce((s: number, i: { qty?: number }) => s + (Number(i.qty) || 0), 0) : 0;
+      if (v?.owner_id) out = await sendTo([v.owner_id], {
+        title: "🔔 नया ऑर्डर आया — दुकान",
+        body: `₹${rec.total ?? ""} • ${n} सामान${rec.customer_name ? " • " + rec.customer_name : ""} — जल्दी स्वीकार करें`,
+        channel: "orders_ring", ttl: "120s",
+        data: { kind: "shop_order", sale_id: String(rec.id), order_id: String(rec.order_id ?? ""), expires_at_ms: String(Date.now() + 120000) },
+      }, { apps: ["vendor"], dataOnly: true });
     } else if (p.table === "orders" && p.op === "INSERT") {
       const { data: admins } = await SB.from("profiles").select("id").contains("roles", ["admin"]);
       out = await sendTo((admins ?? []).map((a: { id: string }) => a.id), {
