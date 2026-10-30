@@ -52,6 +52,8 @@ jobs:
           t = re.sub(r'minSdk(Version)?\s*=?\s*flutter\.minSdkVersion', 'minSdk = 24' if kts else 'minSdkVersion 24', t)
           t = t.replace('compileOptions {', 'compileOptions {\n        isCoreLibraryDesugaringEnabled = true' if kts else 'compileOptions {\n        coreLibraryDesugaringEnabled true', 1)
           t += ('\ndependencies {\n    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")\n}\n' if kts else "\ndependencies {\n    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'\n}\n")
+          t = t.replace('signingConfig = signingConfigs.getByName("debug")', 'signingConfig = if (System.getenv("HF_UNSIGNED") == "1") null else signingConfigs.getByName("debug")')
+          t = t.replace('signingConfig signingConfigs.debug', 'signingConfig = System.getenv("HF_UNSIGNED") == "1" ? null : signingConfigs.debug').replace('signingConfig = signingConfigs.debug', 'signingConfig = System.getenv("HF_UNSIGNED") == "1" ? null : signingConfigs.debug')
           open(f, 'w').write(t); print(f); print(t)
           PY
           # app icon + ring sound from the Partner app
@@ -104,6 +106,21 @@ jobs:
           mkdir -p ../out
           cp build/app/outputs/flutter-apk/app-release.apk ../out/HappyFood-Rider-Flutter.apk
 
+      - name: Play Store AAB (only when the upload key secrets exist)
+        env:
+          KS: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_B64 }}
+          PW: ${{ secrets.ANDROID_UPLOAD_PASSWORD }}
+        run: |
+          if [ -z "$KS" ] || [ -z "$PW" ]; then echo "::notice title=AAB::upload key secrets missing — Play Store AAB skipped"; exit 0; fi
+          printf '%s' "$KS" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          keytool -list -keystore "$RUNNER_TEMP/upload.jks" -storepass "$PW" >/dev/null || { echo "::error title=upload key::keystore or password is wrong"; exit 1; }
+          HF_UNSIGNED=1 flutter build appbundle --release --build-number=$((2000 + ${{ github.run_number }}))
+          A=build/app/outputs/bundle/release/app-release.aab
+          jarsigner -sigalg SHA256withRSA -digestalg SHA-256 -keystore "$RUNNER_TEMP/upload.jks" -storepass "$PW" -keypass "$PW" $A upload
+          jarsigner -verify $A | tail -2
+          cp $A ../out/HappyFood-Partner-PlayStore.aab
+          echo "::notice title=AAB::Play Store AAB built"
+
       - uses: actions/upload-artifact@v4
         with:
           name: rider-flutter
@@ -117,4 +134,5 @@ jobs:
           prerelease: true
           target_commitish: ${{ github.sha }}
           files: |
+            out/*.aab
             out/HappyFood-Rider-Flutter.apk
