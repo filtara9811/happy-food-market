@@ -1,0 +1,6 @@
+-- 028-030 (applied via MCP):
+-- * shop_accept_seconds = 60
+-- * route_order: a shop gets app orders only if its owner has the Flutter shop app (push token 'android:vendor', seen in last 10 days)
+-- * order_offer_log(p_order_id): customer sees which riders / shops got the request (status, time, reason)
+-- * orders.pay_mode ('cod'|'upi'), orders.upi_app; set_order_pay(); pay_info() reads app_settings.upi_vpa
+-- * rider_me: active/offer include pay_mode

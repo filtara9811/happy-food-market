@@ -1667,6 +1667,74 @@
         #rjPop .rj-l button { display: flex; align-items: center; gap: 8px; padding: 13px 12px; border-radius: 16px; background: var(--p-card2, #efe8d6); font-size: 13.5px; font-weight: 800; text-align: left; }
         #rjPop .rj-l button span { font-size: 18px; }
         #rjPop .rj-back { width: 100%; margin-top: 12px; padding: 14px; border-radius: 16px; background: #16a34a; color: #fff; font-size: 15px; font-weight: 800; }
+        /* ---- cust4: confirm button busy, UPI sheet, orders sheet, live steps, history, map ---- */
+        #cartModal [data-c4="go"] { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+        #cartModal [data-c4="go"]:active { transform: scale(.98); }
+        #cartModal [data-c4="go"].c4-busy { filter: saturate(.7) brightness(.95); pointer-events: none; }
+        #cartItemsList button { min-width: 30px; min-height: 30px; touch-action: manipulation; }
+        #inCartRecContainer button { min-height: 30px; touch-action: manipulation; }
+        #c4Pay, #c4Hist { position: fixed; inset: 0; z-index: 10050; display: none; align-items: flex-end; justify-content: center; }
+        #c4Pay.show, #c4Hist.show { display: flex; }
+        .c4-bg { position: absolute; inset: 0; background: rgba(0, 0, 0, .62); backdrop-filter: blur(3px); }
+        .c4-card { position: relative; width: 100%; max-width: 440px; max-height: 86vh; overflow-y: auto; padding: 10px 18px calc(22px + env(safe-area-inset-bottom)); border-radius: 28px 28px 0 0; background: var(--sh-card, #fffaf0); color: var(--sh-tx, #1a1a24); animation: c4Up .26s cubic-bezier(.2, .9, .3, 1); box-shadow: 0 -12px 40px rgba(0, 0, 0, .25); }
+        @keyframes c4Up { from { transform: translateY(60%); opacity: .4; } to { transform: none; opacity: 1; } }
+        .c4-grab { width: 44px; height: 5px; border-radius: 9px; background: rgba(128, 128, 128, .35); margin: 4px auto 12px; }
+        .c4-t { font-family: Outfit, sans-serif; font-weight: 900; font-size: 18px; }
+        .c4-s { font-size: 12.5px; opacity: .7; margin: 2px 0 12px; }
+        .c4-amt { font-family: Outfit, sans-serif; font-size: 20px; color: #b07a12; }
+        .c4-apps { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .c4-apps button { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 18px; border: 1.5px solid rgba(128, 128, 128, .22); background: rgba(128, 128, 128, .06); font-weight: 800; font-size: 13.5px; text-align: left; }
+        .c4-apps button:last-child { grid-column: 1 / -1; }
+        .c4-apps button.on { border-color: #e2b04a; background: rgba(226, 176, 74, .14); }
+        .c4-apps i { width: 36px; height: 36px; border-radius: 12px; color: #fff; font-style: normal; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+        .c4-note { padding: 14px; border-radius: 16px; background: rgba(226, 176, 74, .14); font-size: 13.5px; font-weight: 700; line-height: 1.45; }
+        .c4-cod { width: 100%; margin-top: 14px; padding: 14px; border-radius: 18px; font-weight: 900; font-size: 14.5px; background: linear-gradient(180deg, #fde68a, #e2b04a); color: #1a1305; }
+
+        /* My Orders = full-screen sheet without the top bar */
+        .c4-ord #appHeader { display: none !important; }
+        #c4OrdTop { display: none; }
+        .c4-ord #viewOrders { position: relative; border-radius: 28px 28px 0 0; margin-top: calc(env(safe-area-inset-top) + 10px); padding-top: 8px !important; background: var(--sh-card, transparent); box-shadow: 0 -10px 30px rgba(0, 0, 0, .12); }
+        .c4-ord #viewOrders.c4-in { animation: c4Up .3s cubic-bezier(.2, .9, .3, 1); }
+        .c4-ord #c4OrdTop { display: block; position: relative; height: 22px; }
+        .c4-ord #c4OrdTop .c4-x { position: absolute; right: -4px; top: -2px; width: 36px; height: 36px; border-radius: 50%; background: rgba(128, 128, 128, .14); display: flex; align-items: center; justify-content: center; }
+
+        /* live steps */
+        .c4-st { display: flex; align-items: flex-start; }
+        .c4-s { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+        .c4-s em { position: absolute; top: 19px; right: 50%; width: 100%; height: 3px; background: rgba(128, 128, 128, .3); border-radius: 3px; }
+        .c4-s em.on { background: linear-gradient(90deg, #22c55e, #e2b04a); }
+        .c4-s > span { position: relative; z-index: 1; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; background: var(--sh-card, #fff); border: 2px solid rgba(128, 128, 128, .3); color: rgba(128, 128, 128, .9); overflow: hidden; }
+        .c4-s.done > span { background: #22c55e; border-color: #22c55e; color: #08130b; }
+        .c4-s.done.pic > span { border: 3px solid #22c55e; background: #fde68a; color: #1a1305; font-weight: 900; font-family: Outfit, sans-serif; }
+        .c4-s.done.pic > span img { width: 100%; height: 100%; object-fit: cover; }
+        .c4-s.act > span { background: #e2b04a; border-color: #e2b04a; color: #1a1305; animation: c4Pulse 1.4s infinite; }
+        @keyframes c4Pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(226, 176, 74, .55); } 50% { box-shadow: 0 0 0 8px rgba(226, 176, 74, 0); } }
+        .c4-s p { margin-top: 6px; font-size: 11.5px; font-weight: 800; color: var(--sh-tx, #1a1a24); line-height: 1.2; }
+        .c4-s:not(.done):not(.act) p { opacity: .55; }
+        .c4-view { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 12px auto 0; padding: 7px 14px; border-radius: 999px; font-size: 12px; font-weight: 800; color: #b07a12; background: rgba(226, 176, 74, .13); border: 1px solid rgba(226, 176, 74, .4); }
+
+        /* request history */
+        .c4-hl { display: flex; flex-direction: column; gap: 8px; }
+        .c4-h { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 16px; background: rgba(128, 128, 128, .07); border: 1px solid rgba(128, 128, 128, .15); }
+        .c4-h.ok { background: rgba(34, 197, 94, .1); border-color: rgba(34, 197, 94, .35); }
+        .c4-h.bad span { color: #dc2626; }
+        .c4-hn { width: 22px; height: 22px; border-radius: 50%; background: rgba(128, 128, 128, .18); font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .c4-ha { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: #fde68a; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
+        .c4-ha img { width: 100%; height: 100%; object-fit: cover; }
+        .c4-h b { display: block; font-size: 14px; font-weight: 900; }
+        .c4-h b small { font-weight: 700; opacity: .6; font-size: 11px; }
+        .c4-h span { display: block; font-size: 12px; font-weight: 700; opacity: .85; }
+        .c4-h time { font-size: 10.5px; font-weight: 800; opacity: .6; white-space: nowrap; }
+
+        /* live map */
+        #c4Map { position: relative; height: 210px; margin-top: 12px; border-radius: 22px; overflow: hidden; border: 1px solid var(--sh-line, rgba(0, 0, 0, .1)); background: var(--map-bg, #eef0f2); }
+        #c4Map .c4-mapin { position: absolute; inset: 0; }
+        .c4-maptag { position: absolute; left: 10px; top: 10px; z-index: 2; padding: 4px 10px; border-radius: 999px; background: rgba(0, 0, 0, .65); color: #fff; font-size: 11px; font-weight: 800; }
+        .c4-mapfit { position: absolute; right: 10px; bottom: 10px; z-index: 2; width: 36px; height: 36px; border-radius: 50%; background: #fff; color: #1a1305; box-shadow: 0 4px 12px rgba(0, 0, 0, .2); }
+        .c4-pin { font-size: 26px; line-height: 1; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .3)); }
+        .c4-pin.r { width: 42px; height: 42px; border-radius: 50%; overflow: hidden; border: 3px solid #e2b04a; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .c4-pin.r img { width: 100%; height: 100%; object-fit: cover; }
+        #abPin small { display: block; font-size: 10.5px; opacity: .65; margin-top: 2px; }
     </style>
 <style>
 html,body{height:100%}
@@ -6571,7 +6639,10 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         async function liveLoadMenu() {
             if (!LIVE) return;
             try {
-                const { data, error } = await sb.from('products').select('id,name,name_hi,description,description_hi,price,original_price,badge,badge_hi,rating,image_url,sort_order').eq('is_active', true).order('sort_order');
+                let data = null, error = null;
+                try { ({ data, error } = await sb.from('products').select('id,name,name_hi,description,description_hi,price,original_price,badge,badge_hi,rating,image_url,sort_order').eq('is_active', true).order('sort_order')); } catch (e) { error = e; }
+                if (!error && data && data.length) { try { localStorage.setItem('hf_menu_cache_v1', JSON.stringify(data)); } catch (e) { } }
+                else { let c = null; try { c = JSON.parse(localStorage.getItem('hf_menu_cache_v1') || 'null'); } catch (e) { } if (c && c.length) { data = c; error = null; RM.menuOffline = true; } }
                 if (error) throw error; if (!data) return;
                 const byName = {}, seen = {}; data.forEach(r => { byName[r.name] = r; });
                 allProductsMaster.forEach(m => {
@@ -6640,7 +6711,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             if (cart.length === 0) { showToast(tr('कृपया पहले आइटम चुनें!', 'Please add an item to order!')); return; }
             if (RM.active && live && live.dbo && live.dbo.remote) { showToast(tr('आपका पिछला ऑर्डर अभी चल रहा है', 'Your previous order is still active')); openLive(); return; }
             if (orderMode === 'pickup') { showToast(tr('सेल्फ़ पिकअप जल्द आएगा — अभी होम डिलीवरी चुनिए', 'Self pickup is coming soon')); return; }
-            if (paymentMethod !== 'cod') { showToast(tr('अभी सिर्फ़ कैश ऑन डिलीवरी चालू है', 'Only cash on delivery for now')); return; }
+            if (paymentMethod !== 'cod' && !(typeof C4 !== 'undefined' && C4.vpa && C4.app)) { showToast(tr('ऑनलाइन पेमेंट जल्द — अभी कैश ऑन डिलीवरी चुनें', 'Online payment soon — choose cash on delivery')); try { c4PayPick(''); } catch (e) { } return; }
             const items = [], lines = [];
             for (const c of cart) {
                 const p = prodInfo(c.productId);
@@ -6656,11 +6727,11 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 closeCartModal();
                 const total = lines.reduce((s, l) => s + l.qty * l.price, 0), id = rmShort(data);
                 const first = lines[0];
-                const newOrd = { id: id, serverId: data, date: tr('अभी', 'Just Now'), items: `${first.qty}x ${currentLang === 'hi' ? first.hi : first.name}${lines.length > 1 ? ' +' + (lines.length - 1) + ' items' : ''}`, total: total, image: first.img, status: tr('पार्टनर ढूँढ रहे 📡', 'Finding Partner 📡'), step: 1, expanded: true, paymentMode: 'Cash on Delivery 💵', address: addr };
+                const newOrd = { id: id, serverId: data, date: tr('अभी', 'Just Now'), items: `${first.qty}x ${currentLang === 'hi' ? first.hi : first.name}${lines.length > 1 ? ' +' + (lines.length - 1) + ' items' : ''}`, total: total, image: first.img, status: tr('पार्टनर ढूँढ रहे 📡', 'Finding Partner 📡'), step: 1, expanded: true, paymentMode: paymentMethod === 'online' ? 'UPI 💳' : 'Cash on Delivery 💵', address: addr };
                 ordersHistory.unshift(newOrd);
                 const dbo = rmMakeDbo(data, id, lines.map(l => ({ pid: l.pid, name: l.name, qty: l.qty, price: l.price })), total, addr);
                 const e1 = document.getElementById('placedOrderId'); if (e1) e1.innerText = id;
-                const e2 = document.getElementById('successPayMode'); if (e2) e2.innerText = 'Cash on Delivery';
+                const e2 = document.getElementById('successPayMode'); if (e2) e2.innerText = paymentMethod === 'online' ? 'UPI' : 'Cash on Delivery';
                 const e3 = document.getElementById('successAddress'); if (e3) e3.innerText = addr;
                 cart = []; isSummaryDismissed = true; updateCartUI(); updateActionButton(); renderRecommendedProducts(); renderOrdersList();
                 startLiveOrder(newOrd, dbo);
@@ -7295,7 +7366,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             let body = '';
             if (ord.expanded) {
                 if (!d) body = `<p class="text-xs hf-mut text-center py-4">${tr('लोड हो रहा है…', 'Loading…')}</p>`;
-                else if (d.err) body = `<p class="text-xs hf-mut text-center py-4">⚠️ ${esc(String(d.err).slice(0, 80))}</p>`;
+                else if (d.err) body = `<div class="text-center py-4"><p class="text-xs hf-mut">📴 ${tr('इंटरनेट आते ही पूरा विवरण दिख जाएगा', 'Full details will show when you are back online')}</p><button class="c4-view" onclick="event.stopPropagation();c4Retry('${ord.serverId}')"><i class="fa-solid fa-rotate-right"></i> ${tr('फिर से लोड करें', 'Reload')}</button></div>`;
                 else body = `<div class="pt-3 mt-3 space-y-3" style="border-top:1px solid var(--sh-line)">
                     <div class="rounded-2xl overflow-hidden relative" style="height:190px;background:var(--map-bg);border:1px solid var(--sh-line)"><div id="odMap_${ord.serverId}" class="absolute inset-0"></div>
                         <div class="absolute left-2 top-2 text-[10px] font-bold px-2 py-1 rounded-full" style="background:rgba(0,0,0,.6);color:#fff">${(d.track || []).length > 1 ? (d.status === 'delivered' ? tr('🛵 डिलीवरी का रिकॉर्ड किया रास्ता', '🛵 Recorded delivery route') : tr('🛵 पार्टनर का अब तक का रास्ता', '🛵 Partner route so far')) : tr('📍 डिलीवरी की जगह', '📍 Delivery location')}</div></div>
@@ -11959,6 +12030,268 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             if (ok) { try { if (PNL.role !== 'rider') openPanel('rider'); } catch (e) { } setTimeout(() => { const c = document.querySelector('#panelRoot .ra-card'); if (c) c.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 700); }
             return r;
         }; }
+
+        /* ================= cust4.js: basket sheet refresh, one-tap confirm, UPI apps, My Orders sheet + offline cache, real address from GPS, live steps + request history + live map ================= */
+        const C4 = { lock: 0, vpa: '', payee: 'Happy Food', app: '', rev: {}, map: null, mk: {}, box: null };
+        const c4Get = k => { try { return JSON.parse(localStorage.getItem('hf_c4_' + k) || 'null'); } catch (e) { return null; } };
+        const c4Set = (k, v) => { try { localStorage.setItem('hf_c4_' + k, JSON.stringify(v)); } catch (e) { } };
+        const c4User = () => { try { const u = currentUser(); return u ? String(u.phone || u.id || '') : ''; } catch (e) { return ''; } };
+
+        /* ---------- 1. basket sheet: +/− and "ADD +" update the list at once ---------- */
+        function c4CartOpen() { const m = document.getElementById('cartModal'); return !!(m && !m.classList.contains('hidden')); }
+        { let busy = false; const f = updateCartUI; updateCartUI = function () {
+            const r = f.apply(this, arguments);
+            if (!busy && c4CartOpen()) { busy = true; try { if (!cart.length) closeCartModal(); else { const sc = document.querySelector('#cartModal .overflow-y-auto'), y = sc ? sc.scrollTop : 0; renderCartModalItems(); try { hfFreeBar(); } catch (e) { } if (sc) sc.scrollTop = y; } } catch (e) { } finally { busy = false; } }
+            return r;
+        }; }
+
+        /* ---------- 2. confirm button: one tap is enough (works even while the list is still scrolling) ---------- */
+        function c4Busy(on) {
+            const b = document.querySelector('#cartModal [data-c4="go"]'); if (!b) return;
+            b.classList.toggle('c4-busy', !!on);
+            const s = document.getElementById('btnConfirmOrder');
+            if (on) { if (!b.dataset.t) b.dataset.t = s.innerText; s.innerText = tr('⏳ ऑर्डर भेज रहे हैं…', '⏳ Sending order…'); }
+            else if (b.dataset.t) { s.innerText = b.dataset.t; b.dataset.t = ''; }
+        }
+        async function c4Place() {
+            if (Date.now() - C4.lock < 1800) return; C4.lock = Date.now();
+            try { vib(12); } catch (e) { }
+            c4Busy(true);
+            try { await placeOrderNow(); } catch (e) { } finally { c4Busy(false); C4.lock = Date.now() - 1200; }
+        }
+        (function () {
+            const b = document.querySelector('#cartModal button[onclick="placeOrderNow()"]'); if (!b) return;
+            b.dataset.c4 = 'go'; b.removeAttribute('onclick');
+            let t0 = 0, x0 = 0, y0 = 0;
+            b.addEventListener('touchstart', e => { t0 = Date.now(); x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+            b.addEventListener('touchend', e => { const t = e.changedTouches[0]; if (Date.now() - t0 < 900 && Math.abs(t.clientX - x0) < 14 && Math.abs(t.clientY - y0) < 14) { e.preventDefault(); c4Place(); } });
+            b.addEventListener('click', c4Place);
+        })();
+
+        /* ---------- 3. online payment: pick a UPI app; cash on delivery stays the default ---------- */
+        async function c4PayInfo() {
+            if (!LIVE) { C4.vpa = 'happyfood@upi'; return; }
+            try { const { data } = await sb.rpc('pay_info'); if (data) { C4.vpa = data.upi_vpa || ''; C4.payee = data.payee || 'Happy Food'; } } catch (e) { }
+        }
+        setTimeout(c4PayInfo, 2500);
+        const C4_APPS = [['gpay', 'Google Pay', 'tez://upi/pay', '#4285F4', 'G'], ['phonepe', 'PhonePe', 'phonepe://pay', '#5f259f', 'Pe'], ['paytm', 'Paytm', 'paytmmp://pay', '#00baf2', 'P'], ['bhim', 'BHIM', 'upi://pay', '#f47920', 'B'], ['any', tr('कोई भी UPI ऐप', 'Any UPI app'), 'upi://pay', '#16a34a', '₹']];
+        { const f = setPaymentMethod; setPaymentMethod = function (m) {
+            if (m === 'online' && !c4PayPicking) { c4PaySheet(); return; }
+            const r = f.apply(this, arguments);
+            const s = document.querySelector('#btnPayOnline .text-\\[9px\\]'); if (s) s.textContent = m === 'online' && C4.app ? (C4_APPS.find(a => a[0] === C4.app) || [, 'UPI'])[1] : tr('तुरंत ऑनलाइन', 'Instant Online');
+            return r;
+        }; }
+        let c4PayPicking = false;
+        function c4PaySheet() {
+            let el = document.getElementById('c4Pay'); if (!el) { el = document.createElement('div'); el.id = 'c4Pay'; document.body.appendChild(el); }
+            const tot = (document.getElementById('totalPrice') || {}).innerText || '';
+            el.innerHTML = `<div class="c4-bg" onclick="c4PayClose()"></div><div class="c4-card"><div class="c4-grab"></div>
+                <div class="flex items-center justify-between"><p class="c4-t">💳 ${tr('ऑनलाइन पेमेंट', 'Pay online')}</p><b class="c4-amt">${esc(tot)}</b></div>
+                <p class="c4-s">${tr('UPI ऐप चुनें — ऑर्डर भेजते ही वही ऐप खुलेगा', 'Choose a UPI app — it opens as soon as you place the order')}</p>
+                ${C4.vpa ? `<div class="c4-apps">${C4_APPS.map(a => `<button onclick="c4PayPick('${a[0]}')" class="${C4.app === a[0] ? 'on' : ''}"><i style="background:${a[3]}">${a[4]}</i><span>${a[1]}</span></button>`).join('')}</div>`
+                    : `<div class="c4-note">🔜 ${tr('ऑनलाइन पेमेंट जल्द शुरू होगा। अभी कैश ऑन डिलीवरी से ऑर्डर करें।', 'Online payment is starting soon. Please use cash on delivery for now.')}</div>`}
+                <button class="c4-cod" onclick="c4PayPick('')">💵 ${tr('कैश ऑन डिलीवरी ही ठीक है', 'Cash on delivery is fine')}</button></div>`;
+            el.classList.add('show'); try { vib(10); } catch (e) { }
+            if (LIVE && !C4.vpa) c4PayInfo().then(() => { if (C4.vpa && el.classList.contains('show')) c4PaySheet(); });
+        }
+        function c4PayClose() { const el = document.getElementById('c4Pay'); if (el) el.classList.remove('show'); }
+        function c4PayPick(app) {
+            C4.app = app; c4PayClose(); c4PayPicking = true;
+            try { setPaymentMethod(app ? 'online' : 'cod'); } finally { c4PayPicking = false; }
+            if (app) showToast(tr('✅ ऑर्डर भेजते ही ' + (C4_APPS.find(a => a[0] === app) || [, 'UPI'])[1] + ' खुलेगा', '✅ ' + (C4_APPS.find(a => a[0] === app) || [, 'UPI'])[1] + ' opens when you order'));
+        }
+        function c4UpiUrl(app, amount, ref) {
+            const a = C4_APPS.find(x => x[0] === app) || C4_APPS[4];
+            const q = `pa=${encodeURIComponent(C4.vpa)}&pn=${encodeURIComponent(C4.payee)}&am=${Number(amount).toFixed(2)}&cu=INR&tn=${encodeURIComponent('Happy Food ' + ref)}&tr=${encodeURIComponent(String(ref).replace(/\W/g, ''))}`;
+            return a[2] + '?' + q;
+        }
+        function c4OpenUpi(amount, ref) {
+            if (!C4.vpa || !C4.app) return;
+            const u = c4UpiUrl(C4.app, amount, ref);
+            try { window.location.href = u; } catch (e) { }
+            setTimeout(() => { if (!document.hidden) { try { window.location.href = c4UpiUrl('any', amount, ref); } catch (e) { } } }, 1800);
+        }
+        // remember the pay mode on the server order, then open the chosen UPI app
+        { const f = startLiveOrder; startLiveOrder = function (ord, dbo) {
+            const r = f.apply(this, arguments);
+            try {
+                if (paymentMethod === 'online' && C4.app && C4.vpa) {
+                    if (ord) ord.paymentMode = 'UPI 💳';
+                    if (LIVE && dbo && dbo.serverId) sb.rpc('set_order_pay', { p_order_id: dbo.serverId, p_mode: 'upi', p_app: C4.app }).then(() => { }, () => { });
+                    c4OpenUpi(dbo ? dbo.total : (ord ? ord.total : 0), ord ? ord.id : 'HF');
+                }
+            } catch (e) { }
+            return r;
+        }; }
+
+        /* ---------- 4. My Orders opens as a full-screen sheet (no top bar) ---------- */
+        (function () {
+            const v = document.getElementById('viewOrders'); if (!v || document.getElementById('c4OrdTop')) return;
+            v.insertAdjacentHTML('afterbegin', `<div id="c4OrdTop"><div class="c4-grab"></div><button class="c4-x" onclick="showTab('home')" aria-label="close"><i class="fa-solid fa-xmark"></i></button></div>`);
+        })();
+        { const f = showTab; showTab = function (n) {
+            const r = f.apply(this, arguments);
+            const on = n === 'orders', c = document.getElementById('appContainer') || document.body;
+            c.classList.toggle('c4-ord', on); document.body.classList.toggle('c4-ord', on);
+            if (on) { const v = document.getElementById('viewOrders'); if (v) { v.classList.remove('c4-in'); void v.offsetWidth; v.classList.add('c4-in'); v.scrollTop = 0; } }
+            return r;
+        }; }
+
+        /* ---------- 5. offline first: orders + their details come from the phone, internet only to place an order ---------- */
+        { const f = liveLoadHistory; liveLoadHistory = async function () {
+            let d = null; try { d = await f.apply(this, arguments); } catch (e) { d = null; }
+            const k = 'ord_' + c4User();
+            if (d && d.length) { c4Set(k, d.slice(0, 30)); return d; }
+            const c = c4Get(k);
+            if (c && c.length && !navigator.onLine || (c && c.length && !d)) { if (!ordersHistory.length) { c.forEach(r => ordersHistory.push(rmRow(r))); try { renderOrdersList(); } catch (e) { } } return c; }
+            return d;
+        }; }
+        // show the saved list right away on start, before the network answers
+        setTimeout(() => { try { if (!LIVE || ordersHistory.length) return; const c = c4Get('ord_' + c4User()); if (c && c.length) { c.forEach(r => ordersHistory.push(rmRow(r))); renderOrdersList(); } } catch (e) { } }, 900);
+        { const f = odLoad; odLoad = async function (sid, force) {
+            if (!LIVE || !sid) return f.apply(this, arguments);
+            const C = c4Get('od_' + c4User()) || {};
+            if (!OD.det[sid] && C[sid]) { OD.det[sid] = C[sid]; force = true; if (currentTab === 'orders') setTimeout(renderOrdersList, 0); }
+            const before = OD.det[sid];
+            if (before && before.err) { OD.det[sid] = undefined; force = false; }
+            await f.call(this, sid, force);
+            const d = OD.det[sid];
+            if (d && !d.err) { C[sid] = d; const ks = Object.keys(C); if (ks.length > 25) ks.slice(0, ks.length - 25).forEach(x => { C[x] = undefined; }); c4Set('od_' + c4User(), JSON.parse(JSON.stringify(C))); }
+            else if (d && d.err) {
+                OD.det[sid] = C[sid] || (before && !before.err ? before : { err: 'offline', c4off: true });
+                if (currentTab === 'orders') renderOrdersList();
+                if (navigator.onLine) { OD.retry = OD.retry || {}; OD.retry[sid] = (OD.retry[sid] || 0) + 1; if (OD.retry[sid] < 4) setTimeout(() => { if (OD.det[sid] && OD.det[sid].err) { OD.det[sid] = undefined; odLoad(sid); } }, 3000 * OD.retry[sid]); }
+            }
+        }; }
+        function c4Retry(sid) { OD.det[sid] = undefined; OD.retry = {}; odLoad(sid); renderOrdersList(); }
+        window.addEventListener('online', () => { try { Object.keys(OD.det).forEach(s => { if (OD.det[s] && OD.det[s].err) OD.det[s] = undefined; }); if (LIVE && currentUser()) { liveLoadHistory(); liveLoadMenu(); } if (currentTab === 'orders') renderOrdersList(); } catch (e) { } });
+
+        /* ---------- 6. GPS → a real address (free OpenStreetMap lookup), not numbers ---------- */
+        async function c4Rev(lat, lng) {
+            const key = lat.toFixed(4) + ',' + lng.toFixed(4); if (C4.rev[key]) return C4.rev[key];
+            const get = async (u, ms) => { const ac = new AbortController(), t = setTimeout(() => ac.abort(), ms); try { const r = await fetch(u, { signal: ac.signal, headers: { 'Accept': 'application/json' } }); return r.ok ? await r.json() : null; } finally { clearTimeout(t); } };
+            let out = null;
+            try {
+                const j = await get(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=${currentLang === 'hi' ? 'hi,en' : 'en'}`, 7000);
+                const a = j && j.address;
+                if (a) {
+                    const area = [a.house_number && a.road ? a.house_number + ' ' + a.road : a.road, a.neighbourhood || a.quarter || a.residential, a.suburb || a.city_district].filter(Boolean);
+                    const city = a.city || a.town || a.village || a.state_district || '';
+                    out = { area: [...new Set(area)].join(', '), city: city, pin: a.postcode || '', full: [...new Set(area.concat([city, a.postcode]).filter(Boolean))].join(', ') };
+                }
+            } catch (e) { }
+            if (!out) try {
+                const j = await get(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}&limit=1`, 6000);
+                const p = j && j.features && j.features[0] && j.features[0].properties;
+                if (p) { const area = [p.housenumber && p.street ? p.housenumber + ' ' + p.street : (p.street || p.name), p.district || p.locality].filter(Boolean); out = { area: area.join(', '), city: p.city || '', pin: p.postcode || '', full: area.concat([p.city, p.postcode]).filter(Boolean).join(', ') }; }
+            } catch (e) { }
+            if (out && out.full) C4.rev[key] = out;
+            return out;
+        }
+        function c4Gps() {
+            return new Promise((res, rej) => { if (!navigator.geolocation) return rej(); navigator.geolocation.getCurrentPosition(p => res({ lat: +p.coords.latitude.toFixed(6), lng: +p.coords.longitude.toFixed(6) }), rej, { enableHighAccuracy: true, timeout: 12000, maximumAge: 20000 }); });
+        }
+        useLiveLocation = async function () {
+            showToast(tr('📡 आपकी जगह ले रहे हैं…', '📡 Getting your location…'));
+            let p; try { p = await c4Gps(); } catch (e) { showToast(tr('लोकेशन की अनुमति दें', 'Allow location access')); return; }
+            abEdit('');
+            const d = window.__abDraft; d.lat = p.lat; d.lng = p.lng;
+            const pin = document.getElementById('abPin'); if (pin) pin.innerHTML = '⏳ ' + tr('पता ढूँढ रहे हैं…', 'Finding the address…');
+            const a = await c4Rev(p.lat, p.lng);
+            const area = document.getElementById('ab_area');
+            if (a && area && !area.value) area.value = a.area ? a.area + (a.city ? ', ' + a.city : '') : a.full;
+            if (pin) pin.innerHTML = '✅ ' + (a ? esc(a.full) : tr('पिन लग गया', 'Pinned')) + `<small>${tr('ग़लत है? दोबारा दबाएँ', 'Wrong? Tap again')}</small>`;
+            showToast(tr('📍 बस मकान नंबर लिखकर सेव करें', '📍 Add your house no. and save'));
+            setTimeout(() => { const i = document.getElementById('ab_flat'); if (i) i.focus(); }, 250);
+        };
+        abPinHere = async function () {
+            const b = document.getElementById('abPin'); if (b) b.innerHTML = '⏳ ' + tr('जगह ले रहे हैं…', 'Getting location…');
+            let p; try { p = await c4Gps(); } catch (e) { if (b) b.innerHTML = '⚠️ ' + tr('लोकेशन की अनुमति दें', 'Allow location access'); return; }
+            __abDraft.lat = p.lat; __abDraft.lng = p.lng;
+            if (b) b.innerHTML = '⏳ ' + tr('पता ढूँढ रहे हैं…', 'Finding the address…');
+            const a = await c4Rev(p.lat, p.lng);
+            const area = document.getElementById('ab_area'); if (a && area && !area.value.trim()) area.value = a.area ? a.area + (a.city ? ', ' + a.city : '') : a.full;
+            if (b) b.innerHTML = '✅ ' + (a ? esc(a.full) : tr('पिन लग गया', 'Pinned'));
+        };
+
+        /* ---------- 7. live sheet: steps "finding → partner found (photo) → delivery", request history, live map ---------- */
+        { const f = rmApply; rmApply = function (d, v) { try { RM.v = v; } catch (e) { } return f.apply(this, arguments); }; }
+        function c4Steps(p) {
+            const r = (typeof RM !== 'undefined' && RM.rider) || live.rider || null, found = p !== 'search';
+            const nm = r ? String(r.name || '').split(' ')[0] : '';
+            const pic = r && r.photo ? `<img src="${esc(r.photo)}" alt="">` : (r ? `<b>${esc(initials(r.name || 'P'))}</b>` : '<i class="fa-solid fa-user-check"></i>');
+            const s3 = p === 'onway' ? [tr('रास्ते में', 'On the way'), 'fa-motorcycle'] : [tr('डिलीवरी बाकी', 'Delivery pending'), 'fa-house-chimney'];
+            const st = [
+                { t: found ? tr('पार्टनर ढूँढा', 'Partner searched') : tr('पार्टनर ढूँढना', 'Finding partner'), ic: '<i class="fa-solid fa-satellite-dish"></i>', s: found ? 'done' : 'act' },
+                { t: found ? (nm ? tr(nm + ' मिले', nm + ' found') : tr('पार्टनर मिला', 'Partner found')) : tr('पार्टनर मिला', 'Partner found'), ic: found ? pic : '<i class="fa-solid fa-user-check"></i>', s: found ? 'done pic' : '' },
+                { t: s3[0], ic: `<i class="fa-solid ${s3[1]}"></i>`, s: found ? 'act' : '' }];
+            return `<div class="c4-st">${st.map((x, i) => `<div class="c4-s ${x.s}">${i ? `<em class="${x.s.indexOf('done') > -1 || x.s === 'act' ? 'on' : ''}"></em>` : ''}<span>${x.s.indexOf('done') > -1 && x.s.indexOf('pic') < 0 ? '<i class="fa-solid fa-check"></i>' : x.ic}</span><p>${x.t}</p></div>`).join('')}</div>
+                <button class="c4-view" onclick="c4Hist()"><i class="fa-regular fa-eye"></i> ${tr('रिक्वेस्ट किस-किस को गई — देखें', 'See who got the request')}</button>`;
+        }
+        { const f = renderLive; renderLive = function () {
+            const r = f.apply(this, arguments);
+            try {
+                if (!live) return r;
+                const p = live.phase, el = document.getElementById('liveSteps');
+                if (el && ['search', 'accepted', 'cook', 'onway'].indexOf(p) > -1) el.innerHTML = c4Steps(p);
+                c4MapPlace(p);
+            } catch (e) { }
+            return r;
+        }; }
+        async function c4Hist() {
+            let el = document.getElementById('c4Hist'); if (!el) { el = document.createElement('div'); el.id = 'c4Hist'; document.body.appendChild(el); }
+            const paint = (rows, msg) => {
+                const lbl = x => x.kind === 'shop'
+                    ? ({ new: ['⏳', tr('दुकान को भेजा', 'Sent to shop'), ''], packing: ['✅', tr('दुकान ने स्वीकार किया', 'Shop accepted'), 'ok'], ready: ['📦', tr('पैक तैयार', 'Packed'), 'ok'], done: ['✅', tr('पूरा', 'Done'), 'ok'], cancelled: ['⌛', tr('दुकान ने नहीं लिया', 'Shop did not take it'), 'bad'] }[x.status] || ['•', x.status, ''])
+                    : ({ pending: ['⏳', tr('रिक्वेस्ट गई — जवाब का इंतज़ार', 'Request sent — waiting'), ''], accepted: ['✅', tr('स्वीकार किया', 'Accepted'), 'ok'], rejected: ['❌', tr('मना किया', 'Declined'), 'bad'], expired: ['⌛', tr('जवाब नहीं दिया', 'No answer'), 'bad'], cancelled: ['✖', tr('रद्द', 'Cancelled'), 'bad'] }[x.status] || ['•', x.status, '']);
+                const why = { far: tr('बहुत दूर', 'too far'), vehicle: tr('गाड़ी में दिक्कत', 'vehicle problem'), busy: tr('दूसरा ऑर्डर', 'another order'), break: tr('ब्रेक पर', 'on a break'), stock: tr('सामान नहीं', 'no stock') };
+                el.innerHTML = `<div class="c4-bg" onclick="document.getElementById('c4Hist').classList.remove('show')"></div><div class="c4-card"><div class="c4-grab"></div>
+                    <p class="c4-t">📡 ${tr('रिक्वेस्ट की पूरी हिस्ट्री', 'Request history')}</p><p class="c4-s">${tr('आपका ऑर्डर किस-किस राइडर / दुकान के पास गया', 'Which riders / shops got your order')}</p>
+                    <div class="c4-hl">${msg ? `<p class="c4-note">${msg}</p>` : rows.map((x, i) => { const L = lbl(x), t = x.at ? new Date(x.at).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', second: '2-digit' }) : '';
+                        return `<div class="c4-h ${L[2]}"><div class="c4-hn">${i + 1}</div><div class="c4-ha">${x.avatar ? `<img src="${esc(x.avatar)}" alt="">` : (x.kind === 'shop' ? '🏪' : '🛵')}</div><div class="flex-1 min-w-0"><b>${esc(x.name || '')}${x.km != null ? ` <small>${x.km} km</small>` : ''}</b><span>${L[0]} ${L[1]}${x.reason ? ' — ' + (why[x.reason] || esc(x.reason)) : ''}</span></div><time>${t}</time></div>`; }).join('')}</div>
+                    <button class="c4-cod" onclick="document.getElementById('c4Hist').classList.remove('show')">${tr('ठीक है', 'OK')}</button></div>`;
+                el.classList.add('show');
+            };
+            if (!LIVE || !live || !live.dbo || !live.dbo.remote) {
+                const now = Date.now(), r = live && (RM.rider || live.rider), rows = [{ kind: 'rider', name: 'Ashu', status: 'expired', at: now - 90000, km: 1.2 }, { kind: 'rider', name: 'Guddu', status: 'rejected', reason: 'busy', at: now - 60000, km: 0.8 }];
+                rows.push({ kind: 'rider', name: r ? r.name : 'Abdulla', status: live && live.phase !== 'search' ? 'accepted' : 'pending', at: now - 20000, km: 0.4, avatar: r && r.photo });
+                return paint(rows);
+            }
+            paint([], tr('लोड हो रहा है…', 'Loading…'));
+            try { const { data, error } = await sb.rpc('order_offer_log', { p_order_id: live.dbo.serverId }); if (error) throw error; paint(data && data.length ? data : [], data && data.length ? '' : tr('अभी किसी को रिक्वेस्ट नहीं गई — पास में पार्टनर ढूँढ रहे हैं', 'No request sent yet — looking for nearby partners')); }
+            catch (e) { paint([], '📴 ' + tr('इंटरनेट चेक करें, फिर देखें', 'Check internet and try again')); }
+        }
+        // live map above the distance card once a partner is coming (free OpenFreeMap tiles)
+        function c4MapPlace(p) {
+            const v = typeof RM !== 'undefined' ? RM.v : null, body = document.getElementById('liveBody');
+            const sid = live && live.dbo ? live.dbo.serverId || live.ord.id : '';
+            if (C4.sid !== sid) { try { if (C4.map) C4.map.remove(); } catch (e) { } C4.map = null; C4.mk = {}; C4.box = null; C4.moved = false; C4.sid = sid; }
+            const want = body && v && v.rider && v.rider.lat != null && v.lat != null && ['accepted', 'cook', 'onway'].indexOf(p) > -1;
+            if (!want) { if (C4.box && C4.box.parentNode) C4.box.parentNode.removeChild(C4.box); return; }
+            if (!C4.box) { C4.box = document.createElement('div'); C4.box.id = 'c4Map'; C4.box.innerHTML = '<div class="c4-mapin"></div><span class="c4-maptag">🛵 ' + tr('पार्टनर लाइव', 'Partner live') + '</span><button class="c4-mapfit" onclick="c4MapFit(true)" aria-label="fit"><i class="fa-solid fa-location-crosshairs"></i></button>'; }
+            const card = body.querySelector('.hf-card'); const at = card ? card.nextSibling : body.firstChild;
+            if (C4.box.parentNode !== body || C4.box.previousSibling !== card) body.insertBefore(C4.box, at);
+            const R = [v.rider.lng, v.rider.lat], H = [v.lng, v.lat];
+            if (C4.map) { C4.mk.r && C4.mk.r.setLngLat(R); C4.mk.h && C4.mk.h.setLngLat(H); try { C4.map.resize(); } catch (e) { } if (!C4.moved) c4MapFit(false); return; }
+            if (C4.loading) return; C4.loading = true;
+            odLoadLib().then(ok => {
+                C4.loading = false; if (!ok || C4.map) return;
+                try {
+                    const el = C4.box.querySelector('.c4-mapin');
+                    const map = new maplibregl.Map({ container: el, style: 'https://tiles.openfreemap.org/styles/positron', center: R, zoom: 14, attributionControl: { compact: true } });
+                    map.on('error', () => { });
+                    const mk = (txt, cls, at) => { const m = document.createElement('div'); m.className = 'c4-pin ' + cls; m.innerHTML = txt; return new maplibregl.Marker({ element: m }).setLngLat(at).addTo(map); };
+                    C4.mk.h = mk('🏠', 'h', H); C4.mk.r = mk(v.rider.avatar ? `<img src="${esc(v.rider.avatar)}" alt="">` : '🛵', 'r', R);
+                    map.on('dragstart', () => { C4.moved = true; });
+                    C4.map = map; map.on('load', () => c4MapFit(false));
+                } catch (e) { }
+            });
+        }
+        function c4MapFit(user) {
+            const v = RM.v; if (!C4.map || !v || !v.rider) return; if (user) C4.moved = false;
+            const b = new maplibregl.LngLatBounds([v.lng, v.lat], [v.lng, v.lat]); b.extend([v.rider.lng, v.rider.lat]);
+            try { C4.map.fitBounds(b, { padding: 46, maxZoom: 16, duration: user ? 500 : 0 }); } catch (e) { }
+        }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
