@@ -1,0 +1,7 @@
+-- 031-032 (applied via MCP):
+-- * riders.upi_vpa, vendors.upi_vpa (+ existing vendors.upi), app_settings.cod_upi_owner ('admin'|'vendor'|'rider')
+-- * rider_claim_pickup(p_raw, p_code): any approved free rider scans the slip QR (HFPICK:<order>:<code>) or types order no. + code
+--   at the shop -> order assigned to them, accepted + picked, other pending offers expired
+-- * delivery_upi(order): UPI id/payee/amount for the QR at the door (owner per setting, falls back to company UPI)
+-- * rider_mark_upi(order), set_my_upi(kind, vpa), admin_payments(), admin_set_payments(vpa, owner)
+-- * rider_history: route, pay_mode, drop lat/lng, shop {name,address,lat,lng}; rider_me: upi_vpa

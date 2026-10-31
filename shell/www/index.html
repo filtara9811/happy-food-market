@@ -12293,5 +12293,36 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             try { C4.map.fitBounds(b, { padding: 46, maxZoom: 16, duration: user ? 500 : 0 }); } catch (e) { }
         }
 
+        /* ================= pay.js: admin — company UPI ID and whose QR the rider shows when a cash customer pays by UPI ================= */
+        const PAYS = { vpa: '', owner: 'admin', loaded: false };
+        async function paysLoad() {
+            if (!LIVE) { PAYS.loaded = true; return; }
+            try { const { data } = await sb.rpc('admin_payments'); if (data) { PAYS.vpa = data.upi_vpa || ''; PAYS.owner = data.owner || 'admin'; } } catch (e) { }
+            PAYS.loaded = true; try { renderPanel(true); } catch (e) { }
+        }
+        async function paysSave() {
+            const v = (document.getElementById('paysVpa') || {}).value || '';
+            if (v && !/^[a-z0-9._-]{2,64}@[a-z0-9.-]{2,64}$/i.test(v.trim())) { pToast(tr('UPI ID सही लिखें — जैसे filipra@icici', 'Enter a valid UPI ID — e.g. filipra@icici')); return; }
+            PAYS.vpa = v.trim().toLowerCase();
+            if (LIVE) { try { const { error } = await sb.rpc('admin_set_payments', { p_upi_vpa: PAYS.vpa, p_owner: PAYS.owner }); if (error) throw error; } catch (e) { pToast('⚠️ ' + rmMsg(e).slice(0, 80)); return; } }
+            sfx('success'); pToast(tr('पेमेंट सेटिंग सेव ✅', 'Payment settings saved ✅')); renderPanel(true);
+        }
+        function paysOwner(k) { PAYS.owner = k; const v = document.getElementById('paysVpa'); if (v) PAYS.vpa = v.value.trim().toLowerCase(); paysSave(); }
+        function paysCard() {
+            if (!PAYS.loaded) { setTimeout(paysLoad, 0); }
+            const opt = [['admin', '🏢', 'कंपनी (एडमिन)', 'Company (admin)'], ['vendor', '🏪', 'दुकान का', "Shop's"], ['rider', '🛵', 'राइडर का', "Rider's"]];
+            return `<div class="pcard p-4 mb-4"><p class="pttl text-[15px]">💳 ${tr('UPI पेमेंट', 'UPI payments')}</p>
+                <p class="text-[11.5px] pmut">${tr('ग्राहक ऐप में "ऑनलाइन पेमेंट" और डिलीवरी पर QR इसी UPI ID से बनेगा', 'Used for online payment in the app and the QR at the door')}</p>
+                <div class="flex gap-2 mt-3"><input id="paysVpa" class="flex-1" style="min-width:0" placeholder="filipra@icici" value="${esc(PAYS.vpa)}" autocapitalize="off"><button class="pbtn" onclick="paysSave()">${tr('सेव', 'Save')}</button></div>
+                <p class="plabel mt-3 mb-2">${tr('कैश वाला ग्राहक UPI दे तो राइडर किसका QR दिखाए?', 'Cash customer pays by UPI — whose QR does the rider show?')}</p>
+                <div class="grid grid-cols-3 gap-2">${opt.map(o => `<button class="${PAYS.owner === o[0] ? 'pbtn' : 'pbtn-g'}" style="padding:9px 6px;font-size:12px" onclick="paysOwner('${o[0]}')">${o[1]} ${tr(o[2], o[3])}</button>`).join('')}</div>
+                <p class="text-[11px] pmut mt-2">${tr('दुकान / राइडर की UPI ID न हो तो कंपनी की ID का QR आएगा।', 'If the shop / rider has no UPI ID, the company QR is used.')}</p></div>`;
+        }
+        { const f = adminSettings; adminSettings = function () {
+            const r = f.apply(this, arguments);
+            if (window.__aZones || window.__aCoins || window.__aLegal || window.__aFines) return r;
+            return paysCard() + r;
+        }; }
+
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
