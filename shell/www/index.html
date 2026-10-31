@@ -1809,10 +1809,10 @@
 #panelRoot .vt-tabs{position:relative;display:flex;height:60px;margin:-16px -16px 14px}
 #panelRoot .vt-shape{position:absolute;inset:0;display:flex;pointer-events:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.12))}
 #panelRoot .vt-shape .vt-tp{flex:1}
-#panelRoot .vt-shape .vt-cr{flex:1;background:#2a2112}
+#panelRoot .vt-shape .vt-cr{flex:1;background:#3a2a14}
 #panelRoot .vt-tabs.l .vt-shape .vt-cr{border-bottom-left-radius:0}
 #panelRoot .vt-shape .vt-cv{width:64px;height:100%;flex:none;display:block;margin:0 -1px}
-#panelRoot .vt-shape .vt-cv path{fill:#2a2112}
+#panelRoot .vt-shape .vt-cv path{fill:#3a2a14}
 #panelRoot .vt-b{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 10px;color:#f6d68a}
 #panelRoot .vt-b>i{font-size:19px;opacity:.9}
 #panelRoot .vt-b .vt-tx{display:flex;flex-direction:column;align-items:flex-start;line-height:1.05}
@@ -1824,7 +1824,9 @@
 #panelRoot .vt-b.on em{background:#111;color:#fff}
 #panelRoot .vt-b em.hot{background:#ef4444;color:#fff}
 #panelRoot .vt-b:active{transform:scale(.97)}
-#panelRoot .ph-hero.vt-card{margin:0 0 0 !important;border-radius:28px !important;padding:16px 14px !important}
+#panelRoot .ph-hero.vt-card{margin:0 0 0 !important;border-radius:28px !important;padding:16px 14px !important;background:radial-gradient(110% 80% at 85% 0%,rgba(226,176,74,.35),transparent 55%),linear-gradient(135deg,#5a3d17 0%,#3a2710 45%,#7a5520 100%) !important;box-shadow:0 16px 30px rgba(90,61,23,.28) !important}
+#panelRoot .vt-b:not(.on){opacity:.72}
+#panelRoot .vt-b.on b{text-shadow:0 1px 0 rgba(255,255,255,.6)}
 #billFab.on{bottom:96px !important}
 #pSheet.vt-inline{align-items:stretch}
 #pSheet.vt-inline>.absolute{display:none}
@@ -1853,6 +1855,94 @@
 .kh-give,.kh-got{padding:13px;border-radius:14px;font-weight:900;color:#fff}.kh-give{background:#dc2626}.kh-got{background:#16a34a}
 .kh-wa{width:100%;margin-top:8px;padding:11px;border-radius:14px;font-weight:800;background:#e7f8ee;color:#128c4a}
 .kh-e{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:14px;background:var(--p-card);border:1px solid var(--p-line)}.kh-e b{display:block;font-size:13px}.kh-e small{font-size:11px;color:var(--p-mut)}.kh-e em{font-style:normal;font-weight:800}.kh-e.give em{color:#dc2626}.kh-e.got em{color:#16a34a}
+        /* ---- shop5: requests sheet, month picker, business card ---- */
+        .mp-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+        .mp-g button{padding:12px;border-radius:16px;border:1.5px solid var(--p-line);background:var(--p-card);text-align:left}
+        .mp-g button.on{border-color:var(--p-gold);background:color-mix(in srgb,var(--p-gold) 12%,var(--p-card))}
+        .mp-g b{display:block;font-size:14px}.mp-g span{font-size:11.5px;color:var(--p-mut)}
+        #rqSheet{position:absolute;inset:0;z-index:60;display:flex;align-items:flex-end;visibility:hidden;pointer-events:none}
+        #rqSheet.show{visibility:visible;pointer-events:auto}
+        #rqSheet .rq-bg{position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .3s}
+        #rqSheet.show .rq-bg{background:rgba(0,0,0,.5)}
+        #rqSheet .rq-sh{position:relative;width:100%;max-height:92%;overflow-y:auto;background:#FDFAF3;color:#2B2B2B;border-radius:30px 30px 0 0;padding:6px 16px 24px;transform:translateY(100%);transition:transform .45s cubic-bezier(.22,1,.36,1)}
+        #rqSheet.show .rq-sh{transform:none}
+        .rq-grab{width:44px;height:5px;border-radius:5px;background:#d9d2c0;margin:6px auto 10px}
+        .rq-top{display:flex;align-items:center;gap:10px}.rq-top h3{flex:1;font-family:'Outfit',sans-serif;font-size:26px;font-weight:800}
+        .rq-top button{width:44px;height:44px;border-radius:50%;background:#efe7d6;font-size:18px}
+        .rq-auto{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;margin:10px 0 0;padding:10px 12px;border-radius:16px;background:#f3ecdd;font-size:12.5px;font-weight:700;color:#6b5a3a;text-align:left}
+        .rq-auto i{position:relative;width:42px;height:24px;border-radius:99px;background:#cfc6b3;flex:none;transition:background .2s}
+        .rq-auto i:after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s}
+        .rq-auto i.on{background:#16a34a}.rq-auto i.on:after{transform:translateX(18px)}
+        .mn-body>*:first-child{display:none}
+        .rq-seg{position:relative;display:flex;margin:12px 0 14px;padding:5px;border-radius:999px;background:#ece4d2}
+        .rq-seg i{position:absolute;top:5px;bottom:5px;left:5px;width:calc(50% - 5px);border-radius:999px;background:#17130f;transition:transform .4s cubic-bezier(.22,1,.36,1)}
+        .rq-seg.ds i{transform:translateX(100%)}
+        .rq-seg button{position:relative;z-index:1;flex:1;padding:13px 4px;font-weight:800;font-size:15px;color:#8a7f68;display:flex;align-items:center;justify-content:center;gap:7px}
+        .rq-seg.app button:first-of-type,.rq-seg.ds button:last-of-type{color:#F3E6C4}
+        .rq-seg em{font-style:normal;min-width:24px;height:24px;padding:0 6px;border-radius:999px;background:#cfc6b3;color:#fff;font-size:12px;display:inline-flex;align-items:center;justify-content:center}
+        .rq-seg em.red{background:#e5383b}.rq-seg em.grn{background:#16a34a}
+        .rq-list{display:flex;flex-direction:column;gap:12px}
+        .rq-card{background:#fff;border:1.5px solid #efe6d2;border-radius:26px;padding:14px;animation:ytIn .35s both}
+        .rq-card.new{border-color:#f0b25a;box-shadow:0 8px 22px rgba(240,178,90,.18)}
+        .rq-hd{display:flex;gap:12px;align-items:flex-start}
+        .rq-av{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#2d2a3e,#17151f);color:#fff;font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;display:grid;place-items:center;flex:none}
+        .rq-av.sm{width:40px;height:40px;font-size:15px}
+        .rq-nm{font-family:'Outfit',sans-serif;font-size:19px;font-weight:700}.rq-nm i{color:#2563eb;font-size:16px}
+        .rq-id{font-size:13px;font-weight:700;color:#8a5a1c}.rq-ad{font-size:12.5px;color:#8a8373;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .rq-ago{font-size:13.5px;font-weight:800;color:#2b7a4b;white-space:nowrap}.rq-ago.hot{color:#e86a0c}
+        .rq-it{display:flex;align-items:center;gap:12px;width:100%;margin-top:12px;padding:10px;border-radius:20px;background:#f8f3e8;text-align:left}
+        .rq-it img{width:52px;height:52px;border-radius:14px;object-fit:cover;border:2px solid #fde7b8}
+        .rq-it b{display:block;font-size:15.5px}.rq-it small{font-size:12px;color:#8a8373}
+        .rq-it em{font-style:normal;font-family:'Outfit',sans-serif;font-weight:800;font-size:17px}.rq-it>i{color:#8a7f68;font-size:13px}
+        .rq-map{position:relative;height:130px;margin-top:10px;border-radius:20px;overflow:hidden;background:#efe6d0}
+        .rq-map svg{position:absolute;inset:0;width:100%;height:100%}
+        .rq-me{position:absolute;left:8%;bottom:14%;width:34px;height:34px;border-radius:50%;background:#17130f;display:grid;place-items:center;font-size:16px}
+        .rq-pin{position:absolute;left:80%;top:30%;width:34px;height:34px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#f47b20;display:grid;place-items:center;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+        .rq-pin i{width:10px;height:10px;border-radius:50%;background:#fff}
+        .rq-km{position:absolute;left:8px;bottom:8px;padding:6px 12px;border-radius:999px;background:rgba(23,19,15,.85);color:#fff;font-size:13px}
+        .rq-map small{position:absolute;right:8px;top:8px;max-width:60%;padding:4px 9px;border-radius:999px;background:#fff;font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .rq-lines{margin-top:8px;border-bottom:1.5px dashed #e6dcc6;padding-bottom:6px}
+        .rq-lines div{display:flex;align-items:center;gap:10px;padding:6px 2px;font-size:14px}.rq-lines img{width:32px;height:32px;border-radius:50%;object-fit:cover}
+        .rq-lines span{flex:1}.rq-lines b{color:#8a7f68}.rq-lines em{font-style:normal;font-weight:800;min-width:54px;text-align:right}
+        .rq-btns{display:flex;gap:10px;margin-top:12px}
+        .rq-btns button{flex:1;padding:14px;border-radius:18px;font-weight:800;font-size:16px}
+        .rq-no{border:1.5px solid #e6d7b7;color:#a8401c;background:#fff}
+        .rq-ok{flex:1.6 !important;background:#c8581d;color:#fff;box-shadow:0 8px 18px rgba(200,88,29,.3)}
+        .rq-ok.wide{flex:1 !important;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14.5px}
+        .rq-wait{margin-top:12px;padding:12px;border-radius:16px;background:#eef2ff;color:#3730a3;font-size:13px;font-weight:700}
+        .rq-rider{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px;border-radius:18px;background:#ecfdf3}
+        .rq-rider b{display:block;font-size:13.5px}.rq-rider small{font-size:11.5px;color:#4b6b57}
+        .rq-rider button{padding:9px 12px;border-radius:12px;background:#16a34a;color:#fff;font-weight:800;font-size:12.5px}
+        .rq-empty{text-align:center;padding:40px 10px;color:#8a8373}.rq-empty div{font-size:42px}.rq-empty b{display:block;color:#2b2b2b;margin-top:6px}
+        #phNav .vt-bell em.l{left:-8px;right:auto;background:#e5383b}
+        #phNav .vt-bell em.r{right:-8px;background:#16a34a}
+        .bz-card{position:relative;display:block;width:100%;text-align:left;padding:16px;border-radius:24px;color:#F3E6C4;background:radial-gradient(120% 90% at 90% 0%,rgba(226,176,74,.35),transparent 55%),linear-gradient(135deg,#3b2a14,#17130f 70%);box-shadow:0 14px 28px rgba(0,0,0,.25);overflow:hidden;margin-bottom:14px}
+        .bz-row{display:flex;align-items:center;gap:12px}
+        .bz-av{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#fce49d,#b88222);color:#1a1305;font-family:'Outfit',sans-serif;font-weight:900;font-size:19px;display:grid;place-items:center;overflow:hidden;flex:none}.bz-av img{width:100%;height:100%;object-fit:cover}
+        .bz-card b{display:block;font-family:'Outfit',sans-serif;font-size:20px;color:#fff}.bz-card small{font-size:12px;opacity:.75}
+        .bz-qr{font-size:30px;color:#f6d68a}
+        .bz-mid{display:flex;gap:8px;margin-top:14px}.bz-mid span{padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.1);font-size:12px;font-weight:700}
+        .bz-ft{display:flex;justify-content:space-between;align-items:flex-end;margin-top:16px;font-family:'Outfit',sans-serif;letter-spacing:1.5px;font-size:15px}
+        .bz-ft em{font-style:normal;font-size:9px;letter-spacing:1.2px;opacity:.6}
+        .bz-hint{display:block;margin-top:10px;text-align:right;font-size:10.5px;font-weight:700;opacity:.55}
+        .mn-body .ph-hero,.mn-body>div:first-child.vs-hero{display:none}
+        .mn-d{display:flex;flex-direction:column;gap:6px}.mn-r{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:14px;background:var(--p-card2)}
+        .mn-r span{font-size:12.5px;color:var(--p-mut);font-weight:700}.mn-r b{font-size:13.5px;text-align:right}
+        /* ---- home5 ---- */
+        #appHeader #logoWrap{align-items:flex-start !important}
+        #hfHello button{display:none !important}
+        #hfHello{justify-content:flex-start}
+        #carouselTrack [class*="absolute top-2 left-2 z-20"],#carouselTrack [class*="absolute top-2 right-2 z-20"]{display:none !important}
+        .hint3d{display:none !important}
+        #carouselTrack .w-56.h-56{width:18.5rem !important;height:18.5rem !important}
+        #carouselContainer{min-height:430px !important}
+        #hfAgain{display:none !important}
+        .hf-trust{margin-top:14px !important;margin-bottom:6px}
+        #hfAgainO{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:12px 14px;border-radius:22px;background:linear-gradient(135deg,#2a2112,#16120b);color:#fff}
+        #hfAgainO .ims{position:relative;width:64px;height:48px;flex:none}
+        #hfAgainO .ims img{position:absolute;top:0;left:calc(var(--i) * 14px);width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #e2b04a}
+        #hfAgainO .tx{flex:1;min-width:0}#hfAgainO small{display:block;font-size:11.5px;color:#e2b04a;font-weight:700}#hfAgainO b{font-size:15px}
+        #hfAgainO button{padding:10px 14px;border-radius:14px;background:linear-gradient(180deg,#fde68a,#e2b04a);color:#1a1305;font-weight:900;font-size:13px;white-space:nowrap}
     </style>
 <style>
 html,body{height:100%}
@@ -7607,7 +7697,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const wk = currentLang === 'hi' ? ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि'] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             const kfmt = n => n >= 1000 ? '₹' + (n / 1000).toFixed(1).replace('.0', '') + 'k' : '₹' + Math.round(n);
             let items = c.items;
-            if (st.day === 'month') { const m = new Date(); m.setDate(1); m.setHours(0, 0, 0, 0); items = items.filter(x => x.ts >= m.getTime()); }
+            if (st.day === 'month' || String(st.day).indexOf('m:') === 0) { const m = st.day === 'month' ? new Date() : new Date(+String(st.day).slice(2)); m.setDate(1); m.setHours(0, 0, 0, 0); const e = new Date(m); e.setMonth(e.getMonth() + 1); items = items.filter(x => x.ts >= m.getTime() && x.ts < e.getTime()); }
             else { const d0 = st.day === 'today' ? t0 : +st.day; items = items.filter(x => x.ts >= d0 && x.ts < d0 + DAY); }
             const totalN = items.length;
             if (st.filter === 'pending') items = items.filter(x => x.state === 'pending'); else if (st.filter === 'done') items = items.filter(x => x.state === 'done');
@@ -7635,7 +7725,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             ${c.top || ''}
             ${!c.duty.on ? `<button onclick="${c.duty.click}" class="ph-offbtn mt-4">${c.duty.offSub} ›</button>` : ''}
             <div class="ph-days ph-days-sm mt-4">${days.map(d => { const dt = new Date(d.d0); return `<button class="ph-day ${st.day === d.k ? 'on' : ''}" onclick="phSet('${role}','day','${d.k}')"><div class="w">${d.k === 'today' ? tr('आज', 'Today') : wk[dt.getDay()]} ${dt.getDate()}</div><div class="m">${kfmt(d.amt)}</div><div class="c">${d.n ? d.n + ' ' + c.unit : '—'}</div><div class="bar"><i style="width:${Math.round(d.amt / dmax * 100)}%"></i></div></button>`; }).join('')}
-                <button class="ph-day ${st.day === 'month' ? 'on' : ''}" onclick="phSet('${role}','day','month')"><div class="w">🗓️</div><div class="m">${tr('महीना', 'Month')}</div></button></div>
+                <button class="ph-day ${st.day === 'month' || String(st.day).indexOf('m:') === 0 ? 'on' : ''}" onclick="phMonthPick('${role}')"><div class="w">🗓️</div><div class="m">${String(st.day).indexOf('m:') === 0 ? new Date(+String(st.day).slice(2)).toLocaleDateString(currentLang === 'hi' ? 'hi-IN' : 'en-IN', { month: 'short' }) : tr('महीना', 'Month')}</div><div class="c">${tr('सारे महीने', 'All months')}</div></button></div>
             <div class="ph-tabs mt-3">${c.tabs.map(t => `<button class="${st.tab === t[0] ? 'on' : ''}" onclick="${t[3] || `phSet('${role}','tab','${t[0]}')`}">${t[1]} <span class="n ${t[3] && t[2] ? 'hot' : ''}">${t[2]}</span></button>`).join('')}</div>
             ${st.tab !== 'orders' ? `<div class="mt-4">${c.tabBody(st.tab)}</div>` : `
             <div class="flex items-center gap-2 mt-3">${[['all', tr('सब', 'All')], ['pending', tr('चालू', 'Pending')], ['done', tr('पूरे', 'Done')]].map(f => `<button class="ph-pill ${st.filter === f[0] ? 'on' : ''}" onclick="phSet('${role}','filter','${f[0]}')">${f[1]}</button>`).join('')}<span class="ml-auto text-[12.5px] font-bold pmut">${items.length} / ${totalN}</span></div>
@@ -12478,7 +12568,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
         }; }
         // Orders / My Shop tabs at the very top (soft curved browser tabs). Active tab = same dark as the card below.
         const VT = { inline: false };
-        function vtCurve(right) { return right ? '<svg class="vt-cv" viewBox="0 0 64 64" preserveAspectRatio="none"><path d="M0 0 C 30 0, 34 64, 64 64 L 0 64 Z"/></svg>' : '<svg class="vt-cv" viewBox="0 0 64 64" preserveAspectRatio="none"><path d="M0 64 C 30 64, 34 0, 64 0 L 64 64 Z"/></svg>'; }
+        function vtCurve(right) { return right ? '<svg class="vt-cv" viewBox="0 0 64 64" preserveAspectRatio="none"><path d="M0 0 L64 0 C 34 0, 30 64, 0 64 Z"/></svg>' : '<svg class="vt-cv" viewBox="0 0 64 64" preserveAspectRatio="none"><path d="M0 0 C 34 0, 30 64, 64 64 L 64 0 Z"/></svg>'; }
         function vtTabs(c) {
             const on = PH.vendor.tab === 'pos' ? 1 : 0;
             const n0 = c.tabs[0] ? c.tabs[0][2] : 0, n1 = vendorTodo().length;
@@ -12666,6 +12756,163 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 } catch (e) { }
             }, 280);
         }
+
+        /* ================= shop5.js: Requests sheet (app + digital shop orders), month picker, Menu as a sheet with a business card, dispatch mode on the server ================= */
+        // ---- month picker for the day strip ----
+        function phMonthPick(role) {
+            const now = new Date(), v = role === 'vendor' ? curV() : null, rows = [];
+            for (let i = 0; i < 12; i++) {
+                const m = new Date(now.getFullYear(), now.getMonth() - i, 1), e = new Date(m.getFullYear(), m.getMonth() + 1, 1);
+                const L = v ? DB.orders.filter(o => o.vendorId === v.id && o.ts >= m.getTime() && o.ts < e.getTime()) : [];
+                rows.push({ k: 'm:' + m.getTime(), name: m.toLocaleDateString(currentLang === 'hi' ? 'hi-IN' : 'en-IN', { month: 'long', year: 'numeric' }), n: L.length, amt: L.filter(o => o.status === 'delivered').reduce((s, o) => s + (Number(o.total) || 0), 0) });
+            }
+            const cur = PH[role].day;
+            openPSheet('🗓️ ' + tr('महीना चुनें', 'Pick a month'), `<div class="mp-g">${rows.map((r, i) => `<button class="${cur === r.k || (i === 0 && cur === 'month') ? 'on' : ''}" onclick="closePSheet();phSet('${role}','day','${i === 0 ? 'month' : r.k}')"><b>${r.name}</b><span>${v ? r.n + ' ' + tr('ऑर्डर', 'orders') + ' • ' + money_(r.amt) : ''}</span></button>`).join('')}</div>`);
+        }
+
+        // ---- Requests: one sheet for app orders + digital-shop orders ----
+        const RQ = { tab: 'app', open: {}, auto: (() => { try { return localStorage.getItem('hf_rq_auto') === '1'; } catch (e) { return false; } })() };
+        const rqKm = o => { let h = 0; String(o.id).split('').forEach(c => { h = (h * 31 + c.charCodeAt(0)) % 997; }); return (o.custDist || (0.3 + (h % 22) / 10)).toFixed(1); };
+        const rqAgo = ts => { const m = Math.floor((Date.now() - ts) / 60000); return m < 1 ? tr('अभी', 'Now') : (m < 60 ? m + ' min' : fmtT(ts)); };
+        function rqApp() { const v = curV(); return DB.orders.filter(o => o.vendorId === v.id && ['vwait', 'cooking', 'searching', 'accepted'].indexOf(o.status) > -1 && !(o.status === 'accepted' && o.packed && o.pickedAt)).sort((a, b) => b.ts - a.ts); }
+        function rqDs() { const v = curV(); return saGet('hf_bills_v1', []).filter(b => b.vid === v.id && b.src === 'qr' && (b.st || 'new') !== 'done' && b.st !== 'rejected' && Date.now() - b.ts < 86400000); }
+        function rqCounts() { return { app: rqApp().filter(o => o.status === 'vwait').length, ds: rqDs().filter(b => (b.st || 'new') === 'new').length }; }
+        function rqOpen(tab) {
+            if (tab) RQ.tab = tab;
+            let el = document.getElementById('rqSheet');
+            if (!el) { el = document.createElement('div'); el.id = 'rqSheet'; (document.getElementById('panelRoot') || document.body).appendChild(el); }
+            el.classList.add('show'); try { vib(12); } catch (e) { } rqPaint();
+        }
+        function rqClose() { const el = document.getElementById('rqSheet'); if (el) el.classList.remove('show'); }
+        function rqMap(km, label) {
+            return `<div class="rq-map"><svg viewBox="0 0 320 120" preserveAspectRatio="none"><path d="M0 40 L320 30 M0 92 L320 100 M70 0 L84 120 M180 0 L170 120 M270 0 L262 120" stroke="#fff" stroke-width="12" fill="none"/>
+                <path d="M40 96 C 110 100, 150 96, 200 84 S 250 60, 262 54" stroke="#f47b20" stroke-width="4" stroke-dasharray="10 7" fill="none" stroke-linecap="round"/></svg>
+                <span class="rq-me">🏪</span><span class="rq-pin"><i></i></span><b class="rq-km">🧭 ${km} km · ~${Math.max(3, Math.round(km * 8))} min</b>${label ? `<small>${label}</small>` : ''}</div>`;
+        }
+        function rqCard(x) {
+            const o = x.o, id = x.id, open = !!RQ.open[id];
+            const items = x.items, first = items[0] || { name: '' }, more = items.length > 1 ? ' +' + (items.length - 1) : '';
+            const img = (prodInfo(first.pid) || {}).image || FOODIMG.thali;
+            return `<div class="rq-card ${x.isNew ? 'new' : ''}">
+                <div class="rq-hd"><div class="rq-av">${esc(initials(x.name || 'G'))}</div><div class="flex-1 min-w-0"><p class="rq-nm">${esc(x.name || tr('ग्राहक', 'Customer'))} <i class="fa-solid fa-circle-check"></i></p>
+                    <p class="rq-id"><i class="fa-solid fa-bag-shopping"></i> ${x.kind} · ${esc(x.no)}</p><p class="rq-ad"><i class="fa-solid fa-location-dot"></i> ${esc(x.addr || 'Sadar Bazar')} · ${x.km} km</p></div>
+                    <span class="rq-ago ${x.isNew ? 'hot' : ''}">${rqAgo(x.ts)}</span></div>
+                <button class="rq-it" onclick="RQ.open['${id}']=!RQ.open['${id}'];rqPaint()"><img src="${esc(img)}" alt=""><span class="flex-1 min-w-0"><b>${esc(first.name)}${more}</b><small>${items.reduce((s, i) => s + i.qty, 0)} ${tr('आइटम', 'items')} · ${x.pay}</small></span><em>₹${x.tot}</em><i class="fa-solid fa-chevron-${open ? 'up' : 'down'}"></i></button>
+                ${open ? `${rqMap(x.km, esc(x.addr || ''))}<div class="rq-lines">${items.map(i => `<div><img src="${esc((prodInfo(i.pid) || {}).image || FOODIMG.thali)}" alt=""><span>${esc(i.name)}</span><b>× ${i.qty}</b><em>₹${i.price * i.qty}</em></div>`).join('')}</div>` : ''}
+                ${x.acts}</div>`;
+        }
+        function rqAppActs(o) {
+            const id = o.id;
+            if (o.status === 'vwait') return `<div class="rq-btns"><button class="rq-no" onclick="rqDo('${id}','no')">${tr('मना करें', 'Reject')}</button><button class="rq-ok" onclick="rqDo('${id}','ok')">${tr('स्वीकार करें', 'Accept')}</button></div>`;
+            if (o.status === 'cooking') return `<div class="rq-btns"><button class="rq-ok wide" onclick="rqDo('${id}','pack')"><i class="fa-solid fa-paper-plane"></i> ${tr('पैक हो गया — राइडर को रिक्वेस्ट भेजें', 'Packed — send request to riders')}</button></div>`;
+            if (o.status === 'searching') return `<div class="rq-wait"><i class="fa-solid fa-satellite-dish fa-beat"></i> ${tr('पास के राइडरों को रिक्वेस्ट गई — कोई स्वीकार करेगा तो यहाँ दिखेगा', 'Request sent to nearby riders — you will see who accepts')}</div>`;
+            const r = dbRider(o.riderId) || {}, code = String(o.otp || '').padStart(4, '0') + '27';
+            return `<div class="rq-rider"><div class="rq-av sm">${esc(initials(r.name || 'R'))}</div><div class="flex-1 min-w-0"><b>🛵 ${esc(r.name || tr('राइडर', 'Rider'))} ${tr('आ रहा है', 'is coming')}</b><small>${tr('पिकअप कोड', 'Pickup code')}: <b>${code}</b> · ${tr('राइडर स्लिप का QR स्कैन करेगा', 'rider scans the slip QR')}</small></div><button onclick="rqDo('${id}','picked')">${tr('पिकअप हुआ', 'Picked up')}</button></div>`;
+        }
+        function rqDsActs(b) {
+            const st = b.st || 'new', no = b.no;
+            if (st === 'new') return `<div class="rq-btns"><button class="rq-no" onclick="rqDs1('${no}','rejected')">${tr('मना करें', 'Reject')}</button><button class="rq-ok" onclick="rqDs1('${no}','packing')">${tr('स्वीकार करें', 'Accept')}</button></div>`;
+            if (st === 'packing') return `<div class="rq-btns"><button class="rq-ok wide" onclick="rqDs1('${no}','ready')"><i class="fa-solid fa-box"></i> ${tr('पैक हो गया — ग्राहक को बताएँ', 'Packed — tell the customer')}</button></div>`;
+            return `<div class="rq-btns"><button class="rq-no" onclick="${b.phone ? `window.open('https://wa.me/91${b.phone}?text='+encodeURIComponent('आपका ऑर्डर ${no} तैयार है 🙏'),'_blank')` : ''}"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button><button class="rq-ok" onclick="rqDs1('${no}','done')">${tr('ग्राहक ले गया ✓', 'Handed over ✓')}</button></div>`;
+        }
+        function rqPaint() {
+            const el = document.getElementById('rqSheet'); if (!el) return;
+            const A = rqApp(), D = rqDs(), cnt = rqCounts();
+            const list = RQ.tab === 'app'
+                ? A.map(o => rqCard({ o, id: o.id, isNew: o.status === 'vwait', name: o.customer, no: o.id, kind: tr('ऐप ऑर्डर', 'App order'), addr: String(o.address || '').split(',').slice(-2).join(',').trim(), km: rqKm(o), ts: o.ts, items: o.items, tot: o.total, pay: o.pay === 'UPI' ? 'UPI' : tr('कैश ऑन डिलीवरी', 'Cash on delivery'), acts: rqAppActs(o) }))
+                : D.map(b => rqCard({ o: b, id: b.no, isNew: (b.st || 'new') === 'new', name: b.name, no: b.no, kind: tr('डिजिटल दुकान', 'Digital shop'), addr: b.phone ? '+91 ' + b.phone : '', km: (0.2 + (b.ts % 13) / 10).toFixed(1), ts: b.ts, items: b.items, tot: b.tot, pay: b.pay === 'upi' ? 'UPI' : tr('कैश', 'Cash'), acts: rqDsActs(b) }));
+            el.innerHTML = `<div class="rq-bg" onclick="rqClose()"></div><div class="rq-sh"><div class="rq-grab"></div>
+                <div class="rq-top"><h3>${tr('रिक्वेस्ट', 'Requests')}</h3><button onclick="HSP.snd=!HSP.snd;rqPaint()" aria-label="sound"><i class="fa-solid fa-volume-${HSP.snd ? 'high' : 'xmark'}"></i></button><button onclick="rqClose()" aria-label="close"><i class="fa-solid fa-xmark"></i></button></div>
+                <button class="rq-auto" onclick="RQ.auto=!RQ.auto;try{localStorage.setItem('hf_rq_auto',RQ.auto?'1':'0')}catch(e){};rqPaint()"><span>⚡ ${tr('स्वीकार करते ही राइडर को रिक्वेस्ट अपने-आप', 'Auto-send rider request on accept')}</span><i class="${RQ.auto ? 'on' : ''}"></i></button>
+                <div class="rq-seg ${RQ.tab}"><i></i><button onclick="RQ.tab='app';rqPaint()">📱 ${tr('ऐप ऑर्डर', 'App orders')} ${cnt.app ? `<em class="red">${cnt.app}</em>` : `<em>${A.length}</em>`}</button><button onclick="RQ.tab='ds';rqPaint()">🏪 ${tr('डिजिटल दुकान', 'Digital shop')} ${cnt.ds ? `<em class="grn">${cnt.ds}</em>` : `<em>${D.length}</em>`}</button></div>
+                <div class="rq-list">${list.join('') || `<div class="rq-empty"><div>${RQ.tab === 'app' ? '📭' : '🏪'}</div><b>${tr('अभी कोई रिक्वेस्ट नहीं', 'No requests right now')}</b><small>${RQ.tab === 'app' ? tr('नया ऑर्डर आते ही घंटी बजेगी और यहाँ दिखेगा', 'A new order rings and shows here') : tr('आपकी डिजिटल दुकान (QR) से आए ऑर्डर यहाँ दिखेंगे', 'Orders from your digital shop (QR) show here')}</small></div>`}</div></div>`;
+        }
+        function rqDo(id, a) {
+            const o = dbOrder(id); if (!o) return;
+            if (a === 'ok') { vendorDecide(id, true, true); sfx('success'); pToast(tr('✅ स्वीकार — अब पैक करें', '✅ Accepted — now pack it')); if (RQ.auto) { vendorPack(id, true); pToast(tr('✅ स्वीकार — राइडर को रिक्वेस्ट भेज दी', '✅ Accepted — riders notified')); } RQ.open[id] = true; }
+            else if (a === 'no') { vendorDecide(id, false, true); sfx('remove'); pToast(tr('मना किया — ऑर्डर अगली दुकान को गया', 'Rejected — sent to the next shop')); }
+            else if (a === 'pack') { vendorPack(id, true); sfx('success'); pToast(tr('📦 राइडर को रिक्वेस्ट भेज दी', '📦 Request sent to riders')); }
+            else if (a === 'picked') { o.pickedAt = Date.now(); if (o.status === 'accepted') setSt(o, 'on_the_way'); sfx('success'); pToast(tr('🛵 राइडर पैकेट ले गया', '🛵 Rider picked it up')); }
+            DB.rev++; rqPaint(); try { renderPanel(true); } catch (e) { }
+        }
+        function rqDs1(no, st) {
+            const L = saGet('hf_bills_v1', []), b = L.find(x => x.no === no); if (!b) return;
+            b.st = st; saPut('hf_bills_v1', L); sfx(st === 'rejected' ? 'remove' : 'success'); vib(12);
+            pToast({ packing: tr('✅ स्वीकार — पैक करें', '✅ Accepted — pack it'), ready: tr('📦 तैयार', '📦 Ready'), done: tr('✓ पूरा', '✓ Done'), rejected: tr('मना किया', 'Rejected') }[st] || '');
+            rqPaint(); try { phNavPaint(); } catch (e) { }
+        }
+        // new request → the sheet opens by itself with a ring
+        { let seen = null; setInterval(() => { try {
+            if (PNL.role !== 'vendor') { seen = null; return; }
+            const ids = rqApp().filter(o => o.status === 'vwait').map(o => o.id).concat(rqDs().filter(b => (b.st || 'new') === 'new').map(b => b.no));
+            if (seen) { const fresh = ids.filter(i => seen.indexOf(i) < 0); if (fresh.length) { try { if (HSP.snd) sfx('order'); } catch (e) { } vib([80, 60, 80]); RQ.tab = fresh.some(i => String(i).indexOf('HFB') === 0) && !fresh.some(i => String(i).indexOf('HFB') !== 0) ? 'ds' : 'app'; rqOpen(); try { phNavPaint(); } catch (e) { } } }
+            seen = ids; const el = document.getElementById('rqSheet'); if (el && el.classList.contains('show')) rqPaint();
+        } catch (e) { } }, 2000); }
+
+        // the old "new order" popup is replaced by the Requests sheet (opens by itself with the order expanded)
+        vRingRender = function (o) {
+            const el = document.getElementById('vRing'); if (el) el.classList.add('hidden');
+            if (!o) return; RQ.open[o.id] = true; RQ.tab = 'app';
+            const s = document.getElementById('rqSheet'); if (s && s.classList.contains('show')) rqPaint(); else rqOpen();
+        };
+        // ---- Menu as a sheet with a business card on top ----
+        function mnOpen() {
+            const v = curV(), id = String(v.phone || v.id || '').replace(/\D/g, '').slice(-4) || '0001';
+            const card = `<button class="bz-card" onclick="mnDetails()"><div class="bz-row"><div class="bz-av">${v.photo ? `<img src="${esc(v.photo)}" alt="">` : esc(initials(v.name))}</div><div class="flex-1 min-w-0 text-left"><b>${esc(v.name)}</b><small>${esc(v.owner || '')} · ${tr('दुकान पार्टनर', 'Shop partner')}</small></div><i class="fa-solid fa-qrcode bz-qr"></i></div>
+                <div class="bz-mid"><span>${v.open ? '🟢 ' + tr('खुली', 'Open') : '🔴 ' + tr('बंद', 'Closed')}</span><span>⭐ ${v.rating || '—'}</span><span>⏱ ${v.prep || 15} min</span></div>
+                <div class="bz-ft"><span>${esc(v.phone || '')}</span><em>HAPPY FOOD · SHOP PARTNER · ${id}</em></div><span class="bz-hint">${tr('टैप करें — पूरी जानकारी', 'Tap for full details')} ›</span></button>`;
+            let body = ''; try { body = vendorShop(); } catch (e) { }
+            openPSheet('☰ ' + tr('मेन्यू', 'Menu'), card + `<div class="mn-body">${body}</div>`);
+        }
+        function mnDetails() {
+            const v = curV();
+            const row = (k, val) => `<div class="mn-r"><span>${k}</span><b>${esc(val || '—')}</b></div>`;
+            openPSheet('🏪 ' + tr('दुकान की जानकारी', 'Shop details'), `<div class="mn-d">${row(tr('दुकान', 'Shop'), v.name)}${row(tr('मालिक', 'Owner'), v.owner)}${row(tr('मोबाइल', 'Mobile'), v.phone)}${row(tr('पता', 'Address'), v.address)}${row(tr('समय', 'Hours'), v.hours)}${row(tr('तैयारी', 'Prep time'), (v.prep || 15) + ' min')}${row('UPI', v.upi)}${row('FSSAI', v.fssai)}${row(tr('जुड़े', 'Joined'), v.joined)}</div>
+                <div class="grid grid-cols-2 gap-2 mt-3"><button class="pbtn-g" onclick="mnOpen()"><i class="fa-solid fa-arrow-left"></i> ${tr('वापस', 'Back')}</button><button class="pbtn" onclick="closePSheet();setTab('shop')"><i class="fa-solid fa-pen"></i> ${tr('बदलें', 'Edit')}</button></div>`);
+        }
+        // bottom bar: Khata | Requests (red = app, green = digital shop) | Menu
+        { const f = phNavPaint; phNavPaint = function () {
+            const r = f.apply(this, arguments);
+            try {
+                if (PNL.role !== 'vendor') return r;
+                const n = document.getElementById('phNav'); if (!n) return r;
+                const c = rqCounts();
+                n.innerHTML = `<button class="nb" onclick="khOpen()"><i class="fa-solid fa-book"></i>${tr('खाता बुक', 'Khata')}</button>
+                    <button class="mid vt-bell" onclick="rqOpen()"><b><i class="fa-solid fa-bell"></i>${c.app ? `<em class="l">${c.app}</em>` : ''}${c.ds ? `<em class="r">${c.ds}</em>` : ''}</b><span>${tr('रिक्वेस्ट', 'Requests')}</span></button>
+                    <button class="nb" onclick="mnOpen()"><i class="fa-solid fa-bars"></i>${tr('मेन्यू', 'Menu')}</button>`;
+            } catch (e) { }
+            return r;
+        }; }
+
+        // ---- admin: the route switch also changes the live server ----
+        { const f = setMode; setMode = function (k) {
+            const r = f.apply(this, arguments);
+            if (LIVE && window.sb) sb.rpc('admin_set_dispatch_mode', { p_mode: k === 'rider_stock' ? 'smart' : k }).then(({ error }) => { if (error) pToast('⚠️ ' + rmMsg(error).slice(0, 70)); }, () => { });
+            return r;
+        }; }
+        setTimeout(async () => { try { if (LIVE && window.sb && currentUser()) { const { data } = await sb.rpc('dispatch_mode'); if (data && DMODE[data]) DB.settings.mode = data; } } catch (e) { } }, 3000);
+
+        /* ================= home5.js: cleaner home — logo in the corner, no extra badges, auto-slide, bigger dish, "order again" moved to My Orders ================= */
+        (function () { try { const h = document.getElementById('appHeader'); if (h && h.firstElementChild && h.firstElementChild.classList.contains('w-9')) h.firstElementChild.style.display = 'none'; } catch (e) { } })();
+        // auto-slide the dishes; pauses for a while after the customer touches the carousel
+        { let last = 0; const c = document.getElementById('carouselContainer'); if (c) ['pointerdown', 'touchstart', 'wheel'].forEach(ev => c.addEventListener(ev, () => { last = Date.now(); }, { passive: true }));
+          setInterval(() => { try {
+            if (Date.now() - last < 9000 || document.hidden || currentTab !== 'home') return;
+            if (document.querySelector('#cartModal:not(.hidden), #liveSheet:not(.hidden), #panelRoot:not(.hidden) #pnlBody')) return;
+            const vh = document.getElementById('viewHome'); if (!vh || vh.classList.contains('hidden') || vh.scrollTop > 260) return;
+            navigateSlide(1);
+          } catch (e) { } }, 4500); }
+        // "order again" lives in My Orders now
+        function hfAgainCard() {
+            try { const items = hfLast(); if (!items.length) return ''; const sum = items.reduce((s, x) => { const p = prodInfo(x.productId); return s + (p ? p.price * x.quantity : 0); }, 0);
+                return `<div id="hfAgainO"><div class="ims">${items.slice(0, 3).map((x, i) => `<img src="${esc(prodInfo(x.productId).image)}" style="--i:${i}" alt="">`).join('')}</div><div class="tx"><small>${tr('पिछला ऑर्डर', 'Your last order')}</small><b>${items.length} ${tr('आइटम', 'items')} • ₹${Math.round(sum)}</b></div><button onclick="hfAgain();showTab('home')"><i class="fa-solid fa-rotate-right"></i> ${tr('फिर से मँगाएँ', 'Order again')}</button></div>`;
+            } catch (e) { return ''; }
+        }
+        { const f = renderOrdersList; renderOrdersList = function () {
+            const r = f.apply(this, arguments);
+            try { const box = document.getElementById('ordersListContainer'); if (box && !document.getElementById('hfAgainO')) { const h = hfAgainCard(); if (h) box.insertAdjacentHTML('afterbegin', h); } } catch (e) { }
+            return r;
+        }; }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>

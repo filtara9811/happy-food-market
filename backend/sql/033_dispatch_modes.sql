@@ -1,0 +1,4 @@
+-- 033-035 (applied via MCP):
+-- * dispatch_mode setting: smart (rider with stock, else shop) | vendor_first (shop first, riders if no shop) | rider_first (riders directly) | manual (treated as smart for now)
+-- * admin_set_dispatch_mode(p_mode), dispatch_mode(); route_order honours the mode; place_order no longer requires 'rider_stock'
+-- * vendor_orders: pay, drop lat/lng, km from the shop, shop lat/lng (for the Requests map)
