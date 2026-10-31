@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../api.dart';
 import '../theme.dart';
+import 'khata.dart';
 import '../widgets/common.dart';
 import '../widgets/shop_ui.dart';
 import '../printer.dart';
@@ -42,6 +43,7 @@ class _BillSheetState extends State<BillSheet> {
       final items = [for (final p in lines) {'product_id': p['product_id'], 'qty': widget.bill[p['product_id'].toString()], 'price': price(p)}];
       final r = await Api.rpc('vendor_bill', {'p_items': items, 'p_pay': pay, 'p_phone': ph.isEmpty ? null : ph, 'p_name': name.text.trim(), 'p_discount': discount});
       if (r is Map) setState(() { receipt = Map<String, dynamic>.from(r); widget.bill.clear(); });
+      if (pay == 'credit' && r is Map) await Khata.addCredit(name.text.trim(), ph, (r['total'] ?? 0) as num, 'बिल ${r['bill_no'] ?? ''}');
       widget.me['total_bills'] = nextNo;
     } catch (e) {
       final s = e.toString();

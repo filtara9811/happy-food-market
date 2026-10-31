@@ -15,6 +15,7 @@ import '../widgets/shop_open.dart';
 import 'inventory.dart';
 import 'shop_page.dart';
 import 'pos_quick.dart';
+import 'khata.dart';
 
 /// Shop home — a copy of the prototype's shop panel: dark gold hero, earnings card, days row,
 /// order / POS tabs, filters, order cards with step dots that open in place, bottom bar with ➕.
@@ -200,14 +201,15 @@ class _ShopHomeState extends State<ShopHome> {
     const commission = 0; // POS / own bills: no Happy Food commission
     final label = dayIdx == 0 ? 'आज' : (dayIdx == 7 ? 'इस महीने' : '${_dayLabel(dayIdx)}');
     return Container(
-      padding: EdgeInsets.fromLTRB(16, top + 14, 16, 18),
+      margin: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+      padding: EdgeInsets.fromLTRB(14, top + 16, 14, 16),
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
+        borderRadius: BorderRadius.circular(28),
         gradient: HF.heroGrad,
         boxShadow: const [BoxShadow(color: Color(0x2E000000), blurRadius: 30, offset: Offset(0, 14))],
       ),
       foregroundDecoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
+        borderRadius: BorderRadius.circular(28),
         gradient: RadialGradient(center: const Alignment(.6, -1), radius: 1.2, colors: [HF.gold.withValues(alpha: .16), Colors.transparent], stops: const [0, .6]),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -332,42 +334,72 @@ class _ShopHomeState extends State<ShopHome> {
     );
   }
 
-  // Orders | POS tabs at the very top, like browser tabs: the active tab is part of the dark card below
+  // Orders | My Shop tabs at the very top (soft curved, like 1QR): the active tab is the page colour, the other one dark
   Widget _chromeTabs(double top) {
-    final live = orders.where((o) => !['done', 'cancelled'].contains(o['status'])).length;
-    Widget lab(int i, IconData ic, String t, int n, {bool hot = false}) => Expanded(
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () { HapticFeedback.selectionClick(); setState(() => seg = i); },
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(ic, size: 20, color: seg == i ? const Color(0xFFF6D68A) : HF.tx),
-              const SizedBox(width: 7),
-              Flexible(child: Text(t, maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(15, color: seg == i ? const Color(0xFFF6D68A) : HF.tx, w: FontWeight.w900))),
-              const SizedBox(width: 7),
-              Container(constraints: const BoxConstraints(minWidth: 24), height: 24, padding: const EdgeInsets.symmetric(horizontal: 7), alignment: Alignment.center,
-                  decoration: BoxDecoration(color: hot && n > 0 ? const Color(0xFFEF4444) : (seg == i ? const Color(0xFF16A34A) : const Color(0xFF111111)), borderRadius: BorderRadius.circular(999)),
-                  child: Text('$n', style: HF.num(12, color: Colors.white, w: FontWeight.w800))),
+    final live = orders.where((o) => o['source'] != 'pos' && !['done', 'cancelled'].contains(o['status'])).length;
+    Widget lab(int i, IconData ic, String t, String sub, int n, {bool hot = false}) {
+      final on = seg == i;
+      return Expanded(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () { HapticFeedback.selectionClick(); setState(() => seg = i); if (sc.hasClients) sc.jumpTo(0); },
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(ic, size: 21, color: on ? HF.goldDeep : const Color(0xFFF6D68A)),
+            const SizedBox(width: 9),
+            Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(t, style: HF.num(18.5, color: on ? HF.tx : const Color(0xFFF6D68A), w: FontWeight.w800)),
+              Text(sub, style: HF.hi(10.5, color: on ? HF.mut : const Color(0xB3F6D68A), w: FontWeight.w600)),
             ]),
-          ),
-        );
-    return Container(
-      color: HF.bg,
+            if (n > 0) ...[
+              const SizedBox(width: 8),
+              Container(constraints: const BoxConstraints(minWidth: 24), height: 24, padding: const EdgeInsets.symmetric(horizontal: 7), alignment: Alignment.center,
+                  decoration: BoxDecoration(color: hot ? const Color(0xFFEF4444) : (on ? const Color(0xFF111111) : HF.gold), borderRadius: BorderRadius.circular(999)),
+                  child: Text('$n', style: HF.num(12, color: hot || on ? Colors.white : HF.ink, w: FontWeight.w800))),
+            ],
+          ]),
+        ),
+      );
+    }
+    return Padding(
       padding: EdgeInsets.only(top: top),
       child: SizedBox(
-        height: 56,
-        child: LayoutBuilder(builder: (_, box) {
-          final w = box.maxWidth * .56;
-          return Stack(children: [
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 420), curve: Curves.easeOutCubic,
-              left: seg == 0 ? 0 : box.maxWidth - w, top: 0, bottom: -1, width: w,
-              child: ClipPath(clipper: _TabClip(seg == 0), child: Container(decoration: const BoxDecoration(color: HF.heroTop))),
-            ),
-            Row(children: [lab(0, Icons.receipt_long_rounded, 'ऑर्डर', orders.length), lab(1, Icons.storefront_rounded, 'POS • इन्वेंट्री', live, hot: true)]),
-          ]);
-        }),
+        height: 60,
+        child: Stack(children: [
+          Positioned.fill(child: TweenAnimationBuilder<double>(
+            tween: Tween(end: seg.toDouble()), duration: const Duration(milliseconds: 380), curve: Curves.easeOutCubic,
+            builder: (_, v, __) => CustomPaint(painter: _TabPainter(v)),
+          )),
+          Row(children: [lab(0, Icons.shopping_bag_rounded, 'Orders', 'ऑनलाइन', orders.where((o) => o['source'] != 'pos').length), lab(1, Icons.storefront_rounded, 'My Shop', 'POS • स्टॉक', live, hot: true)]),
+        ]),
       ),
     );
+  }
+
+  // 🔔 everything customers did: new orders first; tap = open that order in Orders
+  void _notifs() {
+    final l = orders.where((o) => o['source'] != 'pos').toList()..sort((a, b) => '${b['created_at']}'.compareTo('${a['created_at']}'));
+    const lbl = {'new': ['🔔', 'नया ऑर्डर — स्वीकार करें', Color(0xFFFEF3C7)], 'packing': ['📦', 'पैक हो रहा', Color(0xFFFFEDD5)], 'ready': ['🛵', 'राइडर का इंतज़ार', Color(0xFFDBEAFE)], 'done': ['✅', 'पूरा', Color(0xFFDCFCE7)], 'cancelled': ['✖', 'रद्द', Color(0xFFFEE2E2)]};
+    hfSheet(context, (c, ctl) => ListView(controller: ctl, padding: const EdgeInsets.fromLTRB(16, 4, 16, 30), children: [
+          sheetHead(c, '🔔 नोटिफ़िकेशन', sub: 'ग्राहकों के ऑर्डर — दबाते ही वही ऑर्डर खुलेगा'),
+          if (l.isEmpty) Padding(padding: const EdgeInsets.all(30), child: Center(child: Text('अभी कोई नोटिफ़िकेशन नहीं', style: HF.hi(14, color: HF.mut)))),
+          for (final o in l.take(30))
+            GestureDetector(
+              onTap: () { Navigator.pop(c); setState(() { nav = 0; seg = 0; dayIdx = 0; filter = 'all'; open.add(o['id'].toString()); }); if (sc.hasClients) sc.animateTo(380, duration: const Duration(milliseconds: 350), curve: Curves.easeOut); },
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 8), padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(color: o['status'] == 'new' ? const Color(0xFFFFF7E6) : HF.card, borderRadius: BorderRadius.circular(16), border: Border.all(color: o['status'] == 'new' ? const Color(0xFFF59E0B) : HF.line)),
+                child: Row(children: [
+                  Container(width: 40, height: 40, alignment: Alignment.center, decoration: BoxDecoration(color: (lbl[o['status']]?[2] ?? HF.card2) as Color, borderRadius: BorderRadius.circular(12)), child: Text('${lbl[o['status']]?[0] ?? '•'}', style: const TextStyle(fontSize: 18))),
+                  const SizedBox(width: 10),
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('${o['customer_name'] ?? 'ग्राहक'} • ${rupee(_amt(o))}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(13.5, w: FontWeight.w800)),
+                    Text('${lbl[o['status']]?[1] ?? o['status']}', style: HF.hi(11.5, color: HF.mut)),
+                  ])),
+                  Text(_t(o, 'created_at') == null ? '' : hm(_t(o, 'created_at')!), style: HF.hi(11, color: HF.mut, w: FontWeight.w700)),
+                ]),
+              ),
+            ),
+        ]));
   }
 
   Widget _tabs() {
@@ -806,20 +838,28 @@ class _ShopHomeState extends State<ShopHome> {
             height: 72 + bottom,
             padding: EdgeInsets.fromLTRB(22, 0, 22, 10 + bottom),
             decoration: const BoxDecoration(color: HF.card, border: Border(top: BorderSide(color: HF.line)), boxShadow: [BoxShadow(color: Color(0x14000000), blurRadius: 24, offset: Offset(0, -8))]),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [_nb(0, Icons.receipt_long, 'ऑर्डर'), _nb(2, Icons.storefront, 'दुकान')]),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [_nbx(Icons.menu_book_rounded, 'खाता बुक', false, () => showKhata(context, shopName: '${me['shop_name'] ?? ''}')), _nb(2, Icons.menu_rounded, 'मेन्यू')]),
           ),
           Positioned(
             bottom: 12 + bottom,
             child: GestureDetector(
-              onTap: openInventory,
+              onTap: _notifs,
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Container(width: 54, height: 54, decoration: BoxDecoration(shape: BoxShape.circle, gradient: HF.navGrad, border: Border.all(color: HF.card, width: 4), boxShadow: const [BoxShadow(color: Color(0x73E2A92C), blurRadius: 18, offset: Offset(0, 8))]), child: const Icon(Icons.add, size: 28, color: HF.ink)),
+                Stack(clipBehavior: Clip.none, children: [
+                  Container(width: 54, height: 54, decoration: BoxDecoration(shape: BoxShape.circle, gradient: HF.navGrad, border: Border.all(color: HF.card, width: 4), boxShadow: const [BoxShadow(color: Color(0x73E2A92C), blurRadius: 18, offset: Offset(0, 8))]), child: const Icon(Icons.notifications_rounded, size: 27, color: HF.ink)),
+                  if (orders.any((o) => o['status'] == 'new')) Positioned(right: -2, top: -2, child: Container(constraints: const BoxConstraints(minWidth: 20), height: 20, padding: const EdgeInsets.symmetric(horizontal: 5), alignment: Alignment.center, decoration: BoxDecoration(color: const Color(0xFFEF4444), borderRadius: BorderRadius.circular(99), border: Border.all(color: HF.card, width: 2)), child: Text('${orders.where((o) => o['status'] == 'new').length}', style: HF.num(10.5, color: Colors.white)))),
+                ]),
                 const SizedBox(height: 4),
-                Text('इन्वेंट्री', style: HF.hi(11, color: HF.goldDeep, w: FontWeight.w800)),
+                Text('नोटिफ़िकेशन', style: HF.hi(11, color: HF.goldDeep, w: FontWeight.w800)),
               ]),
             ),
           ),
         ]),
+      );
+
+  Widget _nbx(IconData ic, String l, bool on, VoidCallback f) => GestureDetector(
+        behavior: HitTestBehavior.opaque, onTap: f,
+        child: SizedBox(width: 96, child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(ic, size: 22, color: on ? HF.goldDeep : HF.mut), const SizedBox(height: 4), Text(l, style: HF.hi(11.5, color: on ? HF.goldDeep : HF.mut, w: FontWeight.w700))])),
       );
 
   Widget _nb(int i, IconData ic, String l) {
@@ -839,31 +879,32 @@ class _ShopHomeState extends State<ShopHome> {
 }
 
 
-/// Slanted browser-tab shape: rounded on the outer top corner, diagonal on the inner side.
-class _TabClip extends CustomClipper<Path> {
-  final bool left;
-  _TabClip(this.left);
+/// Dark tab behind the inactive side, joined with a soft S-curve (t: 0 = Orders active, 1 = My Shop active).
+class _TabPainter extends CustomPainter {
+  final double t;
+  _TabPainter(this.t);
   @override
-  Path getClip(Size s) {
-    const r = 22.0, slant = 30.0;
-    final p = Path();
-    if (left) {
-      p.moveTo(0, s.height);
-      p.lineTo(0, 0);
-      p.lineTo(s.width - slant - r, 0);
-      p.quadraticBezierTo(s.width - slant, 0, s.width - slant + 6, 10);
-      p.lineTo(s.width, s.height);
-    } else {
-      p.moveTo(0, s.height);
-      p.lineTo(slant - 6, 10);
-      p.quadraticBezierTo(slant, 0, slant + r, 0);
-      p.lineTo(s.width, 0);
-      p.lineTo(s.width, s.height);
-    }
-    p.close();
-    return p;
+  void paint(Canvas c, Size s) {
+    const cw = 64.0;
+    final mid = s.width / 2;
+    final p = Paint()..color = HF.heroTop;
+    final path = Path();
+    // Orders active → dark on the right; My Shop active → dark on the left. Blend by t.
+    final rightShape = Path()
+      ..moveTo(mid - cw / 2, s.height)
+      ..cubicTo(mid - 2, s.height, mid + 2, 0, mid + cw / 2, 0)
+      ..lineTo(s.width, 0)..lineTo(s.width, s.height)..close();
+    final leftShape = Path()
+      ..moveTo(0, 0)..lineTo(mid - cw / 2, 0)
+      ..cubicTo(mid - 2, 0, mid + 2, s.height, mid + cw / 2, s.height)
+      ..lineTo(0, s.height)..close();
+    c.saveLayer(Offset.zero & s, Paint());
+    c.drawShadow(t < .5 ? rightShape : leftShape, Colors.black, 4, false);
+    c.drawPath(t < .5 ? rightShape : leftShape, p..color = HF.heroTop.withValues(alpha: (1 - (t - (t < .5 ? 0 : 1)).abs() * 2).clamp(0.0, 1.0)));
+    c.restore();
+    path.close();
   }
 
   @override
-  bool shouldReclip(_TabClip o) => o.left != left;
+  bool shouldRepaint(_TabPainter o) => o.t != t;
 }
