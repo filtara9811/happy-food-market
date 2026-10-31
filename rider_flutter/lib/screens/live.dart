@@ -787,7 +787,9 @@ class _RiderLiveState extends State<RiderLive> with WidgetsBindingObserver {
             ]),
           )),
         const Divider(),
-        Row(children: [Text('ग्राहक से लेना (COD)', style: HF.hi(13, color: HF.mut)), const Spacer(), Text(rupee((a['total'] ?? 0) as num), style: HF.num(20, color: HF.goldDeep))]),
+        a['pay_mode'] == 'upi'
+            ? Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(color: const Color(0xFFE9F7EE), borderRadius: BorderRadius.circular(14)), child: Row(children: [Expanded(child: Text('💳 ग्राहक ने UPI चुना — कैश मत लीजिए, ग्राहक के फ़ोन पर पेमेंट देख लें', style: HF.hi(12.5, color: const Color(0xFF166534), w: FontWeight.w800))), Text(rupee((a['total'] ?? 0) as num), style: HF.num(18, color: HF.ok))]))
+            : Row(children: [Text('ग्राहक से लेना (COD)', style: HF.hi(13, color: HF.mut)), const Spacer(), Text(rupee((a['total'] ?? 0) as num), style: HF.num(20, color: HF.goldDeep))]),
         const SizedBox(height: 10),
         Row(children: [
           if ((a['customer_phone'] ?? '').toString().isNotEmpty) Expanded(child: _soft('📞 ग्राहक को कॉल', () => _open('tel:+${a['customer_phone']}'))),
@@ -1004,7 +1006,7 @@ class _OfferScreenState extends State<OfferScreen> with SingleTickerProviderStat
                 ]),
               ),
               const SizedBox(height: 10),
-              Row(children: [Text('ग्राहक से लेना (COD)', style: HF.hi(13, color: HF.mut)), const Spacer(), Text(rupee((o['total'] ?? 0) as num), style: HF.num(24, color: HF.goldDeep))]),
+              Row(children: [Text(o['pay_mode'] == 'upi' ? '💳 UPI पेमेंट (कैश नहीं)' : 'ग्राहक से लेना (COD)', style: HF.hi(13, color: o['pay_mode'] == 'upi' ? HF.ok : HF.mut)), const Spacer(), Text(rupee((o['total'] ?? 0) as num), style: HF.num(24, color: HF.goldDeep))]),
               const SizedBox(height: 14),
               GestureDetector(
                 onTap: () => Navigator.pop(context, 'accept'),
