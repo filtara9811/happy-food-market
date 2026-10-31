@@ -1735,6 +1735,87 @@
         .c4-pin.r { width: 42px; height: 42px; border-radius: 50%; overflow: hidden; border: 3px solid #e2b04a; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; }
         .c4-pin.r img { width: 100%; height: 100%; object-fit: cover; }
         #abPin small { display: block; font-size: 10.5px; opacity: .65; margin-top: 2px; }
+        /* ---- shop splash (shutter opens) + chrome tabs ---- */
+/* ---------- DUKAAN (asli shutter) ---------- */
+.hsk{--u:1s;--a:.15s;position:relative;width:258px;flex:0 1 318px;min-height:230px;display:flex;flex-direction:column;filter:drop-shadow(0 18px 26px rgba(0,0,0,.35))}
+/* board */
+.hsk-sign{position:relative;z-index:4;height:48px;flex:none;margin:0 6px;border-radius:8px;background:linear-gradient(180deg,#1f3b2a,#132a1d);border:3px solid #c9a24a;display:flex;align-items:center;gap:8px;padding:0 10px;color:#FFE7A8;overflow:hidden;animation:hsDrop .6s var(--a) cubic-bezier(.3,1.4,.5,1) both}
+.hsk-sign em{flex:none;width:30px;height:30px;border-radius:8px;background:#FFE7A8 center/cover;display:grid;place-items:center;font-style:normal;font-size:17px}
+.hsk-sign div{flex:1;min-width:0;text-align:left}
+.hsk-sign b{display:block;font-size:14.5px;font-weight:800;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cormorant Garamond','Noto Sans Devanagari',Georgia,serif;font-size:17px}
+.hsk-sign small{display:block;font-size:9.5px;font-weight:700;color:#d6c08a;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hsk-sign:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.25) 45%,transparent 60%);transform:translateX(-120%);animation:hskShine 1.4s calc(var(--u) + 1s) both}
+.hsk.lit .hsk-sign{box-shadow:0 0 0 2px rgba(255,214,107,.15),0 0 24px rgba(255,200,90,.45)}
+@keyframes hskShine{to{transform:translateX(120%)}}
+.hsk-sign i{position:absolute;top:3px;width:4px;height:4px;border-radius:50%;background:#FFD66B;box-shadow:0 0 6px #FFD66B;opacity:.25;animation:hskBulb .3s calc(var(--u) + .9s) forwards}
+@keyframes hskBulb{to{opacity:1}}
+/* chhajja (awning) */
+.hsk-aw{position:relative;z-index:3;height:30px;flex:none;margin:-2px -10px 0;border-radius:3px 3px 0 0;background:repeating-linear-gradient(90deg,#F47B20 0 23px,#FFE2BD 23px 46px);box-shadow:0 8px 12px rgba(0,0,0,.25);animation:hsDrop .6s calc(var(--a) + .12s) cubic-bezier(.3,1.4,.5,1) both}
+.hsk-aw:after{content:"";position:absolute;left:0;right:0;bottom:-10px;height:11px;background:radial-gradient(circle at 11.5px 0,#F47B20 11px,transparent 12px) 0 0/46px 11px,radial-gradient(circle at 34.5px 0,#FFE2BD 11px,transparent 12px) 0 0/46px 11px}
+/* deewar + darwaza */
+.hsk-fr{position:relative;flex:1;min-height:150px;display:flex;flex-direction:column;padding:0 12px;background:
+  linear-gradient(90deg,rgba(0,0,0,.18),transparent 12px,transparent calc(100% - 12px),rgba(0,0,0,.18)),
+  repeating-linear-gradient(0deg,#b4643a 0 13px,#8f4a28 13px 15px);border-radius:0 0 4px 4px}
+.hsk-drum{position:relative;z-index:3;height:16px;flex:none;margin:10px -4px 0;border-radius:5px;background:linear-gradient(180deg,#77736b,#4a4740 60%,#3a3833);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 3px 5px rgba(0,0,0,.35)}
+.hsk-door{position:relative;flex:1;overflow:hidden;background:#1a1410;border-left:7px solid #3d3a35;border-right:7px solid #3d3a35;box-shadow:inset 1px 0 0 #6d6a63,inset -1px 0 0 #6d6a63}
+.hsk-step{height:9px;flex:none;margin:0 -8px;border-radius:2px;background:linear-gradient(180deg,#9a948a,#6e6a62)}
+/* andar */
+.hsk-in{position:absolute;inset:0;background:radial-gradient(90% 70% at 50% 0,#ffd98a,#d9963e 45%,#6a4320 100%) center/cover;display:flex;flex-direction:column;justify-content:flex-end;filter:brightness(.25);animation:hskLight .5s calc(var(--u) + .55s) forwards}
+.hsk-in.ph{background-size:cover;background-position:center}
+@keyframes hskLight{0%{filter:brightness(.25)}30%{filter:brightness(.9)}45%{filter:brightness(.4)}100%{filter:none}}
+.hsk-tl{position:absolute;top:6px;left:24%;right:24%;height:4px;border-radius:3px;background:#fffbe8;box-shadow:0 0 14px 4px rgba(255,248,200,.8);opacity:0;animation:hskTube .5s calc(var(--u) + .55s) forwards}
+@keyframes hskTube{0%,20%{opacity:0}25%{opacity:1}35%{opacity:.2}50%,100%{opacity:1}}
+.hsk-sf{display:flex;justify-content:space-around;font-size:17px;line-height:1;padding:0 6px 3px;border-bottom:3px solid #6b4423}
+.hsk-ct{height:26px;margin:4px 10px 0;border-radius:4px 4px 0 0;background:linear-gradient(180deg,#8a5a30,#5e3b1d)}
+/* OPEN takhti (latakti hui) */
+.hsk-op{position:absolute;left:50%;top:14px;z-index:1;margin-left:-38px;width:76px;transform-origin:50% -10px;animation:hskSway 2.4s calc(var(--u) + .9s) ease-in-out infinite;cursor:pointer;pointer-events:auto}
+.hsk-op:before{content:"";position:absolute;left:12px;right:12px;top:-12px;height:14px;border:2px solid #444;border-bottom:0;border-radius:40px 40px 0 0}
+.hsk-op b{display:block;padding:4px 0;border-radius:6px;background:#0f2a18;border:2px solid #3EAF5C;color:#3EAF5C;font-size:13px;font-weight:800;letter-spacing:3px;box-shadow:0 0 16px rgba(62,175,92,.65);text-align:center}
+@keyframes hskSway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+/* SHUTTER */
+.hsk-sh{position:absolute;inset:0;z-index:2;background:
+  linear-gradient(90deg,rgba(0,0,0,.22),rgba(255,255,255,.12) 18%,rgba(255,255,255,0) 40%,rgba(0,0,0,.08) 70%,rgba(0,0,0,.25)),
+  repeating-linear-gradient(180deg,#dcd9d2 0,#c4c1b9 3px,#a29f97 7px,#7f7c75 10px,#55524c 11px,#e6e3dc 12px)}
+.hsk-sh:after{content:"";position:absolute;left:0;right:0;bottom:0;height:15px;background:linear-gradient(180deg,#6f6c65,#4b4842 60%,#3a3833);box-shadow:0 -1px 0 #8d8a83}
+.hsk-sh i{position:absolute;bottom:3px;z-index:1;width:22px;height:7px;border-radius:3px;background:#2e2c28;box-shadow:inset 0 1px 0 #77736b}
+.hsk-sh i:nth-of-type(1){left:18%}.hsk-sh i:nth-of-type(2){right:18%}
+.hsk-sh.up{animation:hskUp 1.25s var(--u) cubic-bezier(.55,0,.35,1) both}
+@keyframes hskUp{0%{transform:none}7%{transform:translateY(-5%)}11%{transform:translateY(-3.5%)}88%{transform:translateY(-101%)}93%{transform:translateY(-97%)}100%{transform:translateY(-101%)}}
+.hsk-sh.dn{transform:translateY(-101%);animation:hskDn 1.1s var(--u) cubic-bezier(.5,0,.6,1) forwards}
+@keyframes hskDn{0%{transform:translateY(-101%)}85%{transform:translateY(1%)}92%{transform:translateY(-2%)}100%{transform:none}}
+.hsk-lk{position:absolute;left:50%;bottom:10px;z-index:3;width:30px;height:34px;margin-left:-15px;transform:scale(0);animation:hsPop .4s calc(var(--u) + 1.2s) cubic-bezier(.3,1.6,.5,1) forwards}
+.hsk-lk:before{content:"";position:absolute;left:6px;top:0;width:14px;height:14px;border:4px solid #c9c6bf;border-bottom:0;border-radius:12px 12px 0 0}
+.hsk-lk:after{content:"";position:absolute;left:0;bottom:0;width:30px;height:20px;border-radius:5px;background:linear-gradient(180deg,#F7C860,#C98A1E);box-shadow:0 3px 6px rgba(0,0,0,.4)}
+.hsk.off .hsk-sign{filter:saturate(.4) brightness(.6)}
+.hsk.off .hsk-sign i,.hsk.off .hsk-sign:after{display:none}
+
+
+@keyframes hsDrop{from{transform:translateY(-120px);opacity:0}to{transform:none;opacity:1}}
+@keyframes hsPop{to{transform:scale(1)}}
+@keyframes hsUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+#hsSplash{position:fixed;inset:0;z-index:99990;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:60px 20px 50px;text-align:center;color:#fff;
+  background:radial-gradient(120% 80% at 50% 35%,#3a2410,#17130f 70%);font-family:'Outfit','Noto Sans Devanagari',system-ui,sans-serif;transition:opacity .35s}
+#hsSplash.out{opacity:0;pointer-events:none}
+#hsSplash .hs-brand{position:absolute;top:calc(22px + env(safe-area-inset-top,0px));left:0;right:0;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:17px}
+#hsSplash .hs-brand i{width:34px;height:34px;border-radius:10px;background:linear-gradient(180deg,#fde68a,#e2b04a);display:grid;place-items:center;font-style:normal;font-size:18px}
+#hsSplash .hs-snd{position:absolute;top:calc(16px + env(safe-area-inset-top,0px));right:16px;width:40px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);font-size:16px}
+#hsSplash h1{font-size:28px;font-weight:900;letter-spacing:-.4px;line-height:1.15;margin:0}
+#hsSplash p{font-size:14px;font-weight:600;opacity:.8;margin:4px 0 0}
+#hsSplash .hs-tt{opacity:0;animation:hsUp .6s .9s cubic-bezier(.22,1,.36,1) both}
+#hsSplash .hs-skip{position:absolute;bottom:calc(24px + env(safe-area-inset-bottom,0px));left:0;right:0;font-size:12px;font-weight:700;opacity:.55}
+#hsSplash .hsk{--u:.3s;--a:0s}
+#hsSplash .hsk-sh.up{animation-duration:.95s}
+
+#panelRoot .vt-tabs{position:relative;display:flex;height:56px;margin:-34px -16px 14px;background:var(--p-bg);border-radius:0}
+#panelRoot .vt-tabs .vt-bg{position:absolute;top:0;bottom:-1px;width:56%;background:#2a2112;border-radius:22px 22px 0 0;transition:left .45s cubic-bezier(.22,1,.36,1),clip-path .45s}
+#panelRoot .vt-tabs.l .vt-bg{left:0;clip-path:polygon(0 0,86% 0,100% 100%,0 100%);border-top-left-radius:0}
+#panelRoot .vt-tabs.r .vt-bg{left:44%;clip-path:polygon(14% 0,100% 0,100% 100%,0 100%);border-top-right-radius:0}
+#panelRoot .vt-tabs button{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:900;font-size:15.5px;color:var(--p-tx);padding-top:calc(env(safe-area-inset-top,0px))}
+#panelRoot .vt-tabs button.on{color:#f6d68a}
+#panelRoot .vt-tabs button i{font-style:normal;font-size:18px}
+#panelRoot .vt-tabs .n{min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:#16a34a;color:#fff;font-size:12px;display:inline-flex;align-items:center;justify-content:center}
+#panelRoot .vt-tabs button:not(.on) .n{background:#111;color:#fff}
+#panelRoot .vt-tabs .n.hot{background:#ef4444}
     </style>
 <style>
 html,body{height:100%}
@@ -7603,7 +7684,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             const r = f.apply(this, arguments);
             if (LIVE && PNL.role === 'rider') { const me = RL.me || {}, nm = me.name || (currentUser() || {}).name || 'R';
                 phChrome({ mini: `<div class="flex items-center gap-3"><div class="ph-av" style="width:40px;height:40px;font-size:14px;border-width:2px">${RL.avatar ? `<img src="${esc(RL.avatar)}">` : initials(nm)}</div><div class="flex-1 min-w-0"><p class="font-outfit font-black text-[18px]">💰 ${money_((RL.hist && RL.hist.orders || []).filter(o => o.status === 'delivered' && new Date(o.created_at).getTime() >= phDay(Date.now())).reduce((s, o) => s + Number(o.total), 0))} <span class="text-[12px] font-bold" style="color:rgba(255,255,255,.7)">${tr('आज', 'today')}</span></p></div><button class="ph-duty ${me.online ? 'on' : ''}" onclick="rlToggleOnline()"><span class="tg"></span><b class="text-[12px]">${me.online ? tr('ऑनलाइन', 'On') : tr('ऑफ़', 'Off')}</b></button></div>`,
-                    fab: me.approved ? `<button class="b" onclick="phSet('rider','tab','stock');document.getElementById('pnlBody').scrollTop=9999">+</button><span>${tr('स्टॉक भरें', 'Add stock')}</span>` : '' }); }
+                    fab: me.approved ? `<button class="b" onclick="puClaimScan()"><i class="fa-solid fa-qrcode"></i></button><span>${tr('स्कैन करें', 'Scan')}</span>` : '' }); }
             return r;
         }; }
         // the view key must also change when history / tabs change
@@ -10155,7 +10236,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
                 const rr = curRider(), offer = rr && riderOfferFor(rr) ? 1 : 0;
                 n.classList.add('on');
                 n.innerHTML = `<button class="nb ${onHome ? 'on' : ''}" onclick="rdMenuGo('home')"><i class="fa-solid fa-motorcycle"></i>${tr('डिलीवरी', 'Deliveries')}${offer ? '<span class="bd">1</span>' : ''}</button>
-                    <button class="mid" onclick="rdMenu()"><b><i class="fa-solid fa-grip" style="font-size:22px"></i></b><span>${tr('मेन्यू', 'Menu')}</span></button>
+                    <button class="mid" onclick="puClaimScan()"><b><i class="fa-solid fa-qrcode" style="font-size:22px"></i></b><span>${tr('स्कैन करें', 'Scan')}</span></button>
                     <button class="nb ${PNL.tab.rider === 'me' ? 'on' : ''}" onclick="rdMenuGo('me')"><i class="fa-solid fa-user"></i>${tr('प्रोफ़ाइल', 'Profile')}</button>`;
             } catch (e) { }
             return r;
@@ -10181,7 +10262,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             try {
                 if (PNL.role === 'rider' && !LIVE) {
                     const rr = curRider(), hero = document.querySelector('#pnlBody .ph-hero');
-                    if (hero) phChrome({ mini: `<div class="flex items-center gap-3"><div class="ph-av" style="width:40px;height:40px;font-size:14px;border-width:2px">${initials(rr.name)}</div><div class="flex-1 min-w-0"><p class="font-outfit font-black text-[18px]">💰 ${money_((window.PH_LAST && PH_LAST.rider && PH_LAST.rider.amt) || 0)}</p><p class="text-[11px]" style="color:rgba(255,255,255,.65)">${tr('आज की कमाई', "Today's earnings")}</p></div></div>`, fab: '' });
+                    if (hero) phChrome({ mini: `<div class="flex items-center gap-3"><div class="ph-av" style="width:40px;height:40px;font-size:14px;border-width:2px">${initials(rr.name)}</div><div class="flex-1 min-w-0"><p class="font-outfit font-black text-[18px]">💰 ${money_((window.PH_LAST && PH_LAST.rider && PH_LAST.rider.amt) || 0)}</p><p class="text-[11px]" style="color:rgba(255,255,255,.65)">${tr('आज की कमाई', "Today's earnings")}</p></div></div>`, fab: `<button class="b" onclick="puClaimScan()"><i class="fa-solid fa-qrcode"></i></button><span>${tr('स्कैन करें', 'Scan')}</span>` });
                     else { const h = document.getElementById('pnlHead'); if (h) h.style.display = 'none'; const b = document.getElementById('pnlBody'); if (b && !b.querySelector('.rd-back')) b.insertAdjacentHTML('afterbegin', `<button class="rd-back" onclick="rdMenuGo('home')"><i class="fa-solid fa-arrow-left"></i> ${PNL.tab.rider === 'earn' ? tr('कमाई व हिसाब', 'Earnings') : PNL.tab.rider === 'me' ? tr('मेरी प्रोफ़ाइल', 'My profile') : tr('वापस', 'Back')}</button>`); }
                     phNavPaint();
                 }
@@ -12323,6 +12404,102 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             if (window.__aZones || window.__aCoins || window.__aLegal || window.__aFines) return r;
             return paysCard() + r;
         }; }
+
+        /* ================= shopsplash.js: shop opens with a shutter animation; Orders / POS tabs sit on top like browser tabs ================= */
+        const HSP = { snd: (() => { try { return localStorage.getItem('hf_shsnd') !== '0'; } catch (e) { return true; } })(), ac: null, busy: false };
+        function hsAc() { try { if (!HSP.ac) HSP.ac = new (window.AudioContext || window.webkitAudioContext)(); if (HSP.ac.state === 'suspended') HSP.ac.resume(); return HSP.ac; } catch (e) { return null; } }
+        function hsRattle(at, dur) {
+            const c = hsAc(); if (!c) return; const t0 = c.currentTime + at, n = Math.round(dur * 26);
+            const len = Math.floor(c.sampleRate * .03), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+            for (let i = 0; i < n; i++) { const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = buf; f.type = 'bandpass'; f.frequency.value = 900 + Math.random() * 1400; f.Q.value = 2.5; g.gain.value = (.85 - .55 * i / n) * (.55 + Math.random() * .45) * .4; s.connect(f); f.connect(g); g.connect(c.destination); s.start(t0 + i * (dur / n) + Math.random() * .008); }
+        }
+        function hsTing(at) { const c = hsAc(); if (!c) return; const t0 = c.currentTime + at; [[1318, .2], [1976, .1], [2637, .05]].forEach(([f, v]) => { const o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(v, t0 + .01); g.gain.exponentialRampToValueAtTime(.0008, t0 + 1.1); o.connect(g); g.connect(c.destination); o.start(t0); o.stop(t0 + 1.2); }); }
+        function hsSndToggle(b) { HSP.snd = !HSP.snd; try { localStorage.setItem('hf_shsnd', HSP.snd ? '1' : '0'); } catch (e) { } if (b) b.textContent = HSP.snd ? '🔊' : '🔇'; }
+        function hsStore(v) {
+            const bulbs = [10, 30, 50, 70, 90].map(x => `<i style="left:${x}%"></i>`).join('');
+            const inside = v.photo ? `<div class="hsk-in ph" style="background-image:url('${esc(v.photo)}')"></div>` : `<div class="hsk-in"><div class="hsk-sf">🍛🥟🍢🧆</div><div class="hsk-sf">🍲🥗🍮🥤</div><div class="hsk-ct"></div></div>`;
+            return `<div class="hsk lit"><div class="hsk-sign">${bulbs}<em>🏪</em><div><b>${esc(v.name || 'Happy Food Kitchen')}</b><small>${esc(v.address || v.area || 'Sadar Bazaar, Delhi')}</small></div></div>
+                <div class="hsk-aw"></div><div class="hsk-fr"><div class="hsk-drum"></div><div class="hsk-door">${inside}<div class="hsk-tl"></div><div class="hsk-op"><b>OPEN</b></div><div class="hsk-sh up"><i></i><i></i></div></div></div><div class="hsk-step"></div></div>`;
+        }
+        function hsShow(v, cb, ms) {
+            if (HSP.busy) { cb && cb(); return; } HSP.busy = true;
+            const o = document.createElement('div'); o.id = 'hsSplash';
+            o.innerHTML = `<div class="hs-brand"><i>😋</i><span>Happy Food <b style="color:#F2B632">Shop</b></span></div><button class="hs-snd" onclick="event.stopPropagation();hsSndToggle(this)">${HSP.snd ? '🔊' : '🔇'}</button>
+                ${hsStore(v)}<div class="hs-tt"><h1>${esc(v.name || '')}</h1><p>Happy Food <b style="color:#F2B632">Shop</b> · ${tr('दुकान खुल रही है…', 'opening your shop…')}</p></div>
+                <div class="hs-skip">${tr('टैप करके आगे बढ़ें', 'tap to skip')}</div>`;
+            document.body.appendChild(o);
+            if (HSP.snd) { try { hsRattle(.3, 1.0); hsTing(1.4); } catch (e) { } }
+            let done = false; const fin = () => { if (done) return; done = true; setTimeout(() => o.classList.add('out'), 120); setTimeout(() => { o.remove(); HSP.busy = false; }, 520); };
+            o.addEventListener('click', fin); setTimeout(fin, ms || 1900);
+            try { cb && cb(); } catch (e) { }
+        }
+        // opening the shop panel → shutter goes up
+        { const f = openPanel; openPanel = function (role) {
+            const r = f.apply(this, arguments);
+            try { if (role === 'vendor' && !window.__hsNoSplash) hsShow(curV(), null, 2600); } catch (e) { }
+            return r;
+        }; }
+        // Orders / POS tabs move to the very top of the shop dashboard, like browser tabs
+        { const f = phView; phView = function (role, c) {
+            const r = f.apply(this, arguments);
+            if (role !== 'vendor' || !c || !c.tabs) return r;
+            try {
+                const s = r.indexOf('<div class="ph-tabs mt-3">'); let out = r;
+                if (s > -1) { const e = r.indexOf('</div>', s); out = r.slice(0, s) + r.slice(e + 6); }
+                const st = PH[role], on = st.tab === 'pos' ? 1 : 0;
+                const ic = ['🧾', '🏪'];
+                const tabs = `<div class="vt-tabs ${on ? 'r' : 'l'}"><span class="vt-bg"></span>${c.tabs.map((t, i) => { const lbl = String(t[1]).replace(/^\S+\s/, '');
+                    return `<button class="${i === on ? 'on' : ''}" onclick="${t[3] || `phSet('${role}','tab','${t[0]}')`}"><i>${ic[i] || ''}</i>${lbl} <span class="n ${t[3] && t[2] ? 'hot' : ''}">${t[2]}</span></button>`; }).join('')}</div>`;
+                const h = out.indexOf('class="ph-hero"'); if (h < 0) return out;
+                const gt = out.indexOf('>', h) + 1;
+                return out.slice(0, gt) + tabs + out.slice(gt);
+            } catch (e) { return r; }
+        }; }
+
+        /* ================= scan2.js: rider center button = scanner — scan any shop slip (or type order no. + code) and the order is yours ================= */
+        async function puClaimGo(raw, code) {
+            if (PU.busy) return; PU.busy = true;
+            try {
+                if (!LIVE) { puClose(); closePSheet(); sfx('success'); pToast(tr('✅ डेमो: ऑर्डर आपका — पैकेट लिया, ग्राहक की ओर चलें 🛵', '✅ Demo: order is yours — head to the customer 🛵')); return; }
+                const { data, error } = await sb.rpc('rider_claim_pickup', { p_raw: raw, p_code: code || null }); if (error) throw error;
+                if (data && data.ok) { puClose(); closePSheet(); sfx('success'); vib([60, 40, 60]); pToast(data.claimed ? tr('✅ ऑर्डर आपका — पैकेट लिया, अब ग्राहक की ओर 🛵', '✅ Order is yours — head to the customer 🛵') : tr('✅ पिकअप हो गया', '✅ Picked up')); PU.at = 0; await rlRefresh(true); }
+                else { const m = { wrong_code: tr('कोड / QR मेल नहीं खाया', 'Code does not match'), not_ready: tr('दुकान ने अभी "तैयार" नहीं दबाया', 'The shop has not marked it ready'), taken: tr('यह ऑर्डर दूसरा पार्टनर ले चुका', 'Another partner took it'), busy: tr('पहले अपनी चालू डिलीवरी पूरी करें', 'Finish your active delivery first'), not_open: tr('यह ऑर्डर अब खुला नहीं है', 'This order is closed'), bad_input: tr('ऑर्डर नंबर और 6 अंक का कोड डालें', 'Enter order no. and 6-digit code'), not_allowed: tr('आपका अकाउंट अभी मंज़ूर नहीं', 'Your account is not approved yet') }[data && data.code] || tr('पिकअप नहीं हुआ', 'Pickup failed'); puMsg(m, true); sfx('fail'); vib(120); }
+            } catch (e) { puMsg(rmOrderErr(e), true); }
+            finally { setTimeout(() => { PU.busy = false; }, 1200); }
+        }
+        function puClaimManual() {
+            puClose();
+            openPSheet(tr('⌨️ स्लिप से नंबर डालें', '⌨️ Type from the slip'), `<p class="text-[12.5px] pmut">${tr('स्लिप पर लिखा ऑर्डर नंबर (जैसे HF-0BF8) और 6 अंक का पिकअप कोड', 'Order no. on the slip (e.g. HF-0BF8) and the 6-digit pickup code')}</p>
+                <input id="pkOrd" placeholder="HF-0BF8" style="width:100%;margin-top:12px;text-transform:uppercase;font-weight:800;font-size:18px">
+                <input id="pkCode" maxlength="6" inputmode="numeric" placeholder="••••••" style="width:100%;text-align:center;font-weight:900;font-size:26px;letter-spacing:10px;margin-top:10px">
+                <p id="pkErr2" class="text-[12.5px] mt-2" style="color:var(--p-bad)"></p>
+                <button class="pbtn w-full mt-3" onclick="puClaimGo(document.getElementById('pkOrd').value, document.getElementById('pkCode').value)"><i class="fa-solid fa-check"></i> ${tr('पिकअप करें', 'Pick up')}</button>`);
+            setTimeout(() => { const i = document.getElementById('pkOrd'); i && i.focus(); }, 200);
+        }
+        async function puClaimScan() {
+            // my own active shop order → normal pickup scan
+            try { const a = RL.me && RL.me.active; if (a && puActive(a)) return puScan(a.id); } catch (e) { }
+            puClose();
+            const ov = document.createElement('div'); ov.id = 'pkScan';
+            ov.innerHTML = `<video playsinline muted></video><div class="pk-frame"><i></i><i></i><i></i><i></i><span class="pk-laser"></span></div>
+                <div class="pk-top"><b>${tr('दुकान की स्लिप का QR स्कैन करें', 'Scan the shop slip QR')}</b><button onclick="puClose()" aria-label="close"><i class="fa-solid fa-xmark"></i></button></div>
+                <div class="pk-bot"><p id="pkErr">${tr('स्कैन हो रहा है…', 'Scanning…')}</p><button onclick="puTorch()"><i class="fa-solid fa-bolt"></i> ${tr('टॉर्च', 'Torch')}</button><button onclick="puClaimManual()">⌨️ ${tr('नंबर से डालें', 'Type number')}</button>${typeof rdMenu === 'function' ? `<button onclick="puClose();rdMenu()">☰ ${tr('मेन्यू', 'Menu')}</button>` : ''}</div>`;
+            (document.getElementById('panelRoot') || document.body).appendChild(ov);
+            const v = ov.querySelector('video');
+            try { PU.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false }); v.srcObject = PU.stream; await v.play(); }
+            catch (e) { puMsg(tr('कैमरा नहीं खुला — अनुमति दें या "नंबर से डालें" दबाएँ', 'Camera blocked — allow it or type the number'), true); return; }
+            let det = null; try { if ('BarcodeDetector' in window) det = new BarcodeDetector({ formats: ['qr_code', 'code_128'] }); } catch (e) { det = null; }
+            let jq = null; if (!det) { try { jq = await puJsQR(); } catch (e) { puMsg(tr('स्कैनर लोड नहीं हुआ — "नंबर से डालें" दबाएँ', 'Scanner did not load — type the number'), true); } }
+            const cv = document.createElement('canvas'), cx = cv.getContext('2d', { willReadFrequently: true });
+            PU.timer = setInterval(async () => {
+                if (!document.getElementById('pkScan') || PU.busy || v.readyState < 2) return;
+                try { let val = null;
+                    if (det) { const r = await det.detect(v); if (r && r[0]) val = r[0].rawValue; }
+                    else if (jq) { const w = Math.min(720, v.videoWidth), h = Math.round(v.videoHeight * w / v.videoWidth); cv.width = w; cv.height = h; cx.drawImage(v, 0, 0, w, h); const r = jq(cx.getImageData(0, 0, w, h).data, w, h, { inversionAttempts: 'dontInvert' }); if (r) val = r.data; }
+                    if (val && /^HFPICK:/i.test(val)) puClaimGo(val);
+                } catch (e) { }
+            }, 280);
+        }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script></body></html>
