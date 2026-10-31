@@ -1806,16 +1806,53 @@
 #hsSplash .hsk{--u:.3s;--a:0s}
 #hsSplash .hsk-sh.up{animation-duration:.95s}
 
-#panelRoot .vt-tabs{position:relative;display:flex;height:56px;margin:-34px -16px 14px;background:var(--p-bg);border-radius:0}
-#panelRoot .vt-tabs .vt-bg{position:absolute;top:0;bottom:-1px;width:56%;background:#2a2112;border-radius:22px 22px 0 0;transition:left .45s cubic-bezier(.22,1,.36,1),clip-path .45s}
-#panelRoot .vt-tabs.l .vt-bg{left:0;clip-path:polygon(0 0,86% 0,100% 100%,0 100%);border-top-left-radius:0}
-#panelRoot .vt-tabs.r .vt-bg{left:44%;clip-path:polygon(14% 0,100% 0,100% 100%,0 100%);border-top-right-radius:0}
-#panelRoot .vt-tabs button{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:900;font-size:15.5px;color:var(--p-tx);padding-top:calc(env(safe-area-inset-top,0px))}
-#panelRoot .vt-tabs button.on{color:#f6d68a}
-#panelRoot .vt-tabs button i{font-style:normal;font-size:18px}
-#panelRoot .vt-tabs .n{min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:#16a34a;color:#fff;font-size:12px;display:inline-flex;align-items:center;justify-content:center}
-#panelRoot .vt-tabs button:not(.on) .n{background:#111;color:#fff}
-#panelRoot .vt-tabs .n.hot{background:#ef4444}
+#panelRoot .vt-tabs{position:relative;display:flex;height:60px;margin:-16px -16px 14px}
+#panelRoot .vt-shape{position:absolute;inset:0;display:flex;pointer-events:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.12))}
+#panelRoot .vt-shape .vt-tp{flex:1}
+#panelRoot .vt-shape .vt-cr{flex:1;background:#2a2112}
+#panelRoot .vt-tabs.l .vt-shape .vt-cr{border-bottom-left-radius:0}
+#panelRoot .vt-shape .vt-cv{width:64px;height:100%;flex:none;display:block;margin:0 -1px}
+#panelRoot .vt-shape .vt-cv path{fill:#2a2112}
+#panelRoot .vt-b{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 10px;color:#f6d68a}
+#panelRoot .vt-b>i{font-size:19px;opacity:.9}
+#panelRoot .vt-b .vt-tx{display:flex;flex-direction:column;align-items:flex-start;line-height:1.05}
+#panelRoot .vt-b b{font-family:'Outfit',sans-serif;font-size:19px;font-weight:800;letter-spacing:-.2px}
+#panelRoot .vt-b small{font-size:10.5px;font-weight:600;opacity:.65;margin-top:2px;letter-spacing:.2px}
+#panelRoot .vt-b em{font-style:normal;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:#e2b04a;color:#1a1305;font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+#panelRoot .vt-b.on{color:var(--p-tx)}
+#panelRoot .vt-b.on>i{color:var(--p-gold)}
+#panelRoot .vt-b.on em{background:#111;color:#fff}
+#panelRoot .vt-b em.hot{background:#ef4444;color:#fff}
+#panelRoot .vt-b:active{transform:scale(.97)}
+#panelRoot .ph-hero.vt-card{margin:0 0 0 !important;border-radius:28px !important;padding:16px 14px !important}
+#billFab.on{bottom:96px !important}
+#pSheet.vt-inline{align-items:stretch}
+#pSheet.vt-inline>.absolute{display:none}
+#pSheet.vt-inline .psheet{max-height:none;height:100%;border-radius:0;border-top:0 !important;animation:none !important;background:var(--p-bg);padding-top:6px}
+#pSheet.vt-inline .psheet>.flex.items-center.justify-between.mb-4{display:none}
+#phNav .vt-bell b{position:relative}
+#phNav .vt-bell b i{font-size:21px}
+#phNav .vt-bell em{position:absolute;top:-4px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#ef4444;color:#fff;font-style:normal;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--p-card)}
+.vt-nl{display:flex;flex-direction:column;gap:8px}
+.vt-nl button{display:flex;align-items:center;gap:10px;padding:10px;border-radius:16px;border:1px solid var(--p-line);background:var(--p-card);text-align:left}
+.vt-nl button.new{border-color:#f59e0b;background:color-mix(in srgb,#f59e0b 10%,var(--p-card))}
+.vt-nl i{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-style:normal;font-size:18px;flex:none}
+.vt-nl span{flex:1;min-width:0}.vt-nl b{display:block;font-size:13.5px}.vt-nl small{display:block;font-size:11.5px;color:var(--p-mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vt-nl time{font-size:11px;font-weight:700;color:var(--p-mut)}
+#panelRoot .vt-flash{box-shadow:0 0 0 3px #e2b04a !important;transition:box-shadow .3s}
+.vt-back{font-size:13px;font-weight:800;color:var(--p-gold);margin-bottom:10px}
+.kh-top{display:grid;grid-template-columns:1.4fr 1fr;gap:10px}.kh-top>div{padding:14px;border-radius:18px;background:linear-gradient(165deg,#2a2112,#0b0d14);color:#fff}.kh-top small{font-size:11px;opacity:.7;font-weight:700}.kh-top b{display:block;font-family:'Outfit',sans-serif;font-size:24px;color:#f6d68a}
+.kh-in{display:flex;gap:8px}.kh-in input{flex:1;min-width:0}
+.kh-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.kh-c{display:flex;align-items:center;gap:10px;padding:10px;border-radius:16px;border:1px solid var(--p-line);background:var(--p-card);text-align:left}
+.kh-c span{flex:1;min-width:0}.kh-c b{display:block;font-size:14px}.kh-c small{font-size:11.5px;color:var(--p-mut)}
+.kh-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#fce49d,#b88222);display:grid;place-items:center;font-weight:900;color:#1a1305;flex:none}
+.kh-c em,.kh-hd b.red,.kh-hd b.grn{font-style:normal;font-family:'Outfit',sans-serif;font-weight:800;font-size:16px}
+.red{color:#dc2626}.grn{color:#16a34a}
+.kh-hd{display:flex;align-items:center;gap:12px;padding:12px;border-radius:18px;background:var(--p-card2);margin-bottom:10px}.kh-hd b{display:block}.kh-hd small{font-size:11.5px;color:var(--p-mut)}
+.kh-give,.kh-got{padding:13px;border-radius:14px;font-weight:900;color:#fff}.kh-give{background:#dc2626}.kh-got{background:#16a34a}
+.kh-wa{width:100%;margin-top:8px;padding:11px;border-radius:14px;font-weight:800;background:#e7f8ee;color:#128c4a}
+.kh-e{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:14px;background:var(--p-card);border:1px solid var(--p-line)}.kh-e b{display:block;font-size:13px}.kh-e small{font-size:11px;color:var(--p-mut)}.kh-e em{font-style:normal;font-weight:800}.kh-e.give em{color:#dc2626}.kh-e.got em{color:#16a34a}
     </style>
 <style>
 html,body{height:100%}
@@ -8978,7 +9015,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             el.innerHTML = `<div class="bl-card"><div class="bl-hd"><div><p class="bl-t">🧾 ${tr('नया बिल', 'New bill')}</p><p class="bl-s">${esc(v.name)} • ${tr('बिल नंबर', 'Bill no.')} HFB-${String(saGet('hf_billno_' + v.id, 0) + 1).padStart(4, '0')}</p></div><button class="pk-x" onclick="closeBill()"><i class="fa-solid fa-xmark"></i></button></div>
                 <div class="bl-items">${BILL.items.map(i => { const p = billP(i.pid); return `<div class="bl-it"><img src="${esc(p.image || '')}" alt=""><div class="flex-1 min-w-0"><b>${esc(saN(p.title))}</b><span>₹${p.price} × ${i.qty} = <em>₹${(p.price * i.qty).toLocaleString('en-IN')}</em></span></div><div class="pk-step"><button onclick="billAdd('${i.pid}',-1);billPaint()">−</button><b>${i.qty}</b><button onclick="billAdd('${i.pid}',1);billPaint()">+</button></div></div>`; }).join('') || `<p class="text-center text-[12.5px] py-6" style="color:#888">${tr('बिल ख़ाली है', 'Bill is empty')}</p>`}</div>
                 <div class="grid grid-cols-2 gap-2 mt-3"><input class="bl-in" placeholder="${tr('ग्राहक का नाम (ज़रूरी नहीं)', 'Customer name (optional)')}" value="${esc(BILL.name)}" oninput="BILL.name=this.value"><input class="bl-in" inputmode="numeric" maxlength="10" placeholder="${tr('मोबाइल (WhatsApp बिल)', 'Mobile (WhatsApp bill)')}" value="${esc(BILL.phone)}" oninput="BILL.phone=this.value.replace(/\\D/g,'')"></div>
-                <div class="bl-pay">${[['cash', '💵', tr('कैश', 'Cash')], ['upi', '📱', 'UPI']].map(x => `<button class="${BILL.pay === x[0] ? 'on' : ''}" onclick="BILL.pay='${x[0]}';billPaint()">${x[1]} ${x[2]}</button>`).join('')}</div>
+                <div class="bl-pay">${[['cash', '💵', tr('कैश', 'Cash')], ['upi', '📱', 'UPI'], ['credit', '📒', tr('उधार', 'Credit')]].map(x => `<button class="${BILL.pay === x[0] ? 'on' : ''}" onclick="BILL.pay='${x[0]}';billPaint()">${x[1]} ${x[2]}</button>`).join('')}</div>
                 ${BILL.pay === 'upi' ? `<input class="bl-in w-full mt-2" id="blUpi" placeholder="${tr('आपकी UPI ID (एक बार) — जैसे shop@ybl', 'Your UPI ID (once) — e.g. shop@ybl')}" value="${esc(vupi())}">` : ''}
                 <div class="bl-sum"><div><span>${tr('जोड़', 'Subtotal')}</span><b>₹${t.sub.toLocaleString('en-IN')}</b></div>
                     <div><span>${tr('छूट', 'Discount')} <small>(${tr('ज़्यादा से ज़्यादा', 'max')} ₹${t.max})</small></span><input inputmode="numeric" value="${esc(BILL.disc)}" placeholder="0" oninput="BILL.disc=this.value.replace(/\\D/g,'');billTotLive()"></div>
@@ -10339,7 +10376,7 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             el.innerHTML = `<p class="text-[12px] pmut">${tr('ग्राहक बाइक पर खड़ा है? टोकरी से सामान चुनिए, बिल बनाइए, पैसे लीजिए।', 'Customer at your bike? Pick items from your box, bill and collect.')}</p>
                 <div class="space-y-2 mt-3">${ent.map(e => { const p = prodInfo(e[0]) || { title: { hi: e[0], en: e[0] }, price: 0, image: '' }, q = RS.items[e[0]] || 0;
                     return `<div class="rs-row ${q ? 'on' : ''}"><img src="${esc(p.image)}" alt=""><div class="flex-1 min-w-0"><p class="nm">${esc(saN(p.title))}</p><p class="pr">${money_(p.price)} · ${e[1]} ${tr('बचे', 'left')}</p></div><div class="rs-step"><button onclick="rsAdd('${e[0]}',-1)">−</button><b>${q}</b><button onclick="rsAdd('${e[0]}',1)">+</button></div></div>`; }).join('')}</div>
-                <div class="bl-pay mt-3">${[['cash', '💵', tr('कैश', 'Cash')], ['upi', '📱', 'UPI']].map(x => `<button class="${RS.pay === x[0] ? 'on' : ''}" onclick="RS.pay='${x[0]}';rsPaint()">${x[1]} ${x[2]}</button>`).join('')}</div>
+                <div class="bl-pay mt-3">${[['cash', '💵', tr('कैश', 'Cash')], ['upi', '📱', 'UPI'], ['credit', '📒', tr('उधार', 'Credit')]].map(x => `<button class="${RS.pay === x[0] ? 'on' : ''}" onclick="RS.pay='${x[0]}';rsPaint()">${x[1]} ${x[2]}</button>`).join('')}</div>
                 <button class="pbtn w-full mt-3" style="position:sticky;bottom:6px;z-index:2;box-shadow:0 8px 20px rgba(0,0,0,.2);${tot ? '' : 'opacity:.5'}" ${tot ? '' : 'disabled'} onclick="rsMake()"><i class="fa-solid fa-receipt"></i> ${tr('बिल बनाएँ', 'Create bill')} • ${money_(tot)}</button>`;
         }
         function rsMake() {
@@ -12439,21 +12476,150 @@ document.addEventListener('error',function(e){var i=e.target;if(i&&i.tagName==='
             try { if (role === 'vendor' && !window.__hsNoSplash) hsShow(curV(), null, 2600); } catch (e) { }
             return r;
         }; }
-        // Orders / POS tabs move to the very top of the shop dashboard, like browser tabs
+        // Orders / My Shop tabs at the very top (soft curved browser tabs). Active tab = same dark as the card below.
+        const VT = { inline: false };
+        function vtCurve(right) { return right ? '<svg class="vt-cv" viewBox="0 0 64 64" preserveAspectRatio="none"><path d="M0 0 C 30 0, 34 64, 64 64 L 0 64 Z"/></svg>' : '<svg class="vt-cv" viewBox="0 0 64 64" preserveAspectRatio="none"><path d="M0 64 C 30 64, 34 0, 64 0 L 64 64 Z"/></svg>'; }
+        function vtTabs(c) {
+            const on = PH.vendor.tab === 'pos' ? 1 : 0;
+            const n0 = c.tabs[0] ? c.tabs[0][2] : 0, n1 = vendorTodo().length;
+            const lab = (i, ic, t, s, n, hot) => `<button class="vt-b ${i === on ? 'on' : ''}" onclick="vtGo('${i ? 'pos' : 'orders'}')"><i class="fa-solid ${ic}"></i><span class="vt-tx"><b>${t}</b><small>${s}</small></span>${n ? `<em class="${hot ? 'hot' : ''}">${n}</em>` : ''}</button>`;
+            const cream = `<span class="vt-cr"></span>`;
+            return `<div class="vt-tabs ${on ? 'r' : 'l'}">
+                <div class="vt-shape">${on ? cream + vtCurve(true) + '<span class="vt-tp"></span>' : '<span class="vt-tp"></span>' + vtCurve(false) + cream}</div>
+                ${lab(0, 'fa-bag-shopping', 'Orders', tr('ऑनलाइन', 'Online'), n0, false)}${lab(1, 'fa-shop', 'My Shop', tr('POS • स्टॉक', 'POS • Stock'), n1, true)}</div>`;
+        }
         { const f = phView; phView = function (role, c) {
             const r = f.apply(this, arguments);
             if (role !== 'vendor' || !c || !c.tabs) return r;
             try {
-                const s = r.indexOf('<div class="ph-tabs mt-3">'); let out = r;
-                if (s > -1) { const e = r.indexOf('</div>', s); out = r.slice(0, s) + r.slice(e + 6); }
-                const st = PH[role], on = st.tab === 'pos' ? 1 : 0;
-                const ic = ['🧾', '🏪'];
-                const tabs = `<div class="vt-tabs ${on ? 'r' : 'l'}"><span class="vt-bg"></span>${c.tabs.map((t, i) => { const lbl = String(t[1]).replace(/^\S+\s/, '');
-                    return `<button class="${i === on ? 'on' : ''}" onclick="${t[3] || `phSet('${role}','tab','${t[0]}')`}"><i>${ic[i] || ''}</i>${lbl} <span class="n ${t[3] && t[2] ? 'hot' : ''}">${t[2]}</span></button>`; }).join('')}</div>`;
-                const h = out.indexOf('class="ph-hero"'); if (h < 0) return out;
-                const gt = out.indexOf('>', h) + 1;
-                return out.slice(0, gt) + tabs + out.slice(gt);
+                let out = r;
+                const s = out.indexOf('<div class="ph-tabs mt-3">'); if (s > -1) { const e = out.indexOf('</div>', s); out = out.slice(0, s) + out.slice(e + 6); }
+                const h = out.indexOf('<div class="ph-hero"'); if (h < 0) return out;
+                return out.slice(0, h) + vtTabs(c) + '<div class="ph-hero vt-card"' + out.slice(h + '<div class="ph-hero"'.length);
             } catch (e) { return r; }
+        }; }
+        // My Shop opens right here as the page (no sliding bottom sheet)
+        function vtPlace() {
+            const sh = document.getElementById('pSheet'), tb = document.querySelector('#pnlBody .vt-tabs'), root = document.getElementById('panelRoot');
+            if (!sh || !tb || !root) return;
+            const top = tb.getBoundingClientRect().bottom - root.getBoundingClientRect().top;
+            sh.style.top = Math.max(0, top) + 'px';
+            const nav = document.getElementById('phNav'); sh.style.bottom = nav && nav.classList.contains('on') ? (nav.offsetHeight || 76) + 'px' : '0px';
+        }
+        function vtShowPos() {
+            const sh = document.getElementById('pSheet'); if (!sh) return;
+            if (!sh.classList.contains('vt-inline') || sh.classList.contains('hidden')) { vInvOpen(); sh.classList.add('vt-inline'); }
+            VT.inline = true; vtPlace();
+        }
+        function vtHidePos() { const sh = document.getElementById('pSheet'); VT.inline = false; if (sh && sh.classList.contains('vt-inline')) { sh.classList.remove('vt-inline'); sh.style.top = ''; sh.style.bottom = ''; closePSheet(); } }
+        function vtGo(t) {
+            try { vib(10); } catch (e) { }
+            PH.vendor.tab = t; if (PNL.tab.vendor !== 'orders') PNL.tab.vendor = 'orders';
+            const b = document.getElementById('pnlBody'); if (b) b.scrollTop = 0;
+            if (t !== 'pos') vtHidePos();
+            renderPanel(true);
+            if (t === 'pos') setTimeout(vtShowPos, 0);
+        }
+        { const f = renderPanel; renderPanel = function () {
+            const r = f.apply(this, arguments);
+            try {
+                const pos = PNL.role === 'vendor' && PNL.tab.vendor === 'orders' && PH.vendor.tab === 'pos';
+                if (pos) setTimeout(() => { if (PH.vendor.tab === 'pos') { const sh = document.getElementById('pSheet'); if (sh && (sh.classList.contains('hidden') || !sh.classList.contains('vt-inline'))) vtShowPos(); else vtPlace(); } }, 0);
+                else if (VT.inline) vtHidePos();
+            } catch (e) { }
+            return r;
+        }; }
+        // a small sheet opened from inside My Shop (edit item, bill…) comes back to My Shop when closed
+        { const f = openPSheet; openPSheet = function () { const sh = document.getElementById('pSheet'), was = sh && sh.classList.contains('vt-inline'); const r = f.apply(this, arguments); if (was && VT.inline && !VT.opening) { sh.classList.remove('vt-inline'); sh.style.top = ''; sh.style.bottom = ''; VT.sub = true; } try { const b = document.getElementById('billFab'); if (b && !document.getElementById('viRoot')) b.classList.remove('on'); } catch (e) { } return r; }; }
+        { const f = vInvOpen; vInvOpen = function () { VT.opening = true; try { return f.apply(this, arguments); } finally { VT.opening = false; } }; }
+        { const f = closePSheet; closePSheet = function () { const r = f.apply(this, arguments); if (VT.sub) { VT.sub = false; setTimeout(() => { if (PNL.role === 'vendor' && PH.vendor.tab === 'pos' && PNL.tab.vendor === 'orders') vtShowPos(); }, 30); } return r; }; }
+        { const f = closePanel; closePanel = function () { try { vtHidePos(); } catch (e) { } return f.apply(this, arguments); }; }
+        window.addEventListener('resize', () => { if (VT.inline) vtPlace(); });
+
+        // bottom bar for the shop: Khata | 🔔 notifications | Menu
+        function vtNotifs() {
+            const v = curV(), L = DB.orders.filter(o => o.vendorId === v.id).sort((a, b) => b.ts - a.ts).slice(0, 25);
+            const lbl = { vwait: ['🔔', tr('नया ऑर्डर — स्वीकार करें', 'New order — accept'), '#fef3c7'], cooking: ['👨‍🍳', tr('बन रहा है', 'Cooking'), '#ffedd5'], searching: ['🛵', tr('राइडर खोज रहे', 'Finding rider'), '#e0e7ff'], accepted: ['🛵', tr('राइडर आ रहा', 'Rider coming'), '#dbeafe'], on_the_way: ['🛵', tr('रास्ते में', 'On the way'), '#dbeafe'], delivered: ['✅', tr('डिलीवर', 'Delivered'), '#dcfce7'], cancelled: ['✖', tr('रद्द', 'Cancelled'), '#fee2e2'], no_rider: ['😔', tr('राइडर नहीं मिला', 'No rider'), '#fee2e2'] };
+            openPSheet('🔔 ' + tr('नोटिफ़िकेशन', 'Notifications'), L.length ? `<div class="vt-nl">${L.map(o => { const x = lbl[o.status] || ['•', o.status, '#f3f4f6'];
+                return `<button onclick="vtOpenOrder('${o.id}')" class="${o.status === 'vwait' ? 'new' : ''}"><i style="background:${x[2]}">${x[0]}</i><span><b>${esc(o.customer || tr('ग्राहक', 'Customer'))} • ₹${o.total}</b><small>${x[1]} • ${esc(o.items.map(i => i.qty + '× ' + i.name).join(', '))}</small></span><time>${fmtT(o.ts)}</time></button>`; }).join('')}</div>`
+                : `<p class="text-center pmut py-8">${tr('अभी कोई नोटिफ़िकेशन नहीं', 'No notifications yet')}</p>`);
+        }
+        function vtOpenOrder(id) {
+            closePSheet(); PH.vendor.tab = 'orders'; PNL.tab.vendor = 'orders'; vtHidePos();
+            const o = DB.orders.find(x => x.id === id); if (o) { PH.vendor.day = 'today'; PH.vendor.filter = 'all'; }
+            renderPanel(true);
+            setTimeout(() => { const b = document.getElementById('pnlBody'); const el = [...document.querySelectorAll('#pnlBody .ph-card, #pnlBody .ocard')].find(e => e.textContent.indexOf(o ? o.customer : '') > -1); if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.add('vt-flash'); setTimeout(() => el.classList.remove('vt-flash'), 1600); } else if (b) b.scrollTop = 0; }, 60);
+        }
+        { const f = phNavPaint; phNavPaint = function () {
+            const r = f.apply(this, arguments);
+            try {
+                if (PNL.role !== 'vendor') return r;
+                const n = document.getElementById('phNav'); if (!n) return r;
+                const t = PNL.tab.vendor, todo = vendorTodo().length;
+                n.innerHTML = `<button class="nb" onclick="khOpen()"><i class="fa-solid fa-book"></i>${tr('खाता बुक', 'Khata')}</button>
+                    <button class="mid vt-bell" onclick="vtNotifs()"><b><i class="fa-solid fa-bell"></i>${todo ? `<em>${todo}</em>` : ''}</b><span>${tr('नोटिफ़िकेशन', 'Alerts')}</span></button>
+                    <button class="nb ${t === 'shop' || t === 'earn' ? 'on' : ''}" onclick="vtHidePos();setTab('shop')"><i class="fa-solid fa-bars"></i>${tr('मेन्यू', 'Menu')}</button>`;
+                n.classList.add('on');
+            } catch (e) { }
+            return r;
+        }; }
+
+        // Khata book: who owes the shop how much (udhar given / money received), WhatsApp reminder
+        const KH = { cur: '' };
+        const khKey = () => 'hf_khata_' + curV().id;
+        const khAll = () => saGet(khKey(), []);
+        const khSave = L => saPut(khKey(), L);
+        const khBal = c => c.e.reduce((s, x) => s + (x.t === 'give' ? x.a : -x.a), 0);
+        function khOpen() { KH.cur = ''; openPSheet('📒 ' + tr('खाता बुक', 'Khata book'), '<div id="khRoot"></div>'); khPaint(); }
+        function khPaint() {
+            const el = document.getElementById('khRoot'); if (!el) return;
+            const L = khAll();
+            if (KH.cur) {
+                const c = L.find(x => x.id === KH.cur); if (!c) { KH.cur = ''; return khPaint(); }
+                const bal = khBal(c);
+                el.innerHTML = `<button class="vt-back" onclick="KH.cur='';khPaint()"><i class="fa-solid fa-arrow-left"></i> ${tr('सभी ग्राहक', 'All customers')}</button>
+                    <div class="kh-hd"><div class="kh-av">${esc(initials(c.n))}</div><div class="flex-1 min-w-0"><b>${esc(c.n)}</b><small>${c.p ? '+91 ' + esc(c.p) : ''}</small></div><div class="text-right"><small>${bal >= 0 ? tr('लेने हैं', 'To collect') : tr('देने हैं', 'To pay')}</small><b class="${bal > 0 ? 'red' : 'grn'}">₹${Math.abs(bal).toLocaleString('en-IN')}</b></div></div>
+                    <div class="kh-in"><input id="khAmt" inputmode="numeric" placeholder="₹ ${tr('रकम', 'Amount')}"><input id="khNote" placeholder="${tr('नोट (ज़रूरी नहीं)', 'Note (optional)')}"></div>
+                    <div class="grid grid-cols-2 gap-2 mt-2"><button class="kh-give" onclick="khAdd('give')">− ${tr('उधार दिया', 'Gave credit')}</button><button class="kh-got" onclick="khAdd('got')">+ ${tr('पैसा मिला', 'Got money')}</button></div>
+                    ${c.p && bal > 0 ? `<button class="kh-wa" onclick="khRemind('${c.id}')"><i class="fa-brands fa-whatsapp"></i> ${tr('WhatsApp पर याद दिलाएँ', 'Remind on WhatsApp')}</button>` : ''}
+                    <div class="kh-list">${c.e.slice().reverse().map(x => `<div class="kh-e ${x.t}"><span><b>${x.t === 'give' ? tr('उधार दिया', 'Gave') : tr('पैसा मिला', 'Received')}</b><small>${new Date(x.ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} ${esc(x.note || '')}</small></span><em>${x.t === 'give' ? '−' : '+'}₹${x.a.toLocaleString('en-IN')}</em></div>`).join('') || `<p class="pmut text-center py-4 text-[12.5px]">${tr('अभी कोई लेन-देन नहीं', 'No entries yet')}</p>`}</div>`;
+                return;
+            }
+            const due = L.reduce((s, c) => s + Math.max(0, khBal(c)), 0);
+            el.innerHTML = `<div class="kh-top"><div><small>${tr('कुल लेने हैं', 'Total to collect')}</small><b>₹${due.toLocaleString('en-IN')}</b></div><div><small>${tr('ग्राहक', 'Customers')}</small><b>${L.length}</b></div></div>
+                <div class="kh-in mt-3"><input id="khN" placeholder="${tr('ग्राहक का नाम', 'Customer name')}"><input id="khP" inputmode="numeric" maxlength="10" placeholder="${tr('मोबाइल', 'Mobile')}"></div>
+                <button class="pbtn w-full mt-2" onclick="khNew()"><i class="fa-solid fa-user-plus"></i> ${tr('ग्राहक जोड़ें', 'Add customer')}</button>
+                <div class="kh-list mt-3">${L.map(c => { const b = khBal(c); return `<button class="kh-c" onclick="KH.cur='${c.id}';khPaint()"><div class="kh-av">${esc(initials(c.n))}</div><span><b>${esc(c.n)}</b><small>${c.e.length} ${tr('लेन-देन', 'entries')}</small></span><em class="${b > 0 ? 'red' : 'grn'}">₹${Math.abs(b).toLocaleString('en-IN')}</em></button>`; }).join('') || `<p class="pmut text-center py-6 text-[12.5px]">${tr('पहला ग्राहक जोड़ें — या बिल बनाते समय "उधार" चुनें', 'Add your first customer — or pick "Credit" when billing')}</p>`}</div>`;
+        }
+        function khNew() {
+            const n = (document.getElementById('khN').value || '').trim(), p = (document.getElementById('khP').value || '').replace(/\D/g, '');
+            if (!n) { pToast(tr('नाम लिखिए', 'Enter a name')); return; }
+            const L = khAll(); const c = { id: 'k' + Date.now().toString(36), n, p, e: [] }; L.unshift(c); khSave(L); KH.cur = c.id; sfx('success'); khPaint();
+        }
+        function khAdd(t) {
+            const a = Math.round(+((document.getElementById('khAmt') || {}).value || 0)); if (!a) { pToast(tr('रकम लिखिए', 'Enter amount')); return; }
+            const L = khAll(), c = L.find(x => x.id === KH.cur); if (!c) return;
+            c.e.push({ t, a, note: ((document.getElementById('khNote') || {}).value || '').trim(), ts: Date.now() }); khSave(L); sfx(t === 'got' ? 'success' : 'tap'); vib(15); khPaint();
+        }
+        function khEntry(name, phone, amt, note) {
+            const L = khAll(); let c = L.find(x => (phone && x.p === phone) || (!phone && x.n === name));
+            if (!c) { c = { id: 'k' + Date.now().toString(36), n: name || tr('ग्राहक', 'Customer'), p: phone || '', e: [] }; L.unshift(c); }
+            c.e.push({ t: 'give', a: amt, note: note || '', ts: Date.now() }); khSave(L);
+        }
+        function khRemind(id) {
+            const c = khAll().find(x => x.id === id); if (!c) return;
+            const t = `नमस्ते ${c.n} जी, ${curV().name} पर आपका ₹${khBal(c)} बकाया है। सुविधा अनुसार भुगतान कर दें। धन्यवाद 🙏`;
+            window.open('https://wa.me/91' + c.p + '?text=' + encodeURIComponent(t), '_blank');
+        }
+        // billing: third pay option "उधार" → goes into the khata
+        { const f = billMake; billMake = function () {
+            if (BILL.pay === 'credit') {
+                if (!BILL.name.trim() && !BILL.phone) { pToast(tr('उधार के लिए ग्राहक का नाम या मोबाइल लिखिए', 'Enter customer name or mobile for credit')); return; }
+                const t = billTotals(); BILL.pay = 'cash'; const r = f.apply(this, arguments);
+                try { const L = saGet('hf_bills_v1', []); if (L[0]) { L[0].pay = 'credit'; saPut('hf_bills_v1', L); khEntry(L[0].name, L[0].phone, L[0].tot, L[0].no); } } catch (e) { }
+                BILL.pay = 'credit'; pToast(tr('📒 खाते में उधार जुड़ गया', '📒 Added to khata')); return r;
+            }
+            return f.apply(this, arguments);
         }; }
 
         /* ================= scan2.js: rider center button = scanner — scan any shop slip (or type order no. + code) and the order is yours ================= */
