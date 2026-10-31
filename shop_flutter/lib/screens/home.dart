@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../printer.dart';
 import '../push.dart';
 import '../widgets/shop_ui.dart';
+import '../widgets/shop_open.dart';
 import 'inventory.dart';
 import 'shop_page.dart';
 import 'pos_quick.dart';
@@ -85,6 +86,7 @@ class _ShopHomeState extends State<ShopHome> {
     if (!quiet) setState(() => loading = true);
     try {
       final m = await Api.me();
+      ShopNameCache.save('${m['shop_name'] ?? ''}', '${m['address'] ?? ''}');
       final o = await Api.orders();
       if (!mounted) return;
       final fresh = o.where((x) => x['source'] != 'pos' && !['done', 'cancelled'].contains(x['status']) && !seen.contains(x['id'].toString())).toList();
@@ -198,7 +200,7 @@ class _ShopHomeState extends State<ShopHome> {
     const commission = 0; // POS / own bills: no Happy Food commission
     final label = dayIdx == 0 ? 'आज' : (dayIdx == 7 ? 'इस महीने' : '${_dayLabel(dayIdx)}');
     return Container(
-      padding: EdgeInsets.fromLTRB(16, top + 18, 16, 18),
+      padding: EdgeInsets.fromLTRB(16, top + 14, 16, 18),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
         gradient: HF.heroGrad,
@@ -330,6 +332,44 @@ class _ShopHomeState extends State<ShopHome> {
     );
   }
 
+  // Orders | POS tabs at the very top, like browser tabs: the active tab is part of the dark card below
+  Widget _chromeTabs(double top) {
+    final live = orders.where((o) => !['done', 'cancelled'].contains(o['status'])).length;
+    Widget lab(int i, IconData ic, String t, int n, {bool hot = false}) => Expanded(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () { HapticFeedback.selectionClick(); setState(() => seg = i); },
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(ic, size: 20, color: seg == i ? const Color(0xFFF6D68A) : HF.tx),
+              const SizedBox(width: 7),
+              Flexible(child: Text(t, maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(15, color: seg == i ? const Color(0xFFF6D68A) : HF.tx, w: FontWeight.w900))),
+              const SizedBox(width: 7),
+              Container(constraints: const BoxConstraints(minWidth: 24), height: 24, padding: const EdgeInsets.symmetric(horizontal: 7), alignment: Alignment.center,
+                  decoration: BoxDecoration(color: hot && n > 0 ? const Color(0xFFEF4444) : (seg == i ? const Color(0xFF16A34A) : const Color(0xFF111111)), borderRadius: BorderRadius.circular(999)),
+                  child: Text('$n', style: HF.num(12, color: Colors.white, w: FontWeight.w800))),
+            ]),
+          ),
+        );
+    return Container(
+      color: HF.bg,
+      padding: EdgeInsets.only(top: top),
+      child: SizedBox(
+        height: 56,
+        child: LayoutBuilder(builder: (_, box) {
+          final w = box.maxWidth * .56;
+          return Stack(children: [
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 420), curve: Curves.easeOutCubic,
+              left: seg == 0 ? 0 : box.maxWidth - w, top: 0, bottom: -1, width: w,
+              child: ClipPath(clipper: _TabClip(seg == 0), child: Container(decoration: const BoxDecoration(color: HF.heroTop))),
+            ),
+            Row(children: [lab(0, Icons.receipt_long_rounded, 'ऑर्डर', orders.length), lab(1, Icons.storefront_rounded, 'POS • इन्वेंट्री', live, hot: true)]),
+          ]);
+        }),
+      ),
+    );
+  }
+
   Widget _tabs() {
     Widget b(int i, String t, int n, {bool hot = false}) => Expanded(
           child: GestureDetector(
@@ -359,14 +399,14 @@ class _ShopHomeState extends State<ShopHome> {
     final top = MediaQuery.of(context).padding.top;
     final list = _period.where((o) => filter == 'all' || (filter == 'live' ? !['done', 'cancelled'].contains(o['status']) : ['done', 'cancelled'].contains(o['status']))).toList();
     return [
-      _hero(top),
+      _chromeTabs(top),
+      _hero(0),
       if (me['suspended'] == true) Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 0), child: HFCard(color: const Color(0xFFFEE2E2), border: const Color(0xFFFCA5A5), child: Text('🚫 आपकी दुकान एडमिन ने सस्पेंड की है। ग्राहक आपकी दुकान नहीं देख पाएँगे — सपोर्ट से बात करें।', style: HF.hi(13.5, color: HF.bad, w: FontWeight.w700)))),
       if (me['approved'] == false && me['suspended'] != true) Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 0), child: HFCard(color: const Color(0xFFFFF7E6), border: const Color(0xFFFDBA74), child: Text('⏳ आपकी दुकान एडमिन की मंज़ूरी का इंतज़ार कर रही है। तब तक आप इन्वेंट्री भर सकते हैं और बिल बना सकते हैं।', style: HF.hi(13.5, w: FontWeight.w700)))),
       if (err.isNotEmpty) Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 0), child: Text('⚠️ $err', style: HF.hi(13, color: HF.bad))),
       const SizedBox(height: 16),
       _days(),
-      const SizedBox(height: 12),
-      _tabs(),
+      const SizedBox(height: 4),
       if (seg == 1) ..._posTab() else ...[
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
@@ -796,4 +836,34 @@ class _ShopHomeState extends State<ShopHome> {
       ),
     );
   }
+}
+
+
+/// Slanted browser-tab shape: rounded on the outer top corner, diagonal on the inner side.
+class _TabClip extends CustomClipper<Path> {
+  final bool left;
+  _TabClip(this.left);
+  @override
+  Path getClip(Size s) {
+    const r = 22.0, slant = 30.0;
+    final p = Path();
+    if (left) {
+      p.moveTo(0, s.height);
+      p.lineTo(0, 0);
+      p.lineTo(s.width - slant - r, 0);
+      p.quadraticBezierTo(s.width - slant, 0, s.width - slant + 6, 10);
+      p.lineTo(s.width, s.height);
+    } else {
+      p.moveTo(0, s.height);
+      p.lineTo(slant - 6, 10);
+      p.quadraticBezierTo(slant, 0, slant + r, 0);
+      p.lineTo(s.width, 0);
+      p.lineTo(s.width, s.height);
+    }
+    p.close();
+    return p;
+  }
+
+  @override
+  bool shouldReclip(_TabClip o) => o.left != left;
 }
