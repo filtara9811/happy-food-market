@@ -7,6 +7,7 @@ import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../printer.dart';
 import '../push.dart';
 import '../widgets/shop_ui.dart';
@@ -64,6 +65,8 @@ class _ShopHomeState extends State<ShopHome> {
     load();
     poll = Timer.periodic(const Duration(seconds: 12), (_) => load(quiet: true));
     Push.register();
+    // ring even when the phone is locked: ask once to skip battery optimisation
+    Future.delayed(const Duration(seconds: 3), () async { try { if (!await Permission.ignoreBatteryOptimizations.isGranted) await Permission.ignoreBatteryOptimizations.request(); } catch (_) {} });
     actSub = Push.actions.stream.listen((a) => _pushAct(a.$1, a.$2));
     if (Push.launch != null) { final l = Push.launch!; Push.launch = null; Future.delayed(const Duration(milliseconds: 1500), () => _pushAct(l.$1, l.$2)); }
     sc.addListener(() { final m = sc.offset > 250; if (m != mini) setState(() => mini = m); });
@@ -529,6 +532,25 @@ class _ShopHomeState extends State<ShopHome> {
   }
 
   String _qrOf(Map o) => 'HFPICK:${o['order_id']}:${o['pickup_code']}';
+  String _shortOf(Map o) => 'HF-${o['order_id'].toString().replaceAll('-', '').substring(0, 4).toUpperCase()}';
+
+  // big QR on the screen: the rider can scan straight from the shop phone
+  void _bigQr(Map o) {
+    showDialog(context: context, builder: (c) => Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+          child: Padding(padding: const EdgeInsets.all(20), child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text('राइडर यह QR स्कैन करे', style: HF.hi(18, w: FontWeight.w800)),
+            const SizedBox(height: 12),
+            QrImageView(data: _qrOf(o), size: 250, backgroundColor: Colors.white),
+            const SizedBox(height: 10),
+            Text('ऑर्डर ${_shortOf(o)}', style: HF.num(18)),
+            Text('पिकअप कोड: ${o['pickup_code']}', style: HF.num(22, color: HF.goldDeep).copyWith(letterSpacing: 3)),
+            Text('QR न चले तो राइडर ऐप में "नंबर से डालें" में यही दोनों डालें', textAlign: TextAlign.center, style: HF.hi(12, color: HF.mut)),
+            const SizedBox(height: 12),
+            SizedBox(width: double.infinity, child: FilledButton(onPressed: () => Navigator.pop(c), child: const Text('ठीक है'))),
+          ])),
+        ));
+  }
 
   Receipt _receiptOf(Map o) {
     final items = (o['items'] as List?)?.whereType<Map>().toList() ?? [];
@@ -542,7 +564,7 @@ class _ShopHomeState extends State<ShopHome> {
       payLabel: pos ? ((o['pay_mode'] ?? 'cash') == 'cash' ? 'कैश' : (o['pay_mode'] == 'upi' ? 'UPI' : 'उधार')) : 'COD — राइडर लेगा',
       customer: (o['customer_name'] ?? '').toString(), phone: (o['customer_phone'] ?? '').toString(), address: pos ? null : (o['customer_address'] ?? '').toString(),
       qr: !pos && code != null ? _qrOf(o) : null, code: code,
-      note: !pos && code != null ? 'राइडर यह QR स्कैन करेगा, तभी पिकअप होगा' : null,
+      note: !pos && code != null ? 'ऑर्डर ${_shortOf(o)} • राइडर यह QR स्कैन करेगा, तभी पिकअप होगा' : null,
     );
   }
 
@@ -581,12 +603,13 @@ class _ShopHomeState extends State<ShopHome> {
         margin: const EdgeInsets.only(top: 12), padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(color: picked ? const Color(0xFFEFF6FF) : const Color(0xFFFDF8EC), borderRadius: BorderRadius.circular(18), border: Border.all(color: picked ? const Color(0xFF93C5FD) : HF.gold.withValues(alpha: .5))),
         child: Row(children: [
-          if (!picked && code != null) Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)), child: QrImageView(data: _qrOf(o), size: 84, padding: EdgeInsets.zero)),
+          if (!picked && code != null) GestureDetector(onTap: () => _bigQr(o), child: Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)), child: QrImageView(data: _qrOf(o)), size: 84, padding: EdgeInsets.zero))),
           if (!picked && code != null) const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(picked ? '🛵 राइडर पैकेट ले गया' : '🛵 राइडर का इंतज़ार', style: HF.hi(14.5, w: FontWeight.w800)),
             if ((o['rider_name'] ?? '').toString().isNotEmpty) Text('राइडर: ${o['rider_name']}', style: HF.hi(12.5, color: HF.mut, w: FontWeight.w600)) else Text('राइडर ढूँढ रहे हैं…', style: HF.hi(12.5, color: HF.mut, w: FontWeight.w600)),
-            if (!picked && code != null) Text('पिकअप कोड: $code', style: HF.num(15, color: HF.goldDeep, w: FontWeight.w800)),
+            if (!picked && code != null) Text('${_shortOf(o)} • कोड: $code', style: HF.num(15, color: HF.goldDeep, w: FontWeight.w800)),
+            if (!picked && code != null) GestureDetector(onTap: () => _bigQr(o), child: Text('🔍 QR बड़ा करें', style: HF.hi(12.5, color: const Color(0xFF2563EB), w: FontWeight.w800))),
             if (!picked) Text('राइडर यह QR (स्लिप या इस स्क्रीन से) स्कैन करेगा — तभी पिकअप होगा', style: HF.hi(11.5, color: HF.mut)),
             const SizedBox(height: 4),
             Row(children: [
