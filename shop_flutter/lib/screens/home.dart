@@ -16,6 +16,7 @@ import 'inventory.dart';
 import 'shop_page.dart';
 import 'pos_quick.dart';
 import 'khata.dart';
+import 'requests.dart';
 
 /// Shop home — a copy of the prototype's shop panel: dark gold hero, earnings card, days row,
 /// order / POS tabs, filters, order cards with step dots that open in place, bottom bar with ➕.
@@ -33,6 +34,7 @@ class _ShopHomeState extends State<ShopHome> {
   int seg = 0; // 0 orders, 1 POS & inventory
   String filter = 'all';
   int dayIdx = 0; // 0 = today, 1..6 = days back, 7 = month
+  int monthOff = 0; // which month when dayIdx == 7 (0 = this month)
   bool loading = true, mini = false;
   String err = '';
   Timer? poll;
@@ -46,6 +48,7 @@ class _ShopHomeState extends State<ShopHome> {
     final o = orders.where((o) => o['id'].toString() == saleId).toList();
     setState(() { nav = 0; seg = 0; filter = 'live'; dayIdx = 0; open.add(saleId); });
     if (o.isEmpty) return;
+    if (act != 'accept' && act != 'reject') { _requests(); return; }
     if (act == 'accept') await _act(o.first, 'accept');
     if (act == 'reject') await _act(o.first, 'reject');
   }
@@ -59,6 +62,7 @@ class _ShopHomeState extends State<ShopHome> {
     setState(() { nav = 0; seg = 0; filter = 'live'; dayIdx = 0; });
     for (final x in fresh) { open.add(x['id'].toString()); }
     hfToast(context, '🔔 $n नया ऑर्डर आया!');
+    _requests();
   }
 
   @override
@@ -110,7 +114,7 @@ class _ShopHomeState extends State<ShopHome> {
 
   List<Map<String, dynamic>> get _period {
     final now = DateTime.now();
-    if (dayIdx == 7) return orders.where((o) { final t = _t(o, 'created_at'); return t != null && t.year == now.year && t.month == now.month; }).toList();
+    if (dayIdx == 7) { final m = DateTime(now.year, now.month - monthOff, 1); return orders.where((o) { final t = _t(o, 'created_at'); return t != null && t.year == m.year && t.month == m.month; }).toList(); }
     final d0 = _day0(now).subtract(Duration(days: dayIdx));
     return orders.where((o) { final t = _t(o, 'created_at'); return t != null && _day0(t) == d0; }).toList();
   }
@@ -199,13 +203,13 @@ class _ShopHomeState extends State<ShopHome> {
     final p = _period, paid = p.where(_paid).toList();
     final sale = paid.fold<num>(0, (s, o) => s + _amt(o));
     const commission = 0; // POS / own bills: no Happy Food commission
-    final label = dayIdx == 0 ? 'आज' : (dayIdx == 7 ? 'इस महीने' : '${_dayLabel(dayIdx)}');
+    final label = dayIdx == 0 ? 'आज' : (dayIdx == 7 ? (monthOff == 0 ? 'इस महीने' : _monName(monthOff)) : '${_dayLabel(dayIdx)}');
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 4, 16, 0),
       padding: EdgeInsets.fromLTRB(14, top + 16, 14, 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28),
-        gradient: HF.heroGrad,
+        gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF5A3D17), Color(0xFF3A2710), Color(0xFF7A5520)], stops: [0, .5, 1]),
         boxShadow: const [BoxShadow(color: Color(0x2E000000), blurRadius: 30, offset: Offset(0, 14))],
       ),
       foregroundDecoration: BoxDecoration(
@@ -305,7 +309,7 @@ class _ShopHomeState extends State<ShopHome> {
     Widget chip(int i, Widget child, {double pct = 0}) {
       final on = dayIdx == i;
       return GestureDetector(
-        onTap: () => setState(() => dayIdx = i),
+        onTap: () { if (i == 7) { _pickMonth(); } else { setState(() => dayIdx = i); } },
         child: Container(
           width: 62, margin: const EdgeInsets.only(right: 6), padding: const EdgeInsets.fromLTRB(3, 6, 3, 8),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: on ? null : HF.card, gradient: on ? const LinearGradient(begin: Alignment(-0.27, -1), end: Alignment(0.27, 1), colors: [HF.heroTop, HF.heroBottom]) : null, border: Border.all(color: on ? Colors.transparent : HF.line)),
@@ -328,7 +332,7 @@ class _ShopHomeState extends State<ShopHome> {
           ]), pct: maxv[i] / top),
         chip(7, Column(mainAxisSize: MainAxisSize.min, children: [
           const Text('🗓️', style: TextStyle(fontSize: 18)),
-          Text('महीना', style: HF.hi(11, color: dayIdx == 7 ? Colors.white : HF.tx, w: FontWeight.w800)),
+          Text(dayIdx == 7 && monthOff > 0 ? _monName(monthOff, short: true) : 'महीना', style: HF.hi(11, color: dayIdx == 7 ? Colors.white : HF.tx, w: FontWeight.w800)),
         ])),
       ]),
     );
@@ -344,10 +348,10 @@ class _ShopHomeState extends State<ShopHome> {
           behavior: HitTestBehavior.opaque,
           onTap: () { HapticFeedback.selectionClick(); setState(() => seg = i); if (sc.hasClients) sc.jumpTo(0); },
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Icon(ic, size: 21, color: on ? HF.goldDeep : const Color(0xFFF6D68A)),
+            Icon(ic, size: 21, color: on ? HF.goldDeep : const Color(0xB3F6D68A)),
             const SizedBox(width: 9),
             Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(t, style: HF.num(18.5, color: on ? HF.tx : const Color(0xFFF6D68A), w: FontWeight.w800)),
+              Text(t, style: HF.num(on ? 19 : 18, color: on ? HF.tx : const Color(0xB3F6D68A), w: FontWeight.w800)),
               Text(sub, style: HF.hi(10.5, color: on ? HF.mut : const Color(0xB3F6D68A), w: FontWeight.w600)),
             ]),
             if (n > 0) ...[
@@ -374,6 +378,62 @@ class _ShopHomeState extends State<ShopHome> {
       ),
     );
   }
+
+  static const _mons = ['जनवरी', 'फ़रवरी', 'मार्च', 'अप्रैल', 'मई', 'जून', 'जुलाई', 'अगस्त', 'सितंबर', 'अक्टूबर', 'नवंबर', 'दिसंबर'];
+  String _monName(int off, {bool short = false}) { final n = DateTime.now(), m = DateTime(n.year, n.month - off, 1); return short ? _mons[m.month - 1].characters.take(4).toString() : '${_mons[m.month - 1]} ${m.year}'; }
+  void _pickMonth() {
+    final n = DateTime.now();
+    hfSheet(context, (c, ctl) => ListView(controller: ctl, padding: const EdgeInsets.fromLTRB(16, 4, 16, 30), children: [
+          sheetHead(c, '🗓️ महीना चुनें', sub: 'किसी भी महीने के ऑर्डर और कमाई देखें'),
+          GridView.count(crossAxisCount: 2, shrinkWrap: true, physics: const NeverScrollableScrollPhysics(), childAspectRatio: 2.3, mainAxisSpacing: 8, crossAxisSpacing: 8, children: [
+            for (var i = 0; i < 12; i++)
+              Builder(builder: (_) {
+                final m = DateTime(n.year, n.month - i, 1);
+                final l = orders.where((o) { final t = _t(o, 'created_at'); return t != null && t.year == m.year && t.month == m.month; }).toList();
+                final sum = l.where(_paid).fold<num>(0, (s, o) => s + _amt(o));
+                final on = dayIdx == 7 && monthOff == i;
+                return GestureDetector(
+                  onTap: () { Navigator.pop(c); setState(() { dayIdx = 7; monthOff = i; }); },
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(color: on ? Color.alphaBlend(HF.gold.withValues(alpha: .15), HF.card) : HF.card, borderRadius: BorderRadius.circular(16), border: Border.all(color: on ? HF.gold : HF.line, width: 1.5)),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [Text(_monName(i), style: HF.hi(14, w: FontWeight.w800)), Text('${l.length} ऑर्डर • ${rupee(sum)}', style: HF.hi(11.5, color: HF.mut))]),
+                  ),
+                );
+              }),
+          ]),
+        ]), size: .75);
+  }
+
+  bool _rqOpen = false;
+  Future<void> _requests() async {
+    if (_rqOpen || !mounted) return;
+    _rqOpen = true;
+    final app = orders.where((o) => o['source'] == 'app' && o['status'] == 'new').length, ds = orders.where((o) => o['source'] != 'app' && o['source'] != 'pos' && o['status'] == 'new').length;
+    await showModalBottomSheet(
+      context: context, isScrollControlled: true, backgroundColor: Colors.transparent,
+      builder: (_) => DraggableScrollableSheet(initialChildSize: .92, maxChildSize: .96, expand: false,
+          builder: (_, ctl) => RequestsSheet(sc: ctl, orders: () => orders, initialTab: app == 0 && ds > 0 ? 'ds' : 'app', act: (o, a) async { await _act(o, a); await load(quiet: true); })),
+    );
+    _rqOpen = false;
+  }
+
+  void _menuSheet() => showModalBottomSheet(
+        context: context, isScrollControlled: true, backgroundColor: Colors.transparent,
+        builder: (_) => DraggableScrollableSheet(initialChildSize: .92, maxChildSize: .96, expand: false,
+            builder: (_, ctl) => Container(
+                  decoration: const BoxDecoration(color: HF.bg, borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+                  child: ListView(controller: ctl, padding: const EdgeInsets.only(top: 10, bottom: 30), children: [
+                    Center(child: Container(width: 44, height: 5, decoration: BoxDecoration(color: HF.line, borderRadius: BorderRadius.circular(9)))),
+                    const SizedBox(height: 10),
+                    ShopPage(
+                      inSheet: true, me: me, orders: orders, reload: () => load(quiet: true), toggleOpen: toggleOpen, openInventory: () { Navigator.pop(context); openInventory(); },
+                      openEarnings: _earnSheet,
+                      openBills: () { Navigator.pop(context); setState(() { nav = 0; seg = 0; filter = 'all'; dayIdx = 7; }); if (sc.hasClients) sc.jumpTo(0); },
+                    ),
+                  ]),
+                )),
+      );
 
   // 🔔 everything customers did: new orders first; tap = open that order in Orders
   void _notifs() {
@@ -838,24 +898,27 @@ class _ShopHomeState extends State<ShopHome> {
             height: 72 + bottom,
             padding: EdgeInsets.fromLTRB(22, 0, 22, 10 + bottom),
             decoration: const BoxDecoration(color: HF.card, border: Border(top: BorderSide(color: HF.line)), boxShadow: [BoxShadow(color: Color(0x14000000), blurRadius: 24, offset: Offset(0, -8))]),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [_nbx(Icons.menu_book_rounded, 'खाता बुक', false, () => showKhata(context, shopName: '${me['shop_name'] ?? ''}')), _nb(2, Icons.menu_rounded, 'मेन्यू')]),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [_nbx(Icons.menu_book_rounded, 'खाता बुक', false, () => showKhata(context, shopName: '${me['shop_name'] ?? ''}')), _nbx(Icons.menu_rounded, 'मेन्यू', false, _menuSheet)]),
           ),
           Positioned(
             bottom: 12 + bottom,
             child: GestureDetector(
-              onTap: _notifs,
+              onTap: _requests,
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Stack(clipBehavior: Clip.none, children: [
                   Container(width: 54, height: 54, decoration: BoxDecoration(shape: BoxShape.circle, gradient: HF.navGrad, border: Border.all(color: HF.card, width: 4), boxShadow: const [BoxShadow(color: Color(0x73E2A92C), blurRadius: 18, offset: Offset(0, 8))]), child: const Icon(Icons.notifications_rounded, size: 27, color: HF.ink)),
-                  if (orders.any((o) => o['status'] == 'new')) Positioned(right: -2, top: -2, child: Container(constraints: const BoxConstraints(minWidth: 20), height: 20, padding: const EdgeInsets.symmetric(horizontal: 5), alignment: Alignment.center, decoration: BoxDecoration(color: const Color(0xFFEF4444), borderRadius: BorderRadius.circular(99), border: Border.all(color: HF.card, width: 2)), child: Text('${orders.where((o) => o['status'] == 'new').length}', style: HF.num(10.5, color: Colors.white)))),
+                  if (orders.any((o) => o['source'] == 'app' && o['status'] == 'new')) Positioned(left: -4, top: -2, child: _bd(orders.where((o) => o['source'] == 'app' && o['status'] == 'new').length, const Color(0xFFE5383B))),
+                  if (orders.any((o) => o['source'] != 'app' && o['source'] != 'pos' && o['status'] == 'new')) Positioned(right: -4, top: -2, child: _bd(orders.where((o) => o['source'] != 'app' && o['source'] != 'pos' && o['status'] == 'new').length, const Color(0xFF16A34A))),
                 ]),
                 const SizedBox(height: 4),
-                Text('नोटिफ़िकेशन', style: HF.hi(11, color: HF.goldDeep, w: FontWeight.w800)),
+                Text('रिक्वेस्ट', style: HF.hi(11, color: HF.goldDeep, w: FontWeight.w800)),
               ]),
             ),
           ),
         ]),
       );
+
+  Widget _bd(int n, Color c) => Container(constraints: const BoxConstraints(minWidth: 20), height: 20, padding: const EdgeInsets.symmetric(horizontal: 5), alignment: Alignment.center, decoration: BoxDecoration(color: c, borderRadius: BorderRadius.circular(99), border: Border.all(color: HF.card, width: 2)), child: Text('$n', style: HF.num(10.5, color: Colors.white)));
 
   Widget _nbx(IconData ic, String l, bool on, VoidCallback f) => GestureDetector(
         behavior: HitTestBehavior.opaque, onTap: f,
@@ -887,20 +950,20 @@ class _TabPainter extends CustomPainter {
   void paint(Canvas c, Size s) {
     const cw = 64.0;
     final mid = s.width / 2;
-    final p = Paint()..color = HF.heroTop;
+    final p = Paint()..color = const Color(0xFF3A2A14);
     final path = Path();
     // Orders active → dark on the right; My Shop active → dark on the left. Blend by t.
     final rightShape = Path()
-      ..moveTo(mid - cw / 2, s.height)
-      ..cubicTo(mid - 2, s.height, mid + 2, 0, mid + cw / 2, 0)
-      ..lineTo(s.width, 0)..lineTo(s.width, s.height)..close();
-    final leftShape = Path()
-      ..moveTo(0, 0)..lineTo(mid - cw / 2, 0)
+      ..moveTo(mid - cw / 2, 0)
       ..cubicTo(mid - 2, 0, mid + 2, s.height, mid + cw / 2, s.height)
+      ..lineTo(s.width, s.height)..lineTo(s.width, 0)..close();
+    final leftShape = Path()
+      ..moveTo(0, 0)..lineTo(mid + cw / 2, 0)
+      ..cubicTo(mid + 2, 0, mid - 2, s.height, mid - cw / 2, s.height)
       ..lineTo(0, s.height)..close();
     c.saveLayer(Offset.zero & s, Paint());
     c.drawShadow(t < .5 ? rightShape : leftShape, Colors.black, 4, false);
-    c.drawPath(t < .5 ? rightShape : leftShape, p..color = HF.heroTop.withValues(alpha: (1 - (t - (t < .5 ? 0 : 1)).abs() * 2).clamp(0.0, 1.0)));
+    c.drawPath(t < .5 ? rightShape : leftShape, p..color = const Color(0xFF3A2A14).withValues(alpha: (1 - (t - (t < .5 ? 0 : 1)).abs() * 2).clamp(0.0, 1.0)));
     c.restore();
     path.close();
   }

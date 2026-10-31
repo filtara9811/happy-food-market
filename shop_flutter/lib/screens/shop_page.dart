@@ -14,7 +14,8 @@ class ShopPage extends StatefulWidget {
   final List<Map<String, dynamic>> orders;
   final Future<void> Function() reload;
   final VoidCallback toggleOpen, openInventory, openEarnings, openBills;
-  const ShopPage({super.key, required this.me, required this.orders, required this.reload, required this.toggleOpen, required this.openInventory, required this.openEarnings, required this.openBills});
+  final bool inSheet;
+  const ShopPage({super.key, this.inSheet = false, required this.me, required this.orders, required this.reload, required this.toggleOpen, required this.openInventory, required this.openEarnings, required this.openBills});
   @override
   State<ShopPage> createState() => _ShopPageState();
 }
@@ -32,6 +33,22 @@ class _ShopPageState extends State<ShopPage> {
   final fold = <String>{};
 
   Map<String, dynamic> get me => widget.me;
+  void _details() {
+    Widget row(String k, String v) => Container(
+          margin: const EdgeInsets.only(bottom: 6), padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+          decoration: BoxDecoration(color: HF.card2, borderRadius: BorderRadius.circular(14)),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(k, style: HF.hi(12.5, color: HF.mut, w: FontWeight.w700)), const SizedBox(width: 12), Expanded(child: Text(v.isEmpty ? '—' : v, textAlign: TextAlign.right, style: HF.hi(13.5, w: FontWeight.w800)))]),
+        );
+    hfSheet(context, (c, ctl) => ListView(controller: ctl, padding: const EdgeInsets.fromLTRB(16, 4, 16, 30), children: [
+          sheetHead(c, '🏪 दुकान की जानकारी'),
+          row('दुकान', '${me['shop_name'] ?? ''}'), row('मालिक', '${me['owner'] ?? ''}'), row('मोबाइल', '+${me['phone'] ?? ''}'),
+          row('पता', '${me['address'] ?? ''}'), row('समय', '${me['hours'] ?? ''}'), row('तैयारी', '${me['prep_min'] ?? 15} min'),
+          row('UPI', '${me['upi'] ?? ''}'), row('FSSAI', '${me['fssai'] ?? ''}'), row('GSTIN', '${me['gstin'] ?? ''}'),
+          const SizedBox(height: 8),
+          Text('बदलने के लिए नीचे "दुकान की जानकारी" खोलें', textAlign: TextAlign.center, style: HF.hi(12, color: HF.mut)),
+        ]), size: .8);
+  }
+
   String get _initials { final p = '${me['shop_name'] ?? 'HF'}'.trim().split(RegExp(r'\s+')); return (p.length > 1 ? p[0].characters.first + p[1].characters.first : p[0].characters.take(2).toString()).toUpperCase(); }
 
   Future<void> save() async {
@@ -75,25 +92,43 @@ class _ShopPageState extends State<ShopPage> {
     final docsMissing = '${me['fssai'] ?? ''}'.isEmpty || '${me['gstin'] ?? ''}'.isEmpty;
     final link = shopLink(me['id']);
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      // dark profile card
-      Container(
-        margin: EdgeInsets.fromLTRB(16, top + 14, 16, 0),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(gradient: HF.heroGrad, borderRadius: BorderRadius.circular(26), boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 24, offset: Offset(0, 12))]),
-        child: Row(children: [
-          Stack(clipBehavior: Clip.none, children: [
-            Container(width: 72, height: 72, alignment: Alignment.center, decoration: BoxDecoration(gradient: HF.avGrad, borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.white.withValues(alpha: .85), width: 2)), child: Text(_initials, style: HF.num(26, color: HF.ink))),
-            Positioned(right: -4, bottom: -4, child: Container(width: 26, height: 26, decoration: BoxDecoration(color: HF.ink, shape: BoxShape.circle, border: Border.all(color: HF.gold, width: 2)), child: const Icon(Icons.photo_camera, size: 13, color: HF.goldLight))),
-            const Positioned(left: -5, top: -5, child: FlutterBadge(size: 22)),
+      // business card (tap = full details)
+      GestureDetector(
+        onTap: _details,
+        child: Container(
+          margin: EdgeInsets.fromLTRB(16, widget.inSheet ? 4 : top + 14, 16, 0),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(26),
+            gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF5A3D17), Color(0xFF3A2710), Color(0xFF7A5520)], stops: [0, .5, 1]),
+            boxShadow: const [BoxShadow(color: Color(0x475A3D17), blurRadius: 24, offset: Offset(0, 12))],
+          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              Stack(clipBehavior: Clip.none, children: [
+                Container(width: 60, height: 60, alignment: Alignment.center, decoration: BoxDecoration(gradient: HF.avGrad, borderRadius: BorderRadius.circular(18), border: Border.all(color: Colors.white.withValues(alpha: .85), width: 2)), child: Text(_initials, style: HF.num(22, color: HF.ink))),
+                const Positioned(left: -5, top: -5, child: FlutterBadge(size: 20)),
+              ]),
+              const SizedBox(width: 12),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('${me['shop_name'] ?? ''}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.num(20, color: Colors.white, w: FontWeight.w800)),
+                Text('${me['owner'] ?? ''} • ${me['suspended'] == true ? '🚫 सस्पेंड' : (verified ? '✅ वेरिफ़ाइड' : '⏳ मंज़ूरी बाकी')}', maxLines: 1, overflow: TextOverflow.ellipsis, style: HF.hi(12, color: Colors.white70, w: FontWeight.w600)),
+              ])),
+              GestureDetector(onTap: () => showMyQr(context, me), child: const Icon(Icons.qr_code_2_rounded, size: 34, color: Color(0xFFF6D68A))),
+            ]),
+            const SizedBox(height: 12),
+            Wrap(spacing: 6, runSpacing: 6, children: [
+              for (final t in [me['open'] == true ? '🟢 खुली' : '🔴 बंद', '⏱ ${me['prep_min'] ?? 15} min', '⭐ नया', if (joined != null) 'जुड़े ${joined.day} ${_mon[joined.month - 1]}'])
+                Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: Colors.white.withValues(alpha: .12), borderRadius: BorderRadius.circular(99)), child: Text(t, style: HF.hi(11.5, color: Colors.white, w: FontWeight.w700))),
+            ]),
+            const SizedBox(height: 14),
+            Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+              Expanded(child: Text('+${me['phone'] ?? ''}', style: HF.num(16, color: const Color(0xFFF3E6C4), w: FontWeight.w700).copyWith(letterSpacing: 1.5))),
+              Text('HAPPY FOOD · SHOP PARTNER', style: HF.num(8.5, color: Colors.white54, w: FontWeight.w700).copyWith(letterSpacing: 1.2)),
+            ]),
+            Align(alignment: Alignment.centerRight, child: Text('टैप करें — पूरी जानकारी ›', style: HF.hi(10.5, color: Colors.white54, w: FontWeight.w700))),
           ]),
-          const SizedBox(width: 14),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('${me['shop_name'] ?? ''}', maxLines: 2, overflow: TextOverflow.ellipsis, style: HF.num(20, color: Colors.white, w: FontWeight.w800)),
-            const SizedBox(height: 2),
-            Text('${me['owner'] ?? ''} • ${me['suspended'] == true ? '🚫 सस्पेंड' : (verified ? '✅ वेरिफ़ाइड' : '⏳ मंज़ूरी बाकी')}', style: HF.hi(12.5, color: Colors.white70, w: FontWeight.w600)),
-            Text('⭐ नया • जुड़े ${joined == null ? '' : '${joined.day} ${_mon[joined.month - 1]} ${joined.year}'}', style: HF.hi(12, color: Colors.white60, w: FontWeight.w600)),
-          ])),
-        ]),
+        ),
       ),
       // 3 numbers
       Padding(
