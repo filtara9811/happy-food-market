@@ -603,7 +603,7 @@ class _ShopHomeState extends State<ShopHome> {
         margin: const EdgeInsets.only(top: 12), padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(color: picked ? const Color(0xFFEFF6FF) : const Color(0xFFFDF8EC), borderRadius: BorderRadius.circular(18), border: Border.all(color: picked ? const Color(0xFF93C5FD) : HF.gold.withValues(alpha: .5))),
         child: Row(children: [
-          if (!picked && code != null) GestureDetector(onTap: () => _bigQr(o), child: Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)), child: QrImageView(data: _qrOf(o)), size: 84, padding: EdgeInsets.zero))),
+          if (!picked && code != null) GestureDetector(onTap: () => _bigQr(o), child: Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)), child: QrImageView(data: _qrOf(o), size: 84, padding: EdgeInsets.zero))),
           if (!picked && code != null) const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(picked ? '🛵 राइडर पैकेट ले गया' : '🛵 राइडर का इंतज़ार', style: HF.hi(14.5, w: FontWeight.w800)),
